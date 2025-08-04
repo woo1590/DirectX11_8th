@@ -103,6 +103,9 @@
     <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\DecoratorNode">
       <UniqueIdentifier>{d0920409-d6a1-4efb-8226-86f9dff3e132}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Object Component\Camera Component">
+      <UniqueIdentifier>{581bec7f-7897-47f3-bebb-d2687f18f886}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -162,6 +165,9 @@
     <ClInclude Include="..\public\Material.h">
       <Filter>05. Object Component\Model Component\Material</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CameraComponent.h">
+      <Filter>05. Object Component\Camera Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -202,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Material.cpp">
       <Filter>05. Object Component\Model Component\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraComponent.cpp">
+      <Filter>05. Object Component\Camera Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

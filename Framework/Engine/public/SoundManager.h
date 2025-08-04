@@ -3,7 +3,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL SoundManager
+class SoundManager
     : public Base
 {
 private:

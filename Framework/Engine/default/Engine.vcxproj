@@ -180,6 +180,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h" />
+    <ClInclude Include="..\public\CameraComponent.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\EngineCore.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
@@ -201,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp" />
+    <ClCompile Include="..\private\CameraComponent.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\Material.cpp" />

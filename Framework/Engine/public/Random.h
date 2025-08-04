@@ -3,7 +3,7 @@
 
 NS_BEGIN(Engine)    
 
-class ENGINE_DLL Random :
+class Random :
     public Base
 {
 private:
