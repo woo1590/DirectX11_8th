@@ -1,0 +1,8 @@
+#pragma once
+
+namespace Client
+{
+	constexpr unsigned int WinSizeX = 1280;
+	constexpr unsigned int WinSizeY = 720;
+
+}

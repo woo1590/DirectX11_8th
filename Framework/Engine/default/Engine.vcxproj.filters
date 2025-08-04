@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="98. Etc">
+      <UniqueIdentifier>{c914d5cc-da25-422f-b385-0e4b0913abcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\Defines">
+      <UniqueIdentifier>{4804e71b-b4b6-43a9-914e-0c8d74393361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\pch">
+      <UniqueIdentifier>{150d75ca-0c0c-4695-816b-13d6212d77a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. EngineCore">
+      <UniqueIdentifier>{c9854507-f2db-4e3e-b7e9-789b35f8f87e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component">
+      <UniqueIdentifier>{c21d341d-8345-4543-980b-b9c2c88d88a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering">
+      <UniqueIdentifier>{ce1f745c-d311-4a20-bc58-ab17c549c042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering\Renderer">
+      <UniqueIdentifier>{5f353efd-535a-4733-9b11-5cde1eb56eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering\RenderSystem">
+      <UniqueIdentifier>{56da25c7-6117-4727-8b17-382f73aba387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\SoundManager">
+      <UniqueIdentifier>{0174ea42-018b-4ade-a0ec-fec7ae1ee6ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\InputSystem">
+      <UniqueIdentifier>{ee1a3634-163e-48b7-9053-1b0588f37e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Scene">
+      <UniqueIdentifier>{ce45df82-39a8-4597-a3f9-5988dc742667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene Component">
+      <UniqueIdentifier>{84f246af-ff66-48af-9601-6e0d254df49b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Object">
+      <UniqueIdentifier>{64f10ab9-f23f-437d-bebd-54139ea37b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component">
+      <UniqueIdentifier>{e309217d-d7f4-4fd8-bbaf-13ae2d23b959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Random">
+      <UniqueIdentifier>{a8c08091-7d04-4bf6-8a72-321424fe1957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Time">
+      <UniqueIdentifier>{0b90e7e5-2736-4262-8e83-817711b9f9e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Time\Timer">
+      <UniqueIdentifier>{61899eeb-9b18-4aff-adfa-4013d482e49f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Time\TimerManager">
+      <UniqueIdentifier>{bbaa58f1-879d-4dd8-9b6d-4399b55cee9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\99. Utility">
+      <UniqueIdentifier>{cf2396ac-abf5-474e-9c11-c8175938bf81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\99. Utility\Base">
+      <UniqueIdentifier>{860d4b83-ec98-4614-8cc6-f80841220c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\TaskManager">
+      <UniqueIdentifier>{e40f7a49-3a0f-48b3-a96e-a1d1fe66ce88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene Component\Layer">
+      <UniqueIdentifier>{5ab17750-ced7-499b-a810-09c51cd40fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component">
+      <UniqueIdentifier>{03ccefa1-4978-4881-8cea-f5577301395a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Transform Component">
+      <UniqueIdentifier>{c70334ac-2798-47d2-9140-905a624d7789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component\Mesh">
+      <UniqueIdentifier>{2ebeb5ae-c703-4895-9f22-0a3944790b75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component\Material">
+      <UniqueIdentifier>{98507123-8600-4e97-9ae1-5c2e7d59126c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component\Model">
+      <UniqueIdentifier>{428a327b-ff06-4bec-9931-0af6946cbb04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController">
+      <UniqueIdentifier>{1ecd457e-88dd-4ebb-bc00-c710cc47e1d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController\BehaviorTree">
+      <UniqueIdentifier>{161c4ffe-62fa-40a8-85b8-0a3b2cc1ee13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController\BlackBoard">
+      <UniqueIdentifier>{8792580c-3d16-4c69-9ca2-94d2329d0798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode">
+      <UniqueIdentifier>{bf64df42-6fb9-4a57-a866-508474dfe8e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\ActionNode">
+      <UniqueIdentifier>{af5a67f3-9d1f-419b-a92a-3906d35b1bee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\CompositeNode">
+      <UniqueIdentifier>{bc99b6ec-30bb-4d21-81a8-337dd16e70be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\DecoratorNode">
+      <UniqueIdentifier>{d0920409-d6a1-4efb-8226-86f9dff3e132}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\public\Base.h">
+      <Filter>98. Etc\99. Utility\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="EnginePCH.h">
+      <Filter>98. Etc\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineCore.h">
+      <Filter>00. EngineCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Defines.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Enum.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Function.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Macro.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Struct.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Typedef.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderSystem.h">
+      <Filter>01. Engine Component\Rendering\RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SoundManager.h">
+      <Filter>01. Engine Component\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Object.h">
+      <Filter>04. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Component.h">
+      <Filter>05. Object Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Random.h">
+      <Filter>01. Engine Component\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Timer.h">
+      <Filter>01. Engine Component\Time\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TimerManager.h">
+      <Filter>01. Engine Component\Time\TimerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TransformComponent.h">
+      <Filter>05. Object Component\Transform Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ModelComponent.h">
+      <Filter>05. Object Component\Model Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Material.h">
+      <Filter>05. Object Component\Model Component\Material</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\private\Base.cpp">
+      <Filter>98. Etc\99. Utility\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="EnginePCH.cpp">
+      <Filter>98. Etc\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EngineCore.cpp">
+      <Filter>00. EngineCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RenderSystem.cpp">
+      <Filter>01. Engine Component\Rendering\RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundManager.cpp">
+      <Filter>01. Engine Component\SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Object.cpp">
+      <Filter>04. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Component.cpp">
+      <Filter>05. Object Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Random.cpp">
+      <Filter>01. Engine Component\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Timer.cpp">
+      <Filter>01. Engine Component\Time\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TimerManager.cpp">
+      <Filter>01. Engine Component\Time\TimerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TransformComponent.cpp">
+      <Filter>05. Object Component\Transform Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ModelComponent.cpp">
+      <Filter>05. Object Component\Model Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Material.cpp">
+      <Filter>05. Object Component\Model Component\Material</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
