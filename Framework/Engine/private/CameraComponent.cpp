@@ -34,3 +34,13 @@ void CameraComponent::Free()
 {
 	__super::Free();
 }
+
+DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
+{
+	return DirectX::XMMATRIX{};
+}
+
+DirectX::XMMATRIX CameraComponent::GetProjMatrix() const
+{
+	return DirectX::XMMATRIX();
+}

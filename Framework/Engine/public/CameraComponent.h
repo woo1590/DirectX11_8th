@@ -16,6 +16,9 @@ public:
     HRESULT Initialize();
     void Free()override;
 
+    DirectX::XMMATRIX GetViewMatrix()const;
+    DirectX::XMMATRIX GetProjMatrix()const;
+
 private:
     TransformComponent* target = nullptr;
 

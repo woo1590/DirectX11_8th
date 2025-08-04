@@ -168,6 +168,9 @@
     <ClInclude Include="..\public\CameraComponent.h">
       <Filter>05. Object Component\Camera Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AiController.h">
+      <Filter>05. Object Component\AIController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -211,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraComponent.cpp">
       <Filter>05. Object Component\Camera Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AiController.cpp">
+      <Filter>05. Object Component\AIController</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
