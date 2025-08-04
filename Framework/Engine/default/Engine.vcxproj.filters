@@ -55,12 +55,6 @@
     <Filter Include="01. Engine Component\Time\TimerManager">
       <UniqueIdentifier>{bbaa58f1-879d-4dd8-9b6d-4399b55cee9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98. Etc\99. Utility">
-      <UniqueIdentifier>{cf2396ac-abf5-474e-9c11-c8175938bf81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="98. Etc\99. Utility\Base">
-      <UniqueIdentifier>{860d4b83-ec98-4614-8cc6-f80841220c0d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\TaskManager">
       <UniqueIdentifier>{e40f7a49-3a0f-48b3-a96e-a1d1fe66ce88}</UniqueIdentifier>
     </Filter>
@@ -106,10 +100,19 @@
     <Filter Include="05. Object Component\Camera Component">
       <UniqueIdentifier>{581bec7f-7897-47f3-bebb-d2687f18f886}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99. Utility">
+      <UniqueIdentifier>{cf2396ac-abf5-474e-9c11-c8175938bf81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Utility\Base">
+      <UniqueIdentifier>{860d4b83-ec98-4614-8cc6-f80841220c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering\Shader">
+      <UniqueIdentifier>{cdf532fe-2f39-45cf-bec7-20033a82815f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
-      <Filter>98. Etc\99. Utility\Base</Filter>
+      <Filter>99. Utility\Base</Filter>
     </ClInclude>
     <ClInclude Include="EnginePCH.h">
       <Filter>98. Etc\pch</Filter>
@@ -171,10 +174,16 @@
     <ClInclude Include="..\public\AiController.h">
       <Filter>05. Object Component\AIController</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Renderer.h">
+      <Filter>01. Engine Component\Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Shader.h">
+      <Filter>01. Engine Component\Rendering\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
-      <Filter>98. Etc\99. Utility\Base</Filter>
+      <Filter>99. Utility\Base</Filter>
     </ClCompile>
     <ClCompile Include="EnginePCH.cpp">
       <Filter>98. Etc\pch</Filter>
@@ -217,6 +226,12 @@
     </ClCompile>
     <ClCompile Include="..\private\AiController.cpp">
       <Filter>05. Object Component\AIController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Renderer.cpp">
+      <Filter>01. Engine Component\Rendering\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Shader.cpp">
+      <Filter>01. Engine Component\Rendering\Shader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
