@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "framework.h"
 #include "Client.h"
-#include "Application.h"
+#include "MainApp.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -13,11 +13,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    Application* Game = Application::Create(hInstance, nCmdShow);
+    MainApp* Game = MainApp::Create(hInstance, nCmdShow);
 
     if (!Game)
     {
-        MSG_BOX("Create Failed : Application");
+        MSG_BOX("Create Failed : MainApp");
         return -1;
     }
     
@@ -26,7 +26,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _uint refCnt = Safe_Release(Game);
     if (refCnt)
     {
-        MSG_BOX("Release Failed : Application");
+        MSG_BOX("Release Failed : MainApp");
         return -1;
     }
 

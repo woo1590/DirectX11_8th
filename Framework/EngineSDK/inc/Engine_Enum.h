@@ -3,6 +3,6 @@
 
 namespace Engine
 {
-	
+	enum class WinMode { Full, Win, Count };
 }
 #endif // Engine_Enum_h__

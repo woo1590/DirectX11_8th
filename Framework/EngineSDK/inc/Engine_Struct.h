@@ -8,6 +8,7 @@ namespace Engine
 	struct EngineDESC
 	{
 		HWND hWnd;
+		WinMode winMode;
 		_uint winSizeX, winSizeY;
 	};
 }

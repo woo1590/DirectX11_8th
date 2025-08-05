@@ -3,6 +3,7 @@
 #include "SoundManager.h"
 #include "RenderSystem.h"
 #include "TimerManager.h"
+#include "GraphicDevice.h"
 #include "Random.h"
 
 IMPLEMENT_SINGLETON(EngineCore);
@@ -31,6 +32,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!random)
 		return E_FAIL;
 
+	graphicDevice = GraphicDevice::Create(desc.hWnd,desc.winMode,desc.winSizeX,desc.winSizeY);
+	if (!graphicDevice)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -42,6 +47,16 @@ void EngineCore::Free()
 	Safe_Release(renderSystem);
 	Safe_Release(timerManager);
 	Safe_Release(soundManager);
+	Safe_Release(graphicDevice);
+}
+
+void EngineCore::Tick(_float dt)
+{
+	soundManager->Update();
+
+	DrawBegin();
+	Draw();
+	DrawEnd();
 }
 
 HRESULT EngineCore::AddTimer(const std::string& timerTag)
@@ -49,7 +64,7 @@ HRESULT EngineCore::AddTimer(const std::string& timerTag)
 	return timerManager->AddTimer(timerTag);
 }
 
-void EngineCore::Update(const std::string& timerTag)
+void EngineCore::UpdateTimer(const std::string& timerTag)
 {
 	timerManager->Update(timerTag);
 }
@@ -57,4 +72,27 @@ void EngineCore::Update(const std::string& timerTag)
 _float EngineCore::GetDeltaTime(const std::string& timerTag)
 {
 	return timerManager->GetDeltaTime(timerTag);
+}
+
+HRESULT EngineCore::DrawBegin()
+{
+	if (FAILED(graphicDevice->ClearBackBufferView(&clearColor)))
+		return E_FAIL;
+
+	if (FAILED(graphicDevice->ClearDepthStencilView()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT EngineCore::Draw()
+{
+	//render loop
+
+	return S_OK;
+}
+
+HRESULT EngineCore::DrawEnd()
+{
+	return graphicDevice->Present();
 }

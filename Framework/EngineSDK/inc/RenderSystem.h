@@ -3,6 +3,12 @@
 
 NS_BEGIN(Engine)
 
+struct RenderProxy
+{
+
+};
+
+class Renderer;
 class ENGINE_DLL RenderSystem :
     public Base
 {
@@ -16,7 +22,7 @@ public:
     void Free()override;
 
 private:
-
+    std::vector<std::list<RenderProxy>> proxies;
 };
 
 NS_END

@@ -5,7 +5,7 @@
 
 //d3d
 #include <d3d11.h>
-
+#include <DirectXMath.h>
 //c, c++
 #include <ctime>
 

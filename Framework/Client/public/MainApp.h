@@ -1,25 +1,39 @@
 #pragma once
 
 #include "Base.h"
-#include "IApp.h"
+
+NS_BEGIN(Engine)
+class EngineCore;
+NS_END
 
 NS_BEGIN(Client)
 
 class MainApp final :
-    public Base, public IApp
+    public Base
 {
 private:
     MainApp();
     virtual ~MainApp() = default;
 
 public:
-    static MainApp* Create();
-    HRESULT Initialize()override;
-    void Update(_float dt)override;
+    static MainApp* Create(HINSTANCE hInstance, int nCmdShow);
+    HRESULT Initialize(HINSTANCE hInstance, int nCmdShow);
+    void Run();
     void Free()override;
 
 private:
+    bool InitWindow(HINSTANCE hInst, int nCmdShow);
+    static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+    HWND hWnd{};
+    HINSTANCE hInstance{};
+    RECT windowSize{};
+    MSG msg{};
+    HACCEL hAccel{};
+
+    bool isRunning = false;
+
+    EngineCore* engine = nullptr;
 };
 
 NS_END

@@ -109,6 +109,9 @@
     <Filter Include="01. Engine Component\Rendering\Shader">
       <UniqueIdentifier>{cdf532fe-2f39-45cf-bec7-20033a82815f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\GraphicDevice">
+      <UniqueIdentifier>{5bd9a923-6ced-4835-b860-493db958ee2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -180,6 +183,9 @@
     <ClInclude Include="..\public\Shader.h">
       <Filter>01. Engine Component\Rendering\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\GraphicDevice.h">
+      <Filter>01. Engine Component\GraphicDevice</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -232,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Shader.cpp">
       <Filter>01. Engine Component\Rendering\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GraphicDevice.cpp">
+      <Filter>01. Engine Component\GraphicDevice</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

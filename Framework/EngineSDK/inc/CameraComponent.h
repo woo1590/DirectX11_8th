@@ -16,12 +16,10 @@ public:
     HRESULT Initialize();
     void Free()override;
 
-    DirectX::XMMATRIX GetViewMatrix()const;
-    DirectX::XMMATRIX GetProjMatrix()const;
+    _float4x4 GetViewMatrix()const;
+    _float4x4 GetProjMatrix()const;
 
 private:
-    TransformComponent* target = nullptr;
-
     _float aspect{};
     _float fov{};
     _float nearZ{};

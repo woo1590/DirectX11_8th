@@ -20,13 +20,6 @@ CameraComponent* CameraComponent::Create(Object* owner)
 
 HRESULT CameraComponent::Initialize()
 {
-	auto transform = owner->GetComponent<TransformComponent>();
-
-	if (!transform)
-		return E_FAIL;
-
-	target = transform;
-
 	return S_OK;
 }
 
@@ -35,12 +28,15 @@ void CameraComponent::Free()
 	__super::Free();
 }
 
-DirectX::XMMATRIX CameraComponent::GetViewMatrix() const
+_float4x4 CameraComponent::GetViewMatrix() const
 {
-	return DirectX::XMMATRIX{};
+	return _float4x4{};
 }
 
-DirectX::XMMATRIX CameraComponent::GetProjMatrix() const
+_float4x4 CameraComponent::GetProjMatrix() const
 {
-	return DirectX::XMMATRIX();
+	_float4x4 proj{};
+	DirectX::XMStoreFloat4x4(&proj, DirectX::XMMatrixPerspectiveFovLH(fov, aspect, nearZ, farZ));
+
+	return proj;
 }

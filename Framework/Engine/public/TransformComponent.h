@@ -16,7 +16,9 @@ public:
     void Free()override;
 
 private:
-
+    _float3 position{};
+    _float3 scale{};
+    _float3 rotation{};
 };
 
 NS_END
