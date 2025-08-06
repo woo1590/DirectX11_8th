@@ -3,16 +3,15 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL Shader :
+class LevelManager final:
     public Base
 {
 private:
-    Shader();
-    Shader(const Shader& rhg);
-    virtual ~Shader() = default;
+    LevelManager();
+    virtual ~LevelManager() = default;
 
 public:
-    static Shader* Create();
+    static LevelManager* Create();
     HRESULT Initialize();
     void Free()override;
 

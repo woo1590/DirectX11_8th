@@ -3,16 +3,15 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL Shader :
+class ENGINE_DLL Mesh :
     public Base
 {
 private:
-    Shader();
-    Shader(const Shader& rhg);
-    virtual ~Shader() = default;
+    Mesh();
+    virtual ~Mesh() = default;
 
 public:
-    static Shader* Create();
+    static Mesh* Create();
     HRESULT Initialize();
     void Free()override;
 

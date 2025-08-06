@@ -7,6 +7,7 @@ class RenderSystem;
 class SoundManager;
 class TimerManager;
 class GraphicDevice;
+class LevelManager;
 class Random;
 class ENGINE_DLL EngineCore final :
     public Base
@@ -28,6 +29,11 @@ public:
 
     /*-----Random-----*/
 
+
+    /*---Graphic Device---*/
+    ID3D11Device* GetDevice();
+    ID3D11DeviceContext* GetDeviceContext();
+
 private:
     /*----Rendering----*/
     HRESULT DrawBegin();
@@ -41,8 +47,8 @@ private:
     SoundManager* soundManager = nullptr;
     TimerManager* timerManager = nullptr;
     GraphicDevice* graphicDevice = nullptr;
+    LevelManager* levelManager = nullptr;
 
-    _float4 clearColor{ 0.f,0.f,1.f,1.f };
 };
 
 NS_END

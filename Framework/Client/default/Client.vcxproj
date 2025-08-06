@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\TestCube.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\TestCube.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

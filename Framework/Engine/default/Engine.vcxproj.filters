@@ -22,21 +22,6 @@
     <Filter Include="01. Engine Component\Rendering\Renderer">
       <UniqueIdentifier>{5f353efd-535a-4733-9b11-5cde1eb56eb6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\Rendering\RenderSystem">
-      <UniqueIdentifier>{56da25c7-6117-4727-8b17-382f73aba387}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Engine Component\SoundManager">
-      <UniqueIdentifier>{0174ea42-018b-4ade-a0ec-fec7ae1ee6ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Engine Component\InputSystem">
-      <UniqueIdentifier>{ee1a3634-163e-48b7-9053-1b0588f37e56}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Scene">
-      <UniqueIdentifier>{ce45df82-39a8-4597-a3f9-5988dc742667}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Scene Component">
-      <UniqueIdentifier>{84f246af-ff66-48af-9601-6e0d254df49b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Object">
       <UniqueIdentifier>{64f10ab9-f23f-437d-bebd-54139ea37b48}</UniqueIdentifier>
     </Filter>
@@ -54,12 +39,6 @@
     </Filter>
     <Filter Include="01. Engine Component\Time\TimerManager">
       <UniqueIdentifier>{bbaa58f1-879d-4dd8-9b6d-4399b55cee9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Engine Component\TaskManager">
-      <UniqueIdentifier>{e40f7a49-3a0f-48b3-a96e-a1d1fe66ce88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Scene Component\Layer">
-      <UniqueIdentifier>{5ab17750-ced7-499b-a810-09c51cd40fb1}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Object Component\Model Component">
       <UniqueIdentifier>{03ccefa1-4978-4881-8cea-f5577301395a}</UniqueIdentifier>
@@ -109,7 +88,31 @@
     <Filter Include="01. Engine Component\Rendering\Shader">
       <UniqueIdentifier>{cdf532fe-2f39-45cf-bec7-20033a82815f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\GraphicDevice">
+    <Filter Include="02. Level">
+      <UniqueIdentifier>{ce45df82-39a8-4597-a3f9-5988dc742667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level Component">
+      <UniqueIdentifier>{84f246af-ff66-48af-9601-6e0d254df49b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level Component\Layer">
+      <UniqueIdentifier>{5ab17750-ced7-499b-a810-09c51cd40fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Level Manager">
+      <UniqueIdentifier>{4818e275-2645-48ef-b928-f3d51f958301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Sound Manager">
+      <UniqueIdentifier>{0174ea42-018b-4ade-a0ec-fec7ae1ee6ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Task Manager">
+      <UniqueIdentifier>{e40f7a49-3a0f-48b3-a96e-a1d1fe66ce88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Input System">
+      <UniqueIdentifier>{ee1a3634-163e-48b7-9053-1b0588f37e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering\Render System">
+      <UniqueIdentifier>{56da25c7-6117-4727-8b17-382f73aba387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Graphic Device">
       <UniqueIdentifier>{5bd9a923-6ced-4835-b860-493db958ee2d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -142,10 +145,10 @@
       <Filter>98. Etc\Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RenderSystem.h">
-      <Filter>01. Engine Component\Rendering\RenderSystem</Filter>
+      <Filter>01. Engine Component\Rendering\Render System</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SoundManager.h">
-      <Filter>01. Engine Component\SoundManager</Filter>
+      <Filter>01. Engine Component\Sound Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Object.h">
       <Filter>04. Object</Filter>
@@ -184,7 +187,19 @@
       <Filter>01. Engine Component\Rendering\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\GraphicDevice.h">
-      <Filter>01. Engine Component\GraphicDevice</Filter>
+      <Filter>01. Engine Component\Graphic Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LevelManager.h">
+      <Filter>01. Engine Component\Level Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level.h">
+      <Filter>02. Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Layer.h">
+      <Filter>03. Level Component\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Mesh.h">
+      <Filter>05. Object Component\Model Component\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -198,10 +213,10 @@
       <Filter>00. EngineCore</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RenderSystem.cpp">
-      <Filter>01. Engine Component\Rendering\RenderSystem</Filter>
+      <Filter>01. Engine Component\Rendering\Render System</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SoundManager.cpp">
-      <Filter>01. Engine Component\SoundManager</Filter>
+      <Filter>01. Engine Component\Sound Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Object.cpp">
       <Filter>04. Object</Filter>
@@ -240,7 +255,19 @@
       <Filter>01. Engine Component\Rendering\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\GraphicDevice.cpp">
-      <Filter>01. Engine Component\GraphicDevice</Filter>
+      <Filter>01. Engine Component\Graphic Device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LevelManager.cpp">
+      <Filter>01. Engine Component\Level Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level.cpp">
+      <Filter>02. Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Layer.cpp">
+      <Filter>03. Level Component\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mesh.cpp">
+      <Filter>05. Object Component\Model Component\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

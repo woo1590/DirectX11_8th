@@ -191,7 +191,11 @@
     <ClInclude Include="..\public\Engine_Struct.h" />
     <ClInclude Include="..\public\Engine_Typedef.h" />
     <ClInclude Include="..\public\GraphicDevice.h" />
+    <ClInclude Include="..\public\Layer.h" />
+    <ClInclude Include="..\public\Level.h" />
+    <ClInclude Include="..\public\LevelManager.h" />
     <ClInclude Include="..\public\Material.h" />
+    <ClInclude Include="..\public\Mesh.h" />
     <ClInclude Include="..\public\ModelComponent.h" />
     <ClInclude Include="..\public\Object.h" />
     <ClInclude Include="..\public\Random.h" />
@@ -211,7 +215,11 @@
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />
+    <ClCompile Include="..\private\Layer.cpp" />
+    <ClCompile Include="..\private\Level.cpp" />
+    <ClCompile Include="..\private\LevelManager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
+    <ClCompile Include="..\private\Mesh.cpp" />
     <ClCompile Include="..\private\ModelComponent.cpp" />
     <ClCompile Include="..\private\Object.cpp" />
     <ClCompile Include="..\private\Random.cpp" />

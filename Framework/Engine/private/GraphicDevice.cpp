@@ -58,12 +58,12 @@ void GraphicDevice::Free()
 	Safe_Release(device);
 }
 
-HRESULT GraphicDevice::ClearBackBufferView(const _float4* color)
+HRESULT GraphicDevice::ClearBackBufferView()
 {
 	if (!deviceContext)
 		return E_FAIL;
 
-	deviceContext->ClearRenderTargetView(backBufferRTV, reinterpret_cast<const _float*>(color));
+	deviceContext->ClearRenderTargetView(backBufferRTV, reinterpret_cast<const _float*>(&clearColor));
 
 	return S_OK;
 }

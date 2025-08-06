@@ -2,6 +2,10 @@
 #include "Object.h"
 #include "Component.h"
 
+Object::Object()
+{
+}
+
 HRESULT Object::Initialize()
 {
 	components.clear();

@@ -115,7 +115,7 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     int windowWidth = windowSize.right - windowSize.left;
     int windowHeight = windowSize.bottom - windowSize.top;
 
-    int x = (screenWidth - windowWidth) / 2;
+    int x = (screenWidth + (windowWidth / 4));
     int y = (screenHeight - windowHeight) / 2;
 
     hWnd = CreateWindowW(

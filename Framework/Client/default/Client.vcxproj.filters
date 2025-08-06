@@ -19,6 +19,15 @@
     <Filter Include="00. MainApp">
       <UniqueIdentifier>{e31af5ec-532f-42bb-b70c-76af6b31041a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Level">
+      <UniqueIdentifier>{4f65f713-3328-477d-9b39-1bce365e8498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object">
+      <UniqueIdentifier>{738b893f-244c-415e-b505-446b6d4fb4aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\TestCube">
+      <UniqueIdentifier>{ee3bf53e-3d0e-4d47-a3bb-f40142af3f83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -42,6 +51,9 @@
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TestCube.h">
+      <Filter>02. Object\TestCube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -52,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TestCube.cpp">
+      <Filter>02. Object\TestCube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

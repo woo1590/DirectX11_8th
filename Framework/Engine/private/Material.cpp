@@ -34,3 +34,18 @@ void Material::SetParam(const std::string& key, _float value)
 {
 	floatParams[key] = value;
 }
+
+void Material::SetParam(const std::string& key, _float2 value)
+{
+	float2Params[key] = value;
+}
+
+void Material::SetParam(const std::string& key, _float3 value)
+{
+	float3Params[key] = value;
+}
+
+void Material::SetParam(const std::string& key, _float4 value)
+{
+	float4Params[key] = value;
+}

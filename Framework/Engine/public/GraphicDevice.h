@@ -16,9 +16,12 @@ public:
     void Free()override;
 
 public:
-    HRESULT ClearBackBufferView(const _float4* color);
+    HRESULT ClearBackBufferView();
     HRESULT ClearDepthStencilView();
     HRESULT Present();
+
+    ID3D11Device* GetDevice()const { return device; }
+    ID3D11DeviceContext* GetDeviceContext()const { return deviceContext; }
 
 private:
     HRESULT InitSwapChain(HWND hWnd, WinMode winMode ,_uint winSizeX, _uint winSizeY);
@@ -30,6 +33,8 @@ private:
     IDXGISwapChain* swapChain = nullptr;                //스왑체인 인터페이스
     ID3D11RenderTargetView* backBufferRTV = nullptr;    //백버퍼 rtv
     ID3D11DepthStencilView* DSV = nullptr;              //depth - stencil 
+
+    _float4 clearColor{ 0.f,0.f,1.f,1.f };
 };
 
 NS_END

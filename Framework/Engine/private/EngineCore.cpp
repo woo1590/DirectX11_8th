@@ -4,6 +4,7 @@
 #include "RenderSystem.h"
 #include "TimerManager.h"
 #include "GraphicDevice.h"
+#include "LevelManager.h"
 #include "Random.h"
 
 IMPLEMENT_SINGLETON(EngineCore);
@@ -36,6 +37,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!graphicDevice)
 		return E_FAIL;
 
+	levelManager = LevelManager::Create();
+	if (!levelManager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -48,6 +53,7 @@ void EngineCore::Free()
 	Safe_Release(timerManager);
 	Safe_Release(soundManager);
 	Safe_Release(graphicDevice);
+	Safe_Release(levelManager);
 }
 
 void EngineCore::Tick(_float dt)
@@ -74,9 +80,19 @@ _float EngineCore::GetDeltaTime(const std::string& timerTag)
 	return timerManager->GetDeltaTime(timerTag);
 }
 
+ID3D11Device* EngineCore::GetDevice()
+{
+	return graphicDevice->GetDevice();
+}
+
+ID3D11DeviceContext* EngineCore::GetDeviceContext()
+{
+	return graphicDevice->GetDeviceContext();
+}
+
 HRESULT EngineCore::DrawBegin()
 {
-	if (FAILED(graphicDevice->ClearBackBufferView(&clearColor)))
+	if (FAILED(graphicDevice->ClearBackBufferView()))
 		return E_FAIL;
 
 	if (FAILED(graphicDevice->ClearDepthStencilView()))

@@ -4,7 +4,7 @@
 NS_BEGIN(Engine)
 
 class Component;
-class ENGINE_DLL Object :
+class ENGINE_DLL Object abstract:
     public Base
 {
 protected:
