@@ -6,14 +6,17 @@ NS_BEGIN(Engine)
 class ENGINE_DLL Level abstract:
     public Base
 {
-private:
+protected:
     Level();
     virtual ~Level() = default;
 
 public:
+    virtual void Update(_float dt);
+    virtual HRESULT Render();
+    virtual void Free()override;
 
+protected:
 
-private:
 };
 
 NS_END

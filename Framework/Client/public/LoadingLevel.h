@@ -1,0 +1,27 @@
+#pragma once
+#include "Level.h"
+
+NS_BEGIN(Client)
+
+class Loader;
+class LoadingLevel final:
+    public Level
+{
+private:
+    LoadingLevel();
+    virtual ~LoadingLevel() = default;
+
+public:
+    static LoadingLevel* Create(LevelID nextLevelID);
+    HRESULT Initialize(LevelID nextLevelID);
+
+public:
+    void Update(_float dt)override;
+    HRESULT Render()override;
+
+private:
+    Loader* loader = nullptr;
+    LevelID nextLevelID{};
+};
+
+NS_END

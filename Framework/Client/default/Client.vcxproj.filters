@@ -28,6 +28,21 @@
     <Filter Include="02. Object\TestCube">
       <UniqueIdentifier>{ee3bf53e-3d0e-4d47-a3bb-f40142af3f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Level\LoadingLevel">
+      <UniqueIdentifier>{e3babc69-cf1f-4475-9fcf-5ce20d4a8621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\LoadingLevel\Loader">
+      <UniqueIdentifier>{edf70e16-007d-4608-a269-0fbd7a1ee1a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\LogoLevel">
+      <UniqueIdentifier>{634edddd-af4a-4105-bbf4-35fc1ae4c797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\GamePlayLevel">
+      <UniqueIdentifier>{1f7c0960-1f1e-45aa-9149-6b187fd43e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\TestLevel">
+      <UniqueIdentifier>{1c01809e-98ac-42d2-95bb-ba4d0c3421f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -54,6 +69,21 @@
     <ClInclude Include="..\public\TestCube.h">
       <Filter>02. Object\TestCube</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\LoadingLevel.h">
+      <Filter>01. Level\LoadingLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Loader.h">
+      <Filter>01. Level\LoadingLevel\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoLevel.h">
+      <Filter>01. Level\LogoLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GamePlayLevel.h">
+      <Filter>01. Level\GamePlayLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TestLevel.h">
+      <Filter>01. Level\TestLevel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -67,6 +97,21 @@
     </ClCompile>
     <ClCompile Include="..\private\TestCube.cpp">
       <Filter>02. Object\TestCube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LoadingLevel.cpp">
+      <Filter>01. Level\LoadingLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Loader.cpp">
+      <Filter>01. Level\LoadingLevel\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoLevel.cpp">
+      <Filter>01. Level\LogoLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GamePlayLevel.cpp">
+      <Filter>01. Level\GamePlayLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TestLevel.cpp">
+      <Filter>01. Level\TestLevel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

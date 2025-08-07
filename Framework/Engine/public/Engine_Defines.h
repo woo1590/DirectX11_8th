@@ -9,10 +9,16 @@
 #include <typeindex>
 #include <random>
 
+//thread
+#include <thread>
+#include <mutex>
+#include <atomic>
+
 //stl
 #include <vector>
 #include <list>
 #include <map>
+#include <queue>
 #include <algorithm>
 #include <functional>
 #include <unordered_map>

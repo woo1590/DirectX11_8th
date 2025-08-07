@@ -115,6 +115,9 @@
     <Filter Include="01. Engine Component\Graphic Device">
       <UniqueIdentifier>{5bd9a923-6ced-4835-b860-493db958ee2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Object Manager">
+      <UniqueIdentifier>{1b4c041d-185d-4d2e-8753-a40075305f9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -201,6 +204,12 @@
     <ClInclude Include="..\public\Mesh.h">
       <Filter>05. Object Component\Model Component\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ObjectManager.h">
+      <Filter>01. Engine Component\Object Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TaskManager.h">
+      <Filter>01. Engine Component\Task Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -268,6 +277,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Mesh.cpp">
       <Filter>05. Object Component\Model Component\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ObjectManager.cpp">
+      <Filter>01. Engine Component\Object Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TaskManager.cpp">
+      <Filter>01. Engine Component\Task Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

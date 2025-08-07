@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 
+class Level;
 class LevelManager final:
     public Base
 {
@@ -15,8 +16,13 @@ public:
     HRESULT Initialize();
     void Free()override;
 
-private:
+public:
+    void Update(_float dt);
+    HRESULT Render();
+    void ChangeLevel(Level* nextLevel);
 
+private:
+    Level* currentLevel = nullptr;
 };
 
 NS_END

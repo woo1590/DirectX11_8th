@@ -59,10 +59,11 @@ void EngineCore::Free()
 void EngineCore::Tick(_float dt)
 {
 	soundManager->Update();
+	levelManager->Update(dt);
 
-	DrawBegin();
+	BeginDraw();
 	Draw();
-	DrawEnd();
+	EndDraw();
 }
 
 HRESULT EngineCore::AddTimer(const std::string& timerTag)
@@ -90,7 +91,12 @@ ID3D11DeviceContext* EngineCore::GetDeviceContext()
 	return graphicDevice->GetDeviceContext();
 }
 
-HRESULT EngineCore::DrawBegin()
+void EngineCore::ChangeLevel(Level* nextLevel)
+{
+	levelManager->ChangeLevel(nextLevel);
+}
+
+HRESULT EngineCore::BeginDraw()
 {
 	if (FAILED(graphicDevice->ClearBackBufferView()))
 		return E_FAIL;
@@ -108,7 +114,7 @@ HRESULT EngineCore::Draw()
 	return S_OK;
 }
 
-HRESULT EngineCore::DrawEnd()
+HRESULT EngineCore::EndDraw()
 {
 	return graphicDevice->Present();
 }

@@ -8,6 +8,7 @@ class SoundManager;
 class TimerManager;
 class GraphicDevice;
 class LevelManager;
+class Level;
 class Random;
 class ENGINE_DLL EngineCore final :
     public Base
@@ -34,11 +35,14 @@ public:
     ID3D11Device* GetDevice();
     ID3D11DeviceContext* GetDeviceContext();
 
+    /*-----Level-----*/
+    void ChangeLevel(Level* nextLevel);
+
 private:
     /*----Rendering----*/
-    HRESULT DrawBegin();
+    HRESULT BeginDraw();
     HRESULT Draw();
-    HRESULT DrawEnd();
+    HRESULT EndDraw();
 
     HWND hWnd{};
 

@@ -164,8 +164,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\GamePlayLevel.h" />
+    <ClInclude Include="..\public\Loader.h" />
+    <ClInclude Include="..\public\LoadingLevel.h" />
+    <ClInclude Include="..\public\LogoLevel.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\TestCube.h" />
+    <ClInclude Include="..\public\TestLevel.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -173,8 +178,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\GamePlayLevel.cpp" />
+    <ClCompile Include="..\private\Loader.cpp" />
+    <ClCompile Include="..\private\LoadingLevel.cpp" />
+    <ClCompile Include="..\private\LogoLevel.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\TestCube.cpp" />
+    <ClCompile Include="..\private\TestLevel.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
