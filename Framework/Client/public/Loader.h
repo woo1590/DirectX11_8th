@@ -3,7 +3,7 @@
 
 NS_BEGIN(Client)
 
-class Loader :
+class Loader final:
     public Base
 {
 private:
@@ -21,8 +21,8 @@ public:
 private:
     HRESULT Loading();
 
-    HRESULT LoadingForLogoLevel();
-    HRESULT LoadingForGamePlayLevel();
+    HRESULT LoadingForLogo();
+    HRESULT LoadingForGamePlay();
 
     LevelID levelID{};
 

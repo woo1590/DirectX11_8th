@@ -118,6 +118,9 @@
     <Filter Include="01. Engine Component\Object Manager">
       <UniqueIdentifier>{1b4c041d-185d-4d2e-8753-a40075305f9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Prototype Manager">
+      <UniqueIdentifier>{bf6da4e2-2f6d-4b75-a98b-9d243406e0c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -210,6 +213,9 @@
     <ClInclude Include="..\public\TaskManager.h">
       <Filter>01. Engine Component\Task Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PrototypeManager.h">
+      <Filter>01. Engine Component\Prototype Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -283,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TaskManager.cpp">
       <Filter>01. Engine Component\Task Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PrototypeManager.cpp">
+      <Filter>01. Engine Component\Prototype Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

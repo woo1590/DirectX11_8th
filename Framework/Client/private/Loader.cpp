@@ -37,10 +37,10 @@ HRESULT Loader::Loading()
 	switch (levelID)
 	{
 	case Client::LevelID::Logo:
-		hr = LoadingForLogoLevel();
+		hr = LoadingForLogo();
 		break;
 	case Client::LevelID::GamePlay:
-		hr = LoadingForGamePlayLevel();
+		hr = LoadingForGamePlay();
 		break;
 	default:
 		break;
@@ -51,15 +51,16 @@ HRESULT Loader::Loading()
 		return E_FAIL;
 
 	isFinished.store(true);
+
 	return S_OK;
 }
 
-HRESULT Loader::LoadingForLogoLevel()
+HRESULT Loader::LoadingForLogo()
 {
 	return S_OK;
 }
 
-HRESULT Loader::LoadingForGamePlayLevel()
+HRESULT Loader::LoadingForGamePlay()
 {
 	return S_OK;
 }

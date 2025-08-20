@@ -8,6 +8,8 @@ class SoundManager;
 class TimerManager;
 class GraphicDevice;
 class LevelManager;
+class TaskManager;
+class PrototypeManager;
 class Level;
 class Random;
 class ENGINE_DLL EngineCore final :
@@ -30,6 +32,11 @@ public:
 
     /*-----Random-----*/
 
+    /*----Sound----*/
+    void LoadSound(const std::string& key, const std::string& filepath, bool loop = false);
+    void PlaySFX(const std::string& key);
+    void PlayBGM(const std::string& key);
+    void Stop(const std::string& key);
 
     /*---Graphic Device---*/
     ID3D11Device* GetDevice();
@@ -52,6 +59,8 @@ private:
     TimerManager* timerManager = nullptr;
     GraphicDevice* graphicDevice = nullptr;
     LevelManager* levelManager = nullptr;
+    PrototypeManager* prototypeManager = nullptr;
+    TaskManager* taskManager = nullptr;
 
 };
 

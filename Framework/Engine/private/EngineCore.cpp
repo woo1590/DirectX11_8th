@@ -4,6 +4,8 @@
 #include "RenderSystem.h"
 #include "TimerManager.h"
 #include "GraphicDevice.h"
+#include "TaskManager.h"
+#include "PrototypeManager.h"
 #include "LevelManager.h"
 #include "Random.h"
 
@@ -41,6 +43,14 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!levelManager)
 		return E_FAIL;
 
+	//prototypeManager = PrototypeManager::Create();
+	//if (!prototypeManager)
+	//	return E_FAIL;
+
+	taskManager = TaskManager::Create();
+	if (!taskManager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -54,6 +64,8 @@ void EngineCore::Free()
 	Safe_Release(soundManager);
 	Safe_Release(graphicDevice);
 	Safe_Release(levelManager);
+	Safe_Release(taskManager);
+	Safe_Release(prototypeManager);
 }
 
 void EngineCore::Tick(_float dt)
@@ -66,6 +78,7 @@ void EngineCore::Tick(_float dt)
 	EndDraw();
 }
 
+#pragma region Timer
 HRESULT EngineCore::AddTimer(const std::string& timerTag)
 {
 	return timerManager->AddTimer(timerTag);
@@ -81,6 +94,31 @@ _float EngineCore::GetDeltaTime(const std::string& timerTag)
 	return timerManager->GetDeltaTime(timerTag);
 }
 
+#pragma endregion
+
+#pragma region Sound
+void EngineCore::LoadSound(const std::string& key, const std::string& filepath, bool loop)
+{
+	soundManager->LoadSound(key, filepath, loop);
+}
+
+void EngineCore::PlaySFX(const std::string& key)
+{
+	soundManager->PlaySFX(key);
+}
+
+void EngineCore::PlayBGM(const std::string& key)
+{
+	soundManager->PlayBGM(key);
+}
+
+void EngineCore::Stop(const std::string& key)
+{
+	soundManager->Stop(key);
+}
+#pragma endregion
+
+#pragma region GraphicDevice
 ID3D11Device* EngineCore::GetDevice()
 {
 	return graphicDevice->GetDevice();
@@ -91,11 +129,17 @@ ID3D11DeviceContext* EngineCore::GetDeviceContext()
 	return graphicDevice->GetDeviceContext();
 }
 
+#pragma endregion
+
+#pragma region Level
 void EngineCore::ChangeLevel(Level* nextLevel)
 {
 	levelManager->ChangeLevel(nextLevel);
 }
 
+#pragma endregion
+
+#pragma region Rendering
 HRESULT EngineCore::BeginDraw()
 {
 	if (FAILED(graphicDevice->ClearBackBufferView()))
@@ -118,3 +162,6 @@ HRESULT EngineCore::EndDraw()
 {
 	return graphicDevice->Present();
 }
+
+#pragma endregion
+

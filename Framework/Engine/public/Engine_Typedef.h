@@ -23,6 +23,9 @@ namespace Engine
 	typedef		float						_float;
 	typedef		double						_double;
 
+	typedef		std::wstring				_wstring;
+	typedef		std::string					_string;
+
 	typedef		DirectX::XMFLOAT2			_float2;
 	typedef		DirectX::XMFLOAT3			_float3;
 	typedef		DirectX::XMFLOAT4			_float4;
