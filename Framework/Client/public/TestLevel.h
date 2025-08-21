@@ -15,7 +15,12 @@ public:
     HRESULT Initialize();
     void Free()override;
 
+    void Update(_float dt)override;
+    HRESULT Render()override;
+
 private:
+    HRESULT InitLayerBackGround(const _string& layerTag);
+    HRESULT InitLayerTest(const _string& layerTag);
 
 };
 

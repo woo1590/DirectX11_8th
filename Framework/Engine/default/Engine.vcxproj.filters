@@ -88,14 +88,8 @@
     <Filter Include="01. Engine Component\Rendering\Shader">
       <UniqueIdentifier>{cdf532fe-2f39-45cf-bec7-20033a82815f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Level">
-      <UniqueIdentifier>{ce45df82-39a8-4597-a3f9-5988dc742667}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Level Component">
       <UniqueIdentifier>{84f246af-ff66-48af-9601-6e0d254df49b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Level Component\Layer">
-      <UniqueIdentifier>{5ab17750-ced7-499b-a810-09c51cd40fb1}</UniqueIdentifier>
     </Filter>
     <Filter Include="01. Engine Component\Level Manager">
       <UniqueIdentifier>{4818e275-2645-48ef-b928-f3d51f958301}</UniqueIdentifier>
@@ -120,6 +114,12 @@
     </Filter>
     <Filter Include="01. Engine Component\Prototype Manager">
       <UniqueIdentifier>{bf6da4e2-2f6d-4b75-a98b-9d243406e0c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Object Manager\Layer">
+      <UniqueIdentifier>{5ab17750-ced7-499b-a810-09c51cd40fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level">
+      <UniqueIdentifier>{ce45df82-39a8-4597-a3f9-5988dc742667}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -202,7 +202,7 @@
       <Filter>02. Level</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Layer.h">
-      <Filter>03. Level Component\Layer</Filter>
+      <Filter>01. Engine Component\Object Manager\Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Mesh.h">
       <Filter>05. Object Component\Model Component\Mesh</Filter>
@@ -215,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="..\public\PrototypeManager.h">
       <Filter>01. Engine Component\Prototype Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InputSystem.h">
+      <Filter>01. Engine Component\Input System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -279,7 +282,7 @@
       <Filter>02. Level</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Layer.cpp">
-      <Filter>03. Level Component\Layer</Filter>
+      <Filter>01. Engine Component\Object Manager\Layer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Mesh.cpp">
       <Filter>05. Object Component\Model Component\Mesh</Filter>
@@ -292,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PrototypeManager.cpp">
       <Filter>01. Engine Component\Prototype Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InputSystem.cpp">
+      <Filter>01. Engine Component\Input System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

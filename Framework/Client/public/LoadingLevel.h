@@ -14,6 +14,7 @@ private:
 public:
     static LoadingLevel* Create(LevelID nextLevelID);
     HRESULT Initialize(LevelID nextLevelID);
+    void Free()override;
 
 public:
     void Update(_float dt)override;

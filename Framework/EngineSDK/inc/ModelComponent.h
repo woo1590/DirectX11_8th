@@ -14,6 +14,9 @@ public:
     static ModelComponent* Create(Object* owner);
     HRESULT Initialize();
     void Free()override;
+    
+private:
+
 };
 
 NS_END

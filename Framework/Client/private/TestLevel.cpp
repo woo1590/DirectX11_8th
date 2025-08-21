@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "TestLevel.h"
+#include "EngineCore.h"
 
 TestLevel::TestLevel()
 {
@@ -17,10 +18,51 @@ TestLevel* TestLevel::Create()
 
 HRESULT TestLevel::Initialize()
 {
+	if (FAILED(InitLayerBackGround("Layer_BackGround")))
+		return E_FAIL;
+
+	if (FAILED(InitLayerTest("Layer_Test")))
+		return E_FAIL;
+
+	EngineCore::GetInstance()->PlayBGM("TestBGM");
+
 	return S_OK;
 }
 
 void TestLevel::Free()
 {
 	__super::Free();
+}
+
+void TestLevel::Update(_float dt)
+{
+	if (GetAsyncKeyState(VK_SPACE))
+		EngineCore::GetInstance()->Stop("TestBGM");
+}
+
+HRESULT TestLevel::Render()
+{
+	return S_OK;
+}
+
+HRESULT TestLevel::InitLayerBackGround(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround",
+		ENUM_CLASS(LevelID::Test), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT TestLevel::InitLayerTest(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_TestCube",
+		ENUM_CLASS(LevelID::Test), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
 }

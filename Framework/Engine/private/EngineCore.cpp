@@ -4,6 +4,7 @@
 #include "RenderSystem.h"
 #include "TimerManager.h"
 #include "GraphicDevice.h"
+#include "ObjectManager.h"
 #include "TaskManager.h"
 #include "PrototypeManager.h"
 #include "LevelManager.h"
@@ -43,9 +44,13 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!levelManager)
 		return E_FAIL;
 
-	//prototypeManager = PrototypeManager::Create();
-	//if (!prototypeManager)
-	//	return E_FAIL;
+	prototypeManager = PrototypeManager::Create(desc.levelCnt);
+	if (!prototypeManager)
+		return E_FAIL;
+
+	objectManager = ObjectManager::Create(desc.levelCnt);
+	if (!objectManager)
+		return E_FAIL;
 
 	taskManager = TaskManager::Create();
 	if (!taskManager)
@@ -66,12 +71,18 @@ void EngineCore::Free()
 	Safe_Release(levelManager);
 	Safe_Release(taskManager);
 	Safe_Release(prototypeManager);
+	Safe_Release(objectManager);
 }
 
 void EngineCore::Tick(_float dt)
 {
 	soundManager->Update();
+
+	objectManager->Update(dt);
+	objectManager->LateUpdate(dt);
+	
 	levelManager->Update(dt);
+	levelManager->Render();
 
 	BeginDraw();
 	Draw();
@@ -128,13 +139,38 @@ ID3D11DeviceContext* EngineCore::GetDeviceContext()
 {
 	return graphicDevice->GetDeviceContext();
 }
+#pragma endregion
+
+#pragma region Prototype
+HRESULT EngineCore::AddPrototype(_uint level, const _string& prototypeTag, Base* prototype)
+{
+	return prototypeManager->AddPrototype(level, prototypeTag, prototype);
+}
+
+Base* EngineCore::ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, void* arg)
+{
+	return prototypeManager->ClonePrototype(type, level, prototypeTag, arg);
+}
+
+#pragma endregion
+
+#pragma region Object
+HRESULT EngineCore::AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, void* arg)
+{
+	return objectManager->AddObject(prototypeLevel, prototypeTag, layerLevel, layerTag, arg);
+}
 
 #pragma endregion
 
 #pragma region Level
-void EngineCore::ChangeLevel(Level* nextLevel)
+void EngineCore::ChangeLevel(_uint levelID, Level* nextLevel)
 {
-	levelManager->ChangeLevel(nextLevel);
+	levelManager->ChangeLevel(levelID, nextLevel);
+}
+
+void EngineCore::ClearResource(_uint levelID)
+{
+	//레벨 변경시 리소스 해제
 }
 
 #pragma endregion

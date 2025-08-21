@@ -43,6 +43,9 @@
     <Filter Include="01. Level\TestLevel">
       <UniqueIdentifier>{1c01809e-98ac-42d2-95bb-ba4d0c3421f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\BackGround">
+      <UniqueIdentifier>{774facc3-9238-445a-84bc-4dd8915a3359}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -84,6 +87,9 @@
     <ClInclude Include="..\public\TestLevel.h">
       <Filter>01. Level\TestLevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BackGround.h">
+      <Filter>02. Object\BackGround</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -112,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TestLevel.cpp">
       <Filter>01. Level\TestLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BackGround.cpp">
+      <Filter>02. Object\BackGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

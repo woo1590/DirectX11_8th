@@ -11,15 +11,16 @@ private:
     virtual ~PrototypeManager() = default;
 
 public:
-    static PrototypeManager* Create();
+    static PrototypeManager* Create(_uint levelCnt);
     HRESULT Initialize(_uint levelCnt);
     void Free()override;
 
-    void AddPrototype(_uint level, const _string& prototypeTag, Base* prototype);
-    Base* ClonePrototype(_uint level, const _string& prototypeTag, void* arg);
+    HRESULT AddPrototype(_uint level, const _string& prototypeTag, Base* prototype);
+    Base* ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, void* arg);
+    void Clear(_uint level);
 
 private:
-    Base * FindPrototype(_uint level, const _string & prototypeTag);
+    Base* FindPrototype(_uint level, const _string & prototypeTag);
 
     _uint levelCnt = 0;
     std::vector<std::unordered_map<_string, Base*>> prototypes;

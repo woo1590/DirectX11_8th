@@ -6,11 +6,21 @@ Object::Object()
 {
 }
 
-HRESULT Object::Initialize()
+Object::Object(const Object& prototype)
+{
+
+}
+
+HRESULT Object::Initialize_Prototype()
 {
 	components.clear();
 	componentMap.clear();
 
+	return S_OK;
+}
+
+HRESULT Object::Initialize(void* arg)
+{
 	return S_OK;
 }
 

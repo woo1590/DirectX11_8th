@@ -33,7 +33,7 @@ void TaskManager::Start()
 	if (!threadCnt)		//오류 시 fallback
 		threadCnt = 4;
 
-	for (int i = 0; i < threadCnt; ++i)
+	for (int i = 0; i < threadCnt - 1; ++i) //할당가능한 스레드-1 만큼 사용하는 이유? -> 스레드 한개는 렌더루프에서 사용할거임
 		workers.emplace_back(&TaskManager::Worker, this);
 }
 

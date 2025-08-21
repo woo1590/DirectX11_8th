@@ -31,6 +31,11 @@ void Layer::Free()
 		Safe_Release(object);
 }
 
+void Layer::AddObject(Object* object)
+{
+	objects.push_back(object);
+}
+
 void Layer::Update(_float dt)
 {
 	for (const auto& object : objects)

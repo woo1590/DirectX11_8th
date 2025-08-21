@@ -3,15 +3,15 @@
 
 NS_BEGIN(Client)
 
-class TestCube final:
+class BackGround final:
     public Object
 {
 private:
-    TestCube();
-    virtual ~TestCube() = default;
+    BackGround();
+    virtual ~BackGround() = default;
 
 public:
-    static TestCube* Create();
+    static BackGround* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(void* arg)override;
     void Update(_float dt)override;

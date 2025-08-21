@@ -19,6 +19,8 @@ public:
     void Update(_float dt);
     void LateUpdate(_float dt);
 
+    void AddObject(Object* object);
+
 private:
     std::list<Object*> objects;
 

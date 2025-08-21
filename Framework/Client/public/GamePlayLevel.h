@@ -13,7 +13,10 @@ private:
 public:
     static GamePlayLevel* Create();
     HRESULT Initialize();
-    void Free()override;   
+    void Free()override;  
+
+    void Update(_float dt)override;
+    HRESULT Render()override;
 
 private:
 

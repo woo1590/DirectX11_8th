@@ -1,4 +1,5 @@
 #include "EnginePCH.h"
+#include "EngineCore.h"
 #include "LevelManager.h"
 #include "Level.h"
 
@@ -24,26 +25,31 @@ HRESULT LevelManager::Initialize()
 void LevelManager::Free()
 {
 	__super::Free();
+
+	Safe_Release(currLevel);
 }
 
 void LevelManager::Update(_float dt)
 {
-	if (currentLevel)
-		currentLevel->Update(dt);
+	if (currLevel)
+		currLevel->Update(dt);
 }
 
 HRESULT LevelManager::Render()
 {
-	if (!currentLevel)
+	if (!currLevel)
 		return E_FAIL;
 	else
-		return currentLevel->Render();
+		return currLevel->Render();
 }
 
-void LevelManager::ChangeLevel(Level* nextLevel)
+void LevelManager::ChangeLevel(_uint nextLevelID, Level* nextLevel)
 {
-	Safe_Release(currentLevel);
+	if (currLevel)
+		EngineCore::GetInstance()->ClearResource(currLevelID);
 
-	//리소스 정리
-	currentLevel = nextLevel;
+	Safe_Release(currLevel);
+
+	currLevel = nextLevel;
+	currLevelID = nextLevelID;
 }

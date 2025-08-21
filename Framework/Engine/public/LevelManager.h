@@ -19,10 +19,11 @@ public:
 public:
     void Update(_float dt);
     HRESULT Render();
-    void ChangeLevel(Level* nextLevel);
+    void ChangeLevel(_uint nextLevelID, Level* nextLevel);
 
 private:
-    Level* currentLevel = nullptr;
+    Level* currLevel = nullptr;
+    _uint currLevelID{};
 };
 
 NS_END

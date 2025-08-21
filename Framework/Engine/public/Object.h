@@ -9,13 +9,14 @@ class ENGINE_DLL Object abstract:
 {
 protected:
     Object();
+    Object(const Object& prototype);
     virtual ~Object() = default;
 
 public:
-    virtual HRESULT Initialize();
+    virtual HRESULT Initialize_Prototype();
+    virtual HRESULT Initialize(void* arg);
     virtual void Update(_float dt);
     virtual void LateUpdate(_float dt);
-    virtual void Free()override;
 
     template<typename T, typename... Args>
     T* AddComponent(Args&&... args)
@@ -37,9 +38,13 @@ public:
         else
             return nullptr;
     }
+
+    virtual Object* Clone(void* arg) = 0;
+    virtual void Free()override;
 protected:
     std::vector<Component*> components;
     std::unordered_map<std::type_index, Component*> componentMap;
+
 };
 
 NS_END

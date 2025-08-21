@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "EngineCore.h"
 #include "LogoLevel.h"
 
 LogoLevel::LogoLevel()
@@ -7,14 +8,31 @@ LogoLevel::LogoLevel()
 
 LogoLevel* LogoLevel::Create()
 {
-	return nullptr;
+	LogoLevel* Instance = new LogoLevel();
+
+	if (FAILED(Instance->Initialize()))
+		Safe_Release(Instance);
+
+	return Instance;
 }
 
 HRESULT LogoLevel::Initialize()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void LogoLevel::Free()
 {
+	__super::Free();
+}
+
+void LogoLevel::Update(_float dt)
+{
+}
+
+HRESULT LogoLevel::Render()
+{
+	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), L"∑Œ∞Ì¿”");
+
+	return S_OK;
 }

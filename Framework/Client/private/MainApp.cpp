@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MainApp.h"
 #include "EngineCore.h"
+#include "LoadingLevel.h"
 
 MainApp::MainApp()
 {
@@ -28,6 +29,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     desc.winMode = WinMode::Win;
     desc.winSizeX = WinSizeX;
     desc.winSizeY = WinSizeY;
+    desc.levelCnt = static_cast<_uint>(LevelID::Count);
 
     engine = EngineCore::GetInstance();
     if (FAILED(engine->Initialize(desc)))
@@ -38,6 +40,8 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
 
     engine->AddTimer("Timer_Default");
     engine->AddTimer("Timer_120fps");
+
+    engine->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Test));
 
     isRunning = true;
 
@@ -60,6 +64,7 @@ void MainApp::Run()
                 DispatchMessage(&msg);
             }
         }
+
         engine->UpdateTimer("Timer_Default");
         timeAcc += engine->GetDeltaTime("Timer_Default");
         

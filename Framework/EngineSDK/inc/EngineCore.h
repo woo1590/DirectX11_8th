@@ -9,6 +9,7 @@ class TimerManager;
 class GraphicDevice;
 class LevelManager;
 class TaskManager;
+class ObjectManager;
 class PrototypeManager;
 class Level;
 class Random;
@@ -42,9 +43,19 @@ public:
     ID3D11Device* GetDevice();
     ID3D11DeviceContext* GetDeviceContext();
 
-    /*-----Level-----*/
-    void ChangeLevel(Level* nextLevel);
+    /*-----Prototype-----*/
+    HRESULT AddPrototype(_uint level, const _string& prototypeTag, Base* prototype);
+    Base* ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, void* arg);
 
+    /*-----Object-----*/
+    HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, void* arg = nullptr);
+
+    /*-----Level-----*/
+    void ChangeLevel(_uint levelID, Level* nextLevel);
+    void ClearResource(_uint levelID);
+
+    /*----Window----*/
+    HWND GetWindowHandle() { return hWnd; }
 private:
     /*----Rendering----*/
     HRESULT BeginDraw();
@@ -53,14 +64,15 @@ private:
 
     HWND hWnd{};
 
-    Random* random = nullptr;
-    RenderSystem* renderSystem = nullptr;
-    SoundManager* soundManager = nullptr;
-    TimerManager* timerManager = nullptr;
-    GraphicDevice* graphicDevice = nullptr;
-    LevelManager* levelManager = nullptr;
-    PrototypeManager* prototypeManager = nullptr;
-    TaskManager* taskManager = nullptr;
+    Random*             random = nullptr;
+    RenderSystem*       renderSystem = nullptr;
+    SoundManager*       soundManager = nullptr;
+    TimerManager*       timerManager = nullptr;
+    GraphicDevice*      graphicDevice = nullptr;
+    LevelManager*       levelManager = nullptr;
+    PrototypeManager*   prototypeManager = nullptr;
+    ObjectManager*      objectManager = nullptr;
+    TaskManager*        taskManager = nullptr;
 
 };
 

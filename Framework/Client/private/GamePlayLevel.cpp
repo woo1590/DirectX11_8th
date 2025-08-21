@@ -7,14 +7,30 @@ GamePlayLevel::GamePlayLevel()
 
 GamePlayLevel* GamePlayLevel::Create()
 {
-	return nullptr;
+	GamePlayLevel* Instance = new GamePlayLevel();
+
+	if (FAILED(Instance->Initialize()))
+		Safe_Release(Instance);
+
+	return Instance;
 }
 
 HRESULT GamePlayLevel::Initialize()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void GamePlayLevel::Free()
 {
+	__super::Free();
+}
+
+void GamePlayLevel::Update(_float dt)
+{
+
+}
+
+HRESULT GamePlayLevel::Render()
+{
+	return S_OK;
 }

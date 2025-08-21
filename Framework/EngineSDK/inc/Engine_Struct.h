@@ -10,6 +10,7 @@ namespace Engine
 		HWND hWnd;
 		WinMode winMode;
 		_uint winSizeX, winSizeY;
+		_uint levelCnt;
 	};
 }
 #endif // Engine_Struct_h__

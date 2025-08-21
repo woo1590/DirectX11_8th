@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "TestCube.h"
+#include "BackGround.h"
 
-TestCube::TestCube()
+BackGround::BackGround()
 {
 }
 
-TestCube* TestCube::Create()
+BackGround* BackGround::Create()
 {
-	TestCube* Instance = new TestCube();
+	BackGround* Instance = new BackGround();
 
 	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
@@ -15,7 +15,7 @@ TestCube* TestCube::Create()
 	return Instance;
 }
 
-HRESULT TestCube::Initialize_Prototype()
+HRESULT BackGround::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -23,7 +23,7 @@ HRESULT TestCube::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT TestCube::Initialize(void* arg)
+HRESULT BackGround::Initialize(void* arg)
 {
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
@@ -31,27 +31,27 @@ HRESULT TestCube::Initialize(void* arg)
 	return S_OK;
 }
 
-void TestCube::Free()
-{
-	__super::Free();
-}
-
-void TestCube::Update(_float dt)
+void BackGround::Update(_float dt)
 {
 	__super::Update(dt);
 }
 
-void TestCube::LateUpdate(_float dt)
+void BackGround::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
 }
 
-Object* TestCube::Clone(void* arg)
+Object* BackGround::Clone(void* arg)
 {
-	TestCube* Instance = new TestCube(*this);
+	BackGround* Instance = new BackGround(*this);
 
 	if (FAILED(Instance->Initialize(arg)))
 		Safe_Release(Instance);
 
 	return Instance;
+}
+
+void BackGround::Free()
+{
+	__super::Free();
 }

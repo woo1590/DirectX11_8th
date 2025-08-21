@@ -15,6 +15,9 @@ public:
     HRESULT Initialize();
     void Free()override;
 
+    void Update(_float dt)override;
+    HRESULT Render()override;
+
 private:
 
 };
