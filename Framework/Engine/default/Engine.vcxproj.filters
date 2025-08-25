@@ -55,27 +55,6 @@
     <Filter Include="05. Object Component\Model Component\Model">
       <UniqueIdentifier>{428a327b-ff06-4bec-9931-0af6946cbb04}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Object Component\AIController">
-      <UniqueIdentifier>{1ecd457e-88dd-4ebb-bc00-c710cc47e1d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\AIController\BehaviorTree">
-      <UniqueIdentifier>{161c4ffe-62fa-40a8-85b8-0a3b2cc1ee13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\AIController\BlackBoard">
-      <UniqueIdentifier>{8792580c-3d16-4c69-9ca2-94d2329d0798}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode">
-      <UniqueIdentifier>{bf64df42-6fb9-4a57-a866-508474dfe8e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\ActionNode">
-      <UniqueIdentifier>{af5a67f3-9d1f-419b-a92a-3906d35b1bee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\CompositeNode">
-      <UniqueIdentifier>{bc99b6ec-30bb-4d21-81a8-337dd16e70be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\AIController\BehaviorTree\BTNode\DecoratorNode">
-      <UniqueIdentifier>{d0920409-d6a1-4efb-8226-86f9dff3e132}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Object Component\Camera Component">
       <UniqueIdentifier>{581bec7f-7897-47f3-bebb-d2687f18f886}</UniqueIdentifier>
     </Filter>
@@ -120,6 +99,42 @@
     </Filter>
     <Filter Include="02. Level">
       <UniqueIdentifier>{ce45df82-39a8-4597-a3f9-5988dc742667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component">
+      <UniqueIdentifier>{1ecd457e-88dd-4ebb-bc00-c710cc47e1d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component\BehaviorTree">
+      <UniqueIdentifier>{161c4ffe-62fa-40a8-85b8-0a3b2cc1ee13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component\BehaviorTree\BTNode">
+      <UniqueIdentifier>{bf64df42-6fb9-4a57-a866-508474dfe8e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component\BehaviorTree\BTNode\ActionNode">
+      <UniqueIdentifier>{af5a67f3-9d1f-419b-a92a-3906d35b1bee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component\BehaviorTree\BTNode\CompositeNode">
+      <UniqueIdentifier>{bc99b6ec-30bb-4d21-81a8-337dd16e70be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component\BehaviorTree\BTNode\DecoratorNode">
+      <UniqueIdentifier>{d0920409-d6a1-4efb-8226-86f9dff3e132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\AIController Component\BlackBoard">
+      <UniqueIdentifier>{8792580c-3d16-4c69-9ca2-94d2329d0798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\PipeLine">
+      <UniqueIdentifier>{766b4cac-a335-432e-8007-33318c41cfd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component\Mesh\CubeMesh">
+      <UniqueIdentifier>{17326def-378d-4464-9fe8-6e71d8c61f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component\Mesh\QuadMesh">
+      <UniqueIdentifier>{e8a18782-e7b2-41aa-8df1-443a90e9af6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component\Mesh\StaticMesh">
+      <UniqueIdentifier>{cfc0cd78-23f7-4b7c-94a7-ffeaac8fb7a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\ImGui Manager">
+      <UniqueIdentifier>{11357618-2854-49b6-b3e4-68cca55ef47c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -184,7 +199,7 @@
       <Filter>05. Object Component\Camera Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AiController.h">
-      <Filter>05. Object Component\AIController</Filter>
+      <Filter>05. Object Component\AIController Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Renderer.h">
       <Filter>01. Engine Component\Rendering\Renderer</Filter>
@@ -218,6 +233,21 @@
     </ClInclude>
     <ClInclude Include="..\public\InputSystem.h">
       <Filter>01. Engine Component\Input System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FreecamComponent.h">
+      <Filter>05. Object Component\Camera Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PipeLine.h">
+      <Filter>01. Engine Component\PipeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CubeMesh.h">
+      <Filter>05. Object Component\Model Component\Mesh\CubeMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Model.h">
+      <Filter>05. Object Component\Model Component\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGuiManager.h">
+      <Filter>01. Engine Component\ImGui Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -264,7 +294,7 @@
       <Filter>05. Object Component\Camera Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AiController.cpp">
-      <Filter>05. Object Component\AIController</Filter>
+      <Filter>05. Object Component\AIController Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Renderer.cpp">
       <Filter>01. Engine Component\Rendering\Renderer</Filter>
@@ -298,6 +328,21 @@
     </ClCompile>
     <ClCompile Include="..\private\InputSystem.cpp">
       <Filter>01. Engine Component\Input System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FreecamComponent.cpp">
+      <Filter>05. Object Component\Camera Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PipeLine.cpp">
+      <Filter>01. Engine Component\PipeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CubeMesh.cpp">
+      <Filter>05. Object Component\Model Component\Mesh\CubeMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Model.cpp">
+      <Filter>05. Object Component\Model Component\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGuiManager.cpp">
+      <Filter>01. Engine Component\ImGui Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

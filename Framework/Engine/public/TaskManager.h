@@ -24,11 +24,11 @@ public:
         auto future = packageTask->get_future();
 
         {
-            std::unique_lock<std::mutex> lock(queueMutex);
-            tasks.emplace([packageTask] {(*packageTask)(); });
+            std::unique_lock<std::mutex> lock(m_QueueMutex);
+            m_Tasks.emplace([packageTask] {(*packageTask)(); });
         }
 
-        condition.notify_one();
+        m_Condition.notify_one();
         return future;
 
         //task로 등록할 수 있는 함수는 void() 형 함수만 가능
@@ -41,11 +41,12 @@ private:
     void Stop();
     void Worker();
 
-    std::vector<std::thread> workers;
-    std::queue<std::function<void()>> tasks;
-    std::mutex queueMutex;
-    std::condition_variable condition;
-    _bool stop = false;
+    std::vector<std::thread> m_Workers;
+    std::queue<std::function<void()>> m_Tasks;
+    std::mutex m_QueueMutex;
+    std::condition_variable m_Condition;
+    _bool m_Stop = false;
+
 };
 
 NS_END

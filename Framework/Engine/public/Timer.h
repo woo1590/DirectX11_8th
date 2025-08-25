@@ -16,16 +16,16 @@ public:
 	void Free()override;
 
 public:
-	_float GetDeltaTime()const { return deltaTime; }
+	_float GetDeltaTime()const { return m_fDeltaTime; }
 	void Update();
 
 private:
-	LARGE_INTEGER		frameTime{};
-	LARGE_INTEGER		fixTime{};
-	LARGE_INTEGER		lastTime{};
-	LARGE_INTEGER		cpuTick{};
+	LARGE_INTEGER		m_iFrameTime{};
+	LARGE_INTEGER		m_iFixTime{};
+	LARGE_INTEGER		m_iLastTime{};
+	LARGE_INTEGER		m_iCpuTick{};
 
-	_float				deltaTime{};
+	_float				m_fDeltaTime{};
 
 };
 

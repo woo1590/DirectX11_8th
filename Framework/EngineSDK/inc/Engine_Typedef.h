@@ -26,10 +26,23 @@ namespace Engine
 	typedef		std::wstring				_wstring;
 	typedef		std::string					_string;
 
-	typedef		DirectX::XMFLOAT2			_float2;
-	typedef		DirectX::XMFLOAT3			_float3;
-	typedef		DirectX::XMFLOAT4			_float4;
-	typedef		DirectX::XMFLOAT4X4			_float4x4;
+	typedef		XMFLOAT2					_float2;
+	typedef		XMFLOAT3					_float3;
+	typedef		XMFLOAT4					_float4;
+	typedef		XMFLOAT4X4					_float4x4;
+
+	/*SIMD*/
+	typedef		XMVECTOR					_vector;
+	typedef		FXMVECTOR					_fvector;
+	typedef		GXMVECTOR					_gvector;
+	typedef		HXMVECTOR					_hvector;
+	typedef		CXMVECTOR					_cvector;
+
+	typedef		XMMATRIX					_matrix;
+	typedef		FXMMATRIX					_fmatrix;
+	typedef		CXMMATRIX					_cmatrix;
+
+	//_float 은 저장용    _vector, _matrix는 계산용
 }
 
 #endif // Engine_Typedef_h__

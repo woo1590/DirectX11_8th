@@ -13,11 +13,12 @@ private:
 public:
     static TestCube* Create();
     HRESULT Initialize_Prototype()override;
-    HRESULT Initialize(void* arg)override;
+    HRESULT Initialize(InitDESC* arg)override;
+
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
-    Object* Clone(void* arg)override;
+    Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:

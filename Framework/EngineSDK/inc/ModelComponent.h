@@ -12,9 +12,12 @@ private:
 
 public:
     static ModelComponent* Create(Object* owner);
-    HRESULT Initialize();
+    HRESULT Initialize_Prototype()override;
+    HRESULT Initialize(InitDESC* arg)override;
     void Free()override;
     
+    Component* Clone(InitDESC* arg) { return nullptr; }
+
 private:
 
 };

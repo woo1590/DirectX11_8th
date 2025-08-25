@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GamePlayLevel.h"
+#include "EngineCore.h"
 
 GamePlayLevel::GamePlayLevel()
 {
@@ -32,5 +33,7 @@ void GamePlayLevel::Update(_float dt)
 
 HRESULT GamePlayLevel::Render()
 {
+	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), L"GamePlay Level");
+
 	return S_OK;
 }

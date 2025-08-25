@@ -21,8 +21,9 @@ public:
     HRESULT Render()override;
 
 private:
-    Loader* loader = nullptr;
-    LevelID nextLevelID{};
+    Loader* m_pLoader = nullptr;
+    LevelID m_eNextLevelID{};
+
 };
 
 NS_END

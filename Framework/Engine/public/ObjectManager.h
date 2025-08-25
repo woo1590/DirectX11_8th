@@ -19,13 +19,13 @@ public:
     void Update(_float dt);
     void LateUpdate(_float dt);
 
-    HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, void* arg = nullptr);
+    HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg = nullptr);
     void Clear(_uint levelID);
 
 private:
     Layer* FindLayer(_uint layerLevel, const _string& layerTag);
 
-    std::vector<std::unordered_map<std::string, Layer*>> layers;
+    std::vector<std::unordered_map<std::string, Layer*>> m_Layers;
 
 };
 

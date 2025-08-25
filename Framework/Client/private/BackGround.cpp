@@ -23,7 +23,7 @@ HRESULT BackGround::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT BackGround::Initialize(void* arg)
+HRESULT BackGround::Initialize(InitDESC* arg)
 {
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
@@ -41,7 +41,7 @@ void BackGround::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
-Object* BackGround::Clone(void* arg)
+Object* BackGround::Clone(InitDESC* arg)
 {
 	BackGround* Instance = new BackGround(*this);
 

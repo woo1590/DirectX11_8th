@@ -10,7 +10,7 @@ AiController* AiController::Create(Object* owner)
 {
 	AiController* Instance = new AiController(owner);
 	
-	if (FAILED(Instance->Initialize()))
+	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
 
 	return Instance;

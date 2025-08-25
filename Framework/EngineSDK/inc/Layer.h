@@ -14,15 +14,20 @@ private:
 public:
     static Layer* Create();
     HRESULT Initialize();
-    void Free()override;
 
     void Update(_float dt);
     void LateUpdate(_float dt);
 
     void AddObject(Object* object);
 
+    void SetUpdatable(_bool update) { m_isUpdatable = update; }
+    _bool IsUpdatable()const { return m_isUpdatable; }
+
+    void Free()override;
+
 private:
-    std::list<Object*> objects;
+    _bool m_isUpdatable = true;
+    std::list<Object*> m_Objects;
 
 };
 

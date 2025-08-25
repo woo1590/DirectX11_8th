@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "TestCube.h"
+#include "TransformComponent.h"
+#include "CameraComponent.h"
 
 TestCube::TestCube()
 {
@@ -23,10 +25,18 @@ HRESULT TestCube::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT TestCube::Initialize(void* arg)
+HRESULT TestCube::Initialize(InitDESC* arg)
 {
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	CameraComponent::CameraDESC camDesc{};
+	camDesc.fov = 60.f;
+	camDesc.aspect = static_cast<_float>(WinSizeX) / WinSizeY;
+	camDesc.nearZ = 1.f;
+	camDesc.farZ = 100.f;
+
+	auto cam = AddComponent<CameraComponent>(&camDesc);
 
 	return S_OK;
 }
@@ -46,7 +56,7 @@ void TestCube::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
-Object* TestCube::Clone(void* arg)
+Object* TestCube::Clone(InitDESC* arg)
 {
 	TestCube* Instance = new TestCube(*this);
 

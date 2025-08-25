@@ -3,6 +3,7 @@
 #include "Loader.h"
 #include "TestCube.h"
 #include "BackGround.h"
+#include "TransformComponent.h"
 
 Loader::Loader()
 {
@@ -20,8 +21,8 @@ Loader* Loader::Create(LevelID nextLevelID)
 
 HRESULT Loader::Initialize(LevelID nextLevelID)
 {
-	worker = std::thread(&Loader::Loading, this);
-	this->nextLevelID = nextLevelID;
+	m_Worker = std::thread(&Loader::Loading, this);
+	this->m_eNextLevelID = nextLevelID;
 	return S_OK;
 }
 
@@ -29,21 +30,22 @@ void Loader::Free()
 {
 	__super::Free();
 
-	if (worker.joinable())
-		worker.join();
+	if (m_Worker.joinable())
+		m_Worker.join();
 }
 
 void Loader::DebugPrint()
 {
-	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), debugText.c_str());
+	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), m_strDebugText.c_str());
 }
 
 HRESULT Loader::Loading()
 {
+	std::unique_lock<std::mutex> lock(m_Mutex);
+
 	HRESULT hr{};
 
-	mtx.lock();
-	switch (nextLevelID)
+	switch (m_eNextLevelID)
 	{
 	case Client::LevelID::Logo:
 		hr = LoadingForLogo();
@@ -57,12 +59,11 @@ HRESULT Loader::Loading()
 	default:
 		break;
 	}
-	mtx.unlock();
-
+	
 	if (FAILED(hr))
 		return E_FAIL;
 
-	isFinished.store(true);
+	m_isFinished.store(true);
 
 	return S_OK;
 }
@@ -82,15 +83,18 @@ HRESULT Loader::LoadingForTest()
 	auto engine = EngineCore::GetInstance();
 
 	/*Load Sound*/
-	engine->LoadSound("TestBGM", "../bin/resource/TestBGM.mp3", true);
+	m_strDebugText = L"사운드 로딩중..";
+	engine->LoadSound("TestBGM2", "../bin/resource/TestBGM2.mp3", true);
 
 	/*Prototype Object*/
-
+	m_strDebugText = L"객체원형 로딩중..";
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_TestCube", TestCube::Create())))
 		return E_FAIL;
 
 	if(FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test),"Prototype_Object_BackGround",BackGround::Create())))
 		return E_FAIL;
+
+	m_strDebugText = L"로딩완료";
 
 	return S_OK;
 }

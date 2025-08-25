@@ -26,30 +26,30 @@ void LevelManager::Free()
 {
 	__super::Free();
 
-	Safe_Release(currLevel);
+	Safe_Release(m_pCurrLevel);
 }
 
 void LevelManager::Update(_float dt)
 {
-	if (currLevel)
-		currLevel->Update(dt);
+	if (m_pCurrLevel)
+		m_pCurrLevel->Update(dt);
 }
 
 HRESULT LevelManager::Render()
 {
-	if (!currLevel)
+	if (!m_pCurrLevel)
 		return E_FAIL;
 	else
-		return currLevel->Render();
+		return m_pCurrLevel->Render();
 }
 
 void LevelManager::ChangeLevel(_uint nextLevelID, Level* nextLevel)
 {
-	if (currLevel)
-		EngineCore::GetInstance()->ClearResource(currLevelID);
+	if (m_pCurrLevel)
+		EngineCore::GetInstance()->ClearResource(m_iCurrLevelID);
 
-	Safe_Release(currLevel);
+	Safe_Release(m_pCurrLevel);
 
-	currLevel = nextLevel;
-	currLevelID = nextLevelID;
+	m_pCurrLevel = nextLevel;
+	m_iCurrLevelID = nextLevelID;
 }

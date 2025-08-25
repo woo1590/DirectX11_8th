@@ -7,23 +7,31 @@ class TransformComponent;
 class ENGINE_DLL CameraComponent :
     public Component
 {
+public:
+    struct CameraDESC :public InitDESC
+    {
+        _float aspect, fov, nearZ, farZ;
+    };
 private:
-    CameraComponent(Object* owner);
+    CameraComponent(Object* pOnwer);
     virtual ~CameraComponent() = default;
 
 public:
-    static CameraComponent* Create(Object* owner);
-    HRESULT Initialize();
+    static CameraComponent* Create(Object* pOnwer, InitDESC* arg);
+    HRESULT Initialize(InitDESC* arg)override;
     void Free()override;
 
-    _float4x4 GetViewMatrix()const;
-    _float4x4 GetProjMatrix()const;
+    _matrix XM_CALLCONV GetViewMatrix()const;
+    _matrix XM_CALLCONV GetProjMatrix()const;
+
+    Component* Clone(InitDESC* arg) { return nullptr; }
 
 private:
-    _float aspect{};
-    _float fov{};
-    _float nearZ{};
-    _float farZ{};
+    _float m_fAspect{};
+    _float m_fFov{};
+    _float m_fNearZ{};
+    _float m_fFarZ{};
+
 };
 
 NS_END

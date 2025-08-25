@@ -7,28 +7,28 @@ Timer::Timer()
 
 HRESULT Timer::Initialize()
 {
-	QueryPerformanceCounter(&frameTime);			// 1077
-	QueryPerformanceCounter(&lastTime);			// 1085
-	QueryPerformanceCounter(&fixTime);			// 1090
+	QueryPerformanceCounter(&m_iFrameTime);			// 1077
+	QueryPerformanceCounter(&m_iLastTime);			// 1085
+	QueryPerformanceCounter(&m_iFixTime);			// 1090
 
-	QueryPerformanceFrequency(&cpuTick);		// cpu tick 값을 얻어오는 함수
+	QueryPerformanceFrequency(&m_iCpuTick);		// cpu tick 값을 얻어오는 함수
 
 	return S_OK;
 }
 
 void Timer::Update()
 {
-	QueryPerformanceCounter(&frameTime);			// 1500
+	QueryPerformanceCounter(&m_iFrameTime);			// 1500
 
-	if (frameTime.QuadPart - fixTime.QuadPart >= cpuTick.QuadPart)
+	if (m_iFrameTime.QuadPart - m_iFixTime.QuadPart >= m_iCpuTick.QuadPart)
 	{
-		QueryPerformanceFrequency(&cpuTick);
-		fixTime = frameTime;
+		QueryPerformanceFrequency(&m_iCpuTick);
+		m_iFixTime = m_iFrameTime;
 	}
 
-	deltaTime = (frameTime.QuadPart - lastTime.QuadPart) / static_cast<_float>(cpuTick.QuadPart);
+	m_fDeltaTime = (m_iFrameTime.QuadPart - m_iLastTime.QuadPart) / static_cast<_float>(m_iCpuTick.QuadPart);
 
-	lastTime = frameTime;
+	m_iLastTime = m_iFrameTime;
 }
 
 Timer* Timer::Create()

@@ -15,6 +15,8 @@ public:
     HRESULT Initialize();
     void Free()override;
 
+    Component* Clone(InitDESC* arg)override { return nullptr; }
+
 private:
 
 };

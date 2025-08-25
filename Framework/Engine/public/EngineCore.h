@@ -3,6 +3,10 @@
 
 NS_BEGIN(Engine)
 
+#ifdef USE_IMGUI
+class ImGuiManager;
+#endif
+
 class RenderSystem;
 class SoundManager;
 class TimerManager;
@@ -11,6 +15,7 @@ class LevelManager;
 class TaskManager;
 class ObjectManager;
 class PrototypeManager;
+class PipeLine;
 class Level;
 class Random;
 class ENGINE_DLL EngineCore final :
@@ -26,6 +31,11 @@ public:
     void Free()override;
     void Tick(_float dt);
 
+#ifdef USE_IMGUI
+    /*---ImGui---*/
+
+#endif
+
     /*-----Timer-----*/
     HRESULT AddTimer(const std::string& timerTag);
     void UpdateTimer(const std::string& timerTag);
@@ -37,18 +47,20 @@ public:
     void LoadSound(const std::string& key, const std::string& filepath, bool loop = false);
     void PlaySFX(const std::string& key);
     void PlayBGM(const std::string& key);
-    void Stop(const std::string& key);
+    void StopSound(const std::string& key);
 
     /*---Graphic Device---*/
     ID3D11Device* GetDevice();
     ID3D11DeviceContext* GetDeviceContext();
 
+    /*----PipeLine----*/
+
     /*-----Prototype-----*/
     HRESULT AddPrototype(_uint level, const _string& prototypeTag, Base* prototype);
-    Base* ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, void* arg);
+    Base * ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, InitDESC* arg);
 
     /*-----Object-----*/
-    HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, void* arg = nullptr);
+    HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr);
 
     /*-----Level-----*/
     void ChangeLevel(_uint levelID, Level* nextLevel);
@@ -64,16 +76,21 @@ private:
 
     HWND hWnd{};
 
-    Random*             random = nullptr;
-    RenderSystem*       renderSystem = nullptr;
-    SoundManager*       soundManager = nullptr;
-    TimerManager*       timerManager = nullptr;
-    GraphicDevice*      graphicDevice = nullptr;
-    LevelManager*       levelManager = nullptr;
-    PrototypeManager*   prototypeManager = nullptr;
-    ObjectManager*      objectManager = nullptr;
-    TaskManager*        taskManager = nullptr;
+    Random*             m_pRandom = nullptr;
+    RenderSystem*       m_pRenderSystem = nullptr;
+    SoundManager*       m_pSoundManager = nullptr;
+    TimerManager*       m_pTimerManager = nullptr;
+    GraphicDevice*      m_pGraphicDevice = nullptr;
 
+#ifdef USE_IMGUI
+    ImGuiManager*       m_pImGuiManager = nullptr;
+#endif
+
+    LevelManager*       m_pLevelManager = nullptr;
+    PrototypeManager*   m_pPrototypeManager = nullptr;
+    ObjectManager*      m_pObjectManager = nullptr;
+    TaskManager*        m_pTaskManager = nullptr;
+    PipeLine*           m_pPipeLine = nullptr;
 };
 
 NS_END

@@ -33,25 +33,25 @@ void TaskManager::Start()
 	if (!threadCnt)		//오류 시 fallback
 		threadCnt = 4;
 
-	for (int i = 0; i < threadCnt - 1; ++i) //할당가능한 스레드-1 만큼 사용하는 이유? -> 스레드 한개는 렌더루프에서 사용할거임
-		workers.emplace_back(&TaskManager::Worker, this);
+	for (int i = 0; i < threadCnt-1; ++i)
+		m_Workers.emplace_back(&TaskManager::Worker, this);
 }
 
 void TaskManager::Stop()
 {
 	{
-		std::unique_lock<std::mutex> lock(queueMutex);
-		stop = true;
+		std::unique_lock<std::mutex> lock(m_QueueMutex);
+		m_Stop = true;
 	}
-	condition.notify_all();
+	m_Condition.notify_all();
 
-	for (std::thread& worker : workers)
+	for (std::thread& worker : m_Workers)
 	{
 		if (worker.joinable())
 			worker.join();
 	}
 
-	workers.clear();
+	m_Workers.clear();
 }
 
 void TaskManager::Worker()
@@ -61,14 +61,14 @@ void TaskManager::Worker()
 		std::function<void()> task;
 
 		{
-			std::unique_lock<std::mutex> lock(queueMutex);
+			std::unique_lock<std::mutex> lock(m_QueueMutex);
 
-			condition.wait(lock, [this] {return stop || !tasks.empty(); });
+			m_Condition.wait(lock, [this] {return m_Stop || !m_Tasks.empty(); });
 
-			if (stop && tasks.empty()) return;
+			if (m_Stop && m_Tasks.empty()) return;
 
-			task = std::move(tasks.front());
-			tasks.pop();
+			task = std::move(m_Tasks.front());
+			m_Tasks.pop();
 		}
 
 		task();

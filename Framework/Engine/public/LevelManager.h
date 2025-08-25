@@ -22,8 +22,8 @@ public:
     void ChangeLevel(_uint nextLevelID, Level* nextLevel);
 
 private:
-    Level* currLevel = nullptr;
-    _uint currLevelID{};
+    Level* m_pCurrLevel = nullptr;
+    _uint m_iCurrLevelID{};
 };
 
 NS_END

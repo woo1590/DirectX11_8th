@@ -28,7 +28,7 @@ HRESULT GraphicDevice::Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _u
 	/* dx11 : 우선적으로 장치 객체를 생성하고 장치객체를 통해서 기타 초기화작업 및 설정을 해나간다. */
 
 	/* 그래픽 장치를 초기화한다. */
-	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, flag, nullptr, 0, D3D11_SDK_VERSION, &device, &featureLV, &deviceContext)))
+	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, flag, nullptr, 0, D3D11_SDK_VERSION, &m_pDevice, &featureLV, &m_pDeviceContext)))
 		return E_FAIL;
 
 	/* SwapChain : 더블버퍼링. 전면과 후면버퍼를 번갈아가며 화면에 보여준다.(Present) */
@@ -51,45 +51,64 @@ void GraphicDevice::Free()
 {
 	__super::Free();
 
-	Safe_Release(swapChain);
-	Safe_Release(backBufferRTV);
-	Safe_Release(DSV);
-	Safe_Release(deviceContext);
-	Safe_Release(device);
+	Safe_Release(m_pSwapChain);
+	Safe_Release(m_BackBufferRTV);
+	Safe_Release(m_pDSV);
+	Safe_Release(m_pDeviceContext);
+
+#if defined(DEBUG) || defined(_DEBUG)
+	ID3D11Debug* d3dDebug;
+	HRESULT hr = m_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&d3dDebug));
+	if (SUCCEEDED(hr))
+	{
+		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker \r ");
+		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+
+		hr = d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+
+		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker END \r ");
+		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+	}
+	if (d3dDebug != nullptr)            d3dDebug->Release();
+#endif
+
+	Safe_Release(m_pDevice);
 }
 
 HRESULT GraphicDevice::ClearBackBufferView()
 {
-	if (!deviceContext)
+	if (!m_pDeviceContext)
 		return E_FAIL;
 
-	deviceContext->ClearRenderTargetView(backBufferRTV, reinterpret_cast<const _float*>(&clearColor));
+	m_pDeviceContext->ClearRenderTargetView(m_BackBufferRTV, reinterpret_cast<const _float*>(&m_pClearColor));
 
 	return S_OK;
 }
 
 HRESULT GraphicDevice::ClearDepthStencilView()
 {
-	if (!deviceContext)
+	if (!m_pDeviceContext)
 		return E_FAIL;
 
-	deviceContext->ClearDepthStencilView(DSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	m_pDeviceContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	return S_OK;
 }
 
 HRESULT GraphicDevice::Present()
 {
-	if (!swapChain)
+	if (!m_pSwapChain)
 		return E_FAIL;
 
-	return swapChain->Present(0, 0);;
+	return m_pSwapChain->Present(0, 0);;
 }
 
 HRESULT GraphicDevice::InitSwapChain(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY)
 {
 	IDXGIDevice* pDevice = nullptr;
-	device->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDevice);
+	m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDevice);
 
 	IDXGIAdapter* pAdapter = nullptr;
 	pDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pAdapter);
@@ -131,7 +150,7 @@ HRESULT GraphicDevice::InitSwapChain(HWND hWnd, WinMode winMode, _uint winSizeX,
 	SwapChain.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 	/* 백버퍼라는 텍스처(ID3D11Texture2D)를 생성했다. */
-	if (FAILED(pFactory->CreateSwapChain(device, &SwapChain, &swapChain)))
+	if (FAILED(pFactory->CreateSwapChain(m_pDevice, &SwapChain, &m_pSwapChain)))
 		return E_FAIL;
 
 	Safe_Release(pFactory);
@@ -143,7 +162,7 @@ HRESULT GraphicDevice::InitSwapChain(HWND hWnd, WinMode winMode, _uint winSizeX,
 
 HRESULT GraphicDevice::InitBackBufferRTV(_uint winSizeX, _uint winSizeY)
 {
-	if (!device)
+	if (!m_pDevice)
 		return E_FAIL;
 
 	/* 내가 앞으로 사용 하기위한 용도의 텍스쳐를 생성하기위한 베이스 데이터를 가지고 있는 객체이다. */
@@ -151,11 +170,11 @@ HRESULT GraphicDevice::InitBackBufferRTV(_uint winSizeX, _uint winSizeY)
 	ID3D11Texture2D* pBackBufferTexture = nullptr;
 
 	/* 스왑체인이 들고있던 텍스처를 가져와봐. */
-	if (FAILED(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture)))
+	if (FAILED(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture)))
 		return E_FAIL;
 
 	/* 실제 렌더타겟용도로 사용할 수 있는 텍스쳐 타입(ID3D11RenderTargetView)의 객체를 생성ㅎ나다. */
-	if (FAILED(device->CreateRenderTargetView(pBackBufferTexture, nullptr, &backBufferRTV)))
+	if (FAILED(m_pDevice->CreateRenderTargetView(pBackBufferTexture, nullptr, &m_BackBufferRTV)))
 		return E_FAIL;
 
 	Safe_Release(pBackBufferTexture);
@@ -165,7 +184,7 @@ HRESULT GraphicDevice::InitBackBufferRTV(_uint winSizeX, _uint winSizeY)
 
 HRESULT GraphicDevice::InitDSV(_uint winSizeX, _uint winSizeY)
 {
-	if (!device)
+	if (!m_pDevice)
 		return E_FAIL;
 
 	ID3D11Texture2D* pDepthStencilTexture = nullptr;
@@ -192,14 +211,14 @@ HRESULT GraphicDevice::InitDSV(_uint winSizeX, _uint winSizeY)
 	TextureDesc.CPUAccessFlags = 0;
 	TextureDesc.MiscFlags = 0;
 
-	if (FAILED(device->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
 		return E_FAIL;
 
 	/* RenderTargetView */
 	/* ShaderResourceView */
 	/* DepthStencilView */
 
-	if (FAILED(device->CreateDepthStencilView(pDepthStencilTexture, nullptr, &DSV)))
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDSV)))
 		return E_FAIL;
 
 	Safe_Release(pDepthStencilTexture);

@@ -24,7 +24,7 @@ public:
 private:
     Timer* FindTimer(const std::string& timerTag);
 
-    std::unordered_map<std::string, Timer*> timerMap;
+    std::unordered_map<std::string, Timer*> m_TimerMap;
 };
 
 NS_END

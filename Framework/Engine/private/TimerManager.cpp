@@ -18,7 +18,7 @@ TimerManager* TimerManager::Create()
 
 HRESULT TimerManager::Initialize()
 {
-	timerMap.clear();
+	m_TimerMap.clear();
 
 	return S_OK;
 }
@@ -27,9 +27,9 @@ void TimerManager::Free()
 {
 	__super::Free();
 
-	for (auto& pair : timerMap)
+	for (auto& pair : m_TimerMap)
 		Safe_Release(pair.second);
-	timerMap.clear();
+	m_TimerMap.clear();
 }
 
 HRESULT TimerManager::AddTimer(const std::string& timerTag)
@@ -41,7 +41,7 @@ HRESULT TimerManager::AddTimer(const std::string& timerTag)
 	else
 	{
 		timer = Timer::Create();
-		timerMap[timerTag] = timer;
+		m_TimerMap[timerTag] = timer;
 	}
 
 	return S_OK;
@@ -69,9 +69,9 @@ _float TimerManager::GetDeltaTime(const std::string& timerTag)
 
 Timer* TimerManager::FindTimer(const std::string& timerTag)
 {
-	auto iter = timerMap.find(timerTag);
+	auto iter = m_TimerMap.find(timerTag);
 
-	if (iter != timerMap.end())
+	if (iter != m_TimerMap.end())
 		return iter->second;
 	else
 		return nullptr;

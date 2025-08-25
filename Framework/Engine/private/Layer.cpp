@@ -18,7 +18,7 @@ Layer* Layer::Create()
 
 HRESULT Layer::Initialize()
 {
-	objects.clear();
+	m_Objects.clear();
 
 	return S_OK;
 }
@@ -27,23 +27,23 @@ void Layer::Free()
 {
 	__super::Free();
 
-	for (auto& object : objects)
+	for (auto& object : m_Objects)
 		Safe_Release(object);
 }
 
 void Layer::AddObject(Object* object)
 {
-	objects.push_back(object);
+	m_Objects.push_back(object);
 }
 
 void Layer::Update(_float dt)
 {
-	for (const auto& object : objects)
+	for (const auto& object : m_Objects)
 		object->Update(dt);
 }
 
 void Layer::LateUpdate(_float dt)
 {
-	for (const auto& object : objects)
+	for (const auto& object : m_Objects)
 		object->LateUpdate(dt);
 }

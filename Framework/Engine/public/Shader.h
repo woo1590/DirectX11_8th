@@ -14,6 +14,7 @@ private:
 public:
     static Shader* Create();
     HRESULT Initialize();
+
     void Free()override;
 
 private:

@@ -12,5 +12,7 @@ namespace Engine
 		_uint winSizeX, winSizeY;
 		_uint levelCnt;
 	};
+
+	struct InitDESC{};
 }
 #endif // Engine_Struct_h__

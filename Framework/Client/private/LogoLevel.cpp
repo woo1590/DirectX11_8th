@@ -32,7 +32,7 @@ void LogoLevel::Update(_float dt)
 
 HRESULT LogoLevel::Render()
 {
-	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), L"·Î°íÀÓ");
+	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), L"Logo Level");
 
 	return S_OK;
 }

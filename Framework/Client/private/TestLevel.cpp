@@ -24,7 +24,7 @@ HRESULT TestLevel::Initialize()
 	if (FAILED(InitLayerTest("Layer_Test")))
 		return E_FAIL;
 
-	EngineCore::GetInstance()->PlayBGM("TestBGM");
+	EngineCore::GetInstance()->PlayBGM("TestBGM2");
 
 	return S_OK;
 }
@@ -32,16 +32,21 @@ HRESULT TestLevel::Initialize()
 void TestLevel::Free()
 {
 	__super::Free();
+
+	EngineCore::GetInstance()->StopSound("TestBGM2");
+
 }
 
 void TestLevel::Update(_float dt)
 {
 	if (GetAsyncKeyState(VK_SPACE))
-		EngineCore::GetInstance()->Stop("TestBGM");
+		EngineCore::GetInstance()->StopSound("TestBGM2");
 }
 
 HRESULT TestLevel::Render()
 {
+	SetWindowText(EngineCore::GetInstance()->GetWindowHandle(), L"Test Level");
+
 	return S_OK;
 }
 
@@ -50,7 +55,7 @@ HRESULT TestLevel::InitLayerBackGround(const _string& layerTag)
 	auto engine = EngineCore::GetInstance();
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround",
-		ENUM_CLASS(LevelID::Test), layerTag)))
+		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
 		return E_FAIL;
 
 	return S_OK;
@@ -61,7 +66,7 @@ HRESULT TestLevel::InitLayerTest(const _string& layerTag)
 	auto engine = EngineCore::GetInstance();
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_TestCube",
-		ENUM_CLASS(LevelID::Test), layerTag)))
+		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
 		return E_FAIL;
 
 	return S_OK;

@@ -23,10 +23,10 @@ LoadingLevel* LoadingLevel::Create(LevelID nextLevelID)
 
 HRESULT LoadingLevel::Initialize(LevelID nextLevelID)
 {
-	this->nextLevelID = nextLevelID;
+	this->m_eNextLevelID = nextLevelID;
 
-	loader = Loader::Create(nextLevelID);
-	if (!loader)
+	m_pLoader = Loader::Create(nextLevelID);
+	if (!m_pLoader)
 		return E_FAIL;
 
 	return S_OK;
@@ -36,16 +36,16 @@ void LoadingLevel::Free()
 {
 	__super::Free();
 
-	Safe_Release(loader);
+	Safe_Release(m_pLoader);
 }
 
 void LoadingLevel::Update(_float dt)
 {
-	if (loader->IsFinish() && GetAsyncKeyState(VK_TAB))
+	if (m_pLoader->IsFinish() && GetAsyncKeyState(VK_TAB))
 	{
 		Level* nextLevel = nullptr;
 
-		switch (nextLevelID)
+		switch (m_eNextLevelID)
 		{
 		case Client::LevelID::Logo:
 			nextLevel = LogoLevel::Create();
@@ -60,13 +60,13 @@ void LoadingLevel::Update(_float dt)
 			break;
 		}
 
-		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(nextLevelID), nextLevel);
+		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(m_eNextLevelID), nextLevel);
 	}
 }
 
 HRESULT LoadingLevel::Render()
 {
-	loader->DebugPrint();
+	m_pLoader->DebugPrint();
 
 	return S_OK;
 }

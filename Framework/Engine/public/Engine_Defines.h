@@ -1,8 +1,16 @@
 #pragma once
 
+#define USE_IMGUI
+
+#pragma warning (disable : 4005)
+#pragma warning (disable : 4251)
+
 //d3d
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
+#include <d3dcompiler.h>
+using namespace DirectX;
 
 //c, c++
 #include <ctime>
@@ -34,6 +42,8 @@
 #define DIRECTINPUT_VERSION	0x0800
 #include <dinput.h>
 
+
+#ifndef USE_IMGUI
 #ifdef _DEBUG
 
 #define _CRTDBG_MAP_ALLOC
@@ -47,3 +57,4 @@
 
 #endif
 #endif
+#endif	//USE_IMGUI

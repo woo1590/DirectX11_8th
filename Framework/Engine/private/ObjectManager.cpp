@@ -20,8 +20,8 @@ ObjectManager* ObjectManager::Create(_uint levelCnt)
 
 HRESULT ObjectManager::Initialize(_uint levelCnt)
 {
-	layers.clear();
-	layers.resize(levelCnt);
+	m_Layers.clear();
+	m_Layers.resize(levelCnt);
 
 	return S_OK;
 }
@@ -30,7 +30,7 @@ void ObjectManager::Free()
 {
 	__super::Free();
 
-	for (auto& map : layers)
+	for (auto& map : m_Layers)
 	{
 		for (auto& pair : map)
 			Safe_Release(pair.second);
@@ -38,28 +38,34 @@ void ObjectManager::Free()
 		map.clear();
 	}
 
-	layers.clear();
+	m_Layers.clear();
 }
 
 void ObjectManager::Update(_float dt)
 {
-	for (const auto& map : layers)
+	for (const auto& map : m_Layers)
 	{
 		for (const auto& pair : map)
-			pair.second->Update(dt);
+		{
+			if(pair.second->IsUpdatable())
+				pair.second->Update(dt);
+		}
 	}
 }
 
 void ObjectManager::LateUpdate(_float dt)
 {
-	for (const auto& map : layers)
+	for (const auto& map : m_Layers)
 	{
 		for (const auto& pair : map)
-			pair.second->LateUpdate(dt);
+		{
+			if (pair.second->IsUpdatable())
+				pair.second->LateUpdate(dt);
+		}
 	}
 }
 
-HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, void* arg)
+HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg)
 {
 	Object* object = static_cast<Object*>(EngineCore::GetInstance()->ClonePrototype(Prototype::Object, prototypeLevelID, prototypeTag, arg));
 	if (!object)
@@ -69,7 +75,7 @@ HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototyp
 	if(!layer)
 	{
 		layer = Layer::Create();
-		layers[layerLevelID].emplace(layerTag, layer);
+		m_Layers[layerLevelID].emplace(layerTag, layer);
 	}
 
 	layer->AddObject(object);
@@ -79,19 +85,19 @@ HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototyp
 
 void ObjectManager::Clear(_uint levelID)
 {
-	if (levelID >= layers.size())
+	if (levelID >= m_Layers.size())
 		return;
 
-	for (auto& pair : layers[levelID])
+	for (auto& pair : m_Layers[levelID])
 		Safe_Release(pair.second);
-	layers[levelID].clear();
+	m_Layers[levelID].clear();
 }
 
 Layer* ObjectManager::FindLayer(_uint layerLevel, const _string& layerTag)
 {
-	auto iter = layers[layerLevel].find(layerTag);
+	auto iter = m_Layers[layerLevel].find(layerTag);
 
-	if (iter == layers[layerLevel].end())
+	if (iter == m_Layers[layerLevel].end())
 		return nullptr;
 
 	return iter->second;

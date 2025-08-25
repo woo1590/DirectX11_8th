@@ -22,11 +22,11 @@ public:
     void SetParam(const std::string& key, _float4 value);
 
 private:
-    std::unordered_map<std::string, _int> intParams;
-    std::unordered_map<std::string, _float> floatParams;
-    std::unordered_map<std::string, _float2> float2Params;
-    std::unordered_map<std::string, _float3> float3Params;
-    std::unordered_map<std::string, _float4> float4Params;
+    std::unordered_map<std::string, _int> m_IntParams;
+    std::unordered_map<std::string, _float> m_FloatParams;
+    std::unordered_map<std::string, _float2> m_Float2Params;
+    std::unordered_map<std::string, _float3> m_Float3Params;
+    std::unordered_map<std::string, _float4> m_Float4Params;
 
 };
 
