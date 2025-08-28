@@ -9,8 +9,15 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+#include "fx11/d3dx11effect.h"
+
 #include <d3dcompiler.h>
 using namespace DirectX;
+
+//library
+#include "fmod/fmod.hpp"
+#include "nlohmann/json.hpp"
+
 
 //c, c++
 #include <ctime>

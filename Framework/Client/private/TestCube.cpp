@@ -30,13 +30,11 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
-	CameraComponent::CameraDESC camDesc{};
-	camDesc.fov = 60.f;
-	camDesc.aspect = static_cast<_float>(WinSizeX) / WinSizeY;
-	camDesc.nearZ = 1.f;
-	camDesc.farZ = 100.f;
+	TransformComponent::TransformDESC transformDesc{};
+	transformDesc.position = _float3(1.f, 1.f, 1.f);
 
-	auto cam = AddComponent<CameraComponent>(&camDesc);
+	if (FAILED(GetComponent<TransformComponent>()->Initialize(&transformDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

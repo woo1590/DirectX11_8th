@@ -8,14 +8,15 @@ class ENGINE_DLL FreecamComponent :
 {
 private:
     FreecamComponent(Object* owner);
+    FreecamComponent(const FreecamComponent& prototype);
     virtual ~FreecamComponent() = default;
 
 public:
-    static FreecamComponent* Create(Object* owner, InitDESC* arg);
+    static FreecamComponent* Create(Object* owner);
     HRESULT Initialize(InitDESC* arg)override;
     void Update(_float dt)override;
 
-    Component* Clone(InitDESC* arg)override { return nullptr; }
+    Component* Clone()override { return new FreecamComponent(*this); }
     void Free()override;
 
 private:

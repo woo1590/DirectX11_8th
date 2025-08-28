@@ -18,10 +18,10 @@ TestLevel* TestLevel::Create()
 
 HRESULT TestLevel::Initialize()
 {
-	if (FAILED(InitLayerBackGround("Layer_BackGround")))
+	if (FAILED(InitializeBackGroundLayer("Layer_BackGround")))
 		return E_FAIL;
 
-	if (FAILED(InitLayerTest("Layer_Test")))
+	if (FAILED(InitializeTestLayer("Layer_Test")))
 		return E_FAIL;
 
 	EngineCore::GetInstance()->PlayBGM("TestBGM2");
@@ -50,18 +50,14 @@ HRESULT TestLevel::Render()
 	return S_OK;
 }
 
-HRESULT TestLevel::InitLayerBackGround(const _string& layerTag)
+HRESULT TestLevel::InitializeBackGroundLayer(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
-
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround",
-		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
-		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT TestLevel::InitLayerTest(const _string& layerTag)
+HRESULT TestLevel::InitializeTestLayer(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 

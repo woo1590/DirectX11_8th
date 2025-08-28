@@ -12,6 +12,7 @@
 #include "ObjectManager.h"
 #include "TaskManager.h"
 #include "PrototypeManager.h"
+#include "ResourceManager.h"
 #include "LevelManager.h"
 #include "Random.h"
 #include "PipeLine.h"
@@ -47,7 +48,7 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 		return E_FAIL;
 
 #ifdef USE_IMGUI
-	m_pImGuiManager = ImGuiManager::Create();
+	m_pImGuiManager = ImGuiManager::Create(hWnd, m_pGraphicDevice->GetDevice(),m_pGraphicDevice->GetDeviceContext());
 	if (!m_pImGuiManager)
 		return E_FAIL;
 #endif
@@ -72,6 +73,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pPipeLine)
 		return E_FAIL;
 
+	m_pResourceManager = ResourceManager::Create(desc.levelCnt);
+	if (!m_pResourceManager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -94,6 +99,7 @@ void EngineCore::Free()
 	Safe_Release(m_pObjectManager);
 	Safe_Release(m_pSoundManager);
 	Safe_Release(m_pPipeLine);
+	Safe_Release(m_pResourceManager);
 
 }
 
@@ -110,6 +116,11 @@ void EngineCore::Tick(_float dt)
 	BeginDraw();
 	Draw();
 	EndDraw();
+}
+
+_bool EngineCore::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	return m_pImGuiManager->WndProcHandler(hWnd, msg, wParam, lParam);
 }
 
 #ifdef USE_IMGUI
@@ -170,15 +181,26 @@ ID3D11DeviceContext* EngineCore::GetDeviceContext()
 }
 #pragma endregion
 
+#pragma region Resource
+HRESULT EngineCore::LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer)
+{
+	return m_pResourceManager->LoadBuffer(levelID,key,pBuffer);
+}
+HRESULT EngineCore::LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+{
+	return m_pResourceManager->LoadShader(levelID,filePath,key,pElement,numElement);
+}
+#pragma endregion
+
 #pragma region Prototype
-HRESULT EngineCore::AddPrototype(_uint level, const _string& prototypeTag, Base* prototype)
+HRESULT EngineCore::AddPrototype(_uint level, const _string& prototypeTag, Object* prototype)
 {
 	return m_pPrototypeManager->AddPrototype(level, prototypeTag, prototype);
 }
 
-Base* EngineCore::ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, InitDESC* arg)
+Object* EngineCore::ClonePrototype(_uint level, const _string& prototypeTag, InitDESC* arg)
 {
-	return m_pPrototypeManager->ClonePrototype(type, level, prototypeTag, arg);
+	return m_pPrototypeManager->ClonePrototype(level, prototypeTag, arg);
 }
 
 #pragma endregion
@@ -201,6 +223,7 @@ void EngineCore::ClearResource(_uint levelID)
 {
 	m_pPrototypeManager->Clear(levelID);
 	m_pObjectManager->Clear(levelID);
+	m_pResourceManager->Clear(levelID);
 }
 
 #pragma endregion
@@ -220,7 +243,7 @@ HRESULT EngineCore::BeginDraw()
 HRESULT EngineCore::Draw()
 {
 	//render loop
-
+	m_pImGuiManager->IMGUI_TEST_FUNC();
 	return S_OK;
 }
 

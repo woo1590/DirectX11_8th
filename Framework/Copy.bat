@@ -2,7 +2,7 @@
 cd /d %~dp0
 
 
-xcopy	/y	.\Engine\public\*.*	.\EngineSDK\inc\
+xcopy /y /e /i .\Engine\public\*.* .\EngineSDK\inc\
 
 xcopy	/y	.\Engine\bin\debug\Engine.dll	.\Client\bin\debug\
 xcopy	/y	.\Engine\bin\release\Engine.dll	.\Client\bin\release\

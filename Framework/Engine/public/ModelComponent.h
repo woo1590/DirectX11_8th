@@ -8,6 +8,7 @@ class ENGINE_DLL ModelComponent final:
 {
 private:
     ModelComponent(Object* owner);
+    ModelComponent(const ModelComponent& prototype);
     virtual ~ModelComponent() = default;
 
 public:
@@ -16,7 +17,7 @@ public:
     HRESULT Initialize(InitDESC* arg)override;
     void Free()override;
     
-    Component* Clone(InitDESC* arg) { return nullptr; }
+    Component* Clone()override;
 
 private:
 

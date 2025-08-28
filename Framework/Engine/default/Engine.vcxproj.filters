@@ -19,9 +19,6 @@
     <Filter Include="01. Engine Component\Rendering">
       <UniqueIdentifier>{ce1f745c-d311-4a20-bc58-ab17c549c042}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\Rendering\Renderer">
-      <UniqueIdentifier>{5f353efd-535a-4733-9b11-5cde1eb56eb6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Object">
       <UniqueIdentifier>{64f10ab9-f23f-437d-bebd-54139ea37b48}</UniqueIdentifier>
     </Filter>
@@ -46,12 +43,6 @@
     <Filter Include="05. Object Component\Transform Component">
       <UniqueIdentifier>{c70334ac-2798-47d2-9140-905a624d7789}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Object Component\Model Component\Mesh">
-      <UniqueIdentifier>{2ebeb5ae-c703-4895-9f22-0a3944790b75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\Model Component\Material">
-      <UniqueIdentifier>{98507123-8600-4e97-9ae1-5c2e7d59126c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Object Component\Model Component\Model">
       <UniqueIdentifier>{428a327b-ff06-4bec-9931-0af6946cbb04}</UniqueIdentifier>
     </Filter>
@@ -63,9 +54,6 @@
     </Filter>
     <Filter Include="99. Utility\Base">
       <UniqueIdentifier>{860d4b83-ec98-4614-8cc6-f80841220c0d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Engine Component\Rendering\Shader">
-      <UniqueIdentifier>{cdf532fe-2f39-45cf-bec7-20033a82815f}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Level Component">
       <UniqueIdentifier>{84f246af-ff66-48af-9601-6e0d254df49b}</UniqueIdentifier>
@@ -124,17 +112,35 @@
     <Filter Include="01. Engine Component\PipeLine">
       <UniqueIdentifier>{766b4cac-a335-432e-8007-33318c41cfd4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Object Component\Model Component\Mesh\CubeMesh">
-      <UniqueIdentifier>{17326def-378d-4464-9fe8-6e71d8c61f09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\Model Component\Mesh\QuadMesh">
-      <UniqueIdentifier>{e8a18782-e7b2-41aa-8df1-443a90e9af6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\Model Component\Mesh\StaticMesh">
-      <UniqueIdentifier>{cfc0cd78-23f7-4b7c-94a7-ffeaac8fb7a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\ImGui Manager">
       <UniqueIdentifier>{11357618-2854-49b6-b3e4-68cca55ef47c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager">
+      <UniqueIdentifier>{0cbc79b9-4430-48b0-862f-fb78867bb942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\Material">
+      <UniqueIdentifier>{871ae1cc-c533-4979-bb79-3691f4d106c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\Shader">
+      <UniqueIdentifier>{cdf532fe-2f39-45cf-bec7-20033a82815f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Utility\imgui">
+      <UniqueIdentifier>{793354f4-15f7-4f57-a86a-146b25fc246e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering\Renderer">
+      <UniqueIdentifier>{a333e0e5-8f71-4527-b9c7-39f47cbf654c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Utility\guizmo">
+      <UniqueIdentifier>{327c5bc1-149c-4add-b21c-82b5adea9875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer">
+      <UniqueIdentifier>{423f5870-e5e5-4bc3-92c1-d7fb160c848b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Quad">
+      <UniqueIdentifier>{921bd0bb-c803-433d-9041-ad82c6cbcd44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Cube">
+      <UniqueIdentifier>{0a573cd6-81b3-428e-b9a4-93d80f784a4c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -192,20 +198,14 @@
     <ClInclude Include="..\public\ModelComponent.h">
       <Filter>05. Object Component\Model Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Material.h">
-      <Filter>05. Object Component\Model Component\Material</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\CameraComponent.h">
       <Filter>05. Object Component\Camera Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AiController.h">
       <Filter>05. Object Component\AIController Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Renderer.h">
-      <Filter>01. Engine Component\Rendering\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Shader.h">
-      <Filter>01. Engine Component\Rendering\Shader</Filter>
+      <Filter>01. Engine Component\Resource Manager\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\GraphicDevice.h">
       <Filter>01. Engine Component\Graphic Device</Filter>
@@ -218,9 +218,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Layer.h">
       <Filter>01. Engine Component\Object Manager\Layer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Mesh.h">
-      <Filter>05. Object Component\Model Component\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ObjectManager.h">
       <Filter>01. Engine Component\Object Manager</Filter>
@@ -240,14 +237,74 @@
     <ClInclude Include="..\public\PipeLine.h">
       <Filter>01. Engine Component\PipeLine</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CubeMesh.h">
-      <Filter>05. Object Component\Model Component\Mesh\CubeMesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Model.h">
       <Filter>05. Object Component\Model Component\Model</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGuiManager.h">
       <Filter>01. Engine Component\ImGui Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBufferQuad.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Quad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Material.h">
+      <Filter>01. Engine Component\Resource Manager\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ResourceManager.h">
+      <Filter>01. Engine Component\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Renderer.h">
+      <Filter>01. Engine Component\Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBufferCube.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderProxy.h">
+      <Filter>01. Engine Component\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\imconfig.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\imgui.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\imgui_internal.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\imstb_rectpack.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\imstb_textedit.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\imstb_truetype.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\backends\imgui_impl_dx11.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\backends\imgui_impl_win32.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\guizmo\GraphEditor.h">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\guizmo\ImCurveEdit.h">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\guizmo\ImGradient.h">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\guizmo\ImGuizmo.h">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\guizmo\ImSequencer.h">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\guizmo\ImZoomSlider.h">
+      <Filter>99. Utility\guizmo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -287,20 +344,14 @@
     <ClCompile Include="..\private\ModelComponent.cpp">
       <Filter>05. Object Component\Model Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Material.cpp">
-      <Filter>05. Object Component\Model Component\Material</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\CameraComponent.cpp">
       <Filter>05. Object Component\Camera Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AiController.cpp">
       <Filter>05. Object Component\AIController Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Renderer.cpp">
-      <Filter>01. Engine Component\Rendering\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Shader.cpp">
-      <Filter>01. Engine Component\Rendering\Shader</Filter>
+      <Filter>01. Engine Component\Resource Manager\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\GraphicDevice.cpp">
       <Filter>01. Engine Component\Graphic Device</Filter>
@@ -313,9 +364,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Layer.cpp">
       <Filter>01. Engine Component\Object Manager\Layer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Mesh.cpp">
-      <Filter>05. Object Component\Model Component\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ObjectManager.cpp">
       <Filter>01. Engine Component\Object Manager</Filter>
@@ -335,14 +383,68 @@
     <ClCompile Include="..\private\PipeLine.cpp">
       <Filter>01. Engine Component\PipeLine</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CubeMesh.cpp">
-      <Filter>05. Object Component\Model Component\Mesh\CubeMesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Model.cpp">
       <Filter>05. Object Component\Model Component\Model</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGuiManager.cpp">
       <Filter>01. Engine Component\ImGui Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBufferQuad.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Quad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Material.cpp">
+      <Filter>01. Engine Component\Resource Manager\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ResourceManager.cpp">
+      <Filter>01. Engine Component\Resource Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Renderer.cpp">
+      <Filter>01. Engine Component\Rendering\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBufferCube.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine_Struct.cpp">
+      <Filter>98. Etc\Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_demo.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_draw.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_tables.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_widgets.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>99. Utility\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\GraphEditor.cpp">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImCurveEdit.cpp">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImGradient.cpp">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImGuizmo.cpp">
+      <Filter>99. Utility\guizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImSequencer.cpp">
+      <Filter>99. Utility\guizmo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

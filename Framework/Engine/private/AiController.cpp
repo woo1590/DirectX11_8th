@@ -6,6 +6,11 @@ AiController::AiController(Object* owner)
 {
 }
 
+AiController::AiController(const AiController& prototype)
+	:Component(prototype)
+{
+}
+
 AiController* AiController::Create(Object* owner)
 {
 	AiController* Instance = new AiController(owner);
@@ -16,7 +21,12 @@ AiController* AiController::Create(Object* owner)
 	return Instance;
 }
 
-HRESULT AiController::Initialize()
+HRESULT AiController::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT AiController::Initialize(InitDESC* arg)
 {
 	return S_OK;
 }

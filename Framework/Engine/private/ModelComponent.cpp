@@ -6,6 +6,11 @@ ModelComponent::ModelComponent(Object* owner)
 {
 }
 
+ModelComponent::ModelComponent(const ModelComponent& prototype)
+	:Component(prototype)
+{
+}
+
 ModelComponent* ModelComponent::Create(Object* owner)
 {
 	ModelComponent* Instance = new ModelComponent(owner);
@@ -29,4 +34,9 @@ HRESULT ModelComponent::Initialize(InitDESC* arg)
 void ModelComponent::Free()
 {
 	__super::Free();
+}
+
+Component* ModelComponent::Clone()
+{
+	return new ModelComponent(*this);
 }

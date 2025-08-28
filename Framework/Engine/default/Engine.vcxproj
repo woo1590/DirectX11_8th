@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../public/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -97,8 +97,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/fmod/lib/x64/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../public/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -123,8 +123,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/fmod/lib/x64/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../public/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -145,8 +145,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/fmod/lib/x64/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -161,7 +161,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../public/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -171,8 +171,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/fmod/lib/x64/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -183,7 +183,6 @@
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\public\CameraComponent.h" />
     <ClInclude Include="..\public\Component.h" />
-    <ClInclude Include="..\public\CubeMesh.h" />
     <ClInclude Include="..\public\EngineCore.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
     <ClInclude Include="..\public\Engine_Enum.h" />
@@ -193,13 +192,36 @@
     <ClInclude Include="..\public\Engine_Typedef.h" />
     <ClInclude Include="..\public\FreecamComponent.h" />
     <ClInclude Include="..\public\GraphicDevice.h" />
+    <ClInclude Include="..\public\guizmo\GraphEditor.h" />
+    <ClInclude Include="..\public\guizmo\ImCurveEdit.h" />
+    <ClInclude Include="..\public\guizmo\ImGradient.h" />
+    <ClInclude Include="..\public\guizmo\ImGuizmo.h" />
+    <ClInclude Include="..\public\guizmo\ImSequencer.h" />
+    <ClInclude Include="..\public\guizmo\ImZoomSlider.h" />
     <ClInclude Include="..\public\ImGuiManager.h" />
+    <ClInclude Include="..\public\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="..\public\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="..\public\imgui\imconfig.h" />
+    <ClInclude Include="..\public\imgui\imgui.h" />
+    <ClInclude Include="..\public\imgui\imgui_internal.h" />
+    <ClInclude Include="..\public\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\public\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\public\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\InputSystem.h" />
     <ClInclude Include="..\public\Layer.h" />
     <ClInclude Include="..\public\Level.h" />
     <ClInclude Include="..\public\LevelManager.h" />
     <ClInclude Include="..\public\Material.h" />
-    <ClInclude Include="..\public\Mesh.h" />
+    <ClInclude Include="..\public\RenderProxy.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\public\ResourceManager.h" />
+    <ClInclude Include="..\public\VIBufferCube.h" />
+    <ClInclude Include="..\public\VIBufferQuad.h" />
+    <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\Model.h" />
     <ClInclude Include="..\public\ModelComponent.h" />
     <ClInclude Include="..\public\Object.h" />
@@ -222,7 +244,6 @@
     <ClCompile Include="..\private\Base.cpp" />
     <ClCompile Include="..\private\CameraComponent.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
-    <ClCompile Include="..\private\CubeMesh.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />
@@ -232,7 +253,10 @@
     <ClCompile Include="..\private\Level.cpp" />
     <ClCompile Include="..\private\LevelManager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
-    <ClCompile Include="..\private\Mesh.cpp" />
+    <ClCompile Include="..\private\ResourceManager.cpp" />
+    <ClCompile Include="..\private\VIBufferCube.cpp" />
+    <ClCompile Include="..\private\VIBufferQuad.cpp" />
+    <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\Model.cpp" />
     <ClCompile Include="..\private\ModelComponent.cpp" />
     <ClCompile Include="..\private\Object.cpp" />
@@ -248,12 +272,85 @@
     <ClCompile Include="..\private\Timer.cpp" />
     <ClCompile Include="..\private\TimerManager.cpp" />
     <ClCompile Include="..\private\TransformComponent.cpp" />
+    <ClCompile Include="..\public\guizmo\GraphEditor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImCurveEdit.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImGradient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\guizmo\ImSequencer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\backends\imgui_impl_dx11.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\backends\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\imgui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="EnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Engine_Struct.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

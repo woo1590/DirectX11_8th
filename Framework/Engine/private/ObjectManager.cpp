@@ -67,7 +67,7 @@ void ObjectManager::LateUpdate(_float dt)
 
 HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg)
 {
-	Object* object = static_cast<Object*>(EngineCore::GetInstance()->ClonePrototype(Prototype::Object, prototypeLevelID, prototypeTag, arg));
+	Object* object = static_cast<Object*>(EngineCore::GetInstance()->ClonePrototype(prototypeLevelID, prototypeTag, arg));
 	if (!object)
 		return E_FAIL;
 

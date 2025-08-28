@@ -1,12 +1,8 @@
 #pragma once
 #include "Base.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
-
-struct RenderProxy
-{
-
-};
 
 class Renderer;
 class ENGINE_DLL RenderSystem :

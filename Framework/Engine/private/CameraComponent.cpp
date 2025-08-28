@@ -8,14 +8,28 @@ CameraComponent::CameraComponent(Object* pOnwer)
 {
 }
 
+CameraComponent::CameraComponent(const CameraComponent& prototype)
+	:Component(prototype),
+	m_fAspect(prototype.m_fAspect),
+	m_fFov(prototype.m_fFov),
+	m_fNearZ(prototype.m_fNearZ),
+	m_fFarZ(prototype.m_fFarZ)
+{
+}
+
 CameraComponent* CameraComponent::Create(Object* pOnwer, InitDESC* arg)
 {
 	CameraComponent* Instance = new CameraComponent(pOnwer);
 
-	if (FAILED(Instance->Initialize(arg)))
+	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
 
 	return Instance;
+}
+
+HRESULT CameraComponent::Initialize_Prototype()
+{
+	return S_OK;
 }
 
 HRESULT CameraComponent::Initialize(InitDESC* arg)
@@ -40,14 +54,14 @@ void CameraComponent::Free()
 	__super::Free();
 }
 
-_matrix XM_CALLCONV CameraComponent::GetViewMatrix() const
+_matrix CameraComponent::GetViewMatrix() const
 {
 	auto transform = m_pOwner->GetComponent<TransformComponent>();
 
 	return transform->GetWorldMatrixInverse();
 }
 
-_matrix XM_CALLCONV CameraComponent::GetProjMatrix() const
+_matrix CameraComponent::GetProjMatrix() const
 {
 	return XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNearZ, m_fFarZ);
 }

@@ -6,11 +6,16 @@ FreecamComponent::FreecamComponent(Object* owner)
 {
 }
 
-FreecamComponent* FreecamComponent::Create(Object* owner, InitDESC* arg)
+FreecamComponent::FreecamComponent(const FreecamComponent& prototype)
+	:Component(prototype)
+{
+}
+
+FreecamComponent* FreecamComponent::Create(Object* owner)
 {
 	FreecamComponent* Instance = new FreecamComponent(owner);
 	
-	if (FAILED(Instance->Initialize(arg)))
+	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
 
 	return Instance;

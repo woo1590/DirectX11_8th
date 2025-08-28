@@ -44,6 +44,25 @@ HRESULT GraphicDevice::Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _u
 	if (FAILED(InitDSV(winSizeX, winSizeY)))
 		return E_FAIL;
 
+	ID3D11RenderTargetView* pRTVs[] = {
+		m_BackBufferRTV,
+	};
+
+	/* 렌더타겟의 픽셀 수와 깊이스텐실버퍼의 픽셀수가 서로 다르다면 절대 렌더링이 불가능해진다. */
+	m_pDeviceContext->OMSetRenderTargets(1, pRTVs,
+		m_pDSV);
+
+	D3D11_VIEWPORT			ViewPortDesc;
+	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
+	ViewPortDesc.TopLeftX = 0;
+	ViewPortDesc.TopLeftY = 0;
+	ViewPortDesc.Width = (_float)winSizeX;
+	ViewPortDesc.Height = (_float)winSizeY;
+	ViewPortDesc.MinDepth = 0.f;
+	ViewPortDesc.MaxDepth = 1.f;
+
+	m_pDeviceContext->RSSetViewports(1, &ViewPortDesc);
+
 	return S_OK;
 }
 

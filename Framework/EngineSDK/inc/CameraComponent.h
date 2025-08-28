@@ -14,17 +14,19 @@ public:
     };
 private:
     CameraComponent(Object* pOnwer);
+    CameraComponent(const CameraComponent& prototype);
     virtual ~CameraComponent() = default;
 
 public:
     static CameraComponent* Create(Object* pOnwer, InitDESC* arg);
+    HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void Free()override;
 
-    _matrix XM_CALLCONV GetViewMatrix()const;
-    _matrix XM_CALLCONV GetProjMatrix()const;
+    _matrix GetViewMatrix()const;
+    _matrix GetProjMatrix()const;
 
-    Component* Clone(InitDESC* arg) { return nullptr; }
+    Component* Clone()override { return new CameraComponent(*this); }
 
 private:
     _float m_fAspect{};

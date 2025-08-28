@@ -19,8 +19,8 @@ public:
     HRESULT Render()override;
 
 private:
-    HRESULT InitLayerBackGround(const _string& layerTag);
-    HRESULT InitLayerTest(const _string& layerTag);
+    HRESULT InitializeBackGroundLayer(const _string& layerTag);
+    HRESULT InitializeTestLayer(const _string& layerTag);
 
 };
 

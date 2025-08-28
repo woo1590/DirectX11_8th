@@ -8,7 +8,15 @@ Object::Object()
 
 Object::Object(const Object& prototype)
 {
+	for (const auto& pair : prototype.m_ComponentMap)
+	{
+		auto comp = pair.second->Clone();
+		comp->SetOwner(this);
 
+		m_Components.push_back(comp);
+		m_ComponentMap[pair.first] = comp;
+		comp->AddRef();
+	}
 }
 
 HRESULT Object::Initialize_Prototype()
@@ -16,17 +24,17 @@ HRESULT Object::Initialize_Prototype()
 	m_Components.clear();
 	m_ComponentMap.clear();
 
+	m_pTransform = AddComponent<TransformComponent>();
+	if (!m_pTransform)
+		return E_FAIL;
+	
+	m_pTransform->AddRef();
+
 	return S_OK;
 }
 
 HRESULT Object::Initialize(InitDESC* arg)
 {
-	m_pTransform = AddComponent<TransformComponent>(arg);
-	if (!m_pTransform)
-		return E_FAIL;
-
-	m_pTransform->AddRef();
-
 	return S_OK;
 }
 

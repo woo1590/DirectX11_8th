@@ -46,6 +46,9 @@
     <Filter Include="02. Object\BackGround">
       <UniqueIdentifier>{774facc3-9238-445a-84bc-4dd8915a3359}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98. Etc\ShaderFiles">
+      <UniqueIdentifier>{d0c05a6d-5eb3-42ff-a197-e9f9326f8d81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -135,5 +138,10 @@
     <ResourceCompile Include="Client.rc">
       <Filter>98. Etc\Header</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxTex.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

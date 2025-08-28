@@ -40,7 +40,7 @@ public:
     template<typename T>
     T* AddComponentFromPrototype(_uint prototypeLevel, const _string& prototypeTag, InitDESC* arg = nullptr)
     {
-        Base* clone = EngineCore::GetInstance()->ClonePrototype(Prototype::Component, prototypeLevel, prototypeTag, arg);
+        Base* clone = EngineCore::GetInstance()->ClonePrototype(prototypeLevel, prototypeTag, arg);
         if (!clone)
             return nullptr;
 

@@ -1,13 +1,16 @@
 #include "EnginePCH.h"
 #include "Material.h"
+#include "Shader.h"
 
-Material::Material()
+Material::Material(Shader* pShader)
+	:m_pShader(pShader)
 {
+	m_pShader->AddRef();
 }
 
-Material* Material::Create()
+Material* Material::Create(Shader* pShader)
 {
-	Material* Instance = new Material();
+	Material* Instance = new Material(pShader);
 
 	if (FAILED(Instance->Initialize()))
 		Safe_Release(Instance);
@@ -25,27 +28,12 @@ void Material::Free()
 	__super::Free();
 }
 
-void Material::SetParam(const std::string& key, _int value)
+void Material::Bind(_uint passIndex)
 {
-	m_IntParams[key] = value;
-}
+	/*셰이더 바인딩 & 파라미터 세팅*/
 
-void Material::SetParam(const std::string& key, _float value)
-{
-	m_FloatParams[key] = value;
-}
+	for (const auto& pair : m_TexParams)
+		m_pShader->SetValue(pair.first, pair.second);
 
-void Material::SetParam(const std::string& key, _float2 value)
-{
-	m_Float2Params[key] = value;
-}
-
-void Material::SetParam(const std::string& key, _float3 value)
-{
-	m_Float3Params[key] = value;
-}
-
-void Material::SetParam(const std::string& key, _float4 value)
-{
-	m_Float4Params[key] = value;
+	m_pShader->Apply(passIndex);
 }

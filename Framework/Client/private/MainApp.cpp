@@ -120,8 +120,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     int windowWidth = windowSize.right - windowSize.left;
     int windowHeight = windowSize.bottom - windowSize.top;
 
-    int x = (screenWidth + (windowWidth / 4));
-    int y = (screenHeight - windowHeight) / 2;
+    int x = static_cast<_int>(WinSizeX/2);
+    int y = static_cast<_int>(WinSizeY);
 
     hWnd = CreateWindowW(
         CLASS_NAME, L"My Game Window",
@@ -145,6 +145,9 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
 
 LRESULT MainApp::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    if (EngineCore::GetInstance()->WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;
+
     switch (msg)
     {
     case WM_KEYDOWN:

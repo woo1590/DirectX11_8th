@@ -14,10 +14,14 @@ class GraphicDevice;
 class LevelManager;
 class TaskManager;
 class ObjectManager;
+class ResourceManager;
 class PrototypeManager;
 class PipeLine;
 class Level;
 class Random;
+
+class VIBuffer;
+class Object;
 class ENGINE_DLL EngineCore final :
     public Base
 {
@@ -33,7 +37,7 @@ public:
 
 #ifdef USE_IMGUI
     /*---ImGui---*/
-
+    _bool WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 
     /*-----Timer-----*/
@@ -55,9 +59,13 @@ public:
 
     /*----PipeLine----*/
 
+    /*----Resource----*/
+    HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
+    HRESULT LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
+
     /*-----Prototype-----*/
-    HRESULT AddPrototype(_uint level, const _string& prototypeTag, Base* prototype);
-    Base * ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, InitDESC* arg);
+    HRESULT AddPrototype(_uint level, const _string& prototypeTag, Object* prototype);
+    Object* ClonePrototype(_uint level, const _string& prototypeTag, InitDESC* arg);
 
     /*-----Object-----*/
     HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr);
@@ -91,6 +99,7 @@ private:
     ObjectManager*      m_pObjectManager = nullptr;
     TaskManager*        m_pTaskManager = nullptr;
     PipeLine*           m_pPipeLine = nullptr;
+    ResourceManager*    m_pResourceManager = nullptr;
 };
 
 NS_END

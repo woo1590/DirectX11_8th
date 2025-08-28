@@ -22,12 +22,11 @@ public:
 
     void SetOwner(Object* owner) { m_pOwner = owner; }
 
-    virtual Component* Clone(InitDESC* arg) = 0;
+    virtual Component* Clone() = 0;
 
 protected:
     Object* m_pOwner = nullptr;
 
-    
 };
 
 NS_END

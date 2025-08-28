@@ -2,6 +2,8 @@
 #include "EngineCore.h"
 #include "Loader.h"
 #include "TestCube.h"
+#include "VIBufferQuad.h"
+#include "Shader.h"
 #include "BackGround.h"
 #include "TransformComponent.h"
 
@@ -86,12 +88,19 @@ HRESULT Loader::LoadingForTest()
 	m_strDebugText = L"사운드 로딩중..";
 	engine->LoadSound("TestBGM2", "../bin/resource/TestBGM2.mp3", true);
 
+	/*Load Resource*/
+	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Test), "Buffer_Quad", VIBufferQuad::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Test), L"../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", VTXTEX::elements, VTXTEX::numElement)))
+		return E_FAIL;
+
 	/*Prototype Object*/
 	m_strDebugText = L"객체원형 로딩중..";
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_TestCube", TestCube::Create())))
 		return E_FAIL;
 
-	if(FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test),"Prototype_Object_BackGround",BackGround::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround", BackGround::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";

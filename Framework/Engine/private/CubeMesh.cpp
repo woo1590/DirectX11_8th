@@ -18,8 +18,8 @@ CubeMesh* CubeMesh::Create()
 
 HRESULT CubeMesh::Initialize()
 {
-	m_iVertexCnt = 8;
-	m_iIndexCnt = 36;
+	m_iNumVertices = 8;
+	m_iNumIndices = 36;
 
 	D3D11_BUFFER_DESC vbDESC{};
 

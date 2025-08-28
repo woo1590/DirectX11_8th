@@ -15,16 +15,18 @@ public:
 
 private:
     TransformComponent(Object* pOwner);
+    TransformComponent(const TransformComponent& prototype);
     virtual ~TransformComponent() = default;
 
 public:
-    static TransformComponent* Create(Object* pOwner, InitDESC* desc);
+    static TransformComponent* Create(Object* pOwner);
+    HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void Update(_float dt)override;
 
-    void SetPosition(_float3 position) { m_Position = position; isDirty = true; }
-    void SetScale(_float3 scale) { m_Scale = scale; isDirty = true; }
-    void SetRotation(_float3 rotation) { m_Rotation = rotation; isDirty = true; }
+    void SetPosition(_float3 position) { m_Position = position; m_isDirty = true; }
+    void SetScale(_float3 scale) { m_Scale = scale; m_isDirty = true; }
+    void SetRotation(_float3 rotation) { m_Rotation = rotation; m_isDirty = true; }
     void SetForward(_float3 direction);
 
     void Translate(_fvector velocity);
@@ -50,7 +52,7 @@ public:
     _matrix GetWorldMatrix()const;
     _matrix GetWorldMatrixInverse()const;
 
-    Component* Clone(InitDESC* arg)override { return nullptr; };
+    Component* Clone()override;
     void Free()override;
 
 private:
@@ -65,7 +67,7 @@ private:
 
     _float4x4 m_WorldMatrix{};
     
-    _bool isDirty = true;
+    _bool m_isDirty = true;
 };
 
 NS_END

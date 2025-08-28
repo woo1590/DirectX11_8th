@@ -41,7 +41,7 @@ void PrototypeManager::Free()
 	m_Prototypes.clear();
 }
 
-HRESULT PrototypeManager::AddPrototype(_uint level, const _string& prototypeTag, Base* prototype)
+HRESULT PrototypeManager::AddPrototype(_uint level, const _string& prototypeTag, Object* prototype)
 {
 	auto iter = m_Prototypes[level].find(prototypeTag);
 
@@ -53,17 +53,14 @@ HRESULT PrototypeManager::AddPrototype(_uint level, const _string& prototypeTag,
 	return S_OK;
 }
 
-Base * PrototypeManager::ClonePrototype(Prototype type, _uint level, const _string& prototypeTag, InitDESC* arg)
+Object * PrototypeManager::ClonePrototype(_uint level, const _string& prototypeTag, InitDESC* arg)
 {
-	Base* prototype = FindPrototype(level, prototypeTag);
+	Object* prototype = FindPrototype(level, prototypeTag);
 
 	if (!prototype)
-		return nullptr;	
+		return nullptr;
 
-	if (type == Prototype::Object)
-		return static_cast<Object*>(prototype)->Clone(arg);
-	else
-		return static_cast<Component*>(prototype)->Clone(arg);
+	return prototype->Clone(arg);
 }
 
 void PrototypeManager::Clear(_uint level)
@@ -74,7 +71,7 @@ void PrototypeManager::Clear(_uint level)
 	m_Prototypes[level].clear();
 }
 
-Base* PrototypeManager::FindPrototype(_uint level, const _string& prototypeTag)
+Object* PrototypeManager::FindPrototype(_uint level, const _string& prototypeTag)
 {
 	auto iter = m_Prototypes[level].find(prototypeTag);
 
