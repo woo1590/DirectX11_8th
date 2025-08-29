@@ -3,6 +3,15 @@
 
 NS_BEGIN(Engine)
 
+class Material;
+class VIBuffer;
+
+struct Node
+{
+    std::pair<VIBuffer*, Material*> bufferMaterial;
+    std::vector<Node*> children;
+};
+
 class ENGINE_DLL Model :
     public Base
 {
@@ -15,7 +24,9 @@ public:
     HRESULT Initialize();
 
     void Free()override;
+
 private:
+    Node* m_pRootNode = nullptr;
 
 };
 

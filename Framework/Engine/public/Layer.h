@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -22,6 +23,7 @@ public:
 
     void SetUpdatable(_bool update) { m_isUpdatable = update; }
     _bool IsUpdatable()const { return m_isUpdatable; }
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
     void Free()override;
 

@@ -20,6 +20,7 @@ HRESULT Model::Initialize()
 	return S_OK;
 }
 
+
 void Model::Free()
 {
 	__super::Free();

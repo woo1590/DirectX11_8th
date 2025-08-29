@@ -20,6 +20,9 @@ public:
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
     HRESULT LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
 
+    VIBuffer* GetBuffer(_uint levelID, const _string& key);
+    Shader* GetShader(_uint levelID, const _string& key);
+
     void Clear(_uint levelID);
     void Free()override;
 

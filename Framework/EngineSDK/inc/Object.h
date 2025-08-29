@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "EngineCore.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -66,6 +67,7 @@ public:
             return nullptr;
     }
 
+    virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies) { return S_OK; }
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
 

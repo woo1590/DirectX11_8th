@@ -13,14 +13,15 @@ private:
 public:
     static PipeLine* Create();
     HRESULT Initialize();
+    void Update();
+
+    void SetViewMatrix(_fmatrix viewMatrix);
+    void SetProjMatrix(_fmatrix projMatrix);
     
-    void XM_CALLCONV SetViewMatrix(_fmatrix viewMatrix);
-    void XM_CALLCONV SetProjMatrix(_fmatrix projMatrix);
-    
-    _matrix XM_CALLCONV GetViewMatirx()const;
-    _matrix XM_CALLCONV GetViewMatrixInverse()const;
-    _matrix XM_CALLCONV GetProjMatrix()const;
-    _matrix XM_CALLCONV GetProjMatrixInverse()const;
+    _matrix GetViewMatirx()const;
+    _matrix GetViewMatrixInverse()const;
+    _matrix GetProjMatrix()const;
+    _matrix GetProjMatrixInverse()const;
 
     void Free()override;
 
@@ -33,7 +34,6 @@ private:
     _float4x4 m_ProjMatrixInverse{};
 
     _float3 m_CamPosition{};   
-
 };
 
 NS_END

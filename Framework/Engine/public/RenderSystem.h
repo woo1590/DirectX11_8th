@@ -16,20 +16,22 @@ public:
     static RenderSystem* Create();
     HRESULT Initialize();
 
-    void RenderLoop();
-    void Submit(std::list<RenderProxy> proxies){}
-    void StartRenderThread();
-    void StopRenderThread();
-
+    HRESULT Render();
+    void Submit(std::vector<std::vector<RenderProxy>> proxies);
     void Free()override;
 
 private:
-    std::mutex m_RenderMutex;
-    std::thread m_RenderThread;
-    std::condition_variable m_Condition;
-    std::atomic<_bool> m_isRunning = false;
+    HRESULT RenderNonBlend();
+    void Clear();
 
-    std::vector<std::list<RenderProxy>> m_CurrFrameProxies;
+    std::vector<std::vector<RenderProxy>> m_CurrFrameProxies;
+
+    Renderer* m_pRenderer = nullptr;
+
+    ID3D11Buffer* m_pCBPerFrame = nullptr;
+    ID3D11Buffer* m_pCBPerLight = nullptr;  
+    ID3D11Buffer* m_pCBPerObject = nullptr;
+
 };
 
 NS_END

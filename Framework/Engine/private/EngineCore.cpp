@@ -27,6 +27,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 {
 	hWnd = desc.hWnd;
 
+	m_pGraphicDevice = GraphicDevice::Create(desc.hWnd,desc.winMode,desc.winSizeX,desc.winSizeY);
+	if (!m_pGraphicDevice)
+		return E_FAIL;
+
 	m_pRenderSystem = RenderSystem::Create();
 	if (!m_pRenderSystem)
 		return E_FAIL;
@@ -41,10 +45,6 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 
 	m_pRandom = Random::Create();
 	if (!m_pRandom)
-		return E_FAIL;
-
-	m_pGraphicDevice = GraphicDevice::Create(desc.hWnd,desc.winMode,desc.winSizeX,desc.winSizeY);
-	if (!m_pGraphicDevice)
 		return E_FAIL;
 
 #ifdef USE_IMGUI
@@ -87,7 +87,6 @@ void EngineCore::Free()
 	Safe_Release(m_pRandom);
 	Safe_Release(m_pRenderSystem);
 	Safe_Release(m_pTimerManager);
-	Safe_Release(m_pGraphicDevice);
 
 #ifdef USE_IMGUI
 	Safe_Release(m_pImGuiManager);
@@ -100,6 +99,7 @@ void EngineCore::Free()
 	Safe_Release(m_pSoundManager);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pResourceManager);
+	Safe_Release(m_pGraphicDevice);	/*GraphicDevice는 가장 먼저 생성, 가장 마지막 해제*/
 
 }
 
@@ -113,19 +113,24 @@ void EngineCore::Tick(_float dt)
 	m_pLevelManager->Update(dt);
 	m_pLevelManager->Render();
 
-	BeginDraw();
-	Draw();
-	EndDraw();
+	std::vector<std::vector<RenderProxy>> proxies(ENUM_CLASS(RenderGroup::Count));
+	if (FAILED(m_pObjectManager->ExtractRenderProxies(proxies)))
+		return;
+
+	m_pRenderSystem->Submit(std::move(proxies));
+
+	BeginRender();
+	Render();
+	EndRender();
 }
 
+
+#ifdef USE_IMGUI
+#pragma region ImGui
 _bool EngineCore::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	return m_pImGuiManager->WndProcHandler(hWnd, msg, wParam, lParam);
 }
-
-#ifdef USE_IMGUI
-#pragma region ImGui
-
 #pragma endregion
 #endif
 
@@ -190,6 +195,15 @@ HRESULT EngineCore::LoadShader(_uint levelID, const _wstring& filePath, const _s
 {
 	return m_pResourceManager->LoadShader(levelID,filePath,key,pElement,numElement);
 }
+VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetBuffer(levelID, key);
+}
+
+Shader* EngineCore::GetShader(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetShader(levelID, key);
+}
 #pragma endregion
 
 #pragma region Prototype
@@ -229,7 +243,7 @@ void EngineCore::ClearResource(_uint levelID)
 #pragma endregion
 
 #pragma region Rendering
-HRESULT EngineCore::BeginDraw()
+HRESULT EngineCore::BeginRender()
 {
 	if (FAILED(m_pGraphicDevice->ClearBackBufferView()))
 		return E_FAIL;
@@ -240,17 +254,14 @@ HRESULT EngineCore::BeginDraw()
 	return S_OK;
 }
 
-HRESULT EngineCore::Draw()
+HRESULT EngineCore::Render()
 {
-	//render loop
-	m_pImGuiManager->IMGUI_TEST_FUNC();
-	return S_OK;
+	return m_pRenderSystem->Render();;
 }
 
-HRESULT EngineCore::EndDraw()
+HRESULT EngineCore::EndRender()
 {
 	return m_pGraphicDevice->Present();
 }
-
 #pragma endregion
 

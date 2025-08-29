@@ -2,15 +2,17 @@
 #include "Renderer.h"
 #include "VIBuffer.h"
 
-Renderer::Renderer(ID3D11DeviceContext* pDeviceContext)
-	:m_pDeviceContext(pDeviceContext)
+Renderer::Renderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	:m_pDevice(pDevice),
+	m_pDeviceContext(pDeviceContext)
 {
-	pDeviceContext->AddRef();
+	m_pDevice->AddRef();
+	m_pDeviceContext->AddRef();
 }
 
-Renderer* Renderer::Create(ID3D11DeviceContext* pDeviceContext)
+Renderer* Renderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	Renderer* Instance = new Renderer(pDeviceContext);
+	Renderer* Instance = new Renderer(pDevice,pDeviceContext);
 	
 	if (FAILED(Instance->Initialize()))
 		Safe_Release(Instance);
@@ -23,19 +25,8 @@ HRESULT Renderer::Initialize()
 	return S_OK;
 }
 
-_int Renderer::UploadBuffer(VIBuffer* pBuffer)
-{
-	GPUBufferData data{};
-
-	/*----Vertex Buffer----*/
-	D3D11_BUFFER_DESC vbDesc{};
-	
-	return 1;
-}
-
 void Renderer::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pDeviceContext);
 }

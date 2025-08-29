@@ -65,6 +65,20 @@ void ObjectManager::LateUpdate(_float dt)
 	}
 }
 
+HRESULT ObjectManager::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	for (const auto& map : m_Layers)
+	{
+		for (const auto& pair : map)
+		{
+			if (FAILED(pair.second->ExtractRenderProxies(proxies)))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
 HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg)
 {
 	Object* object = static_cast<Object*>(EngineCore::GetInstance()->ClonePrototype(prototypeLevelID, prototypeTag, arg));

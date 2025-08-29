@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 
+class Model;
 class ENGINE_DLL ModelComponent final:
     public Component
 {
@@ -15,12 +16,12 @@ public:
     static ModelComponent* Create(Object* owner);
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-    void Free()override;
     
+    HRESULT Bind();
     Component* Clone()override;
-
+    void Free()override;
 private:
-
+    Model* m_pModel = nullptr;
 };
 
 NS_END

@@ -23,6 +23,17 @@ HRESULT Layer::Initialize()
 	return S_OK;
 }
 
+HRESULT Layer::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	for (const auto& object : m_Objects)
+	{
+		if (FAILED(object->ExtractRenderProxies(proxies)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 void Layer::Free()
 {
 	__super::Free();

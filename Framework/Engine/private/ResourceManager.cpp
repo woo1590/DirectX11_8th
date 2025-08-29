@@ -53,6 +53,32 @@ HRESULT ResourceManager::LoadShader(_uint levelID, const _wstring& filePath, con
 	return S_OK;
 }
 
+VIBuffer* ResourceManager::GetBuffer(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return nullptr;
+
+	auto iter = m_Buffers[levelID].find(key);
+	
+	if (iter == m_Buffers[levelID].end())
+		return nullptr;
+
+	return iter->second;
+}
+
+Shader* ResourceManager::GetShader(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return nullptr;
+
+	auto iter = m_Shaders[levelID].find(key);
+
+	if (iter == m_Shaders[levelID].end())
+		return nullptr;
+
+	return iter->second;
+}
+
 void ResourceManager::Clear(_uint levelID)
 {
 	for (auto& pair : m_Buffers[levelID])

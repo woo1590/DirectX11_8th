@@ -21,6 +21,7 @@ class Level;
 class Random;
 
 class VIBuffer;
+class Shader;
 class Object;
 class ENGINE_DLL EngineCore final :
     public Base
@@ -62,6 +63,8 @@ public:
     /*----Resource----*/
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
     HRESULT LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
+    VIBuffer* GetBuffer(_uint levelID, const _string& key);
+    Shader* GetShader(_uint levelID, const _string& key);
 
     /*-----Prototype-----*/
     HRESULT AddPrototype(_uint level, const _string& prototypeTag, Object* prototype);
@@ -78,9 +81,9 @@ public:
     HWND GetWindowHandle() { return hWnd; }
 private:
     /*----Rendering----*/
-    HRESULT BeginDraw();
-    HRESULT Draw();
-    HRESULT EndDraw();
+    HRESULT BeginRender();
+    HRESULT Render();
+    HRESULT EndRender();
 
     HWND hWnd{};
 

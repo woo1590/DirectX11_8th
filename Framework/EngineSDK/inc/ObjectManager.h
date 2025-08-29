@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -19,6 +20,7 @@ public:
     void Update(_float dt);
     void LateUpdate(_float dt);
 
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg = nullptr);
     void Clear(_uint levelID);
 

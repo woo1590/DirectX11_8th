@@ -49,6 +49,9 @@
     <Filter Include="98. Etc\ShaderFiles">
       <UniqueIdentifier>{d0c05a6d-5eb3-42ff-a197-e9f9326f8d81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Camera">
+      <UniqueIdentifier>{0b1f4ac7-ccc3-4521-815a-a3ce984a95b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

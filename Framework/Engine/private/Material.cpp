@@ -30,10 +30,13 @@ void Material::Free()
 
 void Material::Bind(_uint passIndex)
 {
-	/*셰이더 바인딩 & 파라미터 세팅*/
-
+	/*Bind SRV*/
 	for (const auto& pair : m_TexParams)
 		m_pShader->SetValue(pair.first, pair.second);
+
+	/*Bind Matrix*/
+
+
 
 	m_pShader->Apply(passIndex);
 }

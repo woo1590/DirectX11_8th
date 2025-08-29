@@ -1,5 +1,6 @@
 #include "EnginePCH.h"
 #include "ModelComponent.h"
+#include "Model.h"
 
 ModelComponent::ModelComponent(Object* owner)
 	:Component(owner)
@@ -34,6 +35,12 @@ HRESULT ModelComponent::Initialize(InitDESC* arg)
 void ModelComponent::Free()
 {
 	__super::Free();
+}
+
+HRESULT ModelComponent::Bind()
+{
+	
+	return S_OK;
 }
 
 Component* ModelComponent::Clone()
