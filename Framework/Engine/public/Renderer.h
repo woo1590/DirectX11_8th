@@ -7,7 +7,7 @@ class ENGINE_DLL Renderer :
     public Base
 {
 private:
-    Renderer();
+    Renderer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
     virtual ~Renderer() = default;
 
 public:
