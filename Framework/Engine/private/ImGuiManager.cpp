@@ -38,26 +38,39 @@ HRESULT ImGuiManager::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	return S_OK;
 }
 
-_bool ImGuiManager::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	return ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
-}
-
-void ImGuiManager::IMGUI_TEST_FUNC()
+void ImGuiManager::BeginFrame()
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+}
 
-	ImGui::Begin("DX11 + Win32");
-	ImGui::Text("Test Widget");
-	static _float f = 0.f;
-	ImGui::SliderFloat("float", &f, 0.f, 1.f);
-	if(ImGui::Button("Button"))
-	{ }
-	ImGui::End();
+void ImGuiManager::Render()
+{
+	for (const auto& [tag,desc] : m_WindowMap)
+	{
+		if (ImGui::Begin(tag.c_str()))
+		{
+			desc.window();
+		}
+		ImGui::End();
+	}
+}
+
+void ImGuiManager::EndFrame()
+{
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void ImGuiManager::AddImGuiWindow(const ImGuiWindowDESC desc)
+{
+	m_WindowMap[desc.windowTag] = desc;
+}
+
+_bool ImGuiManager::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	return ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
 }
 
 void ImGuiManager::Free()

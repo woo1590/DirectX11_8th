@@ -50,7 +50,7 @@ HRESULT VIBuffer::BindBuffers()
 	return S_OK;
 }
 
-HRESULT VIBuffer::Render()
+HRESULT VIBuffer::Draw()
 {
 	m_pDeviceContext->DrawIndexed(m_iNumIndices, 0, 0);
 

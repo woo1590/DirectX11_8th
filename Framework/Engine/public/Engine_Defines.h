@@ -5,6 +5,7 @@
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
 
+
 //d3d
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -23,6 +24,7 @@ using namespace DirectX;
 #include <ctime>
 #include <typeindex>
 #include <random>
+#include <filesystem>
 
 //thread
 #include <thread>

@@ -24,8 +24,6 @@ HRESULT TestLevel::Initialize()
 	if (FAILED(InitializeTestLayer("Layer_Test")))
 		return E_FAIL;
 
-	EngineCore::GetInstance()->PlayBGM("TestBGM2");
-
 	return S_OK;
 }
 
@@ -33,14 +31,10 @@ void TestLevel::Free()
 {
 	__super::Free();
 
-	EngineCore::GetInstance()->StopSound("TestBGM2");
-
 }
 
 void TestLevel::Update(_float dt)
 {
-	if (GetAsyncKeyState(VK_SPACE))
-		EngineCore::GetInstance()->StopSound("TestBGM2");
 }
 
 HRESULT TestLevel::Render()

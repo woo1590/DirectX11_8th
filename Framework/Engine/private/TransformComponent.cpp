@@ -101,6 +101,8 @@ void TransformComponent::SetForward(_float3 direction)
 void TransformComponent::Translate(_fvector velocity)
 {
 	XMStoreFloat3(&m_Position, XMLoadFloat3(&m_Position) + velocity);
+
+	m_isDirty = true;
 }
 
 _matrix TransformComponent::GetWorldMatrix() const

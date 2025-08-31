@@ -17,6 +17,9 @@ Object::Object(const Object& prototype)
 		m_ComponentMap[pair.first] = comp;
 		comp->AddRef();
 	}
+
+	m_pTransform = GetComponent<TransformComponent>();
+	m_pTransform->AddRef();
 }
 
 HRESULT Object::Initialize_Prototype()
@@ -35,6 +38,14 @@ HRESULT Object::Initialize_Prototype()
 
 HRESULT Object::Initialize(InitDESC* arg)
 {
+	if (arg)
+	{
+		ObjectDESC* objectDesc = static_cast<ObjectDESC*>(arg);
+		m_strInstanceTag = objectDesc->instanceTag;
+
+		m_pTransform->Initialize(arg);
+	}
+
 	return S_OK;
 }
 

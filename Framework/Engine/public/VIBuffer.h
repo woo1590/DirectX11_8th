@@ -15,7 +15,7 @@ public:
     virtual void Free()override;
 
     virtual HRESULT BindBuffers();
-    virtual HRESULT Render();
+    virtual HRESULT Draw();
 
 protected:
     ID3D11Buffer* m_pVB = nullptr;

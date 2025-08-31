@@ -19,6 +19,7 @@ class PrototypeManager;
 class PipeLine;
 class Level;
 class Random;
+class Renderer;
 
 class VIBuffer;
 class Shader;
@@ -39,6 +40,7 @@ public:
 #ifdef USE_IMGUI
     /*---ImGui---*/
     _bool WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    void AddImGuiWindow(const _string& tag, std::function<void()> window);
 #endif
 
     /*-----Timer-----*/
@@ -62,7 +64,7 @@ public:
 
     /*----Resource----*/
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
-    HRESULT LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
+    HRESULT LoadShader(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(_uint levelID, const _string& key);
 
@@ -79,6 +81,9 @@ public:
 
     /*----Window----*/
     HWND GetWindowHandle() { return hWnd; }
+
+    /*----RenderSystem----*/
+    Renderer* GetRenderer()const;
 private:
     /*----Rendering----*/
     HRESULT BeginRender();

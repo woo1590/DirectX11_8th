@@ -1,6 +1,7 @@
 #include "EnginePCH.h"
 #include "Shader.h"
 #include "EngineCore.h"
+#include "Renderer.h"
 
 Shader::Shader():
     m_pDevice(EngineCore::GetInstance()->GetDevice()),
@@ -14,7 +15,7 @@ Shader::Shader(const Shader& prototype)
 {
 }
 
-Shader* Shader::Create(const _wstring& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+Shader* Shader::Create(const _string& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
     Shader* Instance = new Shader();
 
@@ -24,17 +25,19 @@ Shader* Shader::Create(const _wstring& filePath, const D3D11_INPUT_ELEMENT_DESC*
     return Instance;
 }
 
-HRESULT Shader::Initialize(const _wstring& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
-    _uint shaderFlag = 0;
+    std::filesystem::path p = std::filesystem::u8path(filePath);
+    _wstring path = p.wstring();
 
+    _uint shaderFlag = 0;
 #ifdef _DEBUG
     shaderFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
     shaderFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 #endif
 
-    if (FAILED(D3DX11CompileEffectFromFile(filePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderFlag, 0, m_pDevice, &m_pEffect, nullptr)))
+    if (FAILED(D3DX11CompileEffectFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderFlag, 0, m_pDevice, &m_pEffect, nullptr)))
         return E_FAIL;
 
     ID3DX11EffectTechnique* technique = nullptr;
@@ -62,6 +65,8 @@ HRESULT Shader::Initialize(const _wstring& filePath, const D3D11_INPUT_ELEMENT_D
         m_InputLayouts.push_back(inputLayout);
     }
 
+    EngineCore::GetInstance()->GetRenderer()->ConnectConstantBuffer(m_pEffect);
+
     return S_OK;
 }
 
@@ -74,6 +79,19 @@ HRESULT Shader::Apply(_uint passIndex)
         return E_FAIL;
 
     return pass->Apply(0, m_pDeviceContext);
+}
+
+HRESULT Shader::SetValue(const _string& name, _float4x4 value)
+{
+    ID3DX11EffectVariable* variable = m_pEffect->GetVariableByName(name.c_str());
+    if (!variable)
+        return E_FAIL;
+
+    ID3DX11EffectMatrixVariable* matrixVariable = variable->AsMatrix();
+    if (!matrixVariable)
+        return E_FAIL;
+
+    return matrixVariable->SetMatrix(reinterpret_cast<const _float*>(&value));
 }
 
 HRESULT Shader::SetValue(const _string& name, ID3D11ShaderResourceView* value)

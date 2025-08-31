@@ -89,10 +89,10 @@ HRESULT Loader::LoadingForTest()
 	engine->LoadSound("TestBGM2", "../bin/resource/TestBGM2.mp3", true);
 
 	/*Load Resource*/
-	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Test), "Buffer_Quad", VIBufferQuad::Create())))
+	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Test), L"../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", VTXTEX::elements, VTXTEX::numElement)))
+	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", VTXTEX::elements, VTXTEX::numElement)))
 		return E_FAIL;
 
 	/*Prototype Object*/

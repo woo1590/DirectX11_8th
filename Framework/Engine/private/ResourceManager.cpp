@@ -39,7 +39,7 @@ HRESULT ResourceManager::LoadBuffer(_uint levelID, const _string& key, VIBuffer*
 	return S_OK;
 }
 
-HRESULT ResourceManager::LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT ResourceManager::LoadShader(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
 	if (levelID >= m_iNumLevel)
 		return E_FAIL;

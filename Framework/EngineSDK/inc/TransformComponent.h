@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.h"
-#include "Object.h"
 
 NS_BEGIN(Engine)
 
@@ -8,7 +7,7 @@ class ENGINE_DLL TransformComponent final:
     public Component
 {
 public:
-    struct TransformDESC : public Object::ObjectDESC
+    struct TransformDESC : public InitDESC
     {
         _float3 position, scale, rotation;
     };
@@ -57,7 +56,7 @@ public:
 
 private:
     _float3 m_Position{};
-    _float3 m_Scale{};
+    _float3 m_Scale{ 1.f,1.f,1.f };
     _float3 m_Rotation{};   //radian(pitch,yaw,roll)
     _float4 m_Quaternion{}; //cached quternion
 

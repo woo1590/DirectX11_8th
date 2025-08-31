@@ -18,11 +18,13 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
-
+    VIBuffer* m_pVIBuffer = nullptr;
+    Material* m_pMaterial = nullptr;
 };
 
 NS_END

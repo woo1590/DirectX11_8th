@@ -15,7 +15,7 @@ public:
     static Material* Create(Shader* pShader);
     HRESULT Initialize();
 
-    void Bind(_uint passIndex);
+    HRESULT BindMaterial(_uint passIndex);
     void SetParam(const _string& key, _int value) { m_IntParams[key] = value; }
     void SetParam(const _string& key, _float value) { m_FloatParams[key] = value; }
     void SetParam(const _string& key, _float2 value) { m_Float2Params[key] = value; }

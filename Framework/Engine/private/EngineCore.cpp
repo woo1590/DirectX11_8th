@@ -116,10 +116,16 @@ void EngineCore::Tick(_float dt)
 	std::vector<std::vector<RenderProxy>> proxies(ENUM_CLASS(RenderGroup::Count));
 	if (FAILED(m_pObjectManager->ExtractRenderProxies(proxies)))
 		return;
-
 	m_pRenderSystem->Submit(std::move(proxies));
 
 	BeginRender();
+
+#ifdef USE_IMGUI
+	m_pImGuiManager->BeginFrame();
+	m_pImGuiManager->Render();
+	m_pImGuiManager->EndFrame();
+#endif
+
 	Render();
 	EndRender();
 }
@@ -130,6 +136,14 @@ void EngineCore::Tick(_float dt)
 _bool EngineCore::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	return m_pImGuiManager->WndProcHandler(hWnd, msg, wParam, lParam);
+}
+void EngineCore::AddImGuiWindow(const _string& tag, std::function<void()> window)
+{
+	ImGuiManager::ImGuiWindowDESC desc{};
+	desc.windowTag = tag;
+	desc.window = window;
+
+	m_pImGuiManager->AddImGuiWindow(desc);
 }
 #pragma endregion
 #endif
@@ -191,7 +205,7 @@ HRESULT EngineCore::LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuf
 {
 	return m_pResourceManager->LoadBuffer(levelID,key,pBuffer);
 }
-HRESULT EngineCore::LoadShader(_uint levelID, const _wstring& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT EngineCore::LoadShader(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
 	return m_pResourceManager->LoadShader(levelID,filePath,key,pElement,numElement);
 }
@@ -243,6 +257,10 @@ void EngineCore::ClearResource(_uint levelID)
 #pragma endregion
 
 #pragma region Rendering
+Renderer* EngineCore::GetRenderer() const
+{
+	return m_pRenderSystem->GetRenderer();
+}
 HRESULT EngineCore::BeginRender()
 {
 	if (FAILED(m_pGraphicDevice->ClearBackBufferView()))

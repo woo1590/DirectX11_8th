@@ -146,5 +146,13 @@
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxTex.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxCube.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\shaderfiles\ConstantBuffer.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "EngineCore.h"
 #include "RenderProxy.h"
+#include "TransformComponent.h"
 
 NS_BEGIN(Engine)
 
@@ -11,9 +12,9 @@ class ENGINE_DLL Object abstract:
     public Base
 {
 public:
-    struct ObjectDESC : public InitDESC
+    struct ObjectDESC : public TransformComponent::TransformDESC
     {
-
+        _string instanceTag{};
     };
 
 protected:
@@ -72,6 +73,7 @@ public:
     virtual void Free()override;
 
 protected:
+    _string m_strInstanceTag{};
     TransformComponent* m_pTransform = nullptr;
 
     std::vector<Component*> m_Components;

@@ -142,6 +142,9 @@
     <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Cube">
       <UniqueIdentifier>{0a573cd6-81b3-428e-b9a4-93d80f784a4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Object\UIObject">
+      <UniqueIdentifier>{2a6d26a5-5ce8-42e8-80ff-8ab4044cd0e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -306,6 +309,9 @@
     <ClInclude Include="..\public\guizmo\ImZoomSlider.h">
       <Filter>99. Utility\guizmo</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UIObject.h">
+      <Filter>04. Object\UIObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -389,9 +395,6 @@
     <ClCompile Include="..\private\ImGuiManager.cpp">
       <Filter>01. Engine Component\ImGui Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\VIBuffer.cpp">
-      <Filter>01. Engine Component\Resource Manager\VIBuffer</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\VIBufferQuad.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Quad</Filter>
     </ClCompile>
@@ -445,6 +448,12 @@
     </ClCompile>
     <ClCompile Include="..\public\guizmo\ImSequencer.cpp">
       <Filter>99. Utility\guizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIObject.cpp">
+      <Filter>04. Object\UIObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -26,17 +26,25 @@ HRESULT Material::Initialize()
 void Material::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pShader);
 }
 
-void Material::Bind(_uint passIndex)
+HRESULT Material::BindMaterial(_uint passIndex)
 {
 	/*Bind SRV*/
 	for (const auto& pair : m_TexParams)
-		m_pShader->SetValue(pair.first, pair.second);
+	{
+		if (FAILED(m_pShader->SetValue(pair.first, pair.second)))
+			return E_FAIL;
+	}
 
 	/*Bind Matrix*/
+	for (const auto& pair : m_Float4x4Params)
+	{
+		if (FAILED(m_pShader->SetValue(pair.first, pair.second)))
+			return E_FAIL;
+	}
 
-
-
-	m_pShader->Apply(passIndex);
+	return m_pShader->Apply(passIndex);
 }

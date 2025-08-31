@@ -4,8 +4,8 @@
 #include "framework.h"
 
 //define
-#include "Client_Defines.h"
 #include "Engine_Defines.h"
+#include "Client_Defines.h"
 
 using namespace Client;
 using namespace Engine;
