@@ -15,13 +15,15 @@ public:
     HRESULT Initialize();
     void Update();
 
-    void SetViewMatrix(_fmatrix viewMatrix);
-    void SetProjMatrix(_fmatrix projMatrix);
+    void SetViewMatrix(_float4x4 viewMatrix) { m_ViewMatrix = viewMatrix; }
+    void SetProjMatrix(_float4x4 projMatrix) { m_ProjMatrix = projMatrix; }
     
-    _matrix GetViewMatirx()const;
-    _matrix GetViewMatrixInverse()const;
-    _matrix GetProjMatrix()const;
-    _matrix GetProjMatrixInverse()const;
+    _float4x4 GetViewMatirx()const { return m_ViewMatrix; }
+    _float4x4 GetViewMatrixInverse()const { return m_ViewMatrixInverse; }
+    _float4x4 GetProjMatrix()const { return m_ProjMatrix; }
+    _float4x4 GetProjMatrixInverse()const { return m_ProjMatrixInverse; }
+
+    _float3 GetCamPosition()const { return m_CamPosition; }
 
     void Free()override;
 

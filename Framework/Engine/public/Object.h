@@ -25,6 +25,7 @@ protected:
 public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(InitDESC* arg);
+    virtual void PriorityUpdate(_float dt);
     virtual void Update(_float dt);
     virtual void LateUpdate(_float dt);
 
@@ -34,25 +35,6 @@ public:
         auto comp = T::Create(this,std::forward<Args>(args)...);
         m_Components.push_back(comp);
         m_ComponentMap[typeid(T)] = comp;
-        comp->AddRef();
-
-        return comp;
-    }
-
-    template<typename T>
-    T* AddComponentFromPrototype(_uint prototypeLevel, const _string& prototypeTag, InitDESC* arg = nullptr)
-    {
-        Base* clone = EngineCore::GetInstance()->ClonePrototype(prototypeLevel, prototypeTag, arg);
-        if (!clone)
-            return nullptr;
-
-        T* comp = dynamic_cast<T*>(clone);
-        if (!comp)
-            return nullptr;
-
-        m_Components.push_back(comp);
-        m_ComponentMap[typeid(T)] = comp;
-        comp->SetOwner(this);
         comp->AddRef();
 
         return comp;
@@ -69,6 +51,8 @@ public:
     }
 
     virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies) { return S_OK; }
+    _string GetInstanceTag()const { return m_strInstanceTag; }
+
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
 

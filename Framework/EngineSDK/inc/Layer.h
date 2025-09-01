@@ -16,6 +16,7 @@ public:
     static Layer* Create();
     HRESULT Initialize();
 
+    void PriorityUpdate(_float dt);
     void Update(_float dt);
     void LateUpdate(_float dt);
 
@@ -24,6 +25,7 @@ public:
     void SetUpdatable(_bool update) { m_isUpdatable = update; }
     _bool IsUpdatable()const { return m_isUpdatable; }
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
+    Object* GetObjectByInstanceTag(const _string& instanceTag);
 
     void Free()override;
 

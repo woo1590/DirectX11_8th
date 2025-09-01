@@ -61,6 +61,13 @@ public:
     ID3D11DeviceContext* GetDeviceContext();
 
     /*----PipeLine----*/
+    void SetViewMatrix(_float4x4 viewMatrix);
+    void SetProjMatrix(_float4x4 projMatrix);
+    _float4x4 GetViewMatrix();
+    _float4x4 GetViewMatrixInverse();
+    _float4x4 GetProjMatrix();
+    _float4x4 GetProjMatrixInverse();
+    _float3 GetCamPosition();
 
     /*----Resource----*/
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
@@ -84,6 +91,7 @@ public:
 
     /*----RenderSystem----*/
     Renderer* GetRenderer()const;
+
 private:
     /*----Rendering----*/
     HRESULT BeginRender();

@@ -17,11 +17,15 @@ public:
     HRESULT Initialize(_uint levelCnt);
     void Free()override;
 
+    void PriorityUpdate(_float dt);
     void Update(_float dt);
     void LateUpdate(_float dt);
 
-    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg = nullptr);
+    Layer* GetLayer(_uint layerLevel, const _string& layerTag);
+    Object* GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag);
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
+
     void Clear(_uint levelID);
 
 private:

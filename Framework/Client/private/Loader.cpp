@@ -1,11 +1,19 @@
 #include "pch.h"
 #include "EngineCore.h"
 #include "Loader.h"
-#include "TestCube.h"
-#include "VIBufferQuad.h"
-#include "Shader.h"
+
+//object
 #include "BackGround.h"
+#include "TestCube.h"
+#include "FreeCam.h"
+
+//component
 #include "TransformComponent.h"
+
+//resource
+#include "VIBufferQuad.h"
+#include "VIBufferCube.h"
+#include "Shader.h"
 
 Loader::Loader()
 {
@@ -89,10 +97,17 @@ HRESULT Loader::LoadingForTest()
 	engine->LoadSound("TestBGM2", "../bin/resource/TestBGM2.mp3", true);
 
 	/*Load Resource*/
+	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
 		return E_FAIL;
 
+	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
+		return E_FAIL;
+
 	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", VTXTEX::elements, VTXTEX::numElement)))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube", VTXCUBE::elements, VTXCUBE::numElement)))
 		return E_FAIL;
 
 	/*Prototype Object*/
@@ -101,6 +116,9 @@ HRESULT Loader::LoadingForTest()
 		return E_FAIL;
 
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround", BackGround::Create())))
+		return E_FAIL;
+
+	if(FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test),"Prototype_Object_FreeCam",FreeCam::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";

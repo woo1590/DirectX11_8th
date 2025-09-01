@@ -59,5 +59,9 @@ HRESULT TestLevel::InitializeTestLayer(const _string& layerTag)
 		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
 		return E_FAIL;
 
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_FreeCam",
+		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }

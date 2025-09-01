@@ -31,17 +31,17 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     desc.winSizeY = WinSizeY;
     desc.levelCnt = static_cast<_uint>(LevelID::Count);
 
-    engine = EngineCore::GetInstance();
-    if (FAILED(engine->Initialize(desc)))
+    m_pEngineCore = EngineCore::GetInstance();
+    if (FAILED(m_pEngineCore->Initialize(desc)))
     {
         MSG_BOX("Create Failed : EngineCore");
         return E_FAIL;
     }
 
-    engine->AddTimer("Timer_Default");
-    engine->AddTimer("Timer_120fps");
+    m_pEngineCore->AddTimer("Timer_Default");
+    m_pEngineCore->AddTimer("Timer_120fps");
 
-    engine->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Test));
+    m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Test));
 
     isRunning = true;
 
@@ -65,16 +65,16 @@ void MainApp::Run()
             }
         }
 
-        engine->UpdateTimer("Timer_Default");
-        timeAcc += engine->GetDeltaTime("Timer_Default");
+        m_pEngineCore->UpdateTimer("Timer_Default");
+        timeAcc += m_pEngineCore->GetDeltaTime("Timer_Default");
         
         if (timeAcc >= 1.f / 120.f)
         {
-            engine->UpdateTimer("Timer_120fps");
-            _float dt = engine->GetDeltaTime("Timer_120fps");
+            m_pEngineCore->UpdateTimer("Timer_120fps");
+            _float dt = m_pEngineCore->GetDeltaTime("Timer_120fps");
 
             dt = std::clamp(dt, 0.f, 0.03f);
-            engine->Tick(dt);
+            m_pEngineCore->Tick(dt);
 
             timeAcc = 0.f;
 
@@ -84,7 +84,7 @@ void MainApp::Run()
 
 void MainApp::Free()
 {
-    engine->DestroyInstance();
+    m_pEngineCore->DestroyInstance();
 }
 
 bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)

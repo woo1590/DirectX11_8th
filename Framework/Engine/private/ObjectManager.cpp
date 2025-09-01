@@ -41,6 +41,18 @@ void ObjectManager::Free()
 	m_Layers.clear();
 }
 
+void ObjectManager::PriorityUpdate(_float dt)
+{
+	for (const auto& map : m_Layers)
+	{
+		for (const auto& pair : map)
+		{
+			if (pair.second->IsUpdatable())
+				pair.second->PriorityUpdate(dt);
+		}
+	}
+}
+
 void ObjectManager::Update(_float dt)
 {
 	for (const auto& map : m_Layers)
@@ -67,6 +79,10 @@ void ObjectManager::LateUpdate(_float dt)
 
 HRESULT ObjectManager::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
+	/* 매개 인자로 들어오는 벡터를 직접 넘기지 말고 
+	   여기서 벡터 하나씩 생성하고 나서 멀티 스레드로 넘겨도 될듯? 
+	   일단 나중에 -> 렌더링 진도 다 끝나고나서 */
+
 	for (const auto& map : m_Layers)
 	{
 		for (const auto& pair : map)
@@ -95,6 +111,20 @@ HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototyp
 	layer->AddObject(object);
 
 	return S_OK;
+}
+
+Layer* ObjectManager::GetLayer(_uint layerLevel, const _string& layerTag)
+{
+	return FindLayer(layerLevel, layerTag);
+}
+
+Object* ObjectManager::GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag)
+{
+	Layer* layer = FindLayer(layerLevel, layerTag);
+	if (!layer)
+		return nullptr;
+
+	return layer->GetObjectByInstanceTag(instanceTag);
 }
 
 void ObjectManager::Clear(_uint levelID)

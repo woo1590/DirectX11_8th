@@ -17,6 +17,7 @@ public:
     virtual HRESULT Initialize(InitDESC* arg) { return S_OK; };
     virtual void Free()override {};
 
+    virtual void PriorityUpdate(_float dt) {};
     virtual void Update(_float dt) {};
     virtual void LateUpdate(_float dt) {};
 

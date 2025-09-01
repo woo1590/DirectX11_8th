@@ -17,7 +17,7 @@ CameraComponent::CameraComponent(const CameraComponent& prototype)
 {
 }
 
-CameraComponent* CameraComponent::Create(Object* pOnwer, InitDESC* arg)
+CameraComponent* CameraComponent::Create(Object* pOnwer)
 {
 	CameraComponent* Instance = new CameraComponent(pOnwer);
 
@@ -42,26 +42,39 @@ HRESULT CameraComponent::Initialize(InitDESC* arg)
 		m_fFov = desc->fov;
 		m_fNearZ = desc->nearZ;
 		m_fFarZ = desc->farZ;
-
-		return S_OK;
 	}
 
+	/*Transform Late Initialize*/
+	auto transform = m_pOwner->GetComponent<TransformComponent>();
+	if (!transform)
+		return E_FAIL;
+
+	m_pTransform = transform;
+	m_pTransform->AddRef();
+
 	return S_OK;
+}
+
+_float4x4 CameraComponent::GetViewMatrix() const
+{
+	return m_pTransform->GetWorldMatrixInverse();
+}
+
+_float4x4 CameraComponent::GetProjMatrix()
+{
+	if (m_isDirty)
+	{
+		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNearZ, m_fFarZ));
+
+		m_isDirty = false;
+	}
+
+	return m_ProjMatrix;
 }
 
 void CameraComponent::Free()
 {
 	__super::Free();
-}
 
-_matrix CameraComponent::GetViewMatrix() const
-{
-	auto transform = m_pOwner->GetComponent<TransformComponent>();
-
-	return transform->GetWorldMatrixInverse();
-}
-
-_matrix CameraComponent::GetProjMatrix() const
-{
-	return XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNearZ, m_fFarZ);
+	Safe_Release(m_pTransform);
 }

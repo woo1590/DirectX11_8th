@@ -49,6 +49,12 @@ HRESULT Object::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+void Object::PriorityUpdate(_float dt)
+{
+	for (const auto& comp : m_Components)
+		comp->PriorityUpdate(dt);
+}
+
 void Object::Update(_float dt)
 {
 	for (const auto& comp : m_Components)

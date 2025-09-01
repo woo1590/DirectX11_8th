@@ -219,6 +219,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\public\ResourceManager.h" />
+    <ClInclude Include="..\public\TransformGuizmo.h" />
     <ClInclude Include="..\public\UIObject.h" />
     <ClInclude Include="..\public\VIBufferCube.h" />
     <ClInclude Include="..\public\VIBufferQuad.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="..\private\LevelManager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
+    <ClCompile Include="..\private\TransformGuizmo.cpp" />
     <ClCompile Include="..\private\UIObject.cpp" />
     <ClCompile Include="..\private\VIBufferCube.cpp" />
     <ClCompile Include="..\private\VIBufferQuad.cpp" />

@@ -53,14 +53,12 @@ HRESULT Renderer::Initialize()
 
 HRESULT Renderer::BeginFrame()
 {
-	_float4x4 view, proj;
-	XMStoreFloat4x4(&view, XMMatrixIdentity());
-	XMStoreFloat4x4(&proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), (1280.f / 720.f), 1.f, 1000.f));
-	
 	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
 	CBPerFrame perFrame{};
-	perFrame.viewMatrix = view;
-	perFrame.projMatrix = proj;
+	perFrame.viewMatrix = EngineCore::GetInstance()->GetViewMatrix();
+	perFrame.projMatrix = EngineCore::GetInstance()->GetProjMatrix();
+	_float3 campos = EngineCore::GetInstance()->GetCamPosition();
+	perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
 	
 	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
 	memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
@@ -77,14 +75,6 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 	memcpy_s(perObjectData.pData, sizeof(CBPerObject), &proxy.cbPerObject, sizeof(CBPerObject));
 	m_pDeviceContext->Unmap(m_pCBPerObject, 0);
 
-	_float4x4 view, proj;
-	XMStoreFloat4x4(&view, XMMatrixIdentity());
-	XMStoreFloat4x4(&proj, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), (1280.f / 720.f), 1.f, 1000.f));
-
-	//proxy.material->SetParam("g_ViewMatrix", view);
-	//proxy.material->SetParam("g_ProjMatrix", proj);
-	//proxy.material->SetParam("g_WorldMatrix", proxy.cbPerObject.worldMatrix);
-	
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 

@@ -52,6 +52,9 @@
     <Filter Include="02. Object\Camera">
       <UniqueIdentifier>{0b1f4ac7-ccc3-4521-815a-a3ce984a95b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Camera\FreeCam">
+      <UniqueIdentifier>{cfcb65ff-eac4-4202-bcb5-7746a4ace023}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -96,6 +99,9 @@
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02. Object\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FreeCam.h">
+      <Filter>02. Object\Camera\FreeCam</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -128,6 +134,9 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02. Object\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\FreeCam.cpp">
+      <Filter>02. Object\Camera\FreeCam</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -152,6 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shaderfiles\ConstantBuffer.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\bin\shaderfiles\ComputeLight.hlsli">
       <Filter>98. Etc\ShaderFiles</Filter>
     </None>
   </ItemGroup>

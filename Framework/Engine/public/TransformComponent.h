@@ -21,7 +21,6 @@ public:
     static TransformComponent* Create(Object* pOwner);
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-    void Update(_float dt)override;
 
     void SetPosition(_float3 position) { m_Position = position; m_isDirty = true; }
     void SetScale(_float3 scale) { m_Scale = scale; m_isDirty = true; }
@@ -48,13 +47,15 @@ public:
     _float3 GetRight()const { return m_Right; }
     _vector GetRightV()const { return XMLoadFloat3(&m_Right); }
 
-    _matrix GetWorldMatrix()const;
-    _matrix GetWorldMatrixInverse()const;
+    _float4x4 GetWorldMatrix();
+    _float4x4 GetWorldMatrixInverse();
 
     Component* Clone()override;
     void Free()override;
 
 private:
+    void ResolveDirty();
+
     _float3 m_Position{};
     _float3 m_Scale{ 1.f,1.f,1.f };
     _float3 m_Rotation{};   //radian(pitch,yaw,roll)
@@ -65,7 +66,8 @@ private:
     _float3 m_Right{};
 
     _float4x4 m_WorldMatrix{};
-    
+    _float4x4 m_WorldMatrixInverse{};
+
     _bool m_isDirty = true;
 };
 

@@ -34,6 +34,17 @@ HRESULT Layer::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxi
 	return S_OK;
 }
 
+Object* Layer::GetObjectByInstanceTag(const _string& instanceTag)
+{
+	for (const auto& object : m_Objects)
+	{
+		if (object->GetInstanceTag() == instanceTag)
+			return object;
+	}
+
+	return nullptr; /*Can't find object by instance tag*/
+}
+
 void Layer::Free()
 {
 	__super::Free();
@@ -45,6 +56,12 @@ void Layer::Free()
 void Layer::AddObject(Object* object)
 {
 	m_Objects.push_back(object);
+}
+
+void Layer::PriorityUpdate(_float dt)
+{
+	for (const auto& object : m_Objects)
+		object->PriorityUpdate(dt);
 }
 
 void Layer::Update(_float dt)

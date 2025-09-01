@@ -26,7 +26,7 @@ HRESULT VIBufferQuad::Initialize()
 	m_iIndexStride = 2;
 
 	m_eIndexFormat = DXGI_FORMAT_R16_UINT;
-	m_ePrimitiveTopology = D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	/*----Vertex Buffer----*/
 	D3D11_BUFFER_DESC vbDesc{};

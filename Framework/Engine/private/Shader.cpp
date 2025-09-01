@@ -31,6 +31,7 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
     _wstring path = p.wstring();
 
     _uint shaderFlag = 0;
+
 #ifdef _DEBUG
     shaderFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
@@ -40,6 +41,7 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
     if (FAILED(D3DX11CompileEffectFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderFlag, 0, m_pDevice, &m_pEffect, nullptr)))
         return E_FAIL;
 
+    /* 셰이더 안에서 정의된 패스들이 내가 그리고자 하는 정점 구조체와 호환이 되는지? */
     ID3DX11EffectTechnique* technique = nullptr;
     technique = m_pEffect->GetTechniqueByIndex(0);
     if (!technique)
@@ -65,6 +67,7 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
         m_InputLayouts.push_back(inputLayout);
     }
 
+    /* Renderer에서 들고 있는 전역적인 상수버퍼와 현재 effect객체 연결 -> perframe, perlight, perobject..*/
     EngineCore::GetInstance()->GetRenderer()->ConnectConstantBuffer(m_pEffect);
 
     return S_OK;
@@ -112,8 +115,10 @@ void Shader::Free()
     __super::Free();
 
     Safe_Release(m_pEffect);
+
     for (auto& layout : m_InputLayouts)
         Safe_Release(layout);
+    m_InputLayouts.clear();
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pDeviceContext);

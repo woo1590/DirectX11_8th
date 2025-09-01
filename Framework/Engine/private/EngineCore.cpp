@@ -107,11 +107,13 @@ void EngineCore::Tick(_float dt)
 {
 	m_pSoundManager->Update();
 
+	m_pObjectManager->PriorityUpdate(dt);
+	m_pPipeLine->Update();
 	m_pObjectManager->Update(dt);
 	m_pObjectManager->LateUpdate(dt);
 	
 	m_pLevelManager->Update(dt);
-	m_pLevelManager->Render();
+	m_pLevelManager->Render(); /*Debug Only*/
 
 	std::vector<std::vector<RenderProxy>> proxies(ENUM_CLASS(RenderGroup::Count));
 	if (FAILED(m_pObjectManager->ExtractRenderProxies(proxies)))
@@ -197,6 +199,38 @@ ID3D11Device* EngineCore::GetDevice()
 ID3D11DeviceContext* EngineCore::GetDeviceContext()
 {
 	return m_pGraphicDevice->GetDeviceContext();
+}
+#pragma endregion
+
+#pragma region PipeLine
+void EngineCore::SetViewMatrix(_float4x4 viewMatrix)
+{
+	m_pPipeLine->SetViewMatrix(viewMatrix);
+}
+void EngineCore::SetProjMatrix(_float4x4 projMatrix)
+{
+	m_pPipeLine->SetProjMatrix(projMatrix);
+}
+_float4x4 EngineCore::GetViewMatrix()
+{
+	return m_pPipeLine->GetViewMatirx();
+}
+_float4x4 EngineCore::GetViewMatrixInverse()
+{
+	return m_pPipeLine->GetViewMatrixInverse();
+}
+_float4x4 EngineCore::GetProjMatrix()
+{
+	return m_pPipeLine->GetProjMatrix();
+}
+
+_float4x4 EngineCore::GetProjMatrixInverse()
+{
+	return m_pPipeLine->GetProjMatrixInverse();
+}
+_float3 EngineCore::GetCamPosition()
+{
+	return m_pPipeLine->GetCamPosition();
 }
 #pragma endregion
 

@@ -33,7 +33,7 @@ private:
 
     bool isRunning = false;
 
-    EngineCore* engine = nullptr;
+    EngineCore* m_pEngineCore = nullptr;
 };
 
 NS_END

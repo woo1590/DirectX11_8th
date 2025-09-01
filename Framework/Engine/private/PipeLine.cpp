@@ -23,37 +23,11 @@ HRESULT PipeLine::Initialize()
 
 void PipeLine::Update()
 {
-	/*view, proj ¼¼ÆÃ*/
-}
-
-void PipeLine::SetViewMatrix(_fmatrix viewMatrix)
-{
-	XMStoreFloat4x4(&m_ViewMatrix, viewMatrix);
-}
-
-void PipeLine::SetProjMatrix(_fmatrix projMatrix)
-{
-	XMStoreFloat4x4(&m_ProjMatrix, projMatrix);
-}
-
-_matrix PipeLine::GetViewMatirx() const
-{
-	return XMLoadFloat4x4(&m_ViewMatrix);
-}
-
-_matrix PipeLine::GetViewMatrixInverse() const
-{
-	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ViewMatrix));
-}
-
-_matrix PipeLine::GetProjMatrix() const
-{
-	return XMLoadFloat4x4(&m_ProjMatrix);
-}
-
-_matrix PipeLine::GetProjMatrixInverse() const
-{
-	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ProjMatrix));
+	/*Update inverse matrix & cam position*/
+	XMStoreFloat4x4(&m_ViewMatrixInverse,XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ViewMatrix)));
+	XMStoreFloat4x4(&m_ProjMatrixInverse,XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ProjMatrix)));
+	
+	m_CamPosition = _float3(m_ViewMatrixInverse._41, m_ViewMatrixInverse._42, m_ViewMatrixInverse._43);
 }
 
 void PipeLine::Free()

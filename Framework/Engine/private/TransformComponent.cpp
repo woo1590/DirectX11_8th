@@ -52,27 +52,6 @@ HRESULT TransformComponent::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
-void TransformComponent::Update(_float dt)
-{
-	if (m_isDirty)
-	{
-		_vector quat = XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&m_Rotation));
-		
-		_matrix s = XMMatrixScalingFromVector(XMLoadFloat3(&m_Scale));
-		_matrix r = XMMatrixRotationQuaternion(quat);
-		_matrix t = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Position));
-
-		XMStoreFloat4x4(&m_WorldMatrix, s * r * t);
-
-		XMStoreFloat3(&m_Right, r.r[0]);
-		XMStoreFloat3(&m_Up, r.r[1]);
-		XMStoreFloat3(&m_Forward, r.r[2]);
-		XMStoreFloat4(&m_Quaternion, quat);
-
-		m_isDirty = false;
-	}
-}
-
 void TransformComponent::SetForward(_float3 direction)
 {
 	_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
@@ -105,14 +84,18 @@ void TransformComponent::Translate(_fvector velocity)
 	m_isDirty = true;
 }
 
-_matrix TransformComponent::GetWorldMatrix() const
+_float4x4 TransformComponent::GetWorldMatrix()
 {
-	return XMLoadFloat4x4(&m_WorldMatrix);
+	ResolveDirty();
+
+	return m_WorldMatrix;
 }
 
-_matrix TransformComponent::GetWorldMatrixInverse() const
+_float4x4 TransformComponent::GetWorldMatrixInverse()
 {
-	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
+	ResolveDirty();
+
+	return m_WorldMatrixInverse;
 }
 
 Component* TransformComponent::Clone()
@@ -125,5 +108,27 @@ Component* TransformComponent::Clone()
 void TransformComponent::Free()
 {
 	__super::Free();
+}
+
+void TransformComponent::ResolveDirty()
+{
+	if (m_isDirty)
+	{
+		_vector quat = XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&m_Rotation));
+
+		_matrix s = XMMatrixScalingFromVector(XMLoadFloat3(&m_Scale));
+		_matrix r = XMMatrixRotationQuaternion(quat);
+		_matrix t = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Position));
+
+		XMStoreFloat4x4(&m_WorldMatrix, s * r * t);
+		XMStoreFloat4x4(&m_WorldMatrixInverse, XMMatrixInverse(nullptr, s * r * t));
+
+		XMStoreFloat3(&m_Right, r.r[0]);
+		XMStoreFloat3(&m_Up, r.r[1]);
+		XMStoreFloat3(&m_Forward, r.r[2]);
+		XMStoreFloat4(&m_Quaternion, quat);
+
+		m_isDirty = false;
+	}
 }
 

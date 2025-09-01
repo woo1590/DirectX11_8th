@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\FreeCam.h" />
     <ClInclude Include="..\public\GamePlayLevel.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\LoadingLevel.h" />
@@ -204,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\FreeCam.cpp" />
     <ClCompile Include="..\private\GamePlayLevel.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\LoadingLevel.cpp" />
@@ -244,6 +246,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\bin\shaderfiles\ComputeLight.hlsli" />
     <None Include="..\bin\shaderfiles\ConstantBuffer.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
