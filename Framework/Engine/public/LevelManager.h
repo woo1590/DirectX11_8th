@@ -19,6 +19,7 @@ public:
 public:
     void Update(_float dt);
     HRESULT Render();
+    Level* GetCurrLevel()const { return m_pCurrLevel; }
     void ChangeLevel(_uint nextLevelID, Level* nextLevel);
 
 private:

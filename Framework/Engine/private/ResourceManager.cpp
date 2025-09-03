@@ -1,6 +1,7 @@
 #include "EnginePCH.h"
 #include "ResourceManager.h"
 #include "VIBuffer.h"
+#include "Texture.h"
 #include "Shader.h"
 #include "Material.h"
 
@@ -25,6 +26,7 @@ HRESULT ResourceManager::Initialize(_uint numLevel)
 	m_Buffers.resize(numLevel);
 	m_Materials.resize(numLevel);
 	m_Shaders.resize(numLevel);
+	m_Textures.resize(numLevel);
 
 	return S_OK;
 }
@@ -39,7 +41,26 @@ HRESULT ResourceManager::LoadBuffer(_uint levelID, const _string& key, VIBuffer*
 	return S_OK;
 }
 
-HRESULT ResourceManager::LoadShader(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return E_FAIL;
+
+	auto texture = Texture::Create(filePath, numTextures);
+	if (!texture)
+		return E_FAIL;
+
+	m_Textures[levelID].emplace(key, texture);
+
+	return S_OK;
+}
+
+HRESULT ResourceManager::LoadMaterialFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	return S_OK;
+}
+
+HRESULT ResourceManager::LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
 	if (levelID >= m_iNumLevel)
 		return E_FAIL;
@@ -79,6 +100,19 @@ Shader* ResourceManager::GetShader(_uint levelID, const _string& key)
 	return iter->second;
 }
 
+Texture* ResourceManager::GetTexture(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return nullptr;
+
+	auto iter = m_Textures[levelID].find(key);
+
+	if (iter == m_Textures[levelID].end())
+		return nullptr;
+
+	return iter->second;
+}
+
 void ResourceManager::Clear(_uint levelID)
 {
 	for (auto& pair : m_Buffers[levelID])
@@ -92,6 +126,10 @@ void ResourceManager::Clear(_uint levelID)
 	for (auto& pair : m_Shaders[levelID])
 		Safe_Release(pair.second);
 	m_Shaders[levelID].clear();
+
+	for (auto& pair : m_Textures[levelID])
+		Safe_Release(pair.second);
+	m_Textures[levelID].clear();
 }
 
 void ResourceManager::Free()
@@ -122,4 +160,11 @@ void ResourceManager::Free()
 	}
 	m_Shaders.clear();
 
+	for (auto& texture : m_Textures)
+	{
+		for (auto& pair : texture)
+			Safe_Release(pair.second);
+		texture.clear();
+	}
+	m_Textures.clear();
 }

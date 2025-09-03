@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "EngineCore.h"
 #include "Renderer.h"
+#include "Texture.h"
 
 Shader::Shader():
     m_pDevice(EngineCore::GetInstance()->GetDevice()),
@@ -84,21 +85,12 @@ HRESULT Shader::Apply(_uint passIndex)
     return pass->Apply(0, m_pDeviceContext);
 }
 
-HRESULT Shader::SetValue(const _string& name, _float4x4 value)
+HRESULT Shader::BindTextureValue(const _string& name, Texture* value, _int frameIndex)
 {
-    ID3DX11EffectVariable* variable = m_pEffect->GetVariableByName(name.c_str());
-    if (!variable)
+    ID3D11ShaderResourceView* srv = value->GetSRV(frameIndex);
+    if (!srv)
         return E_FAIL;
 
-    ID3DX11EffectMatrixVariable* matrixVariable = variable->AsMatrix();
-    if (!matrixVariable)
-        return E_FAIL;
-
-    return matrixVariable->SetMatrix(reinterpret_cast<const _float*>(&value));
-}
-
-HRESULT Shader::SetValue(const _string& name, ID3D11ShaderResourceView* value)
-{
     ID3DX11EffectVariable* variable = m_pEffect->GetVariableByName(name.c_str());
     if (!variable)
         return E_FAIL;
@@ -106,8 +98,8 @@ HRESULT Shader::SetValue(const _string& name, ID3D11ShaderResourceView* value)
     ID3DX11EffectShaderResourceVariable* srvVariable = variable->AsShaderResource();
     if (!srvVariable)
         return E_FAIL;
-
-    return srvVariable->SetResource(value);
+    
+    return srvVariable->SetResource(srv);
 }
 
 void Shader::Free()

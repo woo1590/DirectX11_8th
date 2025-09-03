@@ -86,7 +86,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
@@ -97,8 +97,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -110,7 +110,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
@@ -123,8 +123,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib;DirectXTK.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -134,7 +134,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
@@ -145,8 +145,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -158,7 +158,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
@@ -171,8 +171,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib;DirectXTK.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -219,6 +219,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\public\ResourceManager.h" />
+    <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\public\TransformGuizmo.h" />
     <ClInclude Include="..\public\UIObject.h" />
     <ClInclude Include="..\public\VIBufferCube.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="..\private\LevelManager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
+    <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\private\TransformGuizmo.cpp" />
     <ClCompile Include="..\private\UIObject.cpp" />
     <ClCompile Include="..\private\VIBufferCube.cpp" />

@@ -7,6 +7,6 @@ namespace Engine
 
 	enum class Prototype { Object, Component, Count };
 
-	enum class RenderGroup { Priority, Shadow, NonBlend, Blend, Count };
+	enum class RenderGroup { Priority, Shadow, NonBlend, Blend, UI, Count };
 }
 #endif // Engine_Enum_h__

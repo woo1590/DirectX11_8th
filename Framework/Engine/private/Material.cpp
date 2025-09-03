@@ -1,6 +1,8 @@
 #include "EnginePCH.h"
 #include "Material.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "EngineCore.h"
 
 Material::Material(Shader* pShader)
 	:m_pShader(pShader)
@@ -23,28 +25,32 @@ HRESULT Material::Initialize()
 	return S_OK;
 }
 
+HRESULT Material::BindMaterial(_uint passIndex, _int frameIndex)
+{
+	/*Bind SRV*/
+	for (const auto& pair : m_TexParams)
+	{
+		if (FAILED(m_pShader->BindTextureValue(pair.first,pair.second,frameIndex)))
+			return E_FAIL;
+	}
+
+	return m_pShader->Apply(passIndex);
+}
+
+void Material::SetTexture(const _string& key, Texture* value)
+{
+	m_TexParams[key] = value;
+
+	value->AddRef();
+}
+
 void Material::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pShader);
-}
 
-HRESULT Material::BindMaterial(_uint passIndex)
-{
-	/*Bind SRV*/
-	for (const auto& pair : m_TexParams)
-	{
-		if (FAILED(m_pShader->SetValue(pair.first, pair.second)))
-			return E_FAIL;
-	}
-
-	/*Bind Matrix*/
-	for (const auto& pair : m_Float4x4Params)
-	{
-		if (FAILED(m_pShader->SetValue(pair.first, pair.second)))
-			return E_FAIL;
-	}
-
-	return m_pShader->Apply(passIndex);
+	for (auto& pair : m_TexParams)
+		Safe_Release(pair.second);
+	m_TexParams.clear();
 }

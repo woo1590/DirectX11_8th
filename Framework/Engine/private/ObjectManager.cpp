@@ -8,20 +8,20 @@ ObjectManager::ObjectManager()
 {
 }
 
-ObjectManager* ObjectManager::Create(_uint levelCnt)
+ObjectManager* ObjectManager::Create(_uint numLevels)
 {
 	ObjectManager* Instance = new ObjectManager();
 
-	if (FAILED(Instance->Initialize(levelCnt)))
+	if (FAILED(Instance->Initialize(numLevels)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT ObjectManager::Initialize(_uint levelCnt)
+HRESULT ObjectManager::Initialize(_uint numLevels)
 {
 	m_Layers.clear();
-	m_Layers.resize(levelCnt);
+	m_Layers.resize(numLevels);
 
 	return S_OK;
 }
@@ -116,6 +116,11 @@ HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototyp
 Layer* ObjectManager::GetLayer(_uint layerLevel, const _string& layerTag)
 {
 	return FindLayer(layerLevel, layerTag);
+}
+
+std::unordered_map<_string, Layer*>& ObjectManager::GetLayers(_uint levelID)
+{
+	return m_Layers[levelID];
 }
 
 Object* ObjectManager::GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag)

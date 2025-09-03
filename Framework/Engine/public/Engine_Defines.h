@@ -1,7 +1,6 @@
 #pragma once
 
 #define USE_IMGUI
-
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
 
@@ -10,7 +9,10 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+
 #include "fx11/d3dx11effect.h"
+#include "directxtk/DDSTextureLoader.h"
+#include "directxtk/WICTextureLoader.h"
 
 #include <d3dcompiler.h>
 using namespace DirectX;
@@ -20,11 +22,23 @@ using namespace DirectX;
 #include "nlohmann/json.hpp"
 
 
+#include <SDKDDKVer.h>
+#define WIN32_LEAN_AND_MEAN             
+
+#include <windows.h>
+
+#include <stdlib.h>
+#include <malloc.h>
+#include <memory.h>
+#include <tchar.h>
+
+
 //c, c++
 #include <ctime>
 #include <typeindex>
 #include <random>
 #include <filesystem>
+#include <fstream>
 
 //thread
 #include <thread>

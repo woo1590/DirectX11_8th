@@ -13,16 +13,18 @@ private:
     virtual ~ObjectManager() = default;
 
 public:
-    static ObjectManager* Create(_uint levelCnt);
-    HRESULT Initialize(_uint levelCnt);
+    static ObjectManager* Create(_uint numLevels);
+    HRESULT Initialize(_uint numLevels);
     void Free()override;
 
     void PriorityUpdate(_float dt);
     void Update(_float dt);
     void LateUpdate(_float dt);
 
-    HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg = nullptr);
+    HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID,
+                      const _string& layerTag, InitDESC* arg = nullptr);
     Layer* GetLayer(_uint layerLevel, const _string& layerTag);
+    std::unordered_map<_string, Layer*>& GetLayers(_uint levelID);
     Object* GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag);
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 

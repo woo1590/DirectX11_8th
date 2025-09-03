@@ -16,19 +16,26 @@ public:
     HRESULT Initialize();
 
     HRESULT BeginFrame();
-    HRESULT DrawProxy(const RenderProxy& proxy);
     HRESULT EndFrame() { return S_OK; }
+
+    HRESULT RenderPriority(const std::vector<RenderProxy>& proxies);
+    HRESULT RenderNonBlend(const std::vector<RenderProxy>& proxies);
+    HRESULT RenderBlend(const std::vector<RenderProxy>& proxies);
+    HRESULT RenderUI(const std::vector<RenderProxy>& proxies);
 
     HRESULT ConnectConstantBuffer(ID3DX11Effect* pEffect);
     void Free()override;
 
 private:
+    HRESULT DrawProxy(const RenderProxy& proxy);
+
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pDeviceContext = nullptr;
 
     ID3D11Buffer* m_pCBPerFrame = nullptr;
     ID3D11Buffer* m_pCBPerObject = nullptr;
-
+    ID3D11Buffer* m_pCBPerLight = nullptr;
+    ID3D11Buffer* m_pCBPerUI = nullptr;
 };
 
 NS_END

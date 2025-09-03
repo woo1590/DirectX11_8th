@@ -51,6 +51,8 @@ void Loader::DebugPrint()
 
 HRESULT Loader::Loading()
 {
+	CoInitializeEx(nullptr, 0);
+
 	std::unique_lock<std::mutex> lock(m_Mutex);
 
 	HRESULT hr{};
@@ -96,6 +98,16 @@ HRESULT Loader::LoadingForTest()
 	m_strDebugText = L"사운드 로딩중..";
 	engine->LoadSound("TestBGM2", "../bin/resource/TestBGM2.mp3", true);
 
+	/*Load Shader*/
+	m_strDebugText = L"셰이더 로딩중..";
+	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", 
+		VTXTEX::elements, VTXTEX::numElement)))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube", 
+		VTXCUBE::elements, VTXCUBE::numElement)))
+		return E_FAIL;
+
 	/*Load Resource*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
@@ -104,17 +116,12 @@ HRESULT Loader::LoadingForTest()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", VTXTEX::elements, VTXTEX::numElement)))
+	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/bg_FamilyPhoto.png", 1, "Texture_Test")))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadShader(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube", VTXCUBE::elements, VTXCUBE::numElement)))
-		return E_FAIL;
-
-	/*Prototype Object*/
+	/*Load Prototype Object*/
 	m_strDebugText = L"객체원형 로딩중..";
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_TestCube", TestCube::Create())))
-		return E_FAIL;
-
+	
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround", BackGround::Create())))
 		return E_FAIL;
 

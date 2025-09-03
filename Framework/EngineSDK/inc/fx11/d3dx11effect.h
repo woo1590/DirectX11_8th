@@ -419,7 +419,7 @@ DECLARE_INTERFACE_(ID3DX11EffectMatrixVariable, ID3DX11EffectVariable)
     // ID3DX11EffectVariable
 
     // ID3DX11EffectMatrixVariable
-    STDMETHOD(SetMatrix)(THIS_ _In_reads_(16) const float *pData) PURE;
+    STDMETHOD(BindMatrixValue)(THIS_ _In_reads_(16) const float *pData) PURE;
     STDMETHOD(GetMatrix)(THIS_ _Out_writes_(16) float *pData) PURE;
 
     STDMETHOD(SetMatrixArray)(THIS_ _In_reads_(Count*16) const float *pData, _In_ uint32_t Offset, _In_ uint32_t Count) PURE;

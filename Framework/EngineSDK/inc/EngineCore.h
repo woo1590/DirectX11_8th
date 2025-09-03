@@ -23,7 +23,9 @@ class Renderer;
 
 class VIBuffer;
 class Shader;
+class Texture;
 class Object;
+class Layer;
 class ENGINE_DLL EngineCore final :
     public Base
 {
@@ -71,9 +73,12 @@ public:
 
     /*----Resource----*/
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
-    HRESULT LoadShader(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
+    HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
+                               const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
+    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key);
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(_uint levelID, const _string& key);
+    Texture* GetTexture(_uint levelID, const _string& key);
 
     /*-----Prototype-----*/
     HRESULT AddPrototype(_uint level, const _string& prototypeTag, Object* prototype);
@@ -81,9 +86,11 @@ public:
 
     /*-----Object-----*/
     HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr);
+    std::unordered_map<_string, Layer*>& GetLayers(_uint levelID);
 
     /*-----Level-----*/
     void ChangeLevel(_uint levelID, Level* nextLevel);
+    Level* GetCurrLevel()const;
     void ClearResource(_uint levelID);
 
     /*----Window----*/

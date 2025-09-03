@@ -34,7 +34,7 @@ namespace Engine
 		{
 			dwRefCnt = instance->Release();
 
-			if (dwRefCnt)
+			if (!dwRefCnt)
 				instance = nullptr;
 		}
 

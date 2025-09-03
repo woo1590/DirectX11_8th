@@ -8,10 +8,11 @@ class ENGINE_DLL UIObject abstract:
 {
 protected:
     UIObject();
+    UIObject(const UIObject& prototype);
     virtual ~UIObject() = default;
 
 public:
-    virtual void Free()override {};
+    virtual void Free()override;
 };
 
 NS_END

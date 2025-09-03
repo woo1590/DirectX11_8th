@@ -40,14 +40,7 @@ void SoundManager::LoadSound(const std::string& key, const std::string& filepath
 {
     if (m_SoundMap.count(key)) return;
 
-#ifdef UNICODE
-    int len = WideCharToMultiByte(CP_UTF8, 0, filepath, -1, nullptr, 0, nullptr, nullptr);
-    std::string converted(len, 0);
-    WideCharToMultiByte(CP_UTF8, 0, filepath, -1, &converted[0], len, nullptr, nullptr);
-    const char* finalPath = converted.c_str();
-#else
     const char* finalPath = filepath.c_str();
-#endif
 
     FMOD::Sound* sound = nullptr;
     FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_DEFAULT;

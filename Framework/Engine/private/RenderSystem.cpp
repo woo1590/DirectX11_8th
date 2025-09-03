@@ -28,11 +28,20 @@ HRESULT RenderSystem::Initialize()
 	return S_OK;
 }
 
-HRESULT RenderSystem::Render()
+HRESULT RenderSystem::RenderLoop()
 {
 	m_pRenderer->BeginFrame();
 
-	if (FAILED(RenderNonBlend()))
+	if (FAILED(m_pRenderer->RenderPriority(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Priority)])))
+		return E_FAIL;
+
+	if (FAILED(m_pRenderer->RenderNonBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NonBlend)])))
+		return E_FAIL;
+
+	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
+		return E_FAIL;
+
+	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
 		return E_FAIL;
 
 	m_pRenderer->EndFrame();
@@ -53,17 +62,6 @@ void RenderSystem::Free()
 
 	Safe_Release(m_pRenderer);
 	Clear();
-}
-
-HRESULT RenderSystem::RenderNonBlend()
-{
-	for (const auto& proxy : m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NonBlend)])
-	{
-		if (FAILED(m_pRenderer->DrawProxy(proxy)))
-			return E_FAIL;
-	}
-
-	return S_OK;
 }
 
 void RenderSystem::Clear()

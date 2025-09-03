@@ -239,9 +239,13 @@ HRESULT EngineCore::LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuf
 {
 	return m_pResourceManager->LoadBuffer(levelID,key,pBuffer);
 }
-HRESULT EngineCore::LoadShader(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT EngineCore::LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
-	return m_pResourceManager->LoadShader(levelID,filePath,key,pElement,numElement);
+	return m_pResourceManager->LoadShaderFromFile(levelID,filePath,key,pElement,numElement);
+}
+HRESULT EngineCore::LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key)
+{
+	return m_pResourceManager->LoadTextureFromFile(levelID, filePath, numTextures, key);
 }
 VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 {
@@ -251,6 +255,10 @@ VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 Shader* EngineCore::GetShader(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetShader(levelID, key);
+}
+Texture* EngineCore::GetTexture(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetTexture(levelID, key);
 }
 #pragma endregion
 
@@ -273,12 +281,22 @@ HRESULT EngineCore::AddObject(_uint prototypeLevel, const _string& prototypeTag,
 	return m_pObjectManager->AddObject(prototypeLevel, prototypeTag, layerLevel, layerTag, arg);
 }
 
+std::unordered_map<_string, Layer*>& EngineCore::GetLayers(_uint levelID)
+{
+	return m_pObjectManager->GetLayers(levelID);
+}
+
 #pragma endregion
 
 #pragma region Level
 void EngineCore::ChangeLevel(_uint levelID, Level* nextLevel)
 {
 	m_pLevelManager->ChangeLevel(levelID, nextLevel);
+}
+
+Level* EngineCore::GetCurrLevel() const
+{
+	return m_pLevelManager->GetCurrLevel();
 }
 
 void EngineCore::ClearResource(_uint levelID)
@@ -308,7 +326,7 @@ HRESULT EngineCore::BeginRender()
 
 HRESULT EngineCore::Render()
 {
-	return m_pRenderSystem->Render();;
+	return m_pRenderSystem->RenderLoop();;
 }
 
 HRESULT EngineCore::EndRender()

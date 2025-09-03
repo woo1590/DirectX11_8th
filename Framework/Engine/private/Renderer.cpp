@@ -53,6 +53,9 @@ HRESULT Renderer::Initialize()
 
 HRESULT Renderer::BeginFrame()
 {
+	/* 이번 프레임을 그릴 때 사용할 카메라 view, proj   라이트 view proj 세팅*/
+
+	/* 멀티스레드 확장 시 rendersystem에서 큐로 받아와야 함 -> 게임 로직에 직접 접근 ㄴㄴ */
 	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
 	CBPerFrame perFrame{};
 	perFrame.viewMatrix = EngineCore::GetInstance()->GetViewMatrix();
@@ -63,6 +66,42 @@ HRESULT Renderer::BeginFrame()
 	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
 	memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
 	m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
+
+	return S_OK;
+}
+
+HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
+{
+	return S_OK;
+}
+
+HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
+{
+	for (const auto& proxy : proxies)
+		DrawProxy(proxy);
+
+	return S_OK;
+}
+
+HRESULT Renderer::RenderBlend(const std::vector<RenderProxy>& proxies)
+{
+	return S_OK;
+}
+
+HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
+{
+	/* ui 전용 view proj생성 (임시용) */
+	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
+	CBPerFrame perFrame{};
+	XMStoreFloat4x4(&perFrame.viewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&perFrame.projMatrix, XMMatrixOrthographicLH(1280.f, 720.f, 0.f, 1.f));
+
+	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
+	memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
+	m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
+
+	for (const auto& proxy : proxies)
+		DrawProxy(proxy);
 
 	return S_OK;
 }
@@ -78,7 +117,7 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 
-	if (FAILED(proxy.material->BindMaterial(0)))
+	if (FAILED(proxy.material->BindMaterial(0,proxy.frameIndex)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

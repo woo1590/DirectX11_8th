@@ -11,6 +11,7 @@ struct RenderProxy
 	Material* material = nullptr;
 	CBPerObject cbPerObject{};
 	RenderGroup group{};
+	_int frameIndex = 0;
 };
 
 NS_END

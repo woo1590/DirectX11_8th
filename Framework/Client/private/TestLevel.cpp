@@ -55,7 +55,7 @@ HRESULT TestLevel::InitializeTestLayer(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_TestCube",
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround",
 		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
 		return E_FAIL;
 
