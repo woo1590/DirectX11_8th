@@ -26,6 +26,7 @@ public:
 private:
     VIBuffer* m_pVIBuffer = nullptr;
     Material* m_pMaterial = nullptr;
+    _uint m_iTexNum = 0;
 
 };
 

@@ -47,6 +47,10 @@ void BackGround::PriorityUpdate(_float dt)
 void BackGround::Update(_float dt)
 {
 	__super::Update(dt);
+
+	if (GetAsyncKeyState(VK_SPACE))
+		m_iTexNum = m_iTexNum ? 0 : 1;
+
 }
 
 void BackGround::LateUpdate(_float dt)
@@ -65,6 +69,7 @@ HRESULT BackGround::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& 
 	proxy.material = m_pMaterial;
 	proxy.cbPerObject = cb;
 	proxy.group = RenderGroup::UI;
+	proxy.frameIndex = m_iTexNum;
 
 	proxies[ENUM_CLASS(RenderGroup::UI)].push_back(proxy);
 

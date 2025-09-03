@@ -116,7 +116,7 @@ HRESULT Loader::LoadingForTest()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/bg_FamilyPhoto.png", 1, "Texture_Test")))
+	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/default0.png", 1, "Texture_Test")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/
