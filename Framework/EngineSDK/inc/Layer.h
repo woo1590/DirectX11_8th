@@ -25,6 +25,7 @@ public:
     void SetUpdatable(_bool update) { m_isUpdatable = update; }
     _bool IsUpdatable()const { return m_isUpdatable; }
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
+    std::list<Object*>& GetObjects() { return m_Objects; }
     Object* GetObjectByInstanceTag(const _string& instanceTag);
 
     void Free()override;

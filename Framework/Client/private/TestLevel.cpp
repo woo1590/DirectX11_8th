@@ -46,22 +46,10 @@ HRESULT TestLevel::Render()
 
 HRESULT TestLevel::InitializeBackGroundLayer(const _string& layerTag)
 {
-	auto engine = EngineCore::GetInstance();
-
 	return S_OK;
 }
 
 HRESULT TestLevel::InitializeTestLayer(const _string& layerTag)
 {
-	auto engine = EngineCore::GetInstance();
-
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround",
-		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
-		return E_FAIL;
-
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Test), "Prototype_Object_FreeCam",
-		ENUM_CLASS(LevelID::Test), layerTag, nullptr)))
-		return E_FAIL;
-
 	return S_OK;
 }

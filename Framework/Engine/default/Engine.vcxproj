@@ -192,6 +192,7 @@
     <ClInclude Include="..\public\Engine_Typedef.h" />
     <ClInclude Include="..\public\FreecamComponent.h" />
     <ClInclude Include="..\public\GraphicDevice.h" />
+    <ClInclude Include="..\public\GUIState.h" />
     <ClInclude Include="..\public\guizmo\GraphEditor.h" />
     <ClInclude Include="..\public\guizmo\ImCurveEdit.h" />
     <ClInclude Include="..\public\guizmo\ImGradient.h" />
@@ -208,10 +209,13 @@
     <ClInclude Include="..\public\imgui\imstb_textedit.h" />
     <ClInclude Include="..\public\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\InputSystem.h" />
+    <ClInclude Include="..\public\InspectorPanel.h" />
     <ClInclude Include="..\public\Layer.h" />
     <ClInclude Include="..\public\Level.h" />
     <ClInclude Include="..\public\LevelManager.h" />
     <ClInclude Include="..\public\Material.h" />
+    <ClInclude Include="..\public\IPanel.h" />
+    <ClInclude Include="..\public\OutlinerPanel.h" />
     <ClInclude Include="..\public\RenderProxy.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -220,7 +224,7 @@
     </ClInclude>
     <ClInclude Include="..\public\ResourceManager.h" />
     <ClInclude Include="..\public\Texture.h" />
-    <ClInclude Include="..\public\TransformGuizmo.h" />
+    <ClInclude Include="..\public\GuizmoPanel.h" />
     <ClInclude Include="..\public\UIObject.h" />
     <ClInclude Include="..\public\VIBufferCube.h" />
     <ClInclude Include="..\public\VIBufferQuad.h" />
@@ -252,13 +256,16 @@
     <ClCompile Include="..\private\GraphicDevice.cpp" />
     <ClCompile Include="..\private\ImGuiManager.cpp" />
     <ClCompile Include="..\private\InputSystem.cpp" />
+    <ClCompile Include="..\private\InspectorPanel.cpp" />
     <ClCompile Include="..\private\Layer.cpp" />
     <ClCompile Include="..\private\Level.cpp" />
     <ClCompile Include="..\private\LevelManager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
+    <ClCompile Include="..\private\IPanel.cpp" />
+    <ClCompile Include="..\private\OutlinerPanel.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
-    <ClCompile Include="..\private\TransformGuizmo.cpp" />
+    <ClCompile Include="..\private\GuizmoPanel.cpp" />
     <ClCompile Include="..\private\UIObject.cpp" />
     <ClCompile Include="..\private\VIBufferCube.cpp" />
     <ClCompile Include="..\private\VIBufferQuad.cpp" />

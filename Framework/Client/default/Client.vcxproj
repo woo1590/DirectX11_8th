@@ -192,6 +192,7 @@
     <ClInclude Include="..\public\FreeCam.h" />
     <ClInclude Include="..\public\GamePlayLevel.h" />
     <ClInclude Include="..\public\Loader.h" />
+    <ClInclude Include="..\public\LoadingAnim.h" />
     <ClInclude Include="..\public\LoadingLevel.h" />
     <ClInclude Include="..\public\LogoLevel.h" />
     <ClInclude Include="..\public\MainApp.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="..\private\FreeCam.cpp" />
     <ClCompile Include="..\private\GamePlayLevel.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
+    <ClCompile Include="..\private\LoadingAnim.cpp" />
     <ClCompile Include="..\private\LoadingLevel.cpp" />
     <ClCompile Include="..\private\LogoLevel.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />

@@ -25,6 +25,10 @@ public:
 
     virtual Component* Clone() = 0;
 
+#ifdef USE_IMGUI
+    virtual void RenderInspector() = 0;
+#endif
+
 protected:
     Object* m_pOwner = nullptr;
 

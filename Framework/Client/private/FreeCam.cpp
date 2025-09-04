@@ -35,7 +35,10 @@ HRESULT FreeCam::Initialize_Prototype()
 
 HRESULT FreeCam::Initialize(InitDESC* arg)
 {
-	if (FAILED(__super::Initialize(arg)))
+	Object::ObjectDESC desc{};
+	desc.instanceTag = "Camera";
+
+	if (FAILED(__super::Initialize(&desc)))
 		return E_FAIL;
 
 	CameraComponent::CameraDESC camDesc{};

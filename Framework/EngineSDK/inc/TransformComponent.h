@@ -9,7 +9,9 @@ class ENGINE_DLL TransformComponent final:
 public:
     struct TransformDESC : public InitDESC
     {
-        _float3 position, scale, rotation;
+        _float3 position{ 0.f,0.f,0.f };
+        _float3 scale{ 1.f,1.f,1.f };
+        _float3 rotation{ 0.f,0.f,0.f };
     };
 
 private:
@@ -52,6 +54,10 @@ public:
 
     Component* Clone()override;
     void Free()override;
+
+#ifdef USE_IMGUI
+    void RenderInspector()override;
+#endif
 
 private:
     void ResolveDirty();

@@ -39,14 +39,28 @@ HRESULT VIBufferCube::Initialize()
 
 	std::vector<VTXCUBE> vertices(m_iNumVertices);
 	vertices[0].position = _float3(-0.5f, 0.5f, -0.5f);
+	vertices[0].texCoord = _float3(-0.5f, 0.5f, -0.5f);
+	
 	vertices[1].position = _float3(0.5f, 0.5f, -0.5f);
+	vertices[1].texCoord = _float3(0.5f, 0.5f, -0.5f);
+	
 	vertices[2].position = _float3(0.5f, -0.5f, -0.5f);
+	vertices[2].texCoord = _float3(0.5f, -0.5f, -0.5f);
+
 	vertices[3].position = _float3(-0.5f, -0.5f, -0.5f);
+	vertices[3].texCoord = _float3(-0.5f, -0.5f, -0.5f);
 
 	vertices[4].position = _float3(-0.5f, 0.5f, 0.5f);
+	vertices[4].texCoord = _float3(-0.5f, 0.5f, 0.5f);
+
 	vertices[5].position = _float3(0.5f, 0.5f, 0.5f);
+	vertices[5].texCoord = _float3(0.5f, 0.5f, 0.5f);
+	
 	vertices[6].position = _float3(0.5f, -0.5f, 0.5f);
+	vertices[6].texCoord = _float3(0.5f, -0.5f, 0.5f);
+	
 	vertices[7].position = _float3(-0.5f, -0.5f, 0.5f);
+	vertices[7].texCoord = _float3(-0.5f, -0.5f, 0.5f);
 
 	D3D11_SUBRESOURCE_DATA vbInitData{};
 	vbInitData.pSysMem = vertices.data();

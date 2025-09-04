@@ -94,7 +94,8 @@ public:
     void ClearResource(_uint levelID);
 
     /*----Window----*/
-    HWND GetWindowHandle() { return hWnd; }
+    HWND GetWindowHandle()const { return m_hWnd; }
+    D3D11_VIEWPORT GetViewport()const { return m_Viewport; }
 
     /*----RenderSystem----*/
     Renderer* GetRenderer()const;
@@ -105,7 +106,8 @@ private:
     HRESULT Render();
     HRESULT EndRender();
 
-    HWND hWnd{};
+    HWND m_hWnd{};
+    D3D11_VIEWPORT m_Viewport{};
 
     Random*             m_pRandom = nullptr;
     RenderSystem*       m_pRenderSystem = nullptr;

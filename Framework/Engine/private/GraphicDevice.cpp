@@ -5,17 +5,17 @@ GraphicDevice::GraphicDevice()
 {
 }
 
-GraphicDevice* GraphicDevice::Create(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY)
+GraphicDevice* GraphicDevice::Create(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY, D3D11_VIEWPORT* pViewportDesc)
 {
 	GraphicDevice* Instance = new GraphicDevice();
 
-	if (FAILED(Instance->Initialize(hWnd, winMode, winSizeX, winSizeY)))
+	if (FAILED(Instance->Initialize(hWnd, winMode, winSizeX, winSizeY, pViewportDesc)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT GraphicDevice::Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY)
+HRESULT GraphicDevice::Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY, D3D11_VIEWPORT* pViewportDesc)
 {
 	_uint flag = 0;
 
@@ -52,16 +52,14 @@ HRESULT GraphicDevice::Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _u
 	m_pDeviceContext->OMSetRenderTargets(1, pRTVs,
 		m_pDSV);
 
-	D3D11_VIEWPORT			ViewPortDesc;
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)winSizeX;
-	ViewPortDesc.Height = (_float)winSizeY;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
+	pViewportDesc->TopLeftX = 0;
+	pViewportDesc->TopLeftY = 0;
+	pViewportDesc->Width = (_float)winSizeX;
+	pViewportDesc->Height = (_float)winSizeY;
+	pViewportDesc->MinDepth = 0.f;
+	pViewportDesc->MaxDepth = 1.f;
 
-	m_pDeviceContext->RSSetViewports(1, &ViewPortDesc);
+	m_pDeviceContext->RSSetViewports(1, pViewportDesc);
 
 	return S_OK;
 }

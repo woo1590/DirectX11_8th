@@ -43,9 +43,6 @@
     <Filter Include="01. Level\TestLevel">
       <UniqueIdentifier>{1c01809e-98ac-42d2-95bb-ba4d0c3421f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\BackGround">
-      <UniqueIdentifier>{774facc3-9238-445a-84bc-4dd8915a3359}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Etc\ShaderFiles">
       <UniqueIdentifier>{d0c05a6d-5eb3-42ff-a197-e9f9326f8d81}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,15 @@
     </Filter>
     <Filter Include="02. Object\Camera\FreeCam">
       <UniqueIdentifier>{cfcb65ff-eac4-4202-bcb5-7746a4ace023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject">
+      <UniqueIdentifier>{bdf78020-6160-4122-a08f-45f390898588}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\BackGround">
+      <UniqueIdentifier>{774facc3-9238-445a-84bc-4dd8915a3359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\LoadingAnim">
+      <UniqueIdentifier>{a2361df0-2a06-4a01-8d3b-693ce12fcd82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -97,10 +103,13 @@
       <Filter>01. Level\TestLevel</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
-      <Filter>02. Object\BackGround</Filter>
+      <Filter>02. Object\UIObject\BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FreeCam.h">
       <Filter>02. Object\Camera\FreeCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LoadingAnim.h">
+      <Filter>02. Object\UIObject\LoadingAnim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,10 +141,13 @@
       <Filter>01. Level\TestLevel</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02. Object\BackGround</Filter>
+      <Filter>02. Object\UIObject\BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FreeCam.cpp">
       <Filter>02. Object\Camera\FreeCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LoadingAnim.cpp">
+      <Filter>02. Object\UIObject\LoadingAnim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -110,6 +110,23 @@ void TransformComponent::Free()
 	__super::Free();
 }
 
+#ifdef USE_IMGUI
+
+void TransformComponent::RenderInspector()
+{
+	ImGui::PushID(this);
+
+	ImGui::TextUnformatted("Transform");
+	ImGui::Separator();
+
+	ImGui::DragFloat3("Position", &m_Position.x, 0.01f, -FLT_MAX, FLT_MAX);
+	ImGui::DragFloat3("Rotation", &m_Rotation.x, 0.01f, -FLT_MAX, FLT_MAX);
+
+	ImGui::PopID();
+}
+
+#endif
+
 void TransformComponent::ResolveDirty()
 {
 	if (m_isDirty)

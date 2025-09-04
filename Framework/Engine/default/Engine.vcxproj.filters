@@ -145,11 +145,20 @@
     <Filter Include="04. Object\UIObject">
       <UniqueIdentifier>{2a6d26a5-5ce8-42e8-80ff-8ab4044cd0e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\ImGui Manager\TransformGuizmo">
-      <UniqueIdentifier>{975f18bb-add3-447e-97b4-2bac871bd8d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\Resource Manager\Texture">
       <UniqueIdentifier>{05efed1c-2d53-4a5c-a99d-a8ffdefea96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\ImGui Manager\Panel">
+      <UniqueIdentifier>{334a6c62-e18e-4ae7-9d0f-eea69b4868f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\ImGui Manager\Panel\InspectorPanel">
+      <UniqueIdentifier>{4abc7137-f6bb-48ee-b357-b5c6281f6b92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\ImGui Manager\Panel\OutlinerPanel">
+      <UniqueIdentifier>{29cfa099-3e98-4193-a8b4-f568bcd92db0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\ImGui Manager\Panel\GuizmoPanel">
+      <UniqueIdentifier>{975f18bb-add3-447e-97b4-2bac871bd8d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -315,14 +324,26 @@
     <ClInclude Include="..\public\UIObject.h">
       <Filter>04. Object\UIObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TransformGuizmo.h">
-      <Filter>01. Engine Component\ImGui Manager\TransformGuizmo</Filter>
+    <ClInclude Include="..\public\GuizmoPanel.h">
+      <Filter>01. Engine Component\ImGui Manager\Panel\GuizmoPanel</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FreecamComponent.h">
       <Filter>05. Object Component\Camera Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Texture.h">
       <Filter>01. Engine Component\Resource Manager\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\IPanel.h">
+      <Filter>01. Engine Component\ImGui Manager\Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InspectorPanel.h">
+      <Filter>01. Engine Component\ImGui Manager\Panel\InspectorPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OutlinerPanel.h">
+      <Filter>01. Engine Component\ImGui Manager\Panel\OutlinerPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GUIState.h">
+      <Filter>01. Engine Component\ImGui Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -464,14 +485,23 @@
     <ClCompile Include="..\private\UIObject.cpp">
       <Filter>04. Object\UIObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TransformGuizmo.cpp">
-      <Filter>01. Engine Component\ImGui Manager\TransformGuizmo</Filter>
+    <ClCompile Include="..\private\GuizmoPanel.cpp">
+      <Filter>01. Engine Component\ImGui Manager\Panel\GuizmoPanel</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FreecamComponent.cpp">
       <Filter>05. Object Component\Camera Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Texture.cpp">
       <Filter>01. Engine Component\Resource Manager\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\IPanel.cpp">
+      <Filter>01. Engine Component\ImGui Manager\Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InspectorPanel.cpp">
+      <Filter>01. Engine Component\ImGui Manager\Panel\InspectorPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OutlinerPanel.cpp">
+      <Filter>01. Engine Component\ImGui Manager\Panel\OutlinerPanel</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

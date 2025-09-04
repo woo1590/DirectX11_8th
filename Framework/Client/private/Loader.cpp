@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "TestCube.h"
 #include "FreeCam.h"
+#include "LoadingAnim.h"
 
 //component
 #include "TransformComponent.h"
@@ -82,16 +83,6 @@ HRESULT Loader::Loading()
 
 HRESULT Loader::LoadingForLogo()
 {
-	return S_OK;
-}
-
-HRESULT Loader::LoadingForGamePlay()
-{
-	return S_OK;
-}
-
-HRESULT Loader::LoadingForTest()
-{
 	auto engine = EngineCore::GetInstance();
 
 	/*Load Sound*/
@@ -100,11 +91,11 @@ HRESULT Loader::LoadingForTest()
 
 	/*Load Shader*/
 	m_strDebugText = L"셰이더 로딩중..";
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex", 
+	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",
 		VTXTEX::elements, VTXTEX::numElement)))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube", 
+	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube",
 		VTXCUBE::elements, VTXCUBE::numElement)))
 		return E_FAIL;
 
@@ -116,19 +107,44 @@ HRESULT Loader::LoadingForTest()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/default0.png", 1, "Texture_Test")))
+	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/background/background.png", 1, "Texture_Background")))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/loading/frame_107_stand_%d.png", 100, "Texture_Anim")))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/TestCube.dds", 1, "Texture_TestCube")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/
 	m_strDebugText = L"객체원형 로딩중..";
-	
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test), "Prototype_Object_BackGround", BackGround::Create())))
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_TestCube", TestCube::Create())))
 		return E_FAIL;
 
-	if(FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Test),"Prototype_Object_FreeCam",FreeCam::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", BackGround::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadinAnim", LoadingAnim::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_FreeCam", FreeCam::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";
 
+
+	return S_OK;
+}
+
+HRESULT Loader::LoadingForGamePlay()
+{
+	m_strDebugText = L"로딩완료";
+	return S_OK;
+}
+
+HRESULT Loader::LoadingForTest()
+{
+	
 	return S_OK;
 }

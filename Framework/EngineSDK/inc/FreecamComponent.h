@@ -19,6 +19,10 @@ public:
     Component* Clone()override { return new FreecamComponent(*this); }
     void Free()override;
 
+#ifdef USE_IMGUI
+    void RenderInspector()override {};
+#endif
+
 private:
 
 };

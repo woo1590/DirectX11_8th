@@ -1,14 +1,21 @@
 #include "pch.h"
-#include "BackGround.h"
+#include "LoadingAnim.h"
 #include "Material.h"
+#include "VIBuffer.h"
 
-BackGround::BackGround()
+LoadingAnim::LoadingAnim()
+	:UIObject()
 {
 }
 
-BackGround* BackGround::Create()
+LoadingAnim::LoadingAnim(const LoadingAnim& prototype)
+	:UIObject(prototype)
 {
-	BackGround* Instance = new BackGround();
+}
+
+LoadingAnim* LoadingAnim::Create()
+{
+	LoadingAnim* Instance = new LoadingAnim();
 
 	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
@@ -16,7 +23,7 @@ BackGround* BackGround::Create()
 	return Instance;
 }
 
-HRESULT BackGround::Initialize_Prototype()
+HRESULT LoadingAnim::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -24,7 +31,7 @@ HRESULT BackGround::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT BackGround::Initialize(InitDESC* arg)
+HRESULT LoadingAnim::Initialize(InitDESC* arg)
 {
 	UIObject::UIObjectDesc desc{};
 	desc.x = 640.f;
@@ -37,31 +44,38 @@ HRESULT BackGround::Initialize(InitDESC* arg)
 
 	m_pVIBuffer = EngineCore::GetInstance()->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
 	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxTex"));
-	m_pMaterial->SetTexture("g_DiffuseMap", EngineCore::GetInstance()->GetTexture(ENUM_CLASS(LevelID::Static), "Texture_Background"));
-
-	m_pTransform->SetPosition(_float3(0.f, 0.f, 0.9f));
-	m_pTransform->SetScale(_float3(400.f, 400.f, 1.f));
+	m_pMaterial->SetTexture("g_DiffuseMap", EngineCore::GetInstance()->GetTexture(ENUM_CLASS(LevelID::Static), "Texture_Anim"));
 
 	return S_OK;
 }
 
-void BackGround::PriorityUpdate(_float dt)
+void LoadingAnim::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
 }
 
-void BackGround::Update(_float dt)
+void LoadingAnim::Update(_float dt)
 {
 	__super::Update(dt);
 
+	if (m_fElaspedTime >= 0.05f)
+	{
+		m_iTexNum++;
+		if (m_iTexNum >= 100)
+			m_iTexNum = 0;
+
+		m_fElaspedTime = 0.f;
+	}
+
+	m_fElaspedTime += dt;
 }
 
-void BackGround::LateUpdate(_float dt)
+void LoadingAnim::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
 }
 
-HRESULT BackGround::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+HRESULT LoadingAnim::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
 	CBPerObject cb{};
 	cb.worldMatrix = m_pTransform->GetWorldMatrix();
@@ -79,9 +93,9 @@ HRESULT BackGround::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& 
 	return S_OK;
 }
 
-Object* BackGround::Clone(InitDESC* arg)
+Object* LoadingAnim::Clone(InitDESC* arg)
 {
-	BackGround* Instance = new BackGround(*this);
+	LoadingAnim* Instance = new LoadingAnim(*this);
 
 	if (FAILED(Instance->Initialize(arg)))
 		Safe_Release(Instance);
@@ -89,9 +103,10 @@ Object* BackGround::Clone(InitDESC* arg)
 	return Instance;
 }
 
-void BackGround::Free()
+void LoadingAnim::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pMaterial);
+	Safe_Release(m_pVIBuffer);
 }

@@ -19,6 +19,7 @@ public:
     HRESULT Render()override;
 
 private:
+    HRESULT InitializeLayerBackground(const _string& layerTag);
 
 };
 

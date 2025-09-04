@@ -43,7 +43,8 @@ HRESULT Object::Initialize(InitDESC* arg)
 		ObjectDESC* objectDesc = static_cast<ObjectDESC*>(arg);
 		m_strInstanceTag = objectDesc->instanceTag;
 
-		m_pTransform->Initialize(arg);
+		if (FAILED(m_pTransform->Initialize(arg)))
+			return E_FAIL;
 	}
 
 	return S_OK;
@@ -80,3 +81,13 @@ void Object::Free()
 	m_Components.clear();
 	m_ComponentMap.clear();
 }
+
+#ifdef USE_IMGUI
+
+void Object::RenderInspector()
+{
+	for (const auto& comp : m_Components)
+		comp->RenderInspector();
+}
+
+#endif

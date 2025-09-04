@@ -11,8 +11,8 @@ private:
     virtual ~GraphicDevice() = default;
 
 public:
-    static GraphicDevice* Create(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY);
-    HRESULT Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY);
+    static GraphicDevice* Create(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY, D3D11_VIEWPORT* pViewportDesc);
+    HRESULT Initialize(HWND hWnd, WinMode winMode, _uint winSizeX, _uint winSizeY, D3D11_VIEWPORT* pViewportDesc);
     void Free()override;
 
 public:

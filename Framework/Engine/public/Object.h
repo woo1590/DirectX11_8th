@@ -56,6 +56,10 @@ public:
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
 
+#ifdef USE_IMGUI
+    void RenderInspector();
+#endif
+
 protected:
     _string m_strInstanceTag{};
     TransformComponent* m_pTransform = nullptr;

@@ -41,7 +41,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     m_pEngineCore->AddTimer("Timer_Default");
     m_pEngineCore->AddTimer("Timer_120fps");
 
-    m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Test));
+    m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Logo));
 
     isRunning = true;
 

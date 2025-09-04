@@ -15,9 +15,13 @@ public:
     static AiController* Create(Object* owner);
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-    void Free()override;
 
     Component* Clone()override { return new AiController(*this); }
+    void Free()override;
+
+#ifdef USE_IMGUI
+    void RenderInspector()override {};
+#endif
 
 private:
 

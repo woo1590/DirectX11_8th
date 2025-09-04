@@ -25,9 +25,9 @@ EngineCore::EngineCore()
 
 HRESULT EngineCore::Initialize(const EngineDESC& desc)
 {
-	hWnd = desc.hWnd;
+	m_hWnd = desc.hWnd;
 
-	m_pGraphicDevice = GraphicDevice::Create(desc.hWnd,desc.winMode,desc.winSizeX,desc.winSizeY);
+	m_pGraphicDevice = GraphicDevice::Create(desc.hWnd,desc.winMode,desc.winSizeX,desc.winSizeY,&m_Viewport);
 	if (!m_pGraphicDevice)
 		return E_FAIL;
 
@@ -47,11 +47,6 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pRandom)
 		return E_FAIL;
 
-#ifdef USE_IMGUI
-	m_pImGuiManager = ImGuiManager::Create(hWnd, m_pGraphicDevice->GetDevice(),m_pGraphicDevice->GetDeviceContext());
-	if (!m_pImGuiManager)
-		return E_FAIL;
-#endif
 
 	m_pLevelManager = LevelManager::Create();
 	if (!m_pLevelManager)
@@ -76,6 +71,16 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	m_pResourceManager = ResourceManager::Create(desc.levelCnt);
 	if (!m_pResourceManager)
 		return E_FAIL;
+
+#ifdef USE_IMGUI
+	GUIState state{};
+	state.pObjectManager = m_pObjectManager;
+	state.pPipeLine = m_pPipeLine;
+
+	m_pImGuiManager = ImGuiManager::Create(m_hWnd, m_pGraphicDevice->GetDevice(),m_pGraphicDevice->GetDeviceContext(),state);
+	if (!m_pImGuiManager)
+		return E_FAIL;
+#endif
 
 	return S_OK;
 }
@@ -121,13 +126,6 @@ void EngineCore::Tick(_float dt)
 	m_pRenderSystem->Submit(std::move(proxies));
 
 	BeginRender();
-
-#ifdef USE_IMGUI
-	m_pImGuiManager->BeginFrame();
-	m_pImGuiManager->Render();
-	m_pImGuiManager->EndFrame();
-#endif
-
 	Render();
 	EndRender();
 }
@@ -138,14 +136,6 @@ void EngineCore::Tick(_float dt)
 _bool EngineCore::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	return m_pImGuiManager->WndProcHandler(hWnd, msg, wParam, lParam);
-}
-void EngineCore::AddImGuiWindow(const _string& tag, std::function<void()> window)
-{
-	ImGuiManager::ImGuiWindowDESC desc{};
-	desc.windowTag = tag;
-	desc.window = window;
-
-	m_pImGuiManager->AddImGuiWindow(desc);
 }
 #pragma endregion
 #endif
@@ -289,9 +279,9 @@ std::unordered_map<_string, Layer*>& EngineCore::GetLayers(_uint levelID)
 #pragma endregion
 
 #pragma region Level
-void EngineCore::ChangeLevel(_uint levelID, Level* nextLevel)
+void EngineCore::ChangeLevel(_uint nextLevelID, Level* nextLevel)
 {
-	m_pLevelManager->ChangeLevel(levelID, nextLevel);
+	m_pLevelManager->ChangeLevel(nextLevelID, nextLevel);
 }
 
 Level* EngineCore::GetCurrLevel() const
@@ -326,7 +316,15 @@ HRESULT EngineCore::BeginRender()
 
 HRESULT EngineCore::Render()
 {
-	return m_pRenderSystem->RenderLoop();;
+	if (FAILED(m_pRenderSystem->RenderLoop()))
+		return E_FAIL;
+
+#ifdef USE_IMGUI
+	m_pImGuiManager->BeginFrame();
+	m_pImGuiManager->Render();
+	m_pImGuiManager->EndFrame();
+#endif
+
 }
 
 HRESULT EngineCore::EndRender()

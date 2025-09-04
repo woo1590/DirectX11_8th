@@ -18,8 +18,13 @@ public:
     HRESULT Initialize(InitDESC* arg)override;
     
     HRESULT Bind();
+
     Component* Clone()override;
     void Free()override;
+
+#ifdef USE_IMGUI
+    void RenderInspector()override {};
+#endif
 private:
     Model* m_pModel = nullptr;
 };

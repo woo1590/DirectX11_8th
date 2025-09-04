@@ -26,11 +26,14 @@ HRESULT Texture::Initialize(const _string& filePath, _uint numTextures)
 
 	for (_uint i = 0; i < numTextures; ++i)
 	{
+		_tchar szFileName[MAX_PATH] = TEXT("");
+		wsprintf(szFileName, path.c_str(), i);
+
 		ID3D11ShaderResourceView* srv = nullptr;
 
 		if (ext == L".dds")
 		{
-			if (FAILED(CreateDDSTextureFromFile(device, path.c_str(), nullptr, &srv)))
+			if (FAILED(CreateDDSTextureFromFile(device, szFileName, nullptr, &srv)))
 				return E_FAIL;
 		}
 		else if (ext == L".tga")
@@ -39,7 +42,7 @@ HRESULT Texture::Initialize(const _string& filePath, _uint numTextures)
 		}
 		else
 		{
-			if (FAILED(CreateWICTextureFromFile(device, path.c_str(), nullptr, &srv)))
+			if (FAILED(CreateWICTextureFromFile(device, szFileName, nullptr, &srv)))
 				return E_FAIL;
 		}
 

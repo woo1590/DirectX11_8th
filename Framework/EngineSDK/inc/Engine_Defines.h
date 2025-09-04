@@ -21,6 +21,13 @@ using namespace DirectX;
 #include "fmod/fmod.hpp"
 #include "nlohmann/json.hpp"
 
+#ifdef USE_IMGUI
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_win32.h"
+#include "imgui/backends/imgui_impl_dx11.h"
+#include "guizmo/ImGuizmo.h"
+#endif
+
 
 #include <SDKDDKVer.h>
 #define WIN32_LEAN_AND_MEAN             

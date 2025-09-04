@@ -12,7 +12,7 @@ NS_BEGIN(Engine)
 
 class TransformComponent;
 class ImGuiManager;
-class TransformGuizmo :
+class TransformGuizmo final:
     public Base
 {
 private:
