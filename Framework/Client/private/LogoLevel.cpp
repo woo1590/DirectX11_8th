@@ -19,6 +19,8 @@ LogoLevel* LogoLevel::Create()
 
 HRESULT LogoLevel::Initialize()
 {
+	m_strLevelTag = "Logo";
+
 	if (FAILED(InitializeLayerBackground("Layer_Background")))
 		return E_FAIL;
 

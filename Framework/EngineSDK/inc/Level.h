@@ -15,8 +15,9 @@ public:
     virtual HRESULT Render();
     virtual void Free()override;
 
+    const _string& GetLevelTag() { return m_strLevelTag; }
 protected:
-
+    _string m_strLevelTag{};
 };
 
 NS_END

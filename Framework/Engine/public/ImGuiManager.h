@@ -31,6 +31,8 @@ public:
     void Free()override;
 
 private:
+    void SetupIO();
+
     std::vector<IPanel*> m_Panels;
     GUIState m_GuiState{};
 };

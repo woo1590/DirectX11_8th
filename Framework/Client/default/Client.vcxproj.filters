@@ -61,6 +61,9 @@
     <Filter Include="02. Object\UIObject\LoadingAnim">
       <UniqueIdentifier>{a2361df0-2a06-4a01-8d3b-693ce12fcd82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Terrain">
+      <UniqueIdentifier>{4ed086e0-202b-4e65-8fa2-959d1b5b300f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="..\public\LoadingAnim.h">
       <Filter>02. Object\UIObject\LoadingAnim</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Terrain.h">
+      <Filter>02. Object\Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -149,6 +155,9 @@
     <ClCompile Include="..\private\LoadingAnim.cpp">
       <Filter>02. Object\UIObject\LoadingAnim</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Terrain.cpp">
+      <Filter>02. Object\Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -168,6 +177,9 @@
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxCube.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxNorTex.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

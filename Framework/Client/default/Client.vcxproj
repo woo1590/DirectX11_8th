@@ -196,6 +196,7 @@
     <ClInclude Include="..\public\LoadingLevel.h" />
     <ClInclude Include="..\public\LogoLevel.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\TestCube.h" />
     <ClInclude Include="..\public\TestLevel.h" />
     <ClInclude Include="Client.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="..\private\LoadingLevel.cpp" />
     <ClCompile Include="..\private\LogoLevel.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\TestCube.cpp" />
     <ClCompile Include="..\private\TestLevel.cpp" />
     <ClCompile Include="Client.cpp" />
@@ -232,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxTex.hlsl">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </AdditionalIncludeDirectories>

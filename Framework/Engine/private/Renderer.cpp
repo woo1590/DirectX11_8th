@@ -108,16 +108,18 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 
 HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 {
-	D3D11_MAPPED_SUBRESOURCE perObjectData{};
+	{
+		D3D11_MAPPED_SUBRESOURCE perObjectData{};
 	
-	m_pDeviceContext->Map(m_pCBPerObject, 0, D3D11_MAP_WRITE_DISCARD, 0, &perObjectData);
-	memcpy_s(perObjectData.pData, sizeof(CBPerObject), &proxy.cbPerObject, sizeof(CBPerObject));
-	m_pDeviceContext->Unmap(m_pCBPerObject, 0);
+		m_pDeviceContext->Map(m_pCBPerObject, 0, D3D11_MAP_WRITE_DISCARD, 0, &perObjectData);
+		memcpy_s(perObjectData.pData, sizeof(CBPerObject), &proxy.cbPerObject, sizeof(CBPerObject));
+		m_pDeviceContext->Unmap(m_pCBPerObject, 0);
+	}
 
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 
-	if (FAILED(proxy.material->BindMaterial(0,proxy.frameIndex)))
+	if (FAILED(proxy.material->BindMaterial(proxy.passIndex, proxy.frameIndex)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

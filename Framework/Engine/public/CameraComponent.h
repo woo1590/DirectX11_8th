@@ -33,7 +33,7 @@ public:
     void Free()override;
 
 #ifdef USE_IMGUI
-    void RenderInspector()override {};
+    void RenderInspector()override;
 #endif
 
 private:

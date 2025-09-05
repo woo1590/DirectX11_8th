@@ -10,8 +10,11 @@ struct RenderProxy
 	VIBuffer* buffer = nullptr;
 	Material* material = nullptr;
 	CBPerObject cbPerObject{};
+
 	RenderGroup group{};
 	_int frameIndex = 0;
+	_uint passIndex = 0;
+	_float viewZ = 0.f;
 };
 
 NS_END

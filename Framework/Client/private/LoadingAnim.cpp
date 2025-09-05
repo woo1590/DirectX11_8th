@@ -36,8 +36,8 @@ HRESULT LoadingAnim::Initialize(InitDESC* arg)
 	UIObject::UIObjectDesc desc{};
 	desc.x = 640.f;
 	desc.y = 360.f;
-	desc.sizeX = 500.f;
-	desc.sizeY = 500.f;
+	desc.sizeX = 400.f;
+	desc.sizeY = 400.f;
 
 	if (FAILED(__super::Initialize(&desc)))
 		return E_FAIL;

@@ -2,11 +2,14 @@
 #include "Object.h"
 #include "TransformComponent.h"
 
+_uint Object::m_iInstanceID = 0;
+
 Object::Object()
 {
 }
 
 Object::Object(const Object& prototype)
+	:m_strInstanceTag(prototype.m_strInstanceTag)
 {
 	for (const auto& pair : prototype.m_ComponentMap)
 	{
@@ -38,11 +41,10 @@ HRESULT Object::Initialize_Prototype()
 
 HRESULT Object::Initialize(InitDESC* arg)
 {
+	m_strInstanceTag = m_strInstanceTag + '#' + std::to_string(m_iInstanceID++);
+
 	if (arg)
 	{
-		ObjectDESC* objectDesc = static_cast<ObjectDESC*>(arg);
-		m_strInstanceTag = objectDesc->instanceTag;
-
 		if (FAILED(m_pTransform->Initialize(arg)))
 			return E_FAIL;
 	}

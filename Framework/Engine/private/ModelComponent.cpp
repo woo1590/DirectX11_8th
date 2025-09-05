@@ -37,6 +37,20 @@ void ModelComponent::Free()
 	__super::Free();
 }
 
+
+#ifdef USE_IMGUI
+
+void ModelComponent::RenderInspector()
+{
+	ImGui::PushID(this);
+
+	ImGui::SeparatorText("Model");
+
+	ImGui::PopID();
+}
+
+#endif
+
 HRESULT ModelComponent::Bind()
 {
 	

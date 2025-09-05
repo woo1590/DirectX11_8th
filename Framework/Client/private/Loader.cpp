@@ -7,6 +7,7 @@
 #include "TestCube.h"
 #include "FreeCam.h"
 #include "LoadingAnim.h"
+#include "Terrain.h"
 
 //component
 #include "TransformComponent.h"
@@ -14,6 +15,7 @@
 //resource
 #include "VIBufferQuad.h"
 #include "VIBufferCube.h"
+#include "VIBufferTerrain.h"
 #include "Shader.h"
 
 Loader::Loader()
@@ -99,12 +101,19 @@ HRESULT Loader::LoadingForLogo()
 		VTXCUBE::elements, VTXCUBE::numElement)))
 		return E_FAIL;
 
+	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxNorTex.hlsl", "Shader_VtxNorTex",
+		VTXNORTEX::elements, VTXNORTEX::numElement)))
+		return E_FAIL;
+
 	/*Load Resource*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
 		return E_FAIL;
 
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
+		return E_FAIL;
+
+	if(FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static),"Buffer_Terrain",VIBufferTerrain::Create("../bin/resource/terrain/Height1.bmp"))))
 		return E_FAIL;
 
 	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/background/background.png", 1, "Texture_Background")))
@@ -114,6 +123,9 @@ HRESULT Loader::LoadingForLogo()
 		return E_FAIL;
 
 	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/TestCube.dds", 1, "Texture_TestCube")))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/terrain/Tile0.jpg", 1, "Texture_Terrain")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/
@@ -129,6 +141,9 @@ HRESULT Loader::LoadingForLogo()
 		return E_FAIL;
 
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_FreeCam", FreeCam::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Terrain", Terrain::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";

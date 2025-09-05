@@ -3,6 +3,8 @@
 #include "CameraComponent.h"
 #include "EngineCore.h"
 
+_uint FreeCam::m_iInstanceCount = 0;
+
 FreeCam::FreeCam()
 	:Object()
 {
@@ -28,6 +30,8 @@ HRESULT FreeCam::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_strInstanceTag = "FreeCamera";
+
 	AddComponent<CameraComponent>();
 
 	return S_OK;
@@ -35,10 +39,7 @@ HRESULT FreeCam::Initialize_Prototype()
 
 HRESULT FreeCam::Initialize(InitDESC* arg)
 {
-	Object::ObjectDESC desc{};
-	desc.instanceTag = "Camera";
-
-	if (FAILED(__super::Initialize(&desc)))
+	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
 	CameraComponent::CameraDESC camDesc{};
@@ -80,6 +81,17 @@ void FreeCam::PriorityUpdate(_float dt)
 		_float3 velocity{ 0.f,0.f,-100.f };
 		m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
 	}
+
+	if (GetAsyncKeyState(VK_SPACE))
+	{
+		m_pTransform->Translate(XMVectorSet(0.f, 1.f, 0.f, 0.f) * 100.f * dt);
+	}
+
+	if (GetAsyncKeyState(VK_SHIFT))
+	{
+		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
+	}
+
 
 	auto engine = EngineCore::GetInstance();
 	auto cam = GetComponent<CameraComponent>();

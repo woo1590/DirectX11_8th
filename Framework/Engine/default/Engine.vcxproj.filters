@@ -160,6 +160,12 @@
     <Filter Include="01. Engine Component\ImGui Manager\Panel\GuizmoPanel">
       <UniqueIdentifier>{975f18bb-add3-447e-97b4-2bac871bd8d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Object\BlendObject">
+      <UniqueIdentifier>{ff2ba7a1-7b58-40c5-aaba-c809069c6a87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Terrain">
+      <UniqueIdentifier>{9a699959-7a9a-4dfe-9881-30e09aea205b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -345,6 +351,9 @@
     <ClInclude Include="..\public\GUIState.h">
       <Filter>01. Engine Component\ImGui Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBufferTerrain.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -502,6 +511,9 @@
     </ClCompile>
     <ClCompile Include="..\private\OutlinerPanel.cpp">
       <Filter>01. Engine Component\ImGui Manager\Panel\OutlinerPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBufferTerrain.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

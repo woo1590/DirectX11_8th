@@ -78,3 +78,30 @@ void CameraComponent::Free()
 
 	Safe_Release(m_pTransform);
 }
+
+#ifdef USE_IMGUI
+
+void CameraComponent::RenderInspector()
+{
+	ImGui::PushID(this);
+
+	if (!ImGui::CollapsingHeader("Camera",
+		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
+		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
+	{
+		ImGui::Separator();
+
+		_float fovDgree = XMConvertToDegrees(m_fFov);
+
+		m_isDirty |= ImGui::DragFloat("Fov", &fovDgree, 0.1f, -FLT_MAX, FLT_MAX);
+		m_isDirty |= ImGui::DragFloat("Aspect", &m_fAspect, 0.1f, -FLT_MAX, FLT_MAX);
+		m_isDirty |= ImGui::DragFloat("NearZ", &m_fNearZ, 0.1f, -FLT_MAX, FLT_MAX);
+		m_isDirty |= ImGui::DragFloat("FarZ", &m_fFarZ, 0.1f, -FLT_MAX, FLT_MAX);
+
+		m_fFov = XMConvertToRadians(fovDgree);
+	}
+
+	ImGui::PopID();
+}
+
+#endif

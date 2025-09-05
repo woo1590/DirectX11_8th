@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "TestCube.h"
+#include "Material.h"
+
+//component
+#include "ModelComponent.h"
 #include "TransformComponent.h"
 #include "CameraComponent.h"
-#include "Material.h"
 
 TestCube::TestCube()
 {
@@ -23,18 +26,20 @@ HRESULT TestCube::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_strInstanceTag = "TestCube";
+
+	AddComponent<ModelComponent>();
+
 	return S_OK;
 }
 
 HRESULT TestCube::Initialize(InitDESC* arg)
 {
-	Object::ObjectDESC desc{};
-	desc.instanceTag = "TestCube";
-
-	if (FAILED(__super::Initialize(&desc)))
+	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
 	m_pVIBuffer = EngineCore::GetInstance()->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube");
+
 	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxCube"));
 	m_pMaterial->SetTexture("g_DiffuseMap", EngineCore::GetInstance()->GetTexture(ENUM_CLASS(LevelID::Static), "Texture_TestCube"));
 

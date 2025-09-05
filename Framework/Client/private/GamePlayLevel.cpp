@@ -18,6 +18,8 @@ GamePlayLevel* GamePlayLevel::Create()
 
 HRESULT GamePlayLevel::Initialize()
 {
+	m_strLevelTag = "GamePlay";
+
 	if (FAILED(InitializeLayerGameObject("Layer_GameObject")))
 		return E_FAIL;
 
@@ -61,6 +63,10 @@ HRESULT GamePlayLevel::InitializeLayerGameObject(const _string& layerTag)
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_TestCube",
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
+		return E_FAIL;
+
+	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static),"Prototype_Object_Terrain",
+								ENUM_CLASS(LevelID::GamePlay),layerTag)))
 		return E_FAIL;
 
 	return S_OK;

@@ -62,6 +62,7 @@ public:
 
 protected:
     _string m_strInstanceTag{};
+    static _uint m_iInstanceID;
     TransformComponent* m_pTransform = nullptr;
 
     std::vector<Component*> m_Components;

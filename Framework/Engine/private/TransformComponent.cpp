@@ -52,6 +52,29 @@ HRESULT TransformComponent::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+void TransformComponent::SetRotation(_float3 rotation)
+{
+	static auto normalizeAngle = [](_float& radian)
+		{
+			if (radian < -XM_PI)
+			{
+				radian += 2.f * XM_PI;
+			}
+			else if (radian > XM_PI)
+			{
+				radian -= 2.f * XM_PI;
+			}
+		};
+
+	normalizeAngle(rotation.x);
+	normalizeAngle(rotation.y);
+	normalizeAngle(rotation.z);
+
+	m_Rotation = rotation;
+
+	m_isDirty = true;
+}
+
 void TransformComponent::SetForward(_float3 direction)
 {
 	_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
@@ -116,11 +139,29 @@ void TransformComponent::RenderInspector()
 {
 	ImGui::PushID(this);
 
-	ImGui::TextUnformatted("Transform");
-	ImGui::Separator();
+	if (!ImGui::CollapsingHeader("Transform",
+		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
+		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
+	{
+		ImGui::Separator();
 
-	ImGui::DragFloat3("Position", &m_Position.x, 0.01f, -FLT_MAX, FLT_MAX);
-	ImGui::DragFloat3("Rotation", &m_Rotation.x, 0.01f, -FLT_MAX, FLT_MAX);
+		_float3 degree{}, radian{};
+		degree.x = XMConvertToDegrees(m_Rotation.x);
+		degree.y = XMConvertToDegrees(m_Rotation.y);
+		degree.z = XMConvertToDegrees(m_Rotation.z);
+
+		m_isDirty |= ImGui::DragFloat3("Position", &m_Position.x, 0.1f, -FLT_MAX, FLT_MAX);
+		m_isDirty |= ImGui::DragFloat3("Scale", &m_Scale.x, 0.1f, -FLT_MAX, FLT_MAX);
+		
+		if (ImGui::DragFloat3("Rotation", &degree.x, 0.1f, -FLT_MAX, FLT_MAX))
+		{
+			radian.x = XMConvertToRadians(degree.x);
+			radian.y = XMConvertToRadians(degree.y);
+			radian.z = XMConvertToRadians(degree.z);
+
+			SetRotation(radian);
+		}
+	}
 
 	ImGui::PopID();
 }

@@ -24,7 +24,7 @@ public:
     void Free()override;
 
 private:
-
+    static _uint m_iInstanceCount;
 };
 
 NS_END

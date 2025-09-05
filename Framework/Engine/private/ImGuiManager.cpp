@@ -26,9 +26,7 @@ HRESULT ImGuiManager::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	ImGui::StyleColorsDark();
+	SetupIO();
 
 	if (!ImGui_ImplWin32_Init(hWnd))
 		return E_FAIL;
@@ -90,6 +88,14 @@ void ImGuiManager::Free()
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+}
+
+void ImGuiManager::SetupIO()
+{
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui::StyleColorsDark();
+
+	//io.Fonts->AddFontFromFileTTF("../public/imgui/imgui_font/DungGeunMo.ttf", 18.f);
 }
 
 #endif // USE_IMGUI

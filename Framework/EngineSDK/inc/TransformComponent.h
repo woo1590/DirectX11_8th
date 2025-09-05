@@ -26,7 +26,7 @@ public:
 
     void SetPosition(_float3 position) { m_Position = position; m_isDirty = true; }
     void SetScale(_float3 scale) { m_Scale = scale; m_isDirty = true; }
-    void SetRotation(_float3 rotation) { m_Rotation = rotation; m_isDirty = true; }
+    void SetRotation(_float3 rotation);
     void SetForward(_float3 direction);
 
     void Translate(_fvector velocity);
