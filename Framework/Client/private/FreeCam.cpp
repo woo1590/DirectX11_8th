@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "FreeCam.h"
-#include "CameraComponent.h"
 #include "EngineCore.h"
+
+//component
+#include "CameraComponent.h"
+#include "AudioListener.h"
 
 _uint FreeCam::m_iInstanceCount = 0;
 
@@ -33,6 +36,7 @@ HRESULT FreeCam::Initialize_Prototype()
 	m_strInstanceTag = "FreeCamera";
 
 	AddComponent<CameraComponent>();
+	AddComponent<AudioListener>();
 
 	return S_OK;
 }

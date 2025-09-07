@@ -60,6 +60,12 @@ void ImGuiManager::BeginFrame()
 
 void ImGuiManager::Render()
 {
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::Begin("Debug");
+	ImGui::Text("FPS : %.1f (%.3f ms)", io.Framerate, 1000.f / io.Framerate);
+	ImGui::End();
+
 	for (const auto& panel : m_Panels)
 	{
 		panel->Draw(m_GuiState);
@@ -95,7 +101,7 @@ void ImGuiManager::SetupIO()
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::StyleColorsDark();
 
-	//io.Fonts->AddFontFromFileTTF("../public/imgui/imgui_font/DungGeunMo.ttf", 18.f);
+	io.Fonts->AddFontFromFileTTF("../../EngineSDK/inc/imgui/imgui_font/DungGeunMo.ttf", 15.f);
 }
 
 #endif // USE_IMGUI

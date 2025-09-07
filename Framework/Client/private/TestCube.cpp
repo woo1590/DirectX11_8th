@@ -5,6 +5,7 @@
 //component
 #include "ModelComponent.h"
 #include "TransformComponent.h"
+#include "AudioSource.h"
 #include "CameraComponent.h"
 
 TestCube::TestCube()
@@ -29,6 +30,7 @@ HRESULT TestCube::Initialize_Prototype()
 	m_strInstanceTag = "TestCube";
 
 	AddComponent<ModelComponent>();
+	AddComponent<AudioSource>();
 
 	return S_OK;
 }

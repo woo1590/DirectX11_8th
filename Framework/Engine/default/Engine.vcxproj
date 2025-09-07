@@ -180,6 +180,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\AiController.h" />
+    <ClInclude Include="..\public\AudioListener.h" />
+    <ClInclude Include="..\public\AudioSource.h" />
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\public\CameraComponent.h" />
     <ClInclude Include="..\public\Component.h" />
@@ -249,6 +251,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\AiController.cpp" />
+    <ClCompile Include="..\private\AudioListener.cpp" />
+    <ClCompile Include="..\private\AudioSource.cpp" />
     <ClCompile Include="..\private\Base.cpp" />
     <ClCompile Include="..\private\CameraComponent.cpp" />
     <ClCompile Include="..\private\Component.cpp" />

@@ -166,6 +166,15 @@
     <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Terrain">
       <UniqueIdentifier>{9a699959-7a9a-4dfe-9881-30e09aea205b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Object Component\Audio">
+      <UniqueIdentifier>{b9c0166e-0bb7-4edd-92cc-b3105feea157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Audio\Audio Source">
+      <UniqueIdentifier>{bc03bbe0-769a-47c3-8bae-eec9b5650831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Audio\Audio Listener">
+      <UniqueIdentifier>{36df5982-2e27-4706-83de-4b4065cd4ecf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -354,6 +363,12 @@
     <ClInclude Include="..\public\VIBufferTerrain.h">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AudioSource.h">
+      <Filter>05. Object Component\Audio\Audio Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AudioListener.h">
+      <Filter>05. Object Component\Audio\Audio Listener</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -514,6 +529,12 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBufferTerrain.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AudioSource.cpp">
+      <Filter>05. Object Component\Audio\Audio Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AudioListener.cpp">
+      <Filter>05. Object Component\Audio\Audio Listener</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

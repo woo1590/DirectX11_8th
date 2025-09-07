@@ -16,8 +16,8 @@ public:
     void Update();
 
     void LoadSound(const std::string& key, const std::string& filepath, bool loop = false);
-    void PlaySFX(const std::string& key);
-    void PlayBGM(const std::string& key);
+    void PlaySFX(const std::string& key);   //3d sound
+    void PlayBGM(const std::string& key);   //2d sound
     void Stop(const std::string& key);
 
     void SetSFXVolume(float volume);  // 0.0f ~ 1.0f
@@ -32,6 +32,7 @@ private:
     void Free()override;
 
     FMOD::System* m_System = nullptr;
+    FMOD::ChannelGroup* m_Master = nullptr;
     FMOD::ChannelGroup* m_SFXGroup = nullptr;
     FMOD::ChannelGroup* m_BGMGroup = nullptr;
 

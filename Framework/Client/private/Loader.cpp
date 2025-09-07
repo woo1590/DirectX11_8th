@@ -113,7 +113,7 @@ HRESULT Loader::LoadingForLogo()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
 		return E_FAIL;
 
-	if(FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static),"Buffer_Terrain",VIBufferTerrain::Create("../bin/resource/terrain/Height1.bmp"))))
+	if(FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static),"Buffer_Terrain",VIBufferTerrain::Create("../bin/resource/terrain/Height.bmp"))))
 		return E_FAIL;
 
 	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/background/background.png", 1, "Texture_Background")))

@@ -24,6 +24,7 @@ HRESULT SoundManager::Initialize()
     FMOD::System_Create(&m_System);
     m_System->init(32, FMOD_INIT_NORMAL, nullptr);
 
+    m_System->createChannelGroup("Master", &m_Master);
     m_System->createChannelGroup("SFX", &m_SFXGroup);
     m_System->createChannelGroup("BGM", &m_BGMGroup);
 

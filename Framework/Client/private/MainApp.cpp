@@ -39,7 +39,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     }
 
     m_pEngineCore->AddTimer("Timer_Default");
-    m_pEngineCore->AddTimer("Timer_120fps");
+    m_pEngineCore->AddTimer("Timer_144fps");
 
     m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Logo));
 
@@ -68,10 +68,10 @@ void MainApp::Run()
         m_pEngineCore->UpdateTimer("Timer_Default");
         timeAcc += m_pEngineCore->GetDeltaTime("Timer_Default");
         
-        if (timeAcc >= 1.f / 120.f)
+        if (timeAcc >= 1.f / 144.f)
         {
-            m_pEngineCore->UpdateTimer("Timer_120fps");
-            _float dt = m_pEngineCore->GetDeltaTime("Timer_120fps");
+            m_pEngineCore->UpdateTimer("Timer_144fps");
+            _float dt = m_pEngineCore->GetDeltaTime("Timer_144fps");
 
             dt = std::clamp(dt, 0.f, 0.03f);
             m_pEngineCore->Tick(dt);
