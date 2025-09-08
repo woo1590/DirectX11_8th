@@ -15,8 +15,10 @@ public:
     HRESULT Initialize();
     void Update();
 
-    void LoadSound(const std::string& key, const std::string& filepath, bool loop = false);
-    void PlaySFX(const std::string& key);   //3d sound
+    void Load3DSound(const _string& key, const _string& filePath, _bool loop = false);
+    void Load2DSound(const _string& key, const _string& filePath, _bool loop = false);
+
+    FMOD::Channel* PlaySFX(const std::string& key);   //3d sound
     void PlayBGM(const std::string& key);   //2d sound
     void Stop(const std::string& key);
 
@@ -28,6 +30,7 @@ public:
 
     // 추후 확장용
     void FadeOut(const std::string& key, float duration);
+
 private:
     void Free()override;
 

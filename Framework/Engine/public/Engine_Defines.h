@@ -28,7 +28,6 @@ using namespace DirectX;
 #include "guizmo/ImGuizmo.h"
 #endif
 
-
 #include <SDKDDKVer.h>
 #define WIN32_LEAN_AND_MEAN             
 
@@ -39,13 +38,13 @@ using namespace DirectX;
 #include <memory.h>
 #include <tchar.h>
 
-
 //c, c++
 #include <ctime>
 #include <typeindex>
 #include <random>
 #include <filesystem>
 #include <fstream>
+#include <hidusage.h>
 
 //thread
 #include <thread>
@@ -68,6 +67,10 @@ using namespace DirectX;
 #include "Engine_Struct.h"
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
+
+//util
+#include "Utility_Function.h"
+
 
 #define DIRECTINPUT_VERSION	0x0800
 #include <dinput.h>

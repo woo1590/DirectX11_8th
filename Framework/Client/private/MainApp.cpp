@@ -54,6 +54,7 @@ void MainApp::Run()
 
     while (isRunning)
     {
+
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             if (WM_QUIT == msg.message) break;
@@ -69,7 +70,7 @@ void MainApp::Run()
         timeAcc += m_pEngineCore->GetDeltaTime("Timer_Default");
         
         if (timeAcc >= 1.f / 144.f)
-        {
+        {   
             m_pEngineCore->UpdateTimer("Timer_144fps");
             _float dt = m_pEngineCore->GetDeltaTime("Timer_144fps");
 
@@ -77,7 +78,6 @@ void MainApp::Run()
             m_pEngineCore->Tick(dt);
 
             timeAcc = 0.f;
-
         }
     }
 }
@@ -96,7 +96,7 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     WNDCLASSEX wc = {};
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = WndProc;
+    wc.lpfnWndProc = EngineCore::WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInstance;
@@ -141,33 +141,9 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
+    //ShowCursor(false);
+    //ClipCursor(&windowSize);
+
     return true;
 }
 
-LRESULT MainApp::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-#ifdef USE_IMGUI
-    if (EngineCore::GetInstance()->WndProcHandler(hWnd, msg, wParam, lParam))
-        return true;
-#endif
-    switch (msg)
-    {
-    case WM_KEYDOWN:
-        switch (wParam)
-        {
-        case VK_ESCAPE:
-            DestroyWindow(hWnd);
-            break;
-        default:
-            break;
-        }
-        break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hWnd, msg, wParam, lParam);
-    }
-
-    return 0;
-}

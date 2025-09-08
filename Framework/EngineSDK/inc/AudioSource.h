@@ -17,14 +17,14 @@ public:
     HRESULT Initialize(InitDESC* arg)override;
 
     void Update(_float dt)override;
-
+    
+    void Play(const _string& soundTag);
     Component* Clone()override { return new AudioSource(*this); }
     void Free()override;
 
 #ifdef USE_IMGUI
     void RenderInspector()override;
 #endif
-
 
 private:
     _bool IsPlaying(FMOD::Channel* ch);

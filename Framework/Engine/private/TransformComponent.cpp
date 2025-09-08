@@ -146,18 +146,18 @@ void TransformComponent::RenderInspector()
 		ImGui::Separator();
 
 		_float3 degree{}, radian{};
-		degree.x = XMConvertToDegrees(m_Rotation.x);
-		degree.y = XMConvertToDegrees(m_Rotation.y);
-		degree.z = XMConvertToDegrees(m_Rotation.z);
+		degree.x = math::ToDegree(m_Rotation.x);
+		degree.y = math::ToDegree(m_Rotation.y);
+		degree.z = math::ToDegree(m_Rotation.z);
 
 		m_isDirty |= ImGui::DragFloat3("Position", &m_Position.x, 0.1f, -FLT_MAX, FLT_MAX);
 		m_isDirty |= ImGui::DragFloat3("Scale", &m_Scale.x, 0.1f, -FLT_MAX, FLT_MAX);
 		
 		if (ImGui::DragFloat3("Rotation", &degree.x, 0.1f, -FLT_MAX, FLT_MAX))
 		{
-			radian.x = XMConvertToRadians(degree.x);
-			radian.y = XMConvertToRadians(degree.y);
-			radian.z = XMConvertToRadians(degree.z);
+			radian.x = math::ToRadian(degree.x);
+			radian.y = math::ToRadian(degree.y);
+			radian.z = math::ToRadian(degree.z);
 
 			SetRotation(radian);
 		}

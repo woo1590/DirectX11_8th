@@ -23,7 +23,6 @@ public:
 
 private:
     bool InitWindow(HINSTANCE hInst, int nCmdShow);
-    static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     HWND hWnd{};
     HINSTANCE hInstance{};

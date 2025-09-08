@@ -101,7 +101,7 @@ void ImGuiManager::SetupIO()
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::StyleColorsDark();
 
-	io.Fonts->AddFontFromFileTTF("../../EngineSDK/inc/imgui/imgui_font/DungGeunMo.ttf", 15.f);
+	io.Fonts->AddFontFromFileTTF("../../EngineSDK/inc/imgui/imgui_font/suite.ttf", 16.f);
 }
 
 #endif // USE_IMGUI

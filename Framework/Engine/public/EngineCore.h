@@ -19,6 +19,7 @@ class PrototypeManager;
 class PipeLine;
 class Level;
 class Random;
+class InputSystem;
 class Renderer;
 
 class VIBuffer;
@@ -40,29 +41,32 @@ public:
     void Tick(_float dt);
 
 #ifdef USE_IMGUI
-    /*---ImGui---*/
+
+#pragma region ImGui
     _bool WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-    void AddImGuiWindow(const _string& tag, std::function<void()> window);
+#pragma endregion
+
 #endif
 
-    /*-----Timer-----*/
+#pragma region Timer
     HRESULT AddTimer(const std::string& timerTag);
     void UpdateTimer(const std::string& timerTag);
     _float GetDeltaTime(const std::string& timerTag);
+#pragma endregion
 
-    /*-----Random-----*/
+#pragma region Sound
+    void Load3DSound(const _string& key, const _string& filePath, _bool loop = false);
+    void Load2DSound(const _string& key, const _string& filePath, _bool loop = false);
+    FMOD::Channel* PlaySFX(const _string& soundTag);
+    void PlayBGM(const _string& soundTag);
+#pragma endregion
 
-    /*----Sound----*/
-    void LoadSound(const std::string& key, const std::string& filepath, bool loop = false);
-    void PlaySFX(const std::string& key);
-    void PlayBGM(const std::string& key);
-    void StopSound(const std::string& key);
-
-    /*---Graphic Device---*/
+#pragma region GraphicDevice
     ID3D11Device* GetDevice();
     ID3D11DeviceContext* GetDeviceContext();
+#pragma endregion
 
-    /*----PipeLine----*/
+#pragma region PipeLine
     void SetViewMatrix(_float4x4 viewMatrix);
     void SetProjMatrix(_float4x4 projMatrix);
     _float4x4 GetViewMatrix();
@@ -70,8 +74,9 @@ public:
     _float4x4 GetProjMatrix();
     _float4x4 GetProjMatrixInverse();
     _float3 GetCamPosition();
+#pragma endregion
 
-    /*----Resource----*/
+#pragma region Resource
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
     HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
@@ -79,26 +84,49 @@ public:
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(_uint levelID, const _string& key);
     Texture* GetTexture(_uint levelID, const _string& key);
+#pragma endregion
 
-    /*-----Prototype-----*/
+#pragma region Prototype
     HRESULT AddPrototype(_uint level, const _string& prototypeTag, Object* prototype);
     Object* ClonePrototype(_uint level, const _string& prototypeTag, InitDESC* arg);
+#pragma endregion
 
-    /*-----Object-----*/
+#pragma region Object
     HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr);
     std::unordered_map<_string, Layer*>& GetLayers(_uint levelID);
+#pragma endregion
 
-    /*-----Level-----*/
+#pragma region Level
     void ChangeLevel(_uint levelID, Level* nextLevel);
     Level* GetCurrLevel()const;
     void ClearResource(_uint levelID);
+#pragma endregion
+
+#pragma region RenderSystem
+    Renderer* GetRenderer()const;
+#pragma endregion
+
+#pragma region InputSystem
+    void OnKeyEvent(const RAWKEYBOARD& keyboard);
+    void OnMouseEvent(const RAWMOUSE& mouse);
+    void SetMouseDelta(_float dx, _float dy);
+    _float2 GetMouseDelta()const;
+
+    _bool IsKeyDown(WPARAM key)const;
+    _bool IsKeyPressed(WPARAM key)const;
+    _bool IsKeyRelease(WPARAM key)const;
+    _bool IsKeyAway(WPARAM key)const;
+
+    _bool IsMouseDown(MouseButton button)const;
+    _bool IsMousePress(MouseButton button)const;
+    _bool IsMouseRelease(MouseButton button)const;
+    _bool IsMouseAway(MouseButton button)const;
+#pragma endregion
 
     /*----Window----*/
     HWND GetWindowHandle()const { return m_hWnd; }
     D3D11_VIEWPORT GetViewport()const { return m_Viewport; }
-
-    /*----RenderSystem----*/
-    Renderer* GetRenderer()const;
+    static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
     /*----Rendering----*/
@@ -125,6 +153,7 @@ private:
     TaskManager*        m_pTaskManager = nullptr;
     PipeLine*           m_pPipeLine = nullptr;
     ResourceManager*    m_pResourceManager = nullptr;
+    InputSystem*        m_pInputSystem = nullptr;
 };
 
 NS_END

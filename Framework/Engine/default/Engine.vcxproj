@@ -228,6 +228,7 @@
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\public\GuizmoPanel.h" />
     <ClInclude Include="..\public\UIObject.h" />
+    <ClInclude Include="..\public\Utility_Function.h" />
     <ClInclude Include="..\public\VIBufferCube.h" />
     <ClInclude Include="..\public\VIBufferQuad.h" />
     <ClInclude Include="..\public\VIBuffer.h" />

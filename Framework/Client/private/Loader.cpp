@@ -89,7 +89,6 @@ HRESULT Loader::LoadingForLogo()
 
 	/*Load Sound*/
 	m_strDebugText = L"사운드 로딩중..";
-	engine->LoadSound("TestBGM2", "../bin/resource/TestBGM2.mp3", true);
 
 	/*Load Shader*/
 	m_strDebugText = L"셰이더 로딩중..";

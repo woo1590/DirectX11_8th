@@ -175,6 +175,9 @@
     <Filter Include="05. Object Component\Audio\Audio Listener">
       <UniqueIdentifier>{36df5982-2e27-4706-83de-4b4065cd4ecf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99. Utility\utility function">
+      <UniqueIdentifier>{4f1f4374-55f8-4153-afdc-60e76b2fd56a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -368,6 +371,9 @@
     </ClInclude>
     <ClInclude Include="..\public\AudioListener.h">
       <Filter>05. Object Component\Audio\Audio Listener</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Utility_Function.h">
+      <Filter>99. Utility\utility function</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

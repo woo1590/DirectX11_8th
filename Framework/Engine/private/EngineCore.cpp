@@ -15,6 +15,7 @@
 #include "ResourceManager.h"
 #include "LevelManager.h"
 #include "Random.h"
+#include "InputSystem.h"
 #include "PipeLine.h"
 
 IMPLEMENT_SINGLETON(EngineCore);
@@ -47,6 +48,9 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pRandom)
 		return E_FAIL;
 
+	m_pInputSystem = InputSystem::Create(desc.hWnd);
+	if (!m_pInputSystem)
+		return E_FAIL;
 
 	m_pLevelManager = LevelManager::Create();
 	if (!m_pLevelManager)
@@ -104,12 +108,15 @@ void EngineCore::Free()
 	Safe_Release(m_pSoundManager);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pResourceManager);
+	Safe_Release(m_pInputSystem);
 	Safe_Release(m_pGraphicDevice);	/*GraphicDevice는 가장 먼저 생성, 가장 마지막 해제*/
 
 }
 
 void EngineCore::Tick(_float dt)
 {
+	m_pInputSystem->Update();
+
 	m_pSoundManager->Update();
 
 	m_pObjectManager->PriorityUpdate(dt);
@@ -128,6 +135,8 @@ void EngineCore::Tick(_float dt)
 	BeginRender();
 	Render();
 	EndRender();
+
+	m_pInputSystem->EndFrame();
 }
 
 
@@ -159,24 +168,21 @@ _float EngineCore::GetDeltaTime(const std::string& timerTag)
 #pragma endregion
 
 #pragma region Sound
-void EngineCore::LoadSound(const std::string& key, const std::string& filepath, bool loop)
+void EngineCore::Load3DSound(const _string& key, const _string& filePath, _bool loop)
 {
-	m_pSoundManager->LoadSound(key, filepath, loop);
+	m_pSoundManager->Load3DSound(key, filePath, loop);
 }
-
-void EngineCore::PlaySFX(const std::string& key)
+void EngineCore::Load2DSound(const _string& key, const _string& filePath, _bool loop)
 {
-	m_pSoundManager->PlaySFX(key);
+	m_pSoundManager->Load2DSound(key, filePath, loop);
 }
-
-void EngineCore::PlayBGM(const std::string& key)
+FMOD::Channel* EngineCore::PlaySFX(const _string& soundTag)
 {
-	m_pSoundManager->PlayBGM(key);
+	return m_pSoundManager->PlaySFX(soundTag);
 }
-
-void EngineCore::StopSound(const std::string& key)
+void EngineCore::PlayBGM(const _string& soundTag)
 {
-	m_pSoundManager->Stop(key);
+	m_pSoundManager->PlayBGM(soundTag);
 }
 #pragma endregion
 
@@ -298,11 +304,115 @@ void EngineCore::ClearResource(_uint levelID)
 
 #pragma endregion
 
-#pragma region Rendering
+#pragma region RenderSystem
 Renderer* EngineCore::GetRenderer() const
 {
 	return m_pRenderSystem->GetRenderer();
 }
+#pragma endregion
+
+#pragma region InputSystem
+void EngineCore::OnKeyEvent(const RAWKEYBOARD& keyboard)
+{
+	m_pInputSystem->OnKeyEvent(keyboard);
+}
+void EngineCore::OnMouseEvent(const RAWMOUSE& mouse)
+{
+	m_pInputSystem->OnMouseEvent(mouse);
+}
+void EngineCore::SetMouseDelta(_float dx, _float dy)
+{
+	m_pInputSystem->SetMouseDelta(dx, dy);
+}
+_float2 EngineCore::GetMouseDelta() const
+{
+	return m_pInputSystem->GetMouseDelta();
+}
+_bool EngineCore::IsKeyDown(WPARAM key) const
+{
+	return m_pInputSystem->IsKeyDown(key);
+}
+_bool EngineCore::IsKeyPressed(WPARAM key) const
+{
+	return m_pInputSystem->IsKeyPressed(key);
+}
+_bool EngineCore::IsKeyRelease(WPARAM key) const
+{
+	return m_pInputSystem->IsKeyRelease(key);
+}
+_bool EngineCore::IsKeyAway(WPARAM key) const
+{
+	return m_pInputSystem->IsKeyAway(key);
+}
+_bool EngineCore::IsMouseDown(MouseButton button) const
+{
+	return m_pInputSystem->IsMouseDown(button);
+}
+_bool EngineCore::IsMousePress(MouseButton button) const
+{
+	return m_pInputSystem->IsMousePressed(button);
+}
+_bool EngineCore::IsMouseRelease(MouseButton button) const
+{
+	return m_pInputSystem->IsMouseRelease(button);
+}
+_bool EngineCore::IsMouseAway(MouseButton button) const
+{
+	return m_pInputSystem->IsMouseAway(button);
+}
+#pragma endregion
+
+LRESULT EngineCore::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	auto engine = EngineCore::GetInstance();
+	
+#ifdef USE_IMGUI
+	if (engine->WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+#endif
+
+	switch (msg)
+	{
+	case WM_INPUT:
+	{
+		_uint size = 0;
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
+		std::vector<BYTE> buf(size);
+
+		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, buf.data(), &size, sizeof(RAWINPUTHEADER)) != size)
+			break;
+
+		RAWINPUT* input = (RAWINPUT*)buf.data();
+		if (input->header.dwType == RIM_TYPEMOUSE)
+		{
+			const RAWMOUSE& m = input->data.mouse;
+
+			_float dx = (_float)input->data.mouse.lLastX;
+			_float dy = (_float)input->data.mouse.lLastY;
+
+			engine->SetMouseDelta(dx, dy);
+			engine->OnMouseEvent(m);
+		}
+		else if (input->header.dwType == RIM_TYPEKEYBOARD)
+		{
+			const RAWKEYBOARD& k = input->data.keyboard;
+
+			if (k.VKey == VK_ESCAPE)
+				DestroyWindow(hWnd);
+
+			engine->OnKeyEvent(k);
+		}
+	}break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
+
+	return 0;
+}
+
 HRESULT EngineCore::BeginRender()
 {
 	if (FAILED(m_pGraphicDevice->ClearBackBufferView()))
@@ -325,11 +435,11 @@ HRESULT EngineCore::Render()
 	m_pImGuiManager->EndFrame();
 #endif
 
+
+	return S_OK;
 }
 
 HRESULT EngineCore::EndRender()
 {
 	return m_pGraphicDevice->Present();
 }
-#pragma endregion
-

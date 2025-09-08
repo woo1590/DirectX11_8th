@@ -61,44 +61,42 @@ HRESULT FreeCam::Initialize(InitDESC* arg)
 void FreeCam::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
-	
-	if (GetAsyncKeyState('W'))
-	{
-		_float3 velocity{ 0.f,0.f,100.f };
-		m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
-	}
-
-	if (GetAsyncKeyState('A'))
-	{
-		_float3 velocity{ -100.f,0.f,0.f };
-		m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
-	}
-
-	if (GetAsyncKeyState('D'))
-	{
-		_float3 velocity{ 100.f,0.f,0.f };
-		m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
-	}
-
-	if (GetAsyncKeyState('S'))
-	{
-		_float3 velocity{ 0.f,0.f,-100.f };
-		m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
-	}
-
-	if (GetAsyncKeyState(VK_SPACE))
-	{
-		m_pTransform->Translate(XMVectorSet(0.f, 1.f, 0.f, 0.f) * 100.f * dt);
-	}
-
-	if (GetAsyncKeyState(VK_SHIFT))
-	{
-		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
-	}
-
-
 	auto engine = EngineCore::GetInstance();
+
 	auto cam = GetComponent<CameraComponent>();
+	auto transform = GetComponent<TransformComponent>();
+
+	_vector forward = transform->GetForwardV();
+	_vector right = transform->GetRightV();
+	_float speed = 100.f;
+	_float3 rotation = transform->GetRotation();
+	_float2 mouseDelta = engine->GetMouseDelta();
+
+	_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
+	_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
+	rotation.y += yaw;
+	rotation.x += pitch;
+	
+	rotation.x = std::clamp(rotation.x, -math::PI + 0.1f, math::PI - 0.1f);
+	transform->SetRotation(rotation);
+	
+	if (engine->IsKeyDown('W'))
+		m_pTransform->Translate(forward * speed * dt);
+
+	if (engine->IsKeyDown('S'))
+		m_pTransform->Translate(-forward * speed * dt);
+
+	if (engine->IsKeyDown('D'))
+		m_pTransform->Translate(right * speed * dt);
+
+	if (engine->IsKeyDown('A'))
+		m_pTransform->Translate(-right * speed * dt);
+	
+	if (engine->IsKeyDown(VK_SPACE))
+		m_pTransform->Translate(XMVectorSet(0.f, 1.f, 0.f, 0.f) * 100.f * dt);
+
+	if (engine->IsKeyDown(VK_SHIFT))
+		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
 
 	engine->SetViewMatrix(cam->GetViewMatrix());
 	engine->SetProjMatrix(cam->GetProjMatrix());

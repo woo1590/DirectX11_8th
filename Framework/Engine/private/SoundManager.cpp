@@ -28,6 +28,9 @@ HRESULT SoundManager::Initialize()
     m_System->createChannelGroup("SFX", &m_SFXGroup);
     m_System->createChannelGroup("BGM", &m_BGMGroup);
 
+    m_Master->addGroup(m_SFXGroup);
+    m_Master->addGroup(m_BGMGroup);
+
     return S_OK;
 }
 
@@ -37,29 +40,40 @@ void SoundManager::Update() {
         m_System->update();
 }
 
-void SoundManager::LoadSound(const std::string& key, const std::string& filepath, bool loop)
+void SoundManager::Load3DSound(const _string& key, const _string& filePath, _bool loop)
 {
-    if (m_SoundMap.count(key)) return;
-
-    const char* finalPath = filepath.c_str();
+    if (m_SoundMap.count(key))
+        return;
 
     FMOD::Sound* sound = nullptr;
-    FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_DEFAULT;
-    m_System->createSound(finalPath, mode, 0, &sound);
+
+    FMOD_MODE mode = loop ? FMOD_3D | FMOD_LOOP_NORMAL : FMOD_3D | FMOD_DEFAULT;
+    m_System->createSound(filePath.c_str(), mode, 0, &sound);
 
     m_SoundMap[key] = sound;
 }
 
-void SoundManager::PlaySFX(const std::string& key)
+void SoundManager::Load2DSound(const _string& key, const _string& filePath, _bool loop)
 {
-    if (m_SoundMap.count(key) == 0) return;
+    if (m_SoundMap.count(key))
+        return;
+
+    FMOD::Sound* sound = nullptr;
+    FMOD_MODE mode = loop ? FMOD_2D | FMOD_LOOP_NORMAL : FMOD_2D | FMOD_DEFAULT;
+    m_System->createSound(filePath.c_str(), mode, 0, &sound);
+
+    m_SoundMap[key] = sound;
+}
+
+FMOD::Channel* SoundManager::PlaySFX(const std::string& key)
+{
+    if (m_SoundMap.count(key) == 0) 
+        return nullptr;
 
     FMOD::Channel* ch = nullptr;
-    m_System->playSound(m_SoundMap[key], nullptr, false, &ch);
-    if (ch && m_SFXGroup)
-        ch->setChannelGroup(m_SFXGroup);
+    m_System->playSound(m_SoundMap[key], m_SFXGroup, true, &ch);    //sfx는 이후 위치 지정을 위해 pause
 
-    m_ChannelMap[key] = ch;
+    return ch;
 }
 
 void SoundManager::PlayBGM(const std::string& key)
@@ -67,11 +81,9 @@ void SoundManager::PlayBGM(const std::string& key)
     if (m_SoundMap.count(key) == 0) return;
 
     FMOD::Channel* ch = nullptr;
-    m_System->playSound(m_SoundMap[key], nullptr, false, &ch);
-    if (ch && m_BGMGroup)
-        ch->setChannelGroup(m_BGMGroup);
+    m_System->playSound(m_SoundMap[key], m_BGMGroup, false, &ch);//bgm은 pause없이 바로 재생
 
-    m_ChannelMap[key] = ch;
+    m_ChannelMap["BGM"] = ch;
 }
 
 void SoundManager::Stop(const std::string& key)

@@ -3,5 +3,5 @@
 
 namespace Engine
 {
-	
+	static int testlog = 0;
 }	

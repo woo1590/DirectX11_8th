@@ -1,5 +1,6 @@
 #include "EnginePCH.h"
 #include "AudioSource.h"
+#include "EngineCore.h"
 
 AudioSource::AudioSource(Object* owner)
 	:Component(owner)
@@ -41,10 +42,15 @@ void AudioSource::Update(_float dt)
 		}
 		else
 		{
-			ch->stop();		//재생 끝나면 채널 반환
+			ch->stop();					//재생 끝나면 채널 반환
 			ch = nullptr;
 		}
 	}
+}
+
+void AudioSource::Play(const _string& soundTag)
+{
+	auto engine = EngineCore::GetInstance();
 
 }
 
