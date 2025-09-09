@@ -104,7 +104,7 @@ HRESULT Loader::LoadingForLogo()
 		VTXNORTEX::elements, VTXNORTEX::numElement)))
 		return E_FAIL;
 
-	/*Load Resource*/
+	/*Load Buffer*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
 		return E_FAIL;
@@ -112,19 +112,11 @@ HRESULT Loader::LoadingForLogo()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
 		return E_FAIL;
 
-	if(FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static),"Buffer_Terrain",VIBufferTerrain::Create("../bin/resource/terrain/Height.bmp"))))
+	if(FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static),"Buffer_Terrain",VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/background/background.png", 1, "Texture_Background")))
-		return E_FAIL;
-
-	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/loading/frame_107_stand_%d.png", 100, "Texture_Anim")))
-		return E_FAIL;
-
-	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/TestCube.dds", 1, "Texture_TestCube")))
-		return E_FAIL;
-
-	if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/terrain/Tile0.jpg", 1, "Texture_Terrain")))
+	/*Load Material*/
+	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/terrain.json", "Mtrl_Terrain")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/

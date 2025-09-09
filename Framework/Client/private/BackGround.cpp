@@ -26,21 +26,8 @@ HRESULT BackGround::Initialize_Prototype()
 
 HRESULT BackGround::Initialize(InitDESC* arg)
 {
-	UIObject::UIObjectDesc desc{};
-	desc.x = 640.f;
-	desc.y = 360.f;
-	desc.sizeX = 500.f;
-	desc.sizeY = 500.f;
-
-	if (FAILED(__super::Initialize(&desc)))
+	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
-
-	m_pVIBuffer = EngineCore::GetInstance()->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
-	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxTex"));
-	m_pMaterial->SetTexture("g_DiffuseMap", EngineCore::GetInstance()->GetTexture(ENUM_CLASS(LevelID::Static), "Texture_Background"));
-
-	m_pTransform->SetPosition(_float3(0.f, 0.f, 0.9f));
-	m_pTransform->SetScale(_float3(400.f, 400.f, 1.f));
 
 	return S_OK;
 }
@@ -73,6 +60,7 @@ HRESULT BackGround::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& 
 	proxy.cbPerObject = cb;
 	proxy.group = RenderGroup::UI;
 	proxy.frameIndex = m_iTexNum;
+	proxy.passTag = "Default";
 
 	proxies[ENUM_CLASS(RenderGroup::UI)].push_back(proxy);
 

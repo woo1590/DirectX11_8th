@@ -6,7 +6,6 @@
 #include "CameraComponent.h"
 #include "AudioListener.h"
 
-_uint FreeCam::m_iInstanceCount = 0;
 
 FreeCam::FreeCam()
 	:Object()
@@ -72,13 +71,16 @@ void FreeCam::PriorityUpdate(_float dt)
 	_float3 rotation = transform->GetRotation();
 	_float2 mouseDelta = engine->GetMouseDelta();
 
-	_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
-	_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
-	rotation.y += yaw;
-	rotation.x += pitch;
+	if (m_ActiveMouse)
+	{
+		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
+		_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
+		rotation.y += yaw;
+		rotation.x += pitch;
 	
-	rotation.x = std::clamp(rotation.x, -math::PI + 0.1f, math::PI - 0.1f);
-	transform->SetRotation(rotation);
+		rotation.x = std::clamp(rotation.x, -math::PI + 0.1f, math::PI - 0.1f);
+		transform->SetRotation(rotation);
+	}
 	
 	if (engine->IsKeyDown('W'))
 		m_pTransform->Translate(forward * speed * dt);
@@ -97,6 +99,9 @@ void FreeCam::PriorityUpdate(_float dt)
 
 	if (engine->IsKeyDown(VK_SHIFT))
 		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
+
+	if (engine->IsMousePress(MouseButton::RButton))
+		m_ActiveMouse = m_ActiveMouse ? false : true;
 
 	engine->SetViewMatrix(cam->GetViewMatrix());
 	engine->SetProjMatrix(cam->GetProjMatrix());

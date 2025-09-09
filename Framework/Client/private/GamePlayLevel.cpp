@@ -61,9 +61,9 @@ HRESULT GamePlayLevel::InitializeLayerGameObject(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_TestCube",
+	/*if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_TestCube",
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static),"Prototype_Object_Terrain",
 								ENUM_CLASS(LevelID::GamePlay),layerTag)))

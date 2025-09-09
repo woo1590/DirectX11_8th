@@ -16,7 +16,7 @@ public:
     static Shader* Create(const _string& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     HRESULT Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
 
-    HRESULT Apply(_uint passIndex);
+    HRESULT Apply(const _string& passTag);
     HRESULT BindTextureValue(const _string& name, Texture* value, _int frameIndex);
 
     void Free()override;
@@ -24,7 +24,8 @@ public:
 private:
     _uint m_iNumPasses = 0;
     ID3DX11Effect* m_pEffect = nullptr; 
-    std::vector<ID3D11InputLayout*> m_InputLayouts;
+    std::unordered_map<_string, ID3D11InputLayout*> m_InputLayouts;
+    std::unordered_map<_string, ID3DX11EffectPass*> m_EffectPasses;
 
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pDeviceContext = nullptr;

@@ -239,9 +239,9 @@ HRESULT EngineCore::LoadShaderFromFile(_uint levelID, const _string& filePath, c
 {
 	return m_pResourceManager->LoadShaderFromFile(levelID,filePath,key,pElement,numElement);
 }
-HRESULT EngineCore::LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key)
+HRESULT EngineCore::LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key)
 {
-	return m_pResourceManager->LoadTextureFromFile(levelID, filePath, numTextures, key);
+	return m_pResourceManager->LoadMaterialFromJson(levelID, filePath, key);
 }
 VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 {
@@ -252,9 +252,9 @@ Shader* EngineCore::GetShader(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetShader(levelID, key);
 }
-Texture* EngineCore::GetTexture(_uint levelID, const _string& key)
+Material* EngineCore::GetMaterial(_uint levelID, const _string& key)
 {
-	return m_pResourceManager->GetTexture(levelID, key);
+	return m_pResourceManager->GetMaterial(levelID, key);
 }
 #pragma endregion
 

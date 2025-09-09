@@ -24,7 +24,7 @@ public:
     void Free()override;
 
 private:
-    static _uint m_iInstanceCount;
+    _bool m_ActiveMouse = true;
 };
 
 NS_END

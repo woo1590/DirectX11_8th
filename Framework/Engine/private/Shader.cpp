@@ -65,7 +65,10 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
         if (FAILED(m_pDevice->CreateInputLayout(pElement, numElement, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &inputLayout)))
             return E_FAIL;
 
-        m_InputLayouts.push_back(inputLayout);
+        _string passName = passDesc.Name;
+
+        m_InputLayouts[passName] = inputLayout;
+        m_EffectPasses[passName] = pass;
     }
 
     /* Renderer에서 들고 있는 전역적인 상수버퍼와 현재 effect객체 연결 -> perframe, perlight, perobject..*/
@@ -74,15 +77,18 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
     return S_OK;
 }
 
-HRESULT Shader::Apply(_uint passIndex)
+HRESULT Shader::Apply(const _string& passTag)
 {
-    m_pDeviceContext->IASetInputLayout(m_InputLayouts[passIndex]);
+    m_pDeviceContext->IASetInputLayout(m_InputLayouts[passTag]);
 
-    ID3DX11EffectPass* pass = m_pEffect->GetTechniqueByIndex(0)->GetPassByIndex(passIndex);
-    if (!pass)
+    auto iter = m_EffectPasses.find(passTag);
+    if (iter == m_EffectPasses.end())
+    {
+        MSG_BOX("Apply Failed : Pass not exist");
         return E_FAIL;
+    }
 
-    return pass->Apply(0, m_pDeviceContext);
+    return iter->second->Apply(0, m_pDeviceContext);
 }
 
 HRESULT Shader::BindTextureValue(const _string& name, Texture* value, _int frameIndex)
@@ -108,9 +114,11 @@ void Shader::Free()
 
     Safe_Release(m_pEffect);
 
-    for (auto& layout : m_InputLayouts)
-        Safe_Release(layout);
+    for (auto& pair : m_InputLayouts)
+        Safe_Release(pair.second);
     m_InputLayouts.clear();
+
+    m_EffectPasses.clear();
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pDeviceContext);

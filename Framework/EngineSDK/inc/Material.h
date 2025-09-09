@@ -16,7 +16,7 @@ public:
     static Material* Create(Shader* pShader);
     HRESULT Initialize();
 
-    HRESULT BindMaterial(_uint passIndex, _int frameIndex);
+    HRESULT BindMaterial(const _string& passTag, _int frameIndex);
     void SetTexture(const _string& key, Texture* value);
 
     void Free()override;

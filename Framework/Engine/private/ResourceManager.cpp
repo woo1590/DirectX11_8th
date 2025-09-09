@@ -41,7 +41,7 @@ HRESULT ResourceManager::LoadBuffer(_uint levelID, const _string& key, VIBuffer*
 	return S_OK;
 }
 
-HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key)
+HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures)
 {
 	if (levelID >= m_iNumLevel)
 		return E_FAIL;
@@ -50,13 +50,55 @@ HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& fileP
 	if (!texture)
 		return E_FAIL;
 
-	m_Textures[levelID].emplace(key, texture);
+	m_Textures[levelID].emplace(filePath, texture);
 
 	return S_OK;
 }
 
-HRESULT ResourceManager::LoadMaterialFromFile(_uint levelID, const _string& filePath, const _string& key)
+HRESULT ResourceManager::LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key)
 {
+	using json = nlohmann::json;
+
+	json j = json::parse(std::ifstream(filePath.c_str()));
+	_string defaultPath = "../bin/resource/";
+
+	if (!j.contains("shader"))
+	{
+		MSG_BOX("Load Failed : missing shader string");
+
+		return E_FAIL;
+	}
+
+	auto shader = GetShader(0, j["shader"].get<_string>());
+	if (!shader)
+	{
+		MSG_BOX("Load Failed : shader not exist");
+		return E_FAIL;
+	}
+
+	auto material = Material::Create(shader);
+
+	if (j.contains("textures"))
+	{
+		for (auto& [slot, var] : j["textures"].items())
+		{
+			_string fullPath = defaultPath + var["path"].get<_string>();
+			_uint numTex = var.value("num", 1);
+
+			auto tex = GetTexture(levelID, fullPath);
+			if (!tex)
+			{
+				if (FAILED(LoadTextureFromFile(levelID, fullPath, numTex)))
+					return E_FAIL;
+
+				tex = GetTexture(levelID, fullPath);
+			}
+			material->SetTexture(slot, tex);
+		}
+	}
+
+	m_Materials[levelID].emplace(key, material);
+
 	return S_OK;
 }
 
@@ -95,6 +137,19 @@ Shader* ResourceManager::GetShader(_uint levelID, const _string& key)
 	auto iter = m_Shaders[levelID].find(key);
 
 	if (iter == m_Shaders[levelID].end())
+		return nullptr;
+
+	return iter->second;
+}
+
+Material* ResourceManager::GetMaterial(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return nullptr;
+
+	auto iter = m_Materials[levelID].find(key);
+
+	if (iter == m_Materials[levelID].end())
 		return nullptr;
 
 	return iter->second;

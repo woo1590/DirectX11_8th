@@ -25,6 +25,7 @@ class Renderer;
 class VIBuffer;
 class Shader;
 class Texture;
+class Material;
 class Object;
 class Layer;
 class ENGINE_DLL EngineCore final :
@@ -80,10 +81,10 @@ public:
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
     HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
-    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key);
+    HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(_uint levelID, const _string& key);
-    Texture* GetTexture(_uint levelID, const _string& key);
+    Material* GetMaterial(_uint levelID, const _string& key);
 #pragma endregion
 
 #pragma region Prototype

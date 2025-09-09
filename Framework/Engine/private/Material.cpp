@@ -25,16 +25,16 @@ HRESULT Material::Initialize()
 	return S_OK;
 }
 
-HRESULT Material::BindMaterial(_uint passIndex, _int frameIndex)
+HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex)
 {
 	/*Bind SRV*/
 	for (const auto& pair : m_TexParams)
 	{
-		if (FAILED(m_pShader->BindTextureValue(pair.first,pair.second,frameIndex)))
+		if (FAILED(m_pShader->BindTextureValue(pair.first, pair.second, frameIndex)))
 			return E_FAIL;
 	}
 
-	return m_pShader->Apply(passIndex);
+	return m_pShader->Apply(passTag);
 }
 
 void Material::SetTexture(const _string& key, Texture* value)

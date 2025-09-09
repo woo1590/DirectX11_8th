@@ -40,14 +40,7 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
-	m_pVIBuffer = EngineCore::GetInstance()->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube");
-
-	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxCube"));
-	m_pMaterial->SetTexture("g_DiffuseMap", EngineCore::GetInstance()->GetTexture(ENUM_CLASS(LevelID::Static), "Texture_TestCube"));
-
-	m_pTransform->SetPosition(_float3(0.f, 0.f, 100.f));
-	m_pTransform->SetScale(_float3(60.f, 60.f, 60.f));
-
+	
 	return S_OK;
 }
 
@@ -90,6 +83,7 @@ HRESULT TestCube::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& pr
 	proxy.cbPerObject = cb;
 	proxy.group = RenderGroup::NonBlend;
 	proxy.frameIndex = 0;
+	proxy.passTag = "Default";
 
 	proxies[ENUM_CLASS(RenderGroup::NonBlend)].push_back(proxy);
 

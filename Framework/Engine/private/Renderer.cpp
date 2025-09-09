@@ -119,7 +119,7 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 
-	if (FAILED(proxy.material->BindMaterial(proxy.passIndex, proxy.frameIndex)))
+	if (FAILED(proxy.material->BindMaterial(proxy.passTag, proxy.frameIndex)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

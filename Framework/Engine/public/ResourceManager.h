@@ -20,20 +20,22 @@ public:
 
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
     HRESULT LoadBufferFromModel() { return S_OK; }
-    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures, const _string& key);
-    HRESULT LoadMaterialFromFile(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
 
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(_uint levelID, const _string& key);
-    Texture* GetTexture(_uint levelID, const _string& key);
+    Material* GetMaterial(_uint levelID, const _string& key);
 
     void Clear(_uint levelID);
 
     void Free()override;
 
 private:
+    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures);
+    Texture* GetTexture(_uint levelID, const _string& key);
+
     _uint m_iNumLevel = 0;
 
     std::vector<std::unordered_map<_string, VIBuffer*>> m_Buffers;

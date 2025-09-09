@@ -13,7 +13,7 @@ struct RenderProxy
 
 	RenderGroup group{};
 	_int frameIndex = 0;
-	_uint passIndex = 0;
+	_string passTag = {};
 	_float viewZ = 0.f;
 };
 

@@ -37,12 +37,11 @@ HRESULT Terrain::Initialize(InitDESC* arg)
 {
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
-
+	
 	auto engine = EngineCore::GetInstance();
 
 	m_pVIBuffer = engine->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Terrain");
-	m_pMaterial = Material::Create(engine->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxNorTex"));
-	m_pMaterial->SetTexture("g_DiffuseMap", engine->GetTexture(ENUM_CLASS(LevelID::Static), "Texture_Terrain"));
+	m_pMaterial = engine->GetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Terrain");
 
 	return S_OK;
 }
@@ -74,7 +73,7 @@ HRESULT Terrain::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& pro
 	proxy.cbPerObject = cb;
 	proxy.group = RenderGroup::NonBlend;
 	proxy.frameIndex = 0;
-	proxy.passIndex = 0;
+	proxy.passTag = "Terrain";
 
 	proxies[ENUM_CLASS(RenderGroup::NonBlend)].push_back(proxy);
 
