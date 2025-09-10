@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "RenderProxy.h"
+#include "LightProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -15,7 +16,7 @@ public:
     static Renderer* Create();
     HRESULT Initialize();
 
-    HRESULT BeginFrame();
+    HRESULT BeginFrame(std::vector<LightProxy>& lights);
     HRESULT EndFrame() { return S_OK; }
 
     HRESULT RenderPriority(const std::vector<RenderProxy>& proxies);
@@ -27,14 +28,14 @@ public:
     void Free()override;
 
 private:
-    HRESULT DrawProxy(const RenderProxy& proxy);
+    HRESULT DrawProxy(const RenderProxy& proxy,const _string& passTag);
 
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pDeviceContext = nullptr;
 
     ID3D11Buffer* m_pCBPerFrame = nullptr;
     ID3D11Buffer* m_pCBPerObject = nullptr;
-    ID3D11Buffer* m_pCBPerLight = nullptr;
+    ID3D11Buffer* m_pCBPerLightViewProj = nullptr;
     ID3D11Buffer* m_pCBPerUI = nullptr;
 };
 

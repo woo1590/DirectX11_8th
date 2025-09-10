@@ -71,25 +71,6 @@ void TestCube::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
-HRESULT TestCube::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
-{
-	CBPerObject cb{};
-	cb.worldMatrix = m_pTransform->GetWorldMatrix();
-	cb.worldMatrixInverse = m_pTransform->GetWorldMatrixInverse();
-
-	RenderProxy proxy{};
-	proxy.buffer = m_pVIBuffer;
-	proxy.material = m_pMaterial;
-	proxy.cbPerObject = cb;
-	proxy.group = RenderGroup::NonBlend;
-	proxy.frameIndex = 0;
-	proxy.passTag = "Default";
-
-	proxies[ENUM_CLASS(RenderGroup::NonBlend)].push_back(proxy);
-
-	return S_OK;
-}
-
 Object* TestCube::Clone(InitDESC* arg)
 {
 	TestCube* Instance = new TestCube(*this);

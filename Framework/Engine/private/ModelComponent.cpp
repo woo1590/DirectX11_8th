@@ -32,6 +32,11 @@ HRESULT ModelComponent::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+HRESULT ModelComponent::ExtractRenderProxy(RenderProxy& proxy)
+{
+	return m_pModel->ExtractRenderProxy(proxy);
+}
+
 void ModelComponent::Free()
 {
 	__super::Free();
@@ -50,12 +55,6 @@ void ModelComponent::RenderInspector()
 }
 
 #endif
-
-HRESULT ModelComponent::Bind()
-{
-	
-	return S_OK;
-}
 
 Component* ModelComponent::Clone()
 {

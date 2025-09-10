@@ -3,6 +3,7 @@
 #include "EngineCore.h"
 #include "VIBuffer.h"
 #include "Material.h"
+#include "LightProxy.h"
 
 Renderer::Renderer()
 	:m_pDevice(EngineCore::GetInstance()->GetDevice()),
@@ -51,21 +52,36 @@ HRESULT Renderer::Initialize()
 	return S_OK;
 }
 
-HRESULT Renderer::BeginFrame()
+HRESULT Renderer::BeginFrame(std::vector<LightProxy>& lights)
 {
 	/* 이번 프레임을 그릴 때 사용할 카메라 view, proj   라이트 view proj 세팅*/
 
+	auto engine = EngineCore::GetInstance();
+
 	/* 멀티스레드 확장 시 rendersystem에서 큐로 받아와야 함 -> 게임 로직에 직접 접근 ㄴㄴ */
-	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
-	CBPerFrame perFrame{};
-	perFrame.viewMatrix = EngineCore::GetInstance()->GetViewMatrix();
-	perFrame.projMatrix = EngineCore::GetInstance()->GetProjMatrix();
-	_float3 campos = EngineCore::GetInstance()->GetCamPosition();
-	perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
+	{
+		D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
+		CBPerFrame perFrame{};
+
+		/*View, Proj Matrix*/
+		perFrame.viewMatrix = engine->GetViewMatrix();
+		perFrame.projMatrix = engine->GetProjMatrix();
+		_float3 campos = engine->GetCamPosition();
+		perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
 	
-	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
-	memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
-	m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
+		/*Light Data -> 이후 지연 렌더링으로 넘어가면서 구조 변경 예정*/
+		/*방향성 조명 1개만*/
+
+		if (lights.size())
+		{
+			perFrame.lightColor = lights[0].lightColor;
+			perFrame.lightDirection = lights[0].lightDirection;
+		}
+
+		m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
+		memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
+		m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
+	}
 
 	return S_OK;
 }
@@ -78,7 +94,7 @@ HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
 {
 	for (const auto& proxy : proxies)
-		DrawProxy(proxy);
+		DrawProxy(proxy,"NonBlend_Pass");
 
 	return S_OK;
 }
@@ -101,12 +117,12 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 	m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
 
 	for (const auto& proxy : proxies)
-		DrawProxy(proxy);
+		DrawProxy(proxy,"UI_Pass");
 
 	return S_OK;
 }
 
-HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
+HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 {
 	{
 		D3D11_MAPPED_SUBRESOURCE perObjectData{};
@@ -119,7 +135,7 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 
-	if (FAILED(proxy.material->BindMaterial(proxy.passTag, proxy.frameIndex)))
+	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

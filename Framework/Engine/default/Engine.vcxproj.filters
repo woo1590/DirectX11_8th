@@ -175,9 +175,6 @@
     <Filter Include="05. Object Component\Light Component">
       <UniqueIdentifier>{a6c02086-75b9-4de4-9f46-20416b4ac8ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\Light Manager">
-      <UniqueIdentifier>{7cd08c9e-48b2-49e9-b7b6-ba544e7bd160}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Object Component\Rendering">
       <UniqueIdentifier>{fae8a7cf-dbdb-4448-88c8-0c4b972407cf}</UniqueIdentifier>
     </Filter>
@@ -189,6 +186,9 @@
     </Filter>
     <Filter Include="05. Object Component\Rendering\Sprite Component">
       <UniqueIdentifier>{3a5ca94e-aae6-4d72-a928-3a917e63471a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Light Manager">
+      <UniqueIdentifier>{7cd08c9e-48b2-49e9-b7b6-ba544e7bd160}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -395,6 +395,9 @@
     </ClInclude>
     <ClInclude Include="..\public\SpriteComponent.h">
       <Filter>05. Object Component\Rendering\Sprite Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LightProxy.h">
+      <Filter>01. Engine Component\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,20 +1,20 @@
 #pragma once
-#include "UIObject.h"
+#include "Object.h"
 
 NS_BEGIN(Client)
 
-class BackGround final:
-    public UIObject
+class Sun :
+    public Object
 {
 private:
-    BackGround();
-    virtual ~BackGround() = default;
+    Sun();
+    Sun(const Sun& prototype);
+    virtual ~Sun() = default;
 
 public:
-    static BackGround* Create();
+    static Sun* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
@@ -23,6 +23,7 @@ public:
     void Free()override;
 
 private:
+
 };
 
 NS_END

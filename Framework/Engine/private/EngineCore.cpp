@@ -17,6 +17,7 @@
 #include "Random.h"
 #include "InputSystem.h"
 #include "PipeLine.h"
+#include "LightManager.h"
 
 IMPLEMENT_SINGLETON(EngineCore);
 
@@ -76,6 +77,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pResourceManager)
 		return E_FAIL;
 
+	m_pLightManager = LightManager::Create();
+	if (!m_pLightManager)
+		return E_FAIL;
+
 #ifdef USE_IMGUI
 	GUIState state{};
 	state.pObjectManager = m_pObjectManager;
@@ -109,6 +114,7 @@ void EngineCore::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pInputSystem);
+	Safe_Release(m_pLightManager);
 	Safe_Release(m_pGraphicDevice);	/*GraphicDevice는 가장 먼저 생성, 가장 마지막 해제*/
 
 }
@@ -128,9 +134,14 @@ void EngineCore::Tick(_float dt)
 	m_pLevelManager->Render(); /*Debug Only*/
 
 	std::vector<std::vector<RenderProxy>> proxies(ENUM_CLASS(RenderGroup::Count));
+	std::vector<LightProxy> lights;
+
 	if (FAILED(m_pObjectManager->ExtractRenderProxies(proxies)))
 		return;
-	m_pRenderSystem->Submit(std::move(proxies));
+	if (FAILED(m_pLightManager->ExtractLightProxy(lights)))
+		return;
+
+	m_pRenderSystem->Submit(std::move(proxies), lights);
 
 	BeginRender();
 	Render();
@@ -359,6 +370,17 @@ _bool EngineCore::IsMouseRelease(MouseButton button) const
 _bool EngineCore::IsMouseAway(MouseButton button) const
 {
 	return m_pInputSystem->IsMouseAway(button);
+}
+#pragma endregion
+
+#pragma region Light
+void EngineCore::RegisterLight(LightComponent* light)
+{
+	m_pLightManager->RegisterLight(light);
+}
+void EngineCore::UnRegisterLight(LightComponent* light)
+{
+	m_pLightManager->UnRegisterLight(light);
 }
 #pragma endregion
 

@@ -6,8 +6,8 @@
 #include "BackGround.h"
 #include "TestCube.h"
 #include "FreeCam.h"
-#include "LoadingAnim.h"
 #include "Terrain.h"
+#include "Sun.h"
 
 //component
 #include "TransformComponent.h"
@@ -109,32 +109,14 @@ HRESULT Loader::LoadingForLogo()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
-		return E_FAIL;
-
-	if(FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static),"Buffer_Terrain",VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
-		return E_FAIL;
-
 	/*Load Material*/
-	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/terrain.json", "Mtrl_Terrain")))
+	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Logo), "../bin/resource/materials/background_logo.json", "Mtrl_Background_Logo")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/
 	m_strDebugText = L"객체원형 로딩중..";
 
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_TestCube", TestCube::Create())))
-		return E_FAIL;
-
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", BackGround::Create())))
-		return E_FAIL;
-
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadinAnim", LoadingAnim::Create())))
-		return E_FAIL;
-
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_FreeCam", FreeCam::Create())))
-		return E_FAIL;
-
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Terrain", Terrain::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Logo), "Prototype_Object_BackGround", BackGround::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";
@@ -145,7 +127,38 @@ HRESULT Loader::LoadingForLogo()
 
 HRESULT Loader::LoadingForGamePlay()
 {
+	auto engine = EngineCore::GetInstance();
+
+	/*Load Sound*/
+	m_strDebugText = L"사운드 로딩중..";
+
+	/*Load Shader*/
+	m_strDebugText = L"셰이더 로딩중..";
+
+	/*Load Buffer*/
+	m_strDebugText = L"리소스 로딩중..";
+	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::GamePlay), "Buffer_Terrain", VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
+		return E_FAIL;
+
+	/*Load Material*/
+	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/materials/terrain.json", "Mtrl_Terrain")))
+		return E_FAIL;
+
+	/*Load Prototype Object*/
+	m_strDebugText = L"객체원형 로딩중..";
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_FreeCam", FreeCam::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Terrain", Terrain::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun", Sun::Create())))
+		return E_FAIL;
+
 	m_strDebugText = L"로딩완료";
+
+
 	return S_OK;
 }
 

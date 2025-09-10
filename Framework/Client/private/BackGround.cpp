@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BackGround.h"
 #include "Material.h"
+#include "SpriteComponent.h"
 
 BackGround::BackGround()
 {
@@ -21,13 +22,34 @@ HRESULT BackGround::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	AddComponent<SpriteComponent>();
+
 	return S_OK;
 }
 
 HRESULT BackGround::Initialize(InitDESC* arg)
 {
-	if (FAILED(__super::Initialize(arg)))
+	UIObjectDesc uiDesc{};
+	uiDesc.x = 640.f;
+	uiDesc.y = 360.f;
+	uiDesc.sizeX = 1280.f;
+	uiDesc.sizeY = 720.f;
+
+	if (FAILED(__super::Initialize(&uiDesc)))
 		return E_FAIL;
+
+	SpriteComponent::SPRITE_DESC spriteDesc{};
+	spriteDesc.fSpeed = 0.f;
+	spriteDesc.iMaxFrameIndex = 1;
+	spriteDesc.isAnimated = false;
+	spriteDesc.isRepeat = false;
+
+	auto sprite = GetComponent<SpriteComponent>();
+	if (FAILED(sprite->Initialize(&spriteDesc)))
+		return E_FAIL;
+
+	sprite->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
+	sprite->SetMaterial(ENUM_CLASS(LevelID::Logo), "Mtrl_Background_Logo");
 
 	return S_OK;
 }
@@ -48,25 +70,6 @@ void BackGround::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
-HRESULT BackGround::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
-{
-	CBPerObject cb{};
-	cb.worldMatrix = m_pTransform->GetWorldMatrix();
-	cb.worldMatrixInverse = m_pTransform->GetWorldMatrixInverse();
-
-	RenderProxy proxy{};
-	proxy.buffer = m_pVIBuffer;
-	proxy.material = m_pMaterial;
-	proxy.cbPerObject = cb;
-	proxy.group = RenderGroup::UI;
-	proxy.frameIndex = m_iTexNum;
-	proxy.passTag = "Default";
-
-	proxies[ENUM_CLASS(RenderGroup::UI)].push_back(proxy);
-
-	return S_OK;
-}
-
 Object* BackGround::Clone(InitDESC* arg)
 {
 	BackGround* Instance = new BackGround(*this);
@@ -80,6 +83,4 @@ Object* BackGround::Clone(InitDESC* arg)
 void BackGround::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pMaterial);
 }

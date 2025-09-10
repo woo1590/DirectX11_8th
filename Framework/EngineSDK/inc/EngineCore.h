@@ -21,6 +21,7 @@ class Level;
 class Random;
 class InputSystem;
 class Renderer;
+class LightManager;
 
 class VIBuffer;
 class Shader;
@@ -28,6 +29,7 @@ class Texture;
 class Material;
 class Object;
 class Layer;
+class LightComponent;
 class ENGINE_DLL EngineCore final :
     public Base
 {
@@ -124,6 +126,11 @@ public:
     _bool IsMouseAway(MouseButton button)const;
 #pragma endregion
 
+#pragma region Light
+    void RegisterLight(LightComponent* light);
+    void UnRegisterLight(LightComponent* light);
+#pragma endregion
+
     /*----Window----*/
     HWND GetWindowHandle()const { return m_hWnd; }
     D3D11_VIEWPORT GetViewport()const { return m_Viewport; }
@@ -155,6 +162,7 @@ private:
     PipeLine*           m_pPipeLine = nullptr;
     ResourceManager*    m_pResourceManager = nullptr;
     InputSystem*        m_pInputSystem = nullptr;
+    LightManager*       m_pLightManager = nullptr;
 };
 
 NS_END

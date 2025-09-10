@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -30,8 +31,9 @@ public:
     void Update(_float dt)override;
 
     void SetBuffer(_uint levelID, const _string& key);
-    void SetMaterial(const _string& key);
+    void SetMaterial(_uint levelID, const _string& key);
 
+    HRESULT ExtractRenderProxy(RenderProxy& proxy);
     Component* Clone() { return new SpriteComponent(*this); }
     void Free()override;
 
@@ -40,6 +42,9 @@ public:
 #endif
 
 private:
+
+    RenderGroup m_eGroup{};
+
     VIBuffer* m_pBuffer = nullptr;
     Material* m_pMaterial = nullptr;
 

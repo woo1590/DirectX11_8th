@@ -20,10 +20,13 @@ HRESULT GamePlayLevel::Initialize()
 {
 	m_strLevelTag = "GamePlay";
 
-	if (FAILED(InitializeLayerGameObject("Layer_GameObject")))
+	if (FAILED(Initialize_LayerLights("Layer_Lights")))
 		return E_FAIL;
 
-	if (FAILED(IntializeLayerCamera("Layer_Camera")))
+	if (FAILED(Initialize_LayerGameObject("Layer_GameObject")))
+		return E_FAIL;
+
+	if (FAILED(Intialize_LayerCamera("Layer_Camera")))
 		return E_FAIL;
 
 	return S_OK;
@@ -46,18 +49,27 @@ HRESULT GamePlayLevel::Render()
 	return S_OK;
 }
 
-HRESULT GamePlayLevel::IntializeLayerCamera(const _string& layerTag)
+HRESULT GamePlayLevel::Initialize_LayerLights(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_FreeCam",
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun",
+								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
+								 return E_FAIL;
+}
+
+HRESULT GamePlayLevel::Intialize_LayerCamera(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_FreeCam",
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT GamePlayLevel::InitializeLayerGameObject(const _string& layerTag)
+HRESULT GamePlayLevel::Initialize_LayerGameObject(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
@@ -65,7 +77,7 @@ HRESULT GamePlayLevel::InitializeLayerGameObject(const _string& layerTag)
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
 		return E_FAIL;*/
 
-	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static),"Prototype_Object_Terrain",
+	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay),"Prototype_Object_Terrain",
 								ENUM_CLASS(LevelID::GamePlay),layerTag)))
 		return E_FAIL;
 

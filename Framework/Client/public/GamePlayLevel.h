@@ -19,8 +19,9 @@ public:
     HRESULT Render()override;
 
 private:
-    HRESULT IntializeLayerCamera(const _string& layerTag);
-    HRESULT InitializeLayerGameObject(const _string& layerTag);
+    HRESULT Initialize_LayerLights(const _string& layerTag);
+    HRESULT Intialize_LayerCamera(const _string& layerTag);
+    HRESULT Initialize_LayerGameObject(const _string& layerTag);
 };
 
 NS_END

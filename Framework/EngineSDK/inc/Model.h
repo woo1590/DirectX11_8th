@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -23,9 +24,14 @@ public:
     static Model* Create();
     HRESULT Initialize();
 
+    HRESULT ExtractRenderProxy(RenderProxy& proxy);
+
+    void SetRootNode(Node rootNode);
     void Free()override;
 
 private:
+    HRESULT ProcessNodeForRenderProxy();    //노드 재귀 순회
+
     Node* m_pRootNode = nullptr;
 
 };

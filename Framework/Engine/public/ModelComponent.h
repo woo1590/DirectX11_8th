@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -17,7 +18,7 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     
-    HRESULT Bind();
+    HRESULT ExtractRenderProxy(RenderProxy& proxy);
 
     Component* Clone()override;
     void Free()override;

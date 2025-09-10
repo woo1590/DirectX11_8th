@@ -217,6 +217,7 @@
     <ClInclude Include="..\public\LevelManager.h" />
     <ClInclude Include="..\public\LightComponent.h" />
     <ClInclude Include="..\public\LightManager.h" />
+    <ClInclude Include="..\public\LightProxy.h" />
     <ClInclude Include="..\public\Material.h" />
     <ClInclude Include="..\public\IPanel.h" />
     <ClInclude Include="..\public\OutlinerPanel.h" />

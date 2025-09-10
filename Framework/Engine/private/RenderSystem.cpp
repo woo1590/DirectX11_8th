@@ -30,7 +30,7 @@ HRESULT RenderSystem::Initialize()
 
 HRESULT RenderSystem::RenderLoop()
 {
-	m_pRenderer->BeginFrame();
+	m_pRenderer->BeginFrame(m_CurrFrameLights);
 
 	if (FAILED(m_pRenderer->RenderPriority(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Priority)])))
 		return E_FAIL;
@@ -51,9 +51,10 @@ HRESULT RenderSystem::RenderLoop()
 	return S_OK;
 }
 
-void RenderSystem::Submit(std::vector<std::vector<RenderProxy>> proxies)
+void RenderSystem::Submit(std::vector<std::vector<RenderProxy>> proxies, std::vector<LightProxy> lights)
 {
 	m_CurrFrameProxies = std::move(proxies);
+	m_CurrFrameLights = std::move(lights);
 }
 
 void RenderSystem::Free()
@@ -68,4 +69,6 @@ void RenderSystem::Clear()
 {
 	for (auto& proxies : m_CurrFrameProxies)
 		proxies.clear();
+
+	m_CurrFrameLights.clear();
 }
