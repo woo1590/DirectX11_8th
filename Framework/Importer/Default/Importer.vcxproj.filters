@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00. MainApp">
+      <UniqueIdentifier>{74c4b2c7-9c3d-41e6-8cba-965ca18d99c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level">
+      <UniqueIdentifier>{9da47785-9e40-4103-984f-5f04c523e65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc">
+      <UniqueIdentifier>{42a4c107-f94a-4365-8ad3-ae75b20a68ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Executable">
+      <UniqueIdentifier>{43f7b6b6-ed04-4038-af8c-df1599e2cd68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\Header">
+      <UniqueIdentifier>{39d483f4-cf58-4b17-9762-3169e51a498d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\pch">
+      <UniqueIdentifier>{3cdb445e-7521-45d8-9512-fb96760adfee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\Defines">
+      <UniqueIdentifier>{70329645-a244-4466-b04a-0003fb79d1a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\ImportLevel">
+      <UniqueIdentifier>{f6d3075f-b18c-409f-a5f6-0341c81c97e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object">
+      <UniqueIdentifier>{32f1bcb0-1524-4fb0-b22c-fc01c27aef80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\FBXModelObject">
+      <UniqueIdentifier>{b6a8605e-2ccc-49e9-9168-5410da9970ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\EditorCamera">
+      <UniqueIdentifier>{889caef5-7573-4455-97a8-c9210bb23354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component">
+      <UniqueIdentifier>{a6e1fd5d-6aa1-4c1c-9525-5ac2fbc3e9d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\FBXLoader Coponent">
+      <UniqueIdentifier>{0632ce26-4f86-46ae-a73e-2b4a60452b35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\FBXLoader Coponent\FBXMesh">
+      <UniqueIdentifier>{77793506-f9e1-4f94-ab67-c17ae773469e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\EditorLight">
+      <UniqueIdentifier>{1c880bce-0008-4d2b-aaab-c539696548ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\ShaderFiles">
+      <UniqueIdentifier>{5092eb13-46d0-447e-ba4d-1e62a4bc65ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\nfd">
+      <UniqueIdentifier>{ccb3aa16-39f2-4853-bfdf-7e27027893e2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>98. Etc\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Importer.h">
+      <Filter>98. Etc\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>98. Etc\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>98. Etc\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MainApp.h">
+      <Filter>00. MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="ImporterPCH.h">
+      <Filter>98. Etc\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Importer_Defines.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImportLevel.h">
+      <Filter>01. Level\ImportLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FBXModelObject.h">
+      <Filter>02. Object\FBXModelObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EditorCamera.h">
+      <Filter>02. Object\EditorCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FBXLoaderComponent.h">
+      <Filter>03. Object Component\FBXLoader Coponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FBXMesh.h">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EditorLight.h">
+      <Filter>02. Object\EditorLight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\common.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Importer.ico">
+      <Filter>98. Etc\Header</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>98. Etc\Header</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Importer.rc">
+      <Filter>98. Etc\Header</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Importer.cpp">
+      <Filter>99. Executable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MainApp.cpp">
+      <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="ImporterPCH.cpp">
+      <Filter>98. Etc\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImportLevel.cpp">
+      <Filter>01. Level\ImportLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FBXModelObject.cpp">
+      <Filter>02. Object\FBXModelObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EditorCamera.cpp">
+      <Filter>02. Object\EditorCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FBXLoaderComponent.cpp">
+      <Filter>03. Object Component\FBXLoader Coponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FBXMesh.cpp">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EditorLight.cpp">
+      <Filter>02. Object\EditorLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_common.c">
+      <Filter>98. Etc\nfd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
+      <Filter>98. Etc\nfd</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\shaderfiles\Shader_VtxMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\EngineSDK\inc\nfd\nfd_cocoa.m">
+      <Filter>98. Etc\nfd</Filter>
+    </None>
+  </ItemGroup>
+</Project>

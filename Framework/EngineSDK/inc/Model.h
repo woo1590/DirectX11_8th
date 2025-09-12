@@ -5,14 +5,8 @@
 NS_BEGIN(Engine)
 
 class Material;
-class VIBuffer;
-
-struct Node
-{
-    std::pair<VIBuffer*, Material*> bufferMaterial;
-    std::vector<Node*> children;
-};
-
+class Mesh;
+class TransformComponent;
 class ENGINE_DLL Model :
     public Base
 {
@@ -21,19 +15,18 @@ private:
     virtual ~Model() = default;
 
 public:
-    static Model* Create();
-    HRESULT Initialize();
+    static Model* Create(const _string& filePath);
+    HRESULT Initialize(const _string& filePath);
 
-    HRESULT ExtractRenderProxy(RenderProxy& proxy);
-
-    void SetRootNode(Node rootNode);
+    HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies, Material* overrideMaterial = nullptr);
     void Free()override;
 
 private:
-    HRESULT ProcessNodeForRenderProxy();    //노드 재귀 순회
+    HRESULT CreateMeshes(std::ifstream& file);
 
-    Node* m_pRootNode = nullptr;
-
+    _uint m_iNumMeshes{};
+    std::vector<Mesh*> m_Meshes;
+    std::vector<Material*> m_Materials;
 };
 
 NS_END

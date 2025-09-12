@@ -23,7 +23,6 @@ public:
     void Free()override;
 
 private:
-    VIBuffer* m_pVIBuffer = nullptr;
     Material* m_pMaterial = nullptr;
 };
 

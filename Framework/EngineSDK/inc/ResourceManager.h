@@ -7,6 +7,7 @@ class Texture;
 class VIBuffer;
 class Shader;
 class Material;
+class Model;
 class ResourceManager :
     public Base
 {
@@ -23,10 +24,12 @@ public:
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
+    HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
 
-    VIBuffer* GetBuffer(_uint levelID, const _string& key);
-    Shader* GetShader(_uint levelID, const _string& key);
-    Material* GetMaterial(_uint levelID, const _string& key);
+    VIBuffer*   GetBuffer(_uint levelID, const _string& key);
+    Shader*     GetShader(_uint levelID, const _string& key);
+    Material*   GetMaterial(_uint levelID, const _string& key);
+    Model*      GetModel(_uint levelID, const _string& key);
 
     void Clear(_uint levelID);
 
@@ -42,7 +45,7 @@ private:
     std::vector<std::unordered_map<_string, Material*>> m_Materials;
     std::vector<std::unordered_map<_string, Shader*>> m_Shaders;
     std::vector<std::unordered_map<_string, Texture*>> m_Textures;
-
+    std::vector<std::unordered_map<_string, Model*>> m_Models;
 };
 
 NS_END

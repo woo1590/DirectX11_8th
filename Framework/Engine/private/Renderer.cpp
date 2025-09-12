@@ -93,6 +93,7 @@ HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 
 HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
 {
+	
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy,"NonBlend_Pass");
 
@@ -134,7 +135,7 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
-
+	
 	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex)))
 		return E_FAIL;
 

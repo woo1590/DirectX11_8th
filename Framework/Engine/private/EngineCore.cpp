@@ -254,6 +254,10 @@ HRESULT EngineCore::LoadMaterialFromJson(_uint levelID, const _string& filePath,
 {
 	return m_pResourceManager->LoadMaterialFromJson(levelID, filePath, key);
 }
+HRESULT EngineCore::LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	return m_pResourceManager->LoadModelFromFile(levelID, filePath, key);
+}
 VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetBuffer(levelID, key);
@@ -266,6 +270,10 @@ Shader* EngineCore::GetShader(_uint levelID, const _string& key)
 Material* EngineCore::GetMaterial(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetMaterial(levelID, key);
+}
+Model* EngineCore::GetModel(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetModel(levelID, key);
 }
 #pragma endregion
 

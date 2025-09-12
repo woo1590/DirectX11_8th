@@ -187,7 +187,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\bin\shaderfiles\ConstantBuffer.hlsli">
+    <None Include="..\bin\shaderfiles\Shader_VtxMesh.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </None>
   </ItemGroup>

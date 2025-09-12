@@ -39,6 +39,8 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
     shaderFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 #endif
 
+    ID3DBlob* error = nullptr;
+
     if (FAILED(D3DX11CompileEffectFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderFlag, 0, m_pDevice, &m_pEffect, nullptr)))
         return E_FAIL;
 

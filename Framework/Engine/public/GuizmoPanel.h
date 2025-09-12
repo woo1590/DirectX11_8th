@@ -22,6 +22,7 @@ public:
     void Free()override;
 
 private:
+
 };
 
 NS_END

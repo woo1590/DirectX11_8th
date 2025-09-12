@@ -43,7 +43,7 @@ void OutlinerPanel::Draw(GUIState& state)
         filter.Draw("Filter", 180.0f);
 
         //현재 레벨의 레이어를 가져올 수 있도록 해야함
-        const auto& layers = state.pObjectManager->GetLayers(3);
+        const auto& layers = state.pObjectManager->GetLayers(0);
 
         for (const auto& layer : layers) {
             if (!filter.IsActive() || filter.PassFilter(layer.first.c_str())) {

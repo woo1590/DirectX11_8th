@@ -29,6 +29,7 @@ class Texture;
 class Material;
 class Object;
 class Layer;
+class Model;
 class LightComponent;
 class ENGINE_DLL EngineCore final :
     public Base
@@ -84,9 +85,12 @@ public:
     HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
+
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(_uint levelID, const _string& key);
     Material* GetMaterial(_uint levelID, const _string& key);
+    Model* GetModel(_uint levelID, const _string& key);
 #pragma endregion
 
 #pragma region Prototype

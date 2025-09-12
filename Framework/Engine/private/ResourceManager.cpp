@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Material.h"
+#include "Model.h"
 
 ResourceManager::ResourceManager()
 {
@@ -27,6 +28,7 @@ HRESULT ResourceManager::Initialize(_uint numLevel)
 	m_Materials.resize(numLevel);
 	m_Shaders.resize(numLevel);
 	m_Textures.resize(numLevel);
+	m_Models.resize(numLevel);
 
 	return S_OK;
 }
@@ -116,6 +118,20 @@ HRESULT ResourceManager::LoadShaderFromFile(_uint levelID, const _string& filePa
 	return S_OK;
 }
 
+HRESULT ResourceManager::LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return E_FAIL;
+
+	auto model = Model::Create(filePath);
+	if (!model)
+		return E_FAIL;
+
+	m_Models[levelID].emplace(key, model);
+
+	return S_OK;
+}
+
 VIBuffer* ResourceManager::GetBuffer(_uint levelID, const _string& key)
 {
 	if (levelID >= m_iNumLevel)
@@ -150,6 +166,19 @@ Material* ResourceManager::GetMaterial(_uint levelID, const _string& key)
 	auto iter = m_Materials[levelID].find(key);
 
 	if (iter == m_Materials[levelID].end())
+		return nullptr;
+
+	return iter->second;
+}
+
+Model* ResourceManager::GetModel(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return nullptr;
+
+	auto iter = m_Models[levelID].find(key);
+
+	if (iter == m_Models[levelID].end())
 		return nullptr;
 
 	return iter->second;
@@ -222,4 +251,12 @@ void ResourceManager::Free()
 		texture.clear();
 	}
 	m_Textures.clear();
+
+	for (auto& model : m_Models)
+	{
+		for (auto& pair : model)
+			Safe_Release(pair.second);
+		model.clear();
+	}
+	m_Models.clear();
 }

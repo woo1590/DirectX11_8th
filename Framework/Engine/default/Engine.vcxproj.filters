@@ -181,14 +181,23 @@
     <Filter Include="05. Object Component\Rendering\Model Component">
       <UniqueIdentifier>{03ccefa1-4978-4881-8cea-f5577301395a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Object Component\Rendering\Model Component\Model">
-      <UniqueIdentifier>{428a327b-ff06-4bec-9931-0af6946cbb04}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Object Component\Rendering\Sprite Component">
       <UniqueIdentifier>{3a5ca94e-aae6-4d72-a928-3a917e63471a}</UniqueIdentifier>
     </Filter>
     <Filter Include="01. Engine Component\Light Manager">
       <UniqueIdentifier>{7cd08c9e-48b2-49e9-b7b6-ba544e7bd160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\ShaderFiles">
+      <UniqueIdentifier>{72f025ae-5e05-4fd3-850e-962a5cd69e13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Mesh">
+      <UniqueIdentifier>{aa3d1428-f460-4e43-baff-b260a4a16db1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Utility\nfd">
+      <UniqueIdentifier>{bad8b3fa-4fda-4511-8c22-ec958f0f27db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\Model">
+      <UniqueIdentifier>{428a327b-ff06-4bec-9931-0af6946cbb04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -283,7 +292,7 @@
       <Filter>01. Engine Component\PipeLine</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Model.h">
-      <Filter>05. Object Component\Rendering\Model Component\Model</Filter>
+      <Filter>01. Engine Component\Resource Manager\Model</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGuiManager.h">
       <Filter>01. Engine Component\ImGui Manager</Filter>
@@ -399,6 +408,21 @@
     <ClInclude Include="..\public\LightProxy.h">
       <Filter>01. Engine Component\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Mesh.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_AssetFormat.h">
+      <Filter>98. Etc\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\nfd\common.h">
+      <Filter>99. Utility\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\nfd\nfd.h">
+      <Filter>99. Utility\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\nfd\nfd_common.h">
+      <Filter>99. Utility\nfd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -474,7 +498,7 @@
       <Filter>01. Engine Component\PipeLine</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Model.cpp">
-      <Filter>05. Object Component\Rendering\Model Component\Model</Filter>
+      <Filter>01. Engine Component\Resource Manager\Model</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGuiManager.cpp">
       <Filter>01. Engine Component\ImGui Manager</Filter>
@@ -575,5 +599,25 @@
     <ClCompile Include="..\private\SpriteComponent.cpp">
       <Filter>05. Object Component\Rendering\Sprite Component</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Mesh.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\nfd\nfd_common.c">
+      <Filter>99. Utility\nfd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\nfd\nfd_win.cpp">
+      <Filter>99. Utility\nfd</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\public\shaderinc\ConstantBuffer.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\public\shaderinc\ShaderDefine.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\public\nfd\nfd_cocoa.m">
+      <Filter>99. Utility\nfd</Filter>
+    </None>
   </ItemGroup>
 </Project>

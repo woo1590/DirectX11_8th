@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;../public/nfd/</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -98,7 +98,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;../thirdpartylib/assimp/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;../public/nfd/</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -124,7 +124,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib;DirectXTK.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;../thirdpartylib/assimp/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;../public/nfd/</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -146,7 +146,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;../thirdpartylib/assimp/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -161,7 +161,7 @@
       <PreprocessorDefinitions>ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../public/imgui/;../public/nfd/</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>EnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -172,7 +172,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies);d3d11.lib;dxguid.lib;Effects11.lib;DirectXTK.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../thirdpartylib/fmod/lib/x64/;../thirdpartylib/directxtk/;../thirdpartylib/fx11/;../thirdpartylib/assimp/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
@@ -186,6 +186,7 @@
     <ClInclude Include="..\public\CameraComponent.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\EngineCore.h" />
+    <ClInclude Include="..\public\Engine_AssetFormat.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
     <ClInclude Include="..\public\Engine_Enum.h" />
     <ClInclude Include="..\public\Engine_Function.h" />
@@ -220,6 +221,10 @@
     <ClInclude Include="..\public\LightProxy.h" />
     <ClInclude Include="..\public\Material.h" />
     <ClInclude Include="..\public\IPanel.h" />
+    <ClInclude Include="..\public\Mesh.h" />
+    <ClInclude Include="..\public\nfd\common.h" />
+    <ClInclude Include="..\public\nfd\nfd.h" />
+    <ClInclude Include="..\public\nfd\nfd_common.h" />
     <ClInclude Include="..\public\OutlinerPanel.h" />
     <ClInclude Include="..\public\RenderProxy.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -274,6 +279,7 @@
     <ClCompile Include="..\private\LightManager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
     <ClCompile Include="..\private\IPanel.cpp" />
+    <ClCompile Include="..\private\Mesh.cpp" />
     <ClCompile Include="..\private\OutlinerPanel.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
     <ClCompile Include="..\private\SpriteComponent.cpp" />
@@ -371,6 +377,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\public\nfd\nfd_common.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\public\nfd\nfd_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="EnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -378,6 +396,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Engine_Struct.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\public\nfd\nfd_cocoa.m" />
+    <None Include="..\public\shaderinc\ConstantBuffer.hlsli" />
+    <None Include="..\public\shaderinc\ShaderDefine.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

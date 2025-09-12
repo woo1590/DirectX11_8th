@@ -56,6 +56,8 @@ HRESULT GamePlayLevel::Initialize_LayerLights(const _string& layerTag)
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun",
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
 								 return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT GamePlayLevel::Intialize_LayerCamera(const _string& layerTag)
@@ -73,9 +75,9 @@ HRESULT GamePlayLevel::Initialize_LayerGameObject(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	/*if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_TestCube",
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestCube",
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay),"Prototype_Object_Terrain",
 								ENUM_CLASS(LevelID::GamePlay),layerTag)))

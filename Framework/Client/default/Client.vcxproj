@@ -90,7 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -104,6 +104,7 @@
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <AdditionalIncludeDirectories>../../../EngineSDK/inc/shaderinc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,7 +117,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -132,6 +133,7 @@
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <AdditionalIncludeDirectories>../../../EngineSDK/inc/shaderinc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,7 +144,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -156,6 +158,7 @@
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <AdditionalIncludeDirectories>../../../EngineSDK/inc/shaderinc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,7 +171,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -184,6 +187,7 @@
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <AdditionalIncludeDirectories>../../../EngineSDK/inc/shaderinc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -251,7 +255,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\bin\shaderfiles\ConstantBuffer.hlsli" />
+    <None Include="..\bin\shaderfiles\Shader_VtxMesh.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

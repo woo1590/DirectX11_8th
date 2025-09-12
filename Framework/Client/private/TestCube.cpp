@@ -40,6 +40,13 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
+	/*---юс╫ц©К---*/
+	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxMesh"));
+	/*-----------*/
+
+	auto model = GetComponent<ModelComponent>();
+	model->SetOverride(m_pMaterial);
+	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Test");
 	
 	return S_OK;
 }

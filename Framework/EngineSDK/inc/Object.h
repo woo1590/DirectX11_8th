@@ -50,7 +50,7 @@ public:
             return nullptr;
     }
 
-    virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies) { return S_OK; }
+    virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     _string GetInstanceTag()const { return m_strInstanceTag; }
 
     virtual Object* Clone(InitDESC* arg) = 0;

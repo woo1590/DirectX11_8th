@@ -104,6 +104,10 @@ HRESULT Loader::LoadingForLogo()
 		VTXNORTEX::elements, VTXNORTEX::numElement)))
 		return E_FAIL;
 
+	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
+		VTXMESH::elements, VTXMESH::numElement)))
+		return E_FAIL;
+
 	/*Load Buffer*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
@@ -135,9 +139,12 @@ HRESULT Loader::LoadingForGamePlay()
 	/*Load Shader*/
 	m_strDebugText = L"셰이더 로딩중..";
 
-	/*Load Buffer*/
+	/*Load Model*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::GamePlay), "Buffer_Terrain", VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/hand.model", "Model_Test")))
 		return E_FAIL;
 
 	/*Load Material*/
@@ -153,11 +160,13 @@ HRESULT Loader::LoadingForGamePlay()
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Terrain", Terrain::Create())))
 		return E_FAIL;
 
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestCube", TestCube::Create())))
+		return E_FAIL;
+
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun", Sun::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";
-
 
 	return S_OK;
 }

@@ -5,6 +5,7 @@
 NS_BEGIN(Engine)
 
 class Model;
+class TransformComponent;
 class ENGINE_DLL ModelComponent final:
     public Component
 {
@@ -18,16 +19,21 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     
-    HRESULT ExtractRenderProxy(RenderProxy& proxy);
+    HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
 
+    HRESULT SetModel(_uint levelID, const _string& key);
+    void SetOverride(Material* pMaterial);
+    void ClearOverride();
     Component* Clone()override;
     void Free()override;
 
 #ifdef USE_IMGUI
     void RenderInspector()override;
 #endif
+
 private:
     Model* m_pModel = nullptr;
+    Material* m_pOverrideMtrl = nullptr;
 };
 
 NS_END

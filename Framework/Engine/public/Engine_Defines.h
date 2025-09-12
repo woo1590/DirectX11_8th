@@ -21,6 +21,10 @@ using namespace DirectX;
 #include "fmod/fmod.hpp"
 #include "nlohmann/json.hpp"
 
+#include "nfd.h"
+#include "nfd_common.h"
+#include "common.h"
+
 #ifdef USE_IMGUI
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_win32.h"
@@ -67,10 +71,10 @@ using namespace DirectX;
 #include "Engine_Struct.h"
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
+#include "Engine_AssetFormat.h"
 
 //util
 #include "Utility_Function.h"
-
 
 #define DIRECTINPUT_VERSION	0x0800
 #include <dinput.h>

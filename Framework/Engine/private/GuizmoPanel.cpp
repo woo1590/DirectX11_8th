@@ -1,5 +1,8 @@
 #include "EnginePCH.h"
 #include "GuizmoPanel.h"
+#include "PipeLine.h"
+#include "Object.h"
+#include "TransformComponent.h"
 
 #ifdef USE_IMGUI
 
@@ -19,6 +22,7 @@ GuizmoPanel* GuizmoPanel::Create()
 
 HRESULT GuizmoPanel::Initialize()
 {
+	
 	return S_OK;
 }
 
@@ -28,9 +32,16 @@ void GuizmoPanel::Draw(GUIState& state)
 	if (!show)
 		return;
 
+	ImVec2 pos = ImGui::GetWindowPos();
+	ImVec2 size = ImGui::GetWindowSize();
+	ImGuizmo::SetRect(pos.x, pos.y, size.x, size.y);
+	ImGuizmo::SetOrthographic(false);
+
+
+
 	if (ImGui::Begin("Guizmo"))
 	{
-
+		
 	}
 
 	ImGui::End();
