@@ -82,13 +82,13 @@ public:
 
 #pragma region Resource
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
-    HRESULT LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key,
+    HRESULT LoadShaderFromFile(const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
 
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
-    Shader* GetShader(_uint levelID, const _string& key);
+    Shader* GetShader(const _string& key);
     Material* GetMaterial(_uint levelID, const _string& key);
     Model* GetModel(_uint levelID, const _string& key);
 #pragma endregion
@@ -164,6 +164,7 @@ private:
     ObjectManager*      m_pObjectManager = nullptr;
     TaskManager*        m_pTaskManager = nullptr;
     PipeLine*           m_pPipeLine = nullptr;
+    // 경인이 왔다감
     ResourceManager*    m_pResourceManager = nullptr;
     InputSystem*        m_pInputSystem = nullptr;
     LightManager*       m_pLightManager = nullptr;

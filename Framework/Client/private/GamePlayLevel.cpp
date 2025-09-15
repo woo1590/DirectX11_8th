@@ -18,7 +18,6 @@ GamePlayLevel* GamePlayLevel::Create()
 
 HRESULT GamePlayLevel::Initialize()
 {
-	m_strLevelTag = "GamePlay";
 
 	if (FAILED(Initialize_LayerLights("Layer_Lights")))
 		return E_FAIL;

@@ -1,6 +1,7 @@
 #include "EnginePCH.h"
 #include "OutlinerPanel.h"
 #include "ObjectManager.h"
+#include "LevelManager.h"
 #include "Object.h"
 #include "Level.h"
 #include "Layer.h"
@@ -42,8 +43,8 @@ void OutlinerPanel::Draw(GUIState& state)
         static ImGuiTextFilter filter;
         filter.Draw("Filter", 180.0f);
 
-        //현재 레벨의 레이어를 가져올 수 있도록 해야함
-        const auto& layers = state.pObjectManager->GetLayers(0);
+        _uint levelID = state.pLevelManager->GetCurrLevelID();
+        const auto& layers = state.pObjectManager->GetLayers(levelID);
 
         for (const auto& layer : layers) {
             if (!filter.IsActive() || filter.PassFilter(layer.first.c_str())) {

@@ -4,12 +4,12 @@
 
 NS_BEGIN(Engine)
 class TransformComponent;
-class Material;
 NS_END
 
 NS_BEGIN(Importer)
 
 class FBXMesh;
+class FBXMaterial;
 class FBXLoaderComponent :
     public Component
 {
@@ -25,7 +25,7 @@ public:
 
     HRESULT ExtractRenderProxies(TransformComponent* transform, std::vector<RenderProxy>& proxies);
     
-    HRESULT LoadModelFromFBX(const _string& filePath);
+    HRESULT ImportModel(const _string& filePath);
     HRESULT ExportModel(const _string& outFilePath);
 
     Component* Clone() { return new FBXLoaderComponent(*this); }
@@ -37,18 +37,23 @@ public:
 
 private:
     HRESULT GenerateMeshes(const aiScene* pScene);
-    HRESULT GenerateMaterias(const aiScene* pScene) { return S_OK; }
+    HRESULT GenerateMaterials(const aiScene* pScene, const _string& modelFilePath);
 
     HRESULT WriteMeshFormat(std::ofstream& out);
+    HRESULT WriteMaterialFormat(std::ofstream& out);
 
-    _bool m_isLoaded = false;
+    HRESULT ConvertToDDS(const _string& textureFilePath);
+
+
     _uint m_iNumMeshes{};
     std::vector<FBXMesh*> m_Meshes;
+    _uint m_iNumMaterials{};
+    std::vector<FBXMaterial*> m_Materials;
 
+    _bool m_isLoaded = false;
+    _string m_strShaderTag{};
+    _string m_strFilePath{};
 
-
-
-    std::vector<Material*> m_Materials;
     Material* m_pDefaultMtrl = nullptr;
 };
 

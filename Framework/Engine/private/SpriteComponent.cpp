@@ -49,6 +49,25 @@ HRESULT SpriteComponent::Initialize(InitDESC* arg)
 void SpriteComponent::Update(_float dt)
 {
 	__super::Update(dt);
+
+	if (!m_isAnimated)
+		return;
+
+	m_fElapsedTime += dt * m_fSpeed;
+
+	if (m_fElapsedTime >= 1.f)
+	{
+		m_iCurrFrameIndex++;
+		if (m_iCurrFrameIndex >= m_iMaxFrameIndex)
+		{
+			if (m_isRepeat)
+				m_iCurrFrameIndex = 0;
+			else
+				m_iCurrFrameIndex--;
+		}
+
+		m_fElapsedTime = 0.f;
+	}
 }
 
 void SpriteComponent::SetBuffer(_uint levelID, const _string& key)

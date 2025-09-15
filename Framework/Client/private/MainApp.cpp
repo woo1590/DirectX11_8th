@@ -5,6 +5,7 @@
 
 MainApp::MainApp()
 {
+    // È÷È÷ ¿ÀÁÜ¹ß½Î
 }
 
 MainApp* MainApp::Create(HINSTANCE hInstance, int nCmdShow)
@@ -40,6 +41,9 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
 
     m_pEngineCore->AddTimer("Timer_Default");
     m_pEngineCore->AddTimer("Timer_144fps");
+
+    if (FAILED(LoadStaticLevel()))
+        return E_FAIL;
 
     m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Logo));
 
@@ -85,6 +89,26 @@ void MainApp::Run()
 void MainApp::Free()
 {
     m_pEngineCore->DestroyInstance();
+}
+
+HRESULT MainApp::LoadStaticLevel()
+{
+    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",
+        VTXTEX::elements, VTXTEX::numElement)))
+        return E_FAIL;
+
+    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube",
+        VTXCUBE::elements, VTXCUBE::numElement)))
+        return E_FAIL;
+
+    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxNorTex.hlsl", "Shader_VtxNorTex",
+        VTXNORTEX::elements, VTXNORTEX::numElement)))
+        return E_FAIL;
+
+    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
+        VTXMESH::elements, VTXMESH::numElement)))
+        return E_FAIL;
+    return S_OK;
 }
 
 bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)

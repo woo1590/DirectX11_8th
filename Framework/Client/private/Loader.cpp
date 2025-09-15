@@ -90,31 +90,13 @@ HRESULT Loader::LoadingForLogo()
 	/*Load Sound*/
 	m_strDebugText = L"사운드 로딩중..";
 
-	/*Load Shader*/
-	m_strDebugText = L"셰이더 로딩중..";
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",
-		VTXTEX::elements, VTXTEX::numElement)))
-		return E_FAIL;
-
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube",
-		VTXCUBE::elements, VTXCUBE::numElement)))
-		return E_FAIL;
-
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxNorTex.hlsl", "Shader_VtxNorTex",
-		VTXNORTEX::elements, VTXNORTEX::numElement)))
-		return E_FAIL;
-
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Static), "../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
-		VTXMESH::elements, VTXMESH::numElement)))
-		return E_FAIL;
-
 	/*Load Buffer*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
 		return E_FAIL;
 
 	/*Load Material*/
-	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Logo), "../bin/resource/materials/background_logo.json", "Mtrl_Background_Logo")))
+	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Logo), "../bin/resource/materials/loading.json", "Mtrl_Background_Logo")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/
@@ -144,7 +126,7 @@ HRESULT Loader::LoadingForGamePlay()
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::GamePlay), "Buffer_Terrain", VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/hand.model", "Model_Test")))
+	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/test/test.model", "Model_Test")))
 		return E_FAIL;
 
 	/*Load Material*/

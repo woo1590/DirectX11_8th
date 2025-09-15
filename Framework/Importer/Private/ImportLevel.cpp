@@ -28,7 +28,7 @@ HRESULT ImportLevel::Initialize()
 	auto engine = EngineCore::GetInstance();
 
 	/*Load Shader*/	
-	if (FAILED(engine->LoadShaderFromFile(ENUM_CLASS(LevelID::Import), "../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
+	if (FAILED(engine->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
 			   VTXMESH::elements, VTXMESH::numElement)))
 		return E_FAIL;
 

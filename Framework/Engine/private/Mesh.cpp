@@ -28,6 +28,8 @@ HRESULT Mesh::Initialize(const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>&
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
+	m_iMaterialIndex = meshFormat.materialIndex;
+
 	/*----Vertex Buffer----*/
 	D3D11_BUFFER_DESC vbDesc{};
 	vbDesc.ByteWidth = m_iVertexStride * m_iNumVertices;

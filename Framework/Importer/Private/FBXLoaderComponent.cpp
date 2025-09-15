@@ -3,7 +3,7 @@
 #include "EngineCore.h"
 #include "FBXMesh.h"
 #include "TransformComponent.h"
-#include "Material.h"
+#include "FBXMaterial.h"
 
 FBXLoaderComponent::FBXLoaderComponent(Object* owner)
 	:Component(owner)
@@ -32,8 +32,8 @@ HRESULT FBXLoaderComponent::Initialize_Prototype()
 
 HRESULT FBXLoaderComponent::Initialize(InitDESC* arg)
 {
-	m_pDefaultMtrl = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Import), "Shader_VtxMesh"));
-
+	m_pDefaultMtrl = Material::Create(EngineCore::GetInstance()->GetShader("Shader_VtxMesh"));
+	m_strShaderTag = "Shader_VtxMesh";
 	return S_OK;
 }
 
@@ -50,7 +50,7 @@ HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, 
 		cb.worldMatrixInverse = transform->GetWorldMatrixInverse();
 
 		proxy.buffer = m_Meshes[i];
-		proxy.material = m_pDefaultMtrl;
+		proxy.material = m_Materials[m_Meshes[i]->GetMaterialIndex()];
 		proxy.cbPerObject = cb;
 
 		proxies.push_back(proxy);
@@ -59,7 +59,7 @@ HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, 
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::LoadModelFromFBX(const _string& filePath)
+HRESULT FBXLoaderComponent::ImportModel(const _string& filePath)
 {
 	_uint flag = (aiProcessPreset_TargetRealtime_Fast | aiProcess_PreTransformVertices);
 	Assimp::Importer impoter{};
@@ -74,6 +74,9 @@ HRESULT FBXLoaderComponent::LoadModelFromFBX(const _string& filePath)
 
 	m_iNumMeshes = scene->mNumMeshes;
 
+	if (FAILED(GenerateMaterials(scene, filePath)))
+		return E_FAIL;
+
 	if (FAILED(GenerateMeshes(scene)))
 		return E_FAIL;
 
@@ -84,6 +87,8 @@ HRESULT FBXLoaderComponent::LoadModelFromFBX(const _string& filePath)
 
 HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 {
+	namespace fs = std::filesystem;
+
 	std::ofstream out(outFilePath.c_str(), std::ios::binary);
 	if (!out.is_open())
 	{
@@ -94,12 +99,19 @@ HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 	MODEL_FORMAT modelFormat{};
 	modelFormat.numMeshes = m_iNumMeshes;
 	modelFormat.skinnedMesh = 0;
+	modelFormat.numMaterials = m_iNumMaterials;
+
+	/*Output Directory*/
 	
 	/*Model 포맷 파일 쓰기*/
 	out.write(reinterpret_cast<const char*>(&modelFormat), sizeof(MODEL_FORMAT));
 		
 	/*Mesh 포맷 파일 쓰기*/
 	if (FAILED(WriteMeshFormat(out)))
+		return E_FAIL;
+
+	/*Material 포맷 파일 쓰기*/
+	if (FAILED(WriteMaterialFormat(out)))
 		return E_FAIL;
 
 	MSG_BOX("Save Success");
@@ -113,6 +125,10 @@ void FBXLoaderComponent::Free()
 	for (auto& mesh : m_Meshes)
 		Safe_Release(mesh);
 	m_Meshes.clear();
+
+	for (auto& material : m_Materials)
+		Safe_Release(material);
+	m_Materials.clear();
 
 	Safe_Release(m_pDefaultMtrl);
 }
@@ -156,9 +172,13 @@ void FBXLoaderComponent::RenderInspector()
 					for (auto& mesh : m_Meshes)
 						Safe_Release(mesh);
 					m_Meshes.clear();
+
+					for (auto& material : m_Materials)
+						Safe_Release(material);
+					m_Materials.clear();
 				}
 
-				LoadModelFromFBX(openedFile);
+				ImportModel(openedFile);
 				openedFile = "";
 			}
 		}
@@ -187,6 +207,8 @@ void FBXLoaderComponent::RenderInspector()
 	ImGui::PopID();
 }
 
+#endif
+
 HRESULT FBXLoaderComponent::GenerateMeshes(const aiScene* pScene)
 {
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
@@ -205,6 +227,25 @@ HRESULT FBXLoaderComponent::GenerateMeshes(const aiScene* pScene)
 	return S_OK;
 }
 
+HRESULT FBXLoaderComponent::GenerateMaterials(const aiScene* pScene, const _string& modelFilePath)
+{
+	m_iNumMaterials = pScene->mNumMaterials;
+	auto shader = EngineCore::GetInstance()->GetShader(m_strShaderTag);
+
+	for (_uint i = 0; i < m_iNumMaterials; ++i)
+	{
+		aiMaterial* aiMat = pScene->mMaterials[i];
+
+		auto material = FBXMaterial::Create(shader, m_strShaderTag, aiMat, modelFilePath);
+		if (!material)
+			return E_FAIL;
+
+		m_Materials.push_back(material);
+	}
+
+	return S_OK;
+}
+
 HRESULT FBXLoaderComponent::WriteMeshFormat(std::ofstream& out)
 {
 	std::vector<MESH_FORMAT> meshFormats(m_iNumMeshes);
@@ -212,9 +253,7 @@ HRESULT FBXLoaderComponent::WriteMeshFormat(std::ofstream& out)
 	std::vector<std::vector<_uint>> indices(m_iNumMeshes);
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
-	{
-		m_Meshes[i]->ExtractMeshFormat(meshFormats[i], vertexFormats[i], indices[i]);
-	}
+		m_Meshes[i]->ExportMeshFormat(meshFormats[i], vertexFormats[i], indices[i]);
 
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
@@ -227,4 +266,49 @@ HRESULT FBXLoaderComponent::WriteMeshFormat(std::ofstream& out)
 	return S_OK;
 }
 
-#endif
+HRESULT FBXLoaderComponent::WriteMaterialFormat(std::ofstream& out)
+{
+	std::vector<MTRL_FORMAT> mtrlFormats(m_iNumMaterials);
+
+	for (_uint i = 0; i < m_iNumMaterials; ++i)
+		m_Materials[i]->ExportMaterialFormat(mtrlFormats[i]);
+
+	for (_uint i = 0; i < m_iNumMaterials; ++i)
+	{
+		_uint shaderTagLen = mtrlFormats[i].shaderTag.size();
+		out.write(reinterpret_cast<const char*>(&shaderTagLen), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(mtrlFormats[i].shaderTag.c_str()), shaderTagLen);
+
+		out.write(reinterpret_cast<const char*>(&mtrlFormats[i].numDiffuseTexture), sizeof(_uint));
+		for (_uint j = 0; j < mtrlFormats[i].numDiffuseTexture; ++j)
+		{
+			_uint len = mtrlFormats[i].diffuseTextureName[j].size();
+			out.write(reinterpret_cast<const char*>(&len), sizeof(_uint));
+			out.write(reinterpret_cast<const char*>(mtrlFormats[i].diffuseTextureName[j].data()), len);
+		}
+
+		out.write(reinterpret_cast<const char*>(&mtrlFormats[i].numNormalTexture), sizeof(_uint));
+		for (_uint j = 0; j < mtrlFormats[i].numNormalTexture; ++j)
+		{
+			_uint len = mtrlFormats[i].normalTextureName[j].size();
+			out.write(reinterpret_cast<const char*>(&len), sizeof(_uint));
+			out.write(reinterpret_cast<const char*>(mtrlFormats[i].normalTextureName[j].data()), len);
+		}
+
+		out.write(reinterpret_cast<const char*>(&mtrlFormats[i].numSpecularTexture), sizeof(_uint));
+		for (_uint j = 0; j < mtrlFormats[i].numSpecularTexture; ++j)
+		{
+			_uint len = mtrlFormats[i].specularTextureName[j].size();
+			out.write(reinterpret_cast<const char*>(&len), sizeof(_uint));
+			out.write(reinterpret_cast<const char*>(mtrlFormats[i].specularTextureName[j].data()), len);
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT FBXLoaderComponent::ConvertToDDS(const _string& textureFilePath)
+{
+
+	return S_OK;
+}

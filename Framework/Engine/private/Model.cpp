@@ -1,5 +1,6 @@
 #include "EnginePCH.h"
 #include "Model.h"
+#include "EngineCore.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "TransformComponent.h"
@@ -30,11 +31,13 @@ HRESULT Model::Initialize(const _string& filePath)
 	MODEL_FORMAT modelFormat{};
 	file.read(reinterpret_cast<char*>(&modelFormat), sizeof(MODEL_FORMAT));
 	m_iNumMeshes = modelFormat.numMeshes;
+	m_iNumMaterials = modelFormat.numMaterials;
 
 	if (FAILED(CreateMeshes(file)))
 		return E_FAIL;
 
-	return S_OK;
+	if (FAILED(CreateMaterials(file,filePath)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -53,7 +56,7 @@ HRESULT Model::ExtractRenderProxy(TransformComponent* transform, std::vector<Ren
 		cb.worldMatrixInverse = worldMatrixInverse;
 		
 		proxy.buffer = m_Meshes[i];
-		proxy.material = overrideMaterial ? overrideMaterial : m_Materials[0];
+		proxy.material = overrideMaterial ? overrideMaterial : m_Materials[m_Meshes[i]->GetMaterialIndex()];
 		proxy.cbPerObject = cb;
 
 		proxies.push_back(proxy);
@@ -97,6 +100,53 @@ HRESULT Model::CreateMeshes(std::ifstream& file)
 			return E_FAIL;
 		}
 		m_Meshes.push_back(mesh);
+	}
+
+	return S_OK;
+}
+
+HRESULT Model::CreateMaterials(std::ifstream& file, const _string& filePath)
+{
+	std::vector<MTRL_FORMAT> mtrlFormats(m_iNumMaterials);
+
+	for (_uint i = 0; i < m_iNumMaterials; ++i)
+	{
+		_uint shaderTagLen = 0;
+		file.read(reinterpret_cast<char*>(&shaderTagLen), sizeof(_uint));
+		file.read(reinterpret_cast<char*>(mtrlFormats[i].shaderTag.data()), shaderTagLen);
+
+		file.read(reinterpret_cast<char*>(&mtrlFormats[i].numDiffuseTexture), sizeof(_uint));
+
+		for (_uint j = 0; j < mtrlFormats[i].numDiffuseTexture; ++j)
+		{
+			_uint len = 0;
+			_string fileName{};
+			mtrlFormats[i].diffuseTextureName.resize(mtrlFormats[i].numDiffuseTexture);
+			file.read(reinterpret_cast<char*>(&len), sizeof(_uint));
+			file.read(reinterpret_cast<char*>(mtrlFormats[i].diffuseTextureName[j].data()), len);
+		}
+
+		for (_uint j = 0; j < mtrlFormats[i].numNormalTexture; ++j)
+		{
+			_uint len = 0;
+			_string fileName{};
+			file.read(reinterpret_cast<char*>(&len), sizeof(_uint));
+			file.read(reinterpret_cast<char*>(mtrlFormats[i].normalTextureName[j].data()), len);
+		}
+
+		for (_uint j = 0; j < mtrlFormats[i].numSpecularTexture; ++j)
+		{
+			_uint len = 0;
+			_string fileName{};
+			file.read(reinterpret_cast<char*>(&len), sizeof(_uint));
+			file.read(reinterpret_cast<char*>(mtrlFormats[i].specularTextureName[j].data()), len);
+		}
+
+		auto material = Material::Create(mtrlFormats[i],filePath);
+		if (!material)
+			return E_FAIL;
+
+		m_Materials.push_back(material);
 	}
 
 	return S_OK;

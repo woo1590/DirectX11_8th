@@ -28,6 +28,8 @@ HRESULT FBXMesh::Initialize(aiMesh* pMesh)
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
+	m_iMaterialIndex = pMesh->mMaterialIndex;
+
 	/*----Vertex Buffer----*/
 	D3D11_BUFFER_DESC vbDesc{};
 	vbDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
@@ -88,8 +90,9 @@ HRESULT FBXMesh::Initialize(aiMesh* pMesh)
 	return S_OK;
 }
 
-HRESULT FBXMesh::ExtractMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertices, std::vector<_uint>& indices)
+HRESULT FBXMesh::ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertices, std::vector<_uint>& indices)
 {
+	meshFormat.materialIndex = m_iMaterialIndex;
 	meshFormat.numVertices = m_iNumVertices;
 	meshFormat.vertexStride = m_iVertexStride;
 	meshFormat.numIndices = m_iNumIndices;

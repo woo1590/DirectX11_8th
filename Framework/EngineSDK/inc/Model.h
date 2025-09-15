@@ -23,8 +23,10 @@ public:
 
 private:
     HRESULT CreateMeshes(std::ifstream& file);
+    HRESULT CreateMaterials(std::ifstream& file, const _string& filePath);
 
     _uint m_iNumMeshes{};
+    _uint m_iNumMaterials{};
     std::vector<Mesh*> m_Meshes;
     std::vector<Material*> m_Materials;
 };

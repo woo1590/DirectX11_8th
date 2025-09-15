@@ -26,7 +26,6 @@ HRESULT ResourceManager::Initialize(_uint numLevel)
 
 	m_Buffers.resize(numLevel);
 	m_Materials.resize(numLevel);
-	m_Shaders.resize(numLevel);
 	m_Textures.resize(numLevel);
 	m_Models.resize(numLevel);
 
@@ -43,12 +42,12 @@ HRESULT ResourceManager::LoadBuffer(_uint levelID, const _string& key, VIBuffer*
 	return S_OK;
 }
 
-HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& filePath, _uint numTextures)
+HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& filePath)
 {
 	if (levelID >= m_iNumLevel)
 		return E_FAIL;
 
-	auto texture = Texture::Create(filePath, numTextures);
+	auto texture = Texture::Create(filePath);
 	if (!texture)
 		return E_FAIL;
 
@@ -60,6 +59,7 @@ HRESULT ResourceManager::LoadTextureFromFile(_uint levelID, const _string& fileP
 HRESULT ResourceManager::LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key)
 {
 	using json = nlohmann::json;
+	namespace fs = std::filesystem;
 
 	json j = json::parse(std::ifstream(filePath.c_str()));
 	_string defaultPath = "../bin/resource/";
@@ -71,7 +71,7 @@ HRESULT ResourceManager::LoadMaterialFromJson(_uint levelID, const _string& file
 		return E_FAIL;
 	}
 
-	auto shader = GetShader(0, j["shader"].get<_string>());
+	auto shader = GetShader(j["shader"].get<_string>());
 	if (!shader)
 	{
 		MSG_BOX("Load Failed : shader not exist");
@@ -84,18 +84,41 @@ HRESULT ResourceManager::LoadMaterialFromJson(_uint levelID, const _string& file
 	{
 		for (auto& [slot, var] : j["textures"].items())
 		{
-			_string fullPath = defaultPath + var["path"].get<_string>();
+			fs::path fullPath = defaultPath + var["path"].get<_string>();
 			_uint numTex = var.value("num", 1);
 
-			auto tex = GetTexture(levelID, fullPath);
-			if (!tex)
+			if (numTex > 1)
 			{
-				if (FAILED(LoadTextureFromFile(levelID, fullPath, numTex)))
-					return E_FAIL;
+				fs::path dirPath = fullPath.parent_path();
 
-				tex = GetTexture(levelID, fullPath);
+				for (_uint i = 0; i < numTex; ++i)
+				{
+					fs::path fileName = fullPath.stem().string() + std::to_string(i) + fullPath.extension().string();
+					fs::path fullPathNum = dirPath / fileName;
+
+					auto tex = GetTexture(levelID, fullPathNum.string());
+					if (!tex)
+					{
+						if (FAILED(LoadTextureFromFile(levelID, fullPathNum.string())))
+							return E_FAIL;
+
+						tex = GetTexture(levelID, fullPathNum.string());
+					}
+					material->SetTexture(slot, tex);
+				}
 			}
-			material->SetTexture(slot, tex);
+			else
+			{
+				auto tex = GetTexture(levelID, fullPath.string());
+				if (!tex)
+				{
+					if (FAILED(LoadTextureFromFile(levelID, fullPath.string())))
+						return E_FAIL;
+
+					tex = GetTexture(levelID, fullPath.string());
+				}
+				material->SetTexture(slot, tex);
+			}
 		}
 	}
 
@@ -104,16 +127,13 @@ HRESULT ResourceManager::LoadMaterialFromJson(_uint levelID, const _string& file
 	return S_OK;
 }
 
-HRESULT ResourceManager::LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT ResourceManager::LoadShaderFromFile(const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
-	if (levelID >= m_iNumLevel)
-		return E_FAIL;
-
 	auto shader = Shader::Create(filePath, pElement, numElement);
 	if (!shader)
 		return E_FAIL;
 
-	m_Shaders[levelID].emplace(key, shader);
+	m_Shaders.emplace(key, shader);
 
 	return S_OK;
 }
@@ -145,14 +165,11 @@ VIBuffer* ResourceManager::GetBuffer(_uint levelID, const _string& key)
 	return iter->second;
 }
 
-Shader* ResourceManager::GetShader(_uint levelID, const _string& key)
+Shader* ResourceManager::GetShader(const _string& key)
 {
-	if (levelID >= m_iNumLevel)
-		return nullptr;
+	auto iter = m_Shaders.find(key);
 
-	auto iter = m_Shaders[levelID].find(key);
-
-	if (iter == m_Shaders[levelID].end())
+	if (iter == m_Shaders.end())
 		return nullptr;
 
 	return iter->second;
@@ -207,10 +224,6 @@ void ResourceManager::Clear(_uint levelID)
 		Safe_Release(pair.second);
 	m_Materials[levelID].clear();
 
-	for (auto& pair : m_Shaders[levelID])
-		Safe_Release(pair.second);
-	m_Shaders[levelID].clear();
-
 	for (auto& pair : m_Textures[levelID])
 		Safe_Release(pair.second);
 	m_Textures[levelID].clear();
@@ -236,12 +249,8 @@ void ResourceManager::Free()
 	}
 	m_Materials.clear();
 	
-	for (auto& shader : m_Shaders)
-	{
-		for (auto& pair : shader)
-			Safe_Release(pair.second);
-		shader.clear();
-	}
+	for (auto& pair : m_Shaders)
+		Safe_Release(pair.second);
 	m_Shaders.clear();
 
 	for (auto& texture : m_Textures)

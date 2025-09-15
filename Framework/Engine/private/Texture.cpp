@@ -6,65 +6,42 @@ Texture::Texture()
 {
 }
 
-Texture* Texture::Create(const _string& filePath, _uint numTextures)
+Texture* Texture::Create(const _string& filePath)
 {
 	Texture* Instance = new Texture();
 
-	if (FAILED(Instance->Initialize(filePath, numTextures)))
+	if (FAILED(Instance->Initialize(filePath)))
 		Safe_Release(Instance);
 
 	return Instance;
+
 }
 
-HRESULT Texture::Initialize(const _string& filePath, _uint numTextures)
+HRESULT Texture::Initialize(const _string& filePath)
 {
-	std::filesystem::path p = std::filesystem::u8path(filePath);
-	_wstring path = p.wstring();
-	_wstring ext = p.extension().wstring();
-
+	namespace fs = std::filesystem;
 	auto device = EngineCore::GetInstance()->GetDevice();
 
-	for (_uint i = 0; i < numTextures; ++i)
+	fs::path fullPath = filePath;
+
+	HRESULT hr{};
+	_wstring ext = fullPath.extension().wstring();
+	if (ext == L".dds")
+		hr = CreateDDSTextureFromFile(device, fullPath.wstring().c_str(), nullptr, &m_pSRV);
+	else if (ext == L".tga")
 	{
-		_tchar szFileName[MAX_PATH] = TEXT("");
-		wsprintf(szFileName, path.c_str(), i);
-
-		ID3D11ShaderResourceView* srv = nullptr;
-
-		if (ext == L".dds")
-		{
-			if (FAILED(CreateDDSTextureFromFile(device, szFileName, nullptr, &srv)))
-				return E_FAIL;
-		}
-		else if (ext == L".tga")
-		{
-			MSG_BOX("Create Failed : Texture");
-		}
-		else
-		{
-			if (FAILED(CreateWICTextureFromFile(device, szFileName, nullptr, &srv)))
-				return E_FAIL;
-		}
-
-		m_SRVs.push_back(srv);
+		MSG_BOX("Failed to load : Invalid file type");
+		return E_FAIL;
 	}
+	else
+		hr = CreateWICTextureFromFile(device, fullPath.wstring().c_str(), nullptr, &m_pSRV);
 
-	return S_OK;
-}
-
-ID3D11ShaderResourceView* Texture::GetSRV(_int index) const
-{
-	if (index >= m_SRVs.size())
-		return nullptr;
-
-	return m_SRVs[index];
+	return hr;
 }
 
 void Texture::Free()
 {
 	__super::Free();
-
-	for (auto& srv : m_SRVs)
-		Safe_Release(srv);
-	m_SRVs.clear();
+	
+	Safe_Release(m_pSRV);
 }

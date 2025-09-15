@@ -193,6 +193,7 @@
     <ClInclude Include="..\public\EditorCamera.h" />
     <ClInclude Include="..\public\EditorLight.h" />
     <ClInclude Include="..\public\FBXLoaderComponent.h" />
+    <ClInclude Include="..\public\FBXMaterial.h" />
     <ClInclude Include="..\public\FBXMesh.h" />
     <ClInclude Include="..\public\FBXModelObject.h" />
     <ClInclude Include="..\Public\Importer_Defines.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="..\private\EditorCamera.cpp" />
     <ClCompile Include="..\private\EditorLight.cpp" />
     <ClCompile Include="..\private\FBXLoaderComponent.cpp" />
+    <ClCompile Include="..\private\FBXMaterial.cpp" />
     <ClCompile Include="..\private\FBXMesh.cpp" />
     <ClCompile Include="..\private\FBXModelObject.cpp" />
     <ClCompile Include="..\private\ImportLevel.cpp" />

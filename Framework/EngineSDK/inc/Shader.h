@@ -17,7 +17,7 @@ public:
     HRESULT Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
 
     HRESULT Apply(const _string& passTag);
-    HRESULT BindTextureValue(const _string& name, Texture* value, _int frameIndex);
+    HRESULT BindTextureValue(const _string& name, Texture* value);
 
     void Free()override;
 

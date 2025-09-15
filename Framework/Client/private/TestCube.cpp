@@ -41,7 +41,7 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	/*---юс╫ц©К---*/
-	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader(ENUM_CLASS(LevelID::Static), "Shader_VtxMesh"));
+	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader("Shader_VtxMesh"));
 	/*-----------*/
 
 	auto model = GetComponent<ModelComponent>();

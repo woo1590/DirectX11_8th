@@ -3,6 +3,7 @@
 #include "EngineCore.h"
 #include "OutlinerPanel.h"
 #include "InspectorPanel.h"
+#include "GuizmoPanel.h"
 
 #ifdef USE_IMGUI
 
@@ -43,8 +44,13 @@ HRESULT ImGuiManager::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	if (!inspector)
 		return E_FAIL;
 
+	//auto guizmo = GuizmoPanel::Create();
+	//if (!guizmo)
+	//	return E_FAIL;
+
 	m_Panels.push_back(outliner);
 	m_Panels.push_back(inspector);
+	//m_Panels.push_back(guizmo);
 
 	m_GuiState = state;
 
@@ -56,6 +62,7 @@ void ImGuiManager::BeginFrame()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 }
 
 void ImGuiManager::Render()

@@ -8,23 +8,25 @@ class Texture;
 class ENGINE_DLL Material :
     public Base
 {
-private:
-    Material(Shader* pShader);
+protected:
+    Material();
     virtual ~Material() = default;
 
 public:
     static Material* Create(Shader* pShader);
-    HRESULT Initialize();
+    static Material* Create(MTRL_FORMAT mtrlFormat, const _string& modelFilePath);
+    HRESULT Initialize(Shader* pShader);
+    HRESULT Initialize(MTRL_FORMAT mtrlFormat, const _string& modelFilePath);
 
     HRESULT BindMaterial(const _string& passTag, _int frameIndex);
     void SetTexture(const _string& key, Texture* value);
 
     void Free()override;
 
-private:
+protected:
     Shader* m_pShader = nullptr;
 
-    std::unordered_map<_string, Texture*> m_TexParams;
+    std::unordered_map<_string, std::vector<Texture*>> m_TexParams;
 
 };
 

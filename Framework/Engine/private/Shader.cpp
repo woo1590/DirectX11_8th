@@ -93,9 +93,9 @@ HRESULT Shader::Apply(const _string& passTag)
     return iter->second->Apply(0, m_pDeviceContext);
 }
 
-HRESULT Shader::BindTextureValue(const _string& name, Texture* value, _int frameIndex)
+HRESULT Shader::BindTextureValue(const _string& name, Texture* value)
 {
-    ID3D11ShaderResourceView* srv = value->GetSRV(frameIndex);
+    ID3D11ShaderResourceView* srv = value->GetSRV();
     if (!srv)
         return E_FAIL;
 

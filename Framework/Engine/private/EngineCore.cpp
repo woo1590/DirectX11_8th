@@ -85,6 +85,7 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	GUIState state{};
 	state.pObjectManager = m_pObjectManager;
 	state.pPipeLine = m_pPipeLine;
+	state.pLevelManager = m_pLevelManager;
 
 	m_pImGuiManager = ImGuiManager::Create(m_hWnd, m_pGraphicDevice->GetDevice(),m_pGraphicDevice->GetDeviceContext(),state);
 	if (!m_pImGuiManager)
@@ -246,9 +247,9 @@ HRESULT EngineCore::LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuf
 {
 	return m_pResourceManager->LoadBuffer(levelID,key,pBuffer);
 }
-HRESULT EngineCore::LoadShaderFromFile(_uint levelID, const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
+HRESULT EngineCore::LoadShaderFromFile(const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
-	return m_pResourceManager->LoadShaderFromFile(levelID,filePath,key,pElement,numElement);
+	return m_pResourceManager->LoadShaderFromFile(filePath,key,pElement,numElement);
 }
 HRESULT EngineCore::LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key)
 {
@@ -263,9 +264,9 @@ VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 	return m_pResourceManager->GetBuffer(levelID, key);
 }
 
-Shader* EngineCore::GetShader(_uint levelID, const _string& key)
+Shader* EngineCore::GetShader(const _string& key)
 {
-	return m_pResourceManager->GetShader(levelID, key);
+	return m_pResourceManager->GetShader(key);
 }
 Material* EngineCore::GetMaterial(_uint levelID, const _string& key)
 {

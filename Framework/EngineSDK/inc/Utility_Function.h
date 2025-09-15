@@ -16,11 +16,12 @@ namespace math
 		return XMConvertToDegrees(radian);
 	}
 
-	inline _float ToFmodVector(_float3 vector)
+	inline void TransposeGuizmoMatrix(_float* colMatrix, _float4x4 rowMatrix)
 	{
-		return 1.f;
-	}
+		XMMATRIX m = XMLoadFloat4x4(&rowMatrix);
 
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(colMatrix), m);
+	}
 };
 
 NS_END

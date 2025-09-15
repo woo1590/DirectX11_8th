@@ -11,14 +11,14 @@ private:
     virtual ~Texture() = default;
 
 public:
-    static Texture* Create(const _string& filePath, _uint numTextures);
-    HRESULT Initialize(const _string& filePath, _uint numTextures);
+    static Texture* Create(const _string& filePath);
+    HRESULT Initialize(const _string& filePath);
 
-    ID3D11ShaderResourceView* GetSRV(_int index)const;
+    ID3D11ShaderResourceView* GetSRV()const { return m_pSRV; }
     void Free()override;
 
 private:
-    std::vector<ID3D11ShaderResourceView*> m_SRVs;
+    ID3D11ShaderResourceView* m_pSRV = nullptr;
 };
 
 NS_END

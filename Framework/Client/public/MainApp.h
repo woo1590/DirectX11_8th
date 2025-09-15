@@ -22,6 +22,7 @@ public:
     void Free()override;
 
 private:
+    HRESULT LoadStaticLevel();
     bool InitWindow(HINSTANCE hInst, int nCmdShow);
 
     HWND hWnd{};

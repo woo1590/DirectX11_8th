@@ -52,6 +52,9 @@
     <Filter Include="98. Etc\nfd">
       <UniqueIdentifier>{ccb3aa16-39f2-4853-bfdf-7e27027893e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object Component\FBXLoader Coponent\FBXMaterial">
+      <UniqueIdentifier>{967d0069-c1c9-4f17-9acf-2defa02df7dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -102,6 +105,9 @@
     <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h">
       <Filter>98. Etc\nfd</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FBXMaterial.h">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXMaterial</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Importer.ico">
@@ -149,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
       <Filter>98. Etc\nfd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FBXMaterial.cpp">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXMaterial</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
