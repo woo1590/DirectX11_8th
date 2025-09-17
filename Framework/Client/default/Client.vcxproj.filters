@@ -185,6 +185,9 @@
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxNorTex.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shaderfiles\Shader_VtxMesh.hlsl">

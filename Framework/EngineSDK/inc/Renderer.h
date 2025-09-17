@@ -35,6 +35,7 @@ private:
 
     ID3D11Buffer* m_pCBPerFrame = nullptr;
     ID3D11Buffer* m_pCBPerObject = nullptr;
+    ID3D11Buffer* m_pCBBones = nullptr;
     ID3D11Buffer* m_pCBPerLightViewProj = nullptr;
     ID3D11Buffer* m_pCBPerUI = nullptr;
 };

@@ -8,6 +8,7 @@ namespace Engine
 #define MSG_BOX(_message)		MessageBox(NULL, TEXT(_message), L"System Message", MB_OK);
 #endif
 
+#define		MAX_BONES		512
 #define		ENUM_CLASS(ENUM)	static_cast<unsigned int>(ENUM)
 #define		NS_BEGIN(NAMESPACE)	namespace NAMESPACE{
 #define		NS_END					}

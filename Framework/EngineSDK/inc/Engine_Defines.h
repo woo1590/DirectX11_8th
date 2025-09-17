@@ -5,6 +5,7 @@
 #pragma warning (disable : 4251)
 
 
+
 //d3d
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -13,6 +14,7 @@
 #include "fx11/d3dx11effect.h"
 #include "directxtk/DDSTextureLoader.h"
 #include "directxtk/WICTextureLoader.h"
+#include "directxtk/ScreenGrab.h"
 
 #include <d3dcompiler.h>
 using namespace DirectX;
@@ -75,6 +77,8 @@ using namespace DirectX;
 
 //util
 #include "Utility_Function.h"
+
+
 
 #define DIRECTINPUT_VERSION	0x0800
 #include <dinput.h>

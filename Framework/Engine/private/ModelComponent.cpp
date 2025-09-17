@@ -34,6 +34,11 @@ HRESULT ModelComponent::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+void ModelComponent::Update(_float dt)
+{
+	m_pModel->Update(dt);
+}
+
 HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
 {
 	return m_pModel->ExtractRenderProxy(transform, proxies, m_pOverrideMtrl);

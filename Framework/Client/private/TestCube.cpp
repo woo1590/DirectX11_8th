@@ -45,7 +45,6 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 	/*-----------*/
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetOverride(m_pMaterial);
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Test");
 	
 	return S_OK;

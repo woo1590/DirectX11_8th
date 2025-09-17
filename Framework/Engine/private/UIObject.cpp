@@ -76,10 +76,7 @@ HRESULT UIObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& pr
 	if (!sprite)
 		return S_OK;
 	
-	CBPerObject perObject{};
-	perObject.worldMatrix = m_pTransform->GetWorldMatrix();
-	perObject.worldMatrixInverse = m_pTransform->GetWorldMatrixInverse();
-	proxy.cbPerObject = perObject;
+	proxy.worldMatrix = m_pTransform->GetWorldMatrix();
 
 	sprite->ExtractRenderProxy(proxy);
 

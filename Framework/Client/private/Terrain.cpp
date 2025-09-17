@@ -63,14 +63,11 @@ void Terrain::LateUpdate(_float dt)
 
 HRESULT Terrain::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
-	CBPerObject cb{};
-	cb.worldMatrix = m_pTransform->GetWorldMatrix();
-	cb.worldMatrixInverse = m_pTransform->GetWorldMatrixInverse();
-
 	RenderProxy proxy{};
 	proxy.buffer = m_pVIBuffer;
 	proxy.material = m_pMaterial;
-	proxy.cbPerObject = cb;
+	proxy.worldMatrix = m_pTransform->GetWorldMatrix();
+
 	proxy.group = RenderGroup::NonBlend;
 	proxy.frameIndex = 0;
 

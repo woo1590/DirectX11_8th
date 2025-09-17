@@ -180,9 +180,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\AiController.h" />
+    <ClInclude Include="..\public\Animator.h" />
+    <ClInclude Include="..\public\AnimatorComponent.h" />
     <ClInclude Include="..\public\AudioListener.h" />
     <ClInclude Include="..\public\AudioSource.h" />
     <ClInclude Include="..\public\Base.h" />
+    <ClInclude Include="..\public\Bone.h" />
     <ClInclude Include="..\public\CameraComponent.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\EngineCore.h" />
@@ -261,9 +264,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\AiController.cpp" />
+    <ClCompile Include="..\private\Animator.cpp" />
+    <ClCompile Include="..\private\AnimatorComponent.cpp" />
     <ClCompile Include="..\private\AudioListener.cpp" />
     <ClCompile Include="..\private\AudioSource.cpp" />
     <ClCompile Include="..\private\Base.cpp" />
+    <ClCompile Include="..\private\Bone.cpp" />
     <ClCompile Include="..\private\CameraComponent.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
@@ -286,6 +292,7 @@
     <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\private\GuizmoPanel.cpp" />
     <ClCompile Include="..\private\UIObject.cpp" />
+    <ClCompile Include="..\private\Utility_Function.cpp" />
     <ClCompile Include="..\private\VIBufferCube.cpp" />
     <ClCompile Include="..\private\VIBufferQuad.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />

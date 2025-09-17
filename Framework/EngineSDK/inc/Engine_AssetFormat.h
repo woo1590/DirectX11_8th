@@ -6,20 +6,26 @@ namespace Engine
 	{
 		_uint numMeshes;
 		_uint numMaterials;
+		_uint numBones;
 		_uint skinnedMesh;	//0 static , 1 skinned
-		_string dirPath{};
+		_float4x4 preTransformMatrix{};
 
 	}MODEL_FORMAT;
 
 	typedef struct tagMeshForamt
 	{
+		_char name[MAX_PATH];
 		_uint materialIndex;
 
 		_uint numVertices;
 		_uint vertexStride;
-		
+
 		_uint numIndices;
 		_uint indexStride;
+
+		_uint numBones;
+		_uint boneIndices[MAX_BONES];
+		_float4x4 offsetMatrices[MAX_BONES];
 
 	}MESH_FORMAT;
 
@@ -29,6 +35,10 @@ namespace Engine
 		_float3 normal;
 		_float2 texCoord;
 		_float3 tangent;
+
+		/*--only skinned mesh--*/
+		_uint4 blendIndex;
+		_float4 blendWeight;
 
 	}VTX_FORMAT;
 
@@ -52,6 +62,10 @@ namespace Engine
 
 	typedef struct tagBoneFormat
 	{
+		_char boneTag[MAX_PATH];
+		_int parentIndex;
+		_float4x4 transformationMatrix{};
+		_float4x4 combinedTransformationMatrix{};
 
 	}BONE_FORMAT;
 }

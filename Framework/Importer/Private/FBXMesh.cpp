@@ -1,60 +1,29 @@
 #include "ImporterPCH.h"
 #include "FBXMesh.h"
+#include "FBXLoaderComponent.h"
+#include "FBXBone.h"
 
 FBXMesh::FBXMesh()
 	:VIBuffer()
 {
 }
 
-FBXMesh* FBXMesh::Create(aiMesh* pMesh)
+FBXMesh* FBXMesh::Create(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* pLoader)
 {
 	FBXMesh* Instance = new FBXMesh();
 
-	if (FAILED(Instance->Initialize(pMesh)))
+	if (FAILED(Instance->Initialize(pMesh, eType, pLoader)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT FBXMesh::Initialize(aiMesh* pMesh)
+HRESULT FBXMesh::Initialize(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* pLoader)
 {
-	m_iNumVertexBuffers = 1;
-	m_iNumVertices = pMesh->mNumVertices;
-	m_iVertexStride = sizeof(VTXMESH);
-
-	m_iNumIndices = pMesh->mNumFaces * 3;
-	m_iIndexStride = 4;
-
-	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
-	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	m_iMaterialIndex = pMesh->mMaterialIndex;
+	m_strName = pMesh->mName.C_Str();
 
 	/*----Vertex Buffer----*/
-	D3D11_BUFFER_DESC vbDesc{};
-	vbDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
-	vbDesc.Usage = D3D11_USAGE_DEFAULT;
-	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbDesc.CPUAccessFlags = 0;
-	vbDesc.MiscFlags = 0;
-	vbDesc.StructureByteStride = m_iVertexStride;
-
-	m_Vertices.resize(m_iNumVertices);
-
-	for (_uint i = 0; i < m_iNumVertices; ++i)
-	{
-		memcpy_s(&m_Vertices[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
-		memcpy_s(&m_Vertices[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
-		memcpy_s(&m_Vertices[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
-		memcpy_s(&m_Vertices[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
-	}
-
-	D3D11_SUBRESOURCE_DATA vbInitData{};
-	vbInitData.pSysMem = m_Vertices.data();
-	vbInitData.SysMemPitch = 0;
-	vbInitData.SysMemSlicePitch = 0;
-
-	if (FAILED(m_pDevice->CreateBuffer(&vbDesc, &vbInitData, &m_pVB)))
+	if (FAILED(eType == ModelType::Static ? CreateStaticMesh(pMesh) : CreateSkinnedMesh(pMesh, pLoader)))
 		return E_FAIL;
 
 	/*----Index Buffer----*/	
@@ -90,22 +59,37 @@ HRESULT FBXMesh::Initialize(aiMesh* pMesh)
 	return S_OK;
 }
 
+void FBXMesh::ExtractBoneMatrices(RenderProxy& proxy, std::vector<FBXBone*>& bones)
+{
+	proxy.numBones = m_iNumBones;
+	for (_uint i = 0; i < m_iNumBones; ++i)
+		XMStoreFloat4x4(&m_BoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * bones[m_BoneIndices[i]]->GetCombinedTransformMatrix());
+
+	proxy.boneMatrices = m_BoneMatrices.data();
+}
+
 HRESULT FBXMesh::ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertices, std::vector<_uint>& indices)
 {
+	strncpy_s(meshFormat.name, MAX_PATH, m_strName.c_str(), sizeof(meshFormat.name) - 1);
 	meshFormat.materialIndex = m_iMaterialIndex;
 	meshFormat.numVertices = m_iNumVertices;
 	meshFormat.vertexStride = m_iVertexStride;
 	meshFormat.numIndices = m_iNumIndices;
 	meshFormat.indexStride = m_iIndexStride;
+	meshFormat.numBones = m_iNumBones;
+	memcpy_s(&meshFormat.boneIndices, sizeof(_uint) * MAX_BONES, m_BoneIndices.data(), sizeof(_uint) * m_iNumBones);
+	memcpy_s(&meshFormat.offsetMatrices, sizeof(_float4x4) * MAX_BONES, m_OffsetMatrices.data(), sizeof(_float4x4) * m_iNumBones);
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		VTX_FORMAT vertex{};
 
-		vertex.position = m_Vertices[i].position;
-		vertex.normal = m_Vertices[i].normal;
-		vertex.texCoord = m_Vertices[i].texCoord;
-		vertex.tangent = m_Vertices[i].tangent;
+		vertex.position = m_VertexFormats[i].position;
+		vertex.normal = m_VertexFormats[i].normal;
+		vertex.texCoord = m_VertexFormats[i].texCoord;
+		vertex.tangent = m_VertexFormats[i].tangent;
+		vertex.blendIndex = m_VertexFormats[i].blendIndex;
+		vertex.blendWeight = m_VertexFormats[i].blendWeight;
 
 		vertices.push_back(vertex);
 	}
@@ -119,4 +103,186 @@ HRESULT FBXMesh::ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMA
 void FBXMesh::Free()
 {
 	__super::Free();
+}
+
+HRESULT FBXMesh::CreateStaticMesh(aiMesh* pMesh)
+{
+	m_iNumVertexBuffers = 1;
+	m_iNumVertices = pMesh->mNumVertices;
+	m_iVertexStride = sizeof(VTXMESH);
+
+	m_iNumIndices = pMesh->mNumFaces * 3;
+	m_iIndexStride = 4;
+
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	m_iMaterialIndex = pMesh->mMaterialIndex;
+
+	/*----Vertex Buffer----*/
+	D3D11_BUFFER_DESC vbDesc{};
+	vbDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
+	vbDesc.Usage = D3D11_USAGE_DEFAULT;
+	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbDesc.CPUAccessFlags = 0;
+	vbDesc.MiscFlags = 0;
+	vbDesc.StructureByteStride = m_iVertexStride;
+
+	std::vector<VTXMESH> vertices(m_iNumVertices);
+	m_VertexFormats.resize(m_iNumVertices);
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
+		memcpy_s(&vertices[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
+		memcpy_s(&vertices[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
+		memcpy_s(&vertices[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
+		memcpy_s(&vertices[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
+
+		/*----Vertex Format----*/
+		memcpy_s(&m_VertexFormats[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
+		memcpy_s(&m_VertexFormats[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
+		memcpy_s(&m_VertexFormats[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
+		memcpy_s(&m_VertexFormats[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
+	}
+
+	D3D11_SUBRESOURCE_DATA vbInitData{};
+	vbInitData.pSysMem = vertices.data();
+	vbInitData.SysMemPitch = 0;
+	vbInitData.SysMemSlicePitch = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&vbDesc, &vbInitData, &m_pVB)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader)
+{
+	m_iNumVertexBuffers = 1;
+	m_iNumVertices = pMesh->mNumVertices;
+	m_iVertexStride = sizeof(VTXSKINNEDMESH);
+
+	m_iNumIndices = pMesh->mNumFaces * 3;
+	m_iIndexStride = 4;
+
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	m_iMaterialIndex = pMesh->mMaterialIndex;
+
+	/*----Vertex Buffer----*/
+	D3D11_BUFFER_DESC vbDesc{};
+	vbDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
+	vbDesc.Usage = D3D11_USAGE_DEFAULT;
+	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbDesc.CPUAccessFlags = 0;
+	vbDesc.MiscFlags = 0;
+	vbDesc.StructureByteStride = m_iVertexStride;
+
+	std::vector<VTXSKINNEDMESH> vertices(m_iNumVertices);
+	m_VertexFormats.resize(m_iNumVertices);
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
+		memcpy_s(&vertices[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
+		memcpy_s(&vertices[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
+		memcpy_s(&vertices[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
+		memcpy_s(&vertices[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
+
+		/*----Vertex Format----*/
+		memcpy_s(&m_VertexFormats[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
+		memcpy_s(&m_VertexFormats[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
+		memcpy_s(&m_VertexFormats[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
+		memcpy_s(&m_VertexFormats[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
+
+	}
+
+	m_iNumBones = pMesh->mNumBones;
+
+	for (_uint i = 0; i < m_iNumBones; ++i)				//영향을 주는 뼈의 갯수
+	{
+		aiBone* bone = pMesh->mBones[i];				//i번째 뼈
+		_int boneIndex = pLoader->GetBoneIndexByName(bone->mName.data);
+		if (boneIndex == -1)
+		{
+			MSG_BOX("Missing Bone");					//일치하는 뼈가 없음 -> 말도 안되는상황
+			return E_FAIL;
+		}
+		_float4x4 offsetMatrix{};
+		memcpy_s(&offsetMatrix, sizeof(_float4x4), &bone->mOffsetMatrix, sizeof(_float4x4));
+		XMStoreFloat4x4(&offsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&offsetMatrix)));
+
+		m_BoneIndices.push_back(boneIndex);
+		m_OffsetMatrices.push_back(offsetMatrix);
+
+		_uint numWeights = bone->mNumWeights;			//i번째 뼈가 영향을 주는 정점의 갯수
+
+		for (_uint j = 0; j < numWeights; ++j)
+		{
+			aiVertexWeight weight = bone->mWeights[j];	//i번째 뼈가 영향을 주는 j번째 정점에 대한 정보
+
+			_uint vertexIndex = weight.mVertexId;		//j번째 정점의 실제 인덱스
+			_float vertexWeight = weight.mWeight;		//j번째 정점에 대한 가중치
+			if (0.f == vertices[vertexIndex].blendWeight.x)
+			{
+				vertices[vertexIndex].blendIndex.x = i;
+				vertices[vertexIndex].blendWeight.x = vertexWeight;
+
+				m_VertexFormats[vertexIndex].blendIndex.x = i;
+				m_VertexFormats[vertexIndex].blendWeight.x = vertexWeight;
+			}
+			else if (0.f == vertices[vertexIndex].blendWeight.y)
+			{
+				vertices[vertexIndex].blendIndex.y = i;
+				vertices[vertexIndex].blendWeight.y = vertexWeight;
+
+				m_VertexFormats[vertexIndex].blendIndex.y = i;
+				m_VertexFormats[vertexIndex].blendWeight.y = vertexWeight;
+			}
+			else if (0.f == vertices[vertexIndex].blendWeight.z)
+			{
+				vertices[vertexIndex].blendIndex.z = i;
+				vertices[vertexIndex].blendWeight.z = vertexWeight;
+
+				m_VertexFormats[vertexIndex].blendIndex.z = i;
+				m_VertexFormats[vertexIndex].blendWeight.z = vertexWeight;
+			}
+			else if (0.f == vertices[vertexIndex].blendWeight.w)
+			{
+				vertices[vertexIndex].blendIndex.w = i;
+				vertices[vertexIndex].blendWeight.w = vertexWeight;
+
+				m_VertexFormats[vertexIndex].blendIndex.w = i;
+				m_VertexFormats[vertexIndex].blendWeight.w = vertexWeight;
+			}
+		}
+	}
+
+	if (!m_iNumBones)
+	{
+		m_iNumBones = 1;
+		_int boneIndex = pLoader->GetBoneIndexByName(pMesh->mName.data);
+		if (boneIndex == -1)
+		{
+			MSG_BOX("Missing Bone!");					//일치하는 뼈가 없음 -> 말도 안되는상황
+			return E_FAIL;
+		}
+		_float4x4 offsetMatrix{};
+		XMStoreFloat4x4(&offsetMatrix, XMMatrixIdentity());
+
+		m_BoneIndices.push_back(boneIndex);
+		m_OffsetMatrices.push_back(offsetMatrix);
+	}
+
+	D3D11_SUBRESOURCE_DATA vbInitData{};
+	vbInitData.pSysMem = vertices.data();
+	vbInitData.SysMemPitch = 0;
+	vbInitData.SysMemSlicePitch = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&vbDesc, &vbInitData, &m_pVB)))
+		return E_FAIL;
+
+	m_BoneMatrices.resize(m_iNumBones);
+
+	return S_OK;
 }

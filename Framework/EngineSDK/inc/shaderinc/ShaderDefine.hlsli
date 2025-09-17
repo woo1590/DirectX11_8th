@@ -24,5 +24,9 @@ cbuffer PerLightViewProj : register(b1)
 cbuffer PerObject : register(b2)
 {
     float4x4 g_WorldMatrix;
-    float4x4 g_WorldMatrixInverse;
 }
+
+cbuffer BoneMatrices : register(b3)
+{
+    float4x4 g_BoneMatrices[512];
+};

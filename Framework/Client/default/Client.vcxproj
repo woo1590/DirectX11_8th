@@ -239,6 +239,7 @@
   <ItemGroup>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxTex.hlsl">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </AdditionalIncludeDirectories>

@@ -124,7 +124,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../EngineSDK/lib/release/;%(AdditionalLibraryDirectories);../assimp/</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -176,7 +176,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../EngineSDK/lib/release/;%(AdditionalLibraryDirectories);../assimp/</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -192,6 +192,7 @@
     <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h" />
     <ClInclude Include="..\public\EditorCamera.h" />
     <ClInclude Include="..\public\EditorLight.h" />
+    <ClInclude Include="..\public\FBXBone.h" />
     <ClInclude Include="..\public\FBXLoaderComponent.h" />
     <ClInclude Include="..\public\FBXMaterial.h" />
     <ClInclude Include="..\public\FBXMesh.h" />
@@ -220,6 +221,7 @@
     </ClCompile>
     <ClCompile Include="..\private\EditorCamera.cpp" />
     <ClCompile Include="..\private\EditorLight.cpp" />
+    <ClCompile Include="..\private\FBXBone.cpp" />
     <ClCompile Include="..\private\FBXLoaderComponent.cpp" />
     <ClCompile Include="..\private\FBXMaterial.cpp" />
     <ClCompile Include="..\private\FBXMesh.cpp" />
@@ -243,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\shaderfiles\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\Bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\EngineSDK\inc\nfd\nfd_cocoa.m" />

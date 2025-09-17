@@ -9,7 +9,10 @@ struct RenderProxy
 {
 	VIBuffer* buffer = nullptr;
 	Material* material = nullptr;
-	CBPerObject cbPerObject{};
+
+	_float4x4 worldMatrix{};
+	_float4x4* boneMatrices = nullptr;
+	_uint numBones{};
 
 	RenderGroup group{};
 	_int frameIndex = 0;

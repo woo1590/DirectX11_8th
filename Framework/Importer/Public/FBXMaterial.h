@@ -19,12 +19,20 @@ public:
     HRESULT Initialize(Shader* pShader, const _string& shaderTag, aiMaterial* aiMat, const _string& modelFilePath);
 
     HRESULT ExportMaterialFormat(MTRL_FORMAT& mtrlFormat);
-
+    HRESULT ConvertToDDS(const _string& outFilePath);
     void Free()override;
-private:
-    std::unordered_map<_string, std::vector<_string>> m_TexNames;
 
+#ifdef USE_IMGUI
+    void RenderInspector();
+    void DrawTextureGrid(const _string& tag);
+#endif
+
+private:
+    HRESULT AddTexture(const _string& slotTag, const _string& filePath);
+
+    _string m_strModelFilePath{};
     _string m_strShaderTag{};
+    std::unordered_map<_string, std::vector<_string>> m_TexNames;
 };
 
 NS_END

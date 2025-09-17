@@ -5,6 +5,7 @@
 NS_BEGIN(Engine)
 
 class Model;
+class Animator;
 class TransformComponent;
 class ENGINE_DLL ModelComponent final:
     public Component
@@ -18,12 +19,13 @@ public:
     static ModelComponent* Create(Object* owner);
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
+    void Update(_float dt)override;
     
     HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
-
     HRESULT SetModel(_uint levelID, const _string& key);
     void SetOverride(Material* pMaterial);
     void ClearOverride();
+
     Component* Clone()override;
     void Free()override;
 
@@ -33,6 +35,7 @@ public:
 
 private:
     Model* m_pModel = nullptr;
+    Animator* m_pAnimator = nullptr;
     Material* m_pOverrideMtrl = nullptr;
 };
 

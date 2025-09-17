@@ -108,6 +108,11 @@ HRESULT MainApp::LoadStaticLevel()
     if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
         VTXMESH::elements, VTXMESH::numElement)))
         return E_FAIL;
+
+    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxSkinnedMesh.hlsl", "Shader_VtxSkinnedMesh",
+        VTXSKINNEDMESH::elements, VTXSKINNEDMESH::numElement)))
+        return E_FAIL;
+
     return S_OK;
 }
 

@@ -58,12 +58,22 @@ HRESULT Material::Initialize(MTRL_FORMAT mtrlFormat, const _string& modelFilePat
 
 	for (_uint i = 0; i < mtrlFormat.numNormalTexture; ++i)
 	{
+		fs::path filePath = dirPath / mtrlFormat.normalTextureName[i];
+		auto tex = Texture::Create(filePath.string());
+		if (!tex)
+			return E_FAIL;
 
+		m_TexParams["g_NormalTexture"].push_back(tex);
 	}
 
 	for (_uint i = 0; i < mtrlFormat.numSpecularTexture; ++i)
 	{
+		fs::path filePath = dirPath / mtrlFormat.specularTextureName[i];
+		auto tex = Texture::Create(filePath.string());
+		if (!tex)
+			return E_FAIL;
 
+		m_TexParams["g_SpecularTexture"].push_back(tex);
 	}
 
 	return S_OK;
@@ -76,6 +86,9 @@ HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex)
 	/*Bind SRV*/
 	for (const auto& pair : m_TexParams)
 	{
+		if (pair.second.empty())
+			continue;
+
 		if (frameIndex >= pair.second.size())
 			frameIndex = pair.second.size() - 1;
 

@@ -49,6 +49,18 @@ HRESULT Renderer::Initialize()
 	if (FAILED(m_pDevice->CreateBuffer(&cbPerObjectDesc, nullptr, &m_pCBPerObject)))
 		return E_FAIL;
 
+	/*----Constant Buffer For Bones----*/
+	D3D11_BUFFER_DESC cbBones{};
+	cbBones.ByteWidth = sizeof(_float4x4) * MAX_BONES;
+	cbBones.Usage = D3D11_USAGE_DYNAMIC;
+	cbBones.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbBones.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbBones.MiscFlags = 0;
+	cbBones.StructureByteStride = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&cbBones, nullptr, &m_pCBBones)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -93,7 +105,6 @@ HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 
 HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
 {
-	
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy,"NonBlend_Pass");
 
@@ -127,10 +138,20 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 {
 	{
 		D3D11_MAPPED_SUBRESOURCE perObjectData{};
-	
+		CBPerObject perObject{};
+		perObject.worldMatrix = proxy.worldMatrix;
+		 
 		m_pDeviceContext->Map(m_pCBPerObject, 0, D3D11_MAP_WRITE_DISCARD, 0, &perObjectData);
-		memcpy_s(perObjectData.pData, sizeof(CBPerObject), &proxy.cbPerObject, sizeof(CBPerObject));
+		memcpy_s(perObjectData.pData, sizeof(CBPerObject), &perObject, sizeof(CBPerObject));
 		m_pDeviceContext->Unmap(m_pCBPerObject, 0);
+
+		if (proxy.numBones)
+		{
+			D3D11_MAPPED_SUBRESOURCE bonesData{};
+			m_pDeviceContext->Map(m_pCBBones, 0, D3D11_MAP_WRITE_DISCARD, 0, &bonesData);
+			memcpy_s(bonesData.pData, sizeof(_float4x4) * MAX_BONES, proxy.boneMatrices, sizeof(_float4x4) * proxy.numBones);
+			m_pDeviceContext->Unmap(m_pCBBones, 0);
+		}
 	}
 
 	if (FAILED(proxy.buffer->BindBuffers()))
@@ -152,6 +173,10 @@ HRESULT Renderer::ConnectConstantBuffer(ID3DX11Effect* pEffect)
 	if (FAILED(perObject->SetConstantBuffer(m_pCBPerObject)))
 		return E_FAIL;
 
+	auto boneMatrices = pEffect->GetConstantBufferByIndex(3);
+	if (FAILED(boneMatrices->SetConstantBuffer(m_pCBBones)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -161,6 +186,7 @@ void Renderer::Free()
 
 	Safe_Release(m_pCBPerFrame);
 	Safe_Release(m_pCBPerObject);
+	Safe_Release(m_pCBBones);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
