@@ -58,7 +58,7 @@ HRESULT Renderer::Initialize()
 	cbBones.MiscFlags = 0;
 	cbBones.StructureByteStride = 0;
 
-	if (FAILED(m_pDevice->CreateBuffer(&cbBones, nullptr, &m_pCBBones)))
+	if (FAILED(m_pDevice->CreateBuffer(&cbBones, nullptr, &m_pCBBonePalatte)))
 		return E_FAIL;
 
 	return S_OK;
@@ -148,9 +148,9 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 		if (proxy.numBones)
 		{
 			D3D11_MAPPED_SUBRESOURCE bonesData{};
-			m_pDeviceContext->Map(m_pCBBones, 0, D3D11_MAP_WRITE_DISCARD, 0, &bonesData);
+			m_pDeviceContext->Map(m_pCBBonePalatte, 0, D3D11_MAP_WRITE_DISCARD, 0, &bonesData);
 			memcpy_s(bonesData.pData, sizeof(_float4x4) * MAX_BONES, proxy.boneMatrices, sizeof(_float4x4) * proxy.numBones);
-			m_pDeviceContext->Unmap(m_pCBBones, 0);
+			m_pDeviceContext->Unmap(m_pCBBonePalatte, 0);
 		}
 	}
 
@@ -174,7 +174,7 @@ HRESULT Renderer::ConnectConstantBuffer(ID3DX11Effect* pEffect)
 		return E_FAIL;
 
 	auto boneMatrices = pEffect->GetConstantBufferByIndex(3);
-	if (FAILED(boneMatrices->SetConstantBuffer(m_pCBBones)))
+	if (FAILED(boneMatrices->SetConstantBuffer(m_pCBBonePalatte)))
 		return E_FAIL;
 
 	return S_OK;
@@ -186,7 +186,7 @@ void Renderer::Free()
 
 	Safe_Release(m_pCBPerFrame);
 	Safe_Release(m_pCBPerObject);
-	Safe_Release(m_pCBBones);
+	Safe_Release(m_pCBBonePalatte);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);

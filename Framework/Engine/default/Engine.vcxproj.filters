@@ -211,6 +211,9 @@
     <Filter Include="05. Object Component\Rendering\Model Component\Animator">
       <UniqueIdentifier>{f8ae1d28-c7c6-4188-83b9-3c502381120a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\AnimationClip\Channel">
+      <UniqueIdentifier>{86dacba8-e622-45de-bfe9-312e00d96e69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -444,6 +447,15 @@
     <ClInclude Include="..\public\Animator.h">
       <Filter>05. Object Component\Rendering\Model Component\Animator</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AnimationClip.h">
+      <Filter>01. Engine Component\Resource Manager\AnimationClip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\imgui\IconsFontAwesome7.h">
+      <Filter>99. Utility\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Channel.h">
+      <Filter>01. Engine Component\Resource Manager\AnimationClip\Channel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -640,6 +652,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Animator.cpp">
       <Filter>05. Object Component\Rendering\Model Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AnimationClip.cpp">
+      <Filter>01. Engine Component\Resource Manager\AnimationClip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Channel.cpp">
+      <Filter>01. Engine Component\Resource Manager\AnimationClip\Channel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -58,6 +58,12 @@
     <Filter Include="03. Object Component\FBXLoader Coponent\FBXBone">
       <UniqueIdentifier>{ad495941-264f-4ee7-97d4-ddbd512fe571}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object Component\FBXLoader Coponent\FBXAnimationClip">
+      <UniqueIdentifier>{8e0c29b5-019c-4df3-999c-c808023e2bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\FBXLoader Coponent\FBXAnimationClip\FBXChannel">
+      <UniqueIdentifier>{89383b15-021c-4c8b-9142-962bd8c27b03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -114,6 +120,12 @@
     <ClInclude Include="..\public\FBXBone.h">
       <Filter>03. Object Component\FBXLoader Coponent\FBXBone</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FBXAnimationClip.h">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXAnimationClip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FBXChannel.h">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXAnimationClip\FBXChannel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Importer.ico">
@@ -167,6 +179,12 @@
     </ClCompile>
     <ClCompile Include="..\private\FBXBone.cpp">
       <Filter>03. Object Component\FBXLoader Coponent\FBXBone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FBXAnimationClip.cpp">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXAnimationClip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FBXChannel.cpp">
+      <Filter>03. Object Component\FBXLoader Coponent\FBXAnimationClip\FBXChannel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

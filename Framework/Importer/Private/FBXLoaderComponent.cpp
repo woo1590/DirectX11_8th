@@ -6,6 +6,8 @@
 #include "TransformComponent.h"
 #include "FBXMaterial.h"
 #include "FBXBone.h"
+#include "FBXAnimationClip.h"
+#include "FBXChannel.h"
 
 FBXLoaderComponent::FBXLoaderComponent(Object* owner)
 	:Component(owner)
@@ -44,6 +46,8 @@ void FBXLoaderComponent::Update(_float dt)
 {
 	__super::Update(dt);
 
+	PlayAnimation(dt);
+
 	for (const auto& bone : m_Bones)
 		bone->UpdateCombinedTransformMatrix(m_Bones);
 }
@@ -74,7 +78,7 @@ HRESULT FBXLoaderComponent::ImportModel(const _string& filePath)
 {
 	XMStoreFloat4x4(&m_PreTransformMatrix, XMMatrixIdentity());
 
-	_uint flag = aiProcessPreset_TargetRealtime_Fast;
+	_uint flag = aiProcessPreset_TargetRealtime_Fast | aiProcess_ConvertToLeftHanded;
 
 	if (m_eType == ModelType::Static)
 		flag |= aiProcess_PreTransformVertices;
@@ -91,18 +95,21 @@ HRESULT FBXLoaderComponent::ImportModel(const _string& filePath)
 
 	m_iNumMeshes = scene->mNumMeshes;
 
-	if (FAILED(GenerateBones(scene->mRootNode, -1)))
+	if (FAILED(CreateBones(scene->mRootNode, -1)))
 		return E_FAIL;
 	m_iNumBones = m_Bones.size();
 
-	if (FAILED(GenerateMaterials(scene, filePath)))
+	if (FAILED(CreateMaterials(scene, filePath)))
 		return E_FAIL;
 
-	if (FAILED(GenerateMeshes(scene)))
+	if (FAILED(CreateMeshes(scene)))
 		return E_FAIL;
 
-	if (FAILED(GenerateAnimation(scene)))
-		return E_FAIL;
+	if (m_eType == ModelType::Skinned)
+	{
+		if (FAILED(CreateAnimations(scene)))
+			return E_FAIL;
+	}
 
 	m_isLoaded = true;
 
@@ -153,6 +160,27 @@ HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 	return S_OK;
 }
 
+HRESULT FBXLoaderComponent::ExportAnimations(const _string& outFilePath)
+{
+	namespace fs = std::filesystem;
+
+	std::ofstream out(outFilePath.c_str(), std::ios::binary);
+	if (!out.is_open())
+	{
+		MSG_BOX("Failed to save");
+		return E_FAIL;
+	}
+
+	/*Num Animation 정보 먼저*/
+	out.write(reinterpret_cast<const char*>(&m_iNumAnimations), sizeof(_uint));
+
+	/*Animation clip -> channel -> keyframe 순으로 파일 작성*/
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+		m_AnimationClips[i]->WriteAnimationFormat(out);
+
+	return S_OK;
+}
+
 _int FBXLoaderComponent::GetBoneIndexByName(const _string& boneName)
 {
 	_int index = 0;
@@ -187,6 +215,10 @@ void FBXLoaderComponent::Free()
 		Safe_Release(bone);
 	m_Bones.clear();
 
+	for (auto& animationClip : m_AnimationClips)
+		Safe_Release(animationClip);
+	m_AnimationClips.clear();
+
 	Safe_Release(m_pDefaultMtrl);
 }
 
@@ -207,76 +239,104 @@ void FBXLoaderComponent::RenderInspector()
 		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
 		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
 	{
-		ImGui::SeparatorText("Import");
-		{
-			if (ImGui::Button("Change Import Model Type"))
-				m_eType = m_eType == ModelType::Static ? ModelType::Skinned : ModelType::Static;
-
-			ImGui::Text("Model Type : %s", m_eType == ModelType::Static ? "Static" : "Skinned");
-
-			if (ImGui::Button("Import.."))
-			{
-				nfdchar_t* outPath = nullptr;
-				nfdresult_t res = NFD_OpenDialog(nullptr, nullptr, &outPath);
-
-				if (res == NFD_OKAY)
-				{
-					openedFile = outPath;
-					NFDi_Free(outPath);
-				}
-			}
-
-			if (!openedFile.empty())
-			{
-				ImGui::Text("Opened: %s", openedFile.c_str());
-				if (!m_Meshes.empty())
-				{
-					for (auto& mesh : m_Meshes)
-						Safe_Release(mesh);
-					m_Meshes.clear();
-
-					for (auto& material : m_Materials)
-						Safe_Release(material);
-					m_Materials.clear();
-
-					for (auto& bone : m_Bones)
-						Safe_Release(bone);
-					m_Bones.clear();
-				}
-
-				ImportModel(openedFile);
-				openedFile = "";
-			}
-		}
+		ImportInspector(openedFile);
 
 		if (m_isLoaded)
 		{
+			ExportInspector(savedFileName);
+
 			ImGui::SeparatorText("Materials");
-			for (const auto& mtrl : m_Materials)
-				mtrl->RenderInspector();
-
-			if (ImGui::Button("Export.."))
-			{
-				nfdchar_t* outPath = nullptr;
-				nfdresult_t res = NFD_SaveDialog(nullptr, nullptr, &outPath);
-
-				if (res == NFD_OKAY)
-				{
-					savedFileName = outPath;
-					NFDi_Free(outPath);
-
-					ExportModel(savedFileName);
-				}
-			}
+			for (const auto& material : m_Materials)
+				material->RenderInspector();
+			ImGui::SeparatorText("Animation Clips");
+			for (const auto& clip : m_AnimationClips)
+				clip->RenderInspector();
 		}
 	}
 
 	ImGui::PopID();
 }
 
+void FBXLoaderComponent::ImportInspector(_string openedFile)
+{
+	ImGui::SeparatorText("Import");
+	{
+		if (ImGui::Button("Change Import Model Type"))
+		{
+			m_eType = m_eType == ModelType::Static ? ModelType::Skinned : ModelType::Static;
+			switch (m_eType)
+			{
+			case Engine::ModelType::Static:
+				m_strShaderTag = "Shader_VtxMesh";
+				break;
+			case Engine::ModelType::Skinned:
+				m_strShaderTag = "Shader_VtxSkinnedMesh";
+				break;
+			default:
+				break;
+			}
+		}
+
+		ImGui::Text("Model Type : %s", m_eType == ModelType::Static ? "Static" : "Skinned");
+
+		if (ImGui::Button("Import.."))
+		{
+			nfdchar_t* outPath = nullptr;
+			nfdresult_t res = NFD_OpenDialog(nullptr, nullptr, &outPath);
+
+			if (res == NFD_OKAY)
+			{
+				openedFile = outPath;
+				NFDi_Free(outPath);
+			}
+		}
+
+		if (!openedFile.empty())
+		{
+			ImGui::Text("Opened: %s", openedFile.c_str());
+			if (!m_Meshes.empty())
+				Clear();
+
+			ImportModel(openedFile);
+			openedFile = "";
+		}
+	}
+}
+
+void FBXLoaderComponent::ExportInspector(_string savedFileName)
+{
+	if (ImGui::Button("Export.."))
+	{
+		nfdchar_t* outPath = nullptr;
+		nfdresult_t res = NFD_SaveDialog(nullptr, nullptr, &outPath);
+
+		if (res == NFD_OKAY)
+		{
+			savedFileName = outPath;
+			NFDi_Free(outPath);
+
+			ExportModel(savedFileName);
+		}
+
+		if (m_eType == ModelType::Skinned)
+		{
+			outPath = nullptr;
+			res = NFD_SaveDialog(nullptr, nullptr, &outPath);
+
+			if (res == NFD_OKAY)
+			{
+				savedFileName = outPath;
+				NFDi_Free(outPath);
+
+				ExportAnimations(savedFileName);
+			}
+		}
+	}
+}
+
 #endif
 
-HRESULT FBXLoaderComponent::GenerateMeshes(const aiScene* pScene)
+HRESULT FBXLoaderComponent::CreateMeshes(const aiScene* pScene)
 {
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
@@ -294,16 +354,14 @@ HRESULT FBXLoaderComponent::GenerateMeshes(const aiScene* pScene)
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::GenerateMaterials(const aiScene* pScene, const _string& modelFilePath)
+HRESULT FBXLoaderComponent::CreateMaterials(const aiScene* pScene, const _string& modelFilePath)
 {
 	m_iNumMaterials = pScene->mNumMaterials;
 	auto shader = EngineCore::GetInstance()->GetShader(m_strShaderTag);
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
 	{
-		aiMaterial* aiMat = pScene->mMaterials[i];
-
-		auto material = FBXMaterial::Create(shader, m_strShaderTag, aiMat, modelFilePath);
+		auto material = FBXMaterial::Create(shader, m_strShaderTag, pScene->mMaterials[i], modelFilePath);
 		if (!material)
 			return E_FAIL;
 
@@ -313,33 +371,35 @@ HRESULT FBXLoaderComponent::GenerateMaterials(const aiScene* pScene, const _stri
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::GenerateBones(const aiNode* pNode, _int parentIndex)
+HRESULT FBXLoaderComponent::CreateBones(const aiNode* pNode, _int parentIndex)
 {
 	auto bone = FBXBone::Create(pNode, parentIndex);
 	if (!bone)
 		return E_FAIL;
 
 	m_Bones.push_back(bone);
-	
+
 	_int index = m_Bones.size() - 1;
 	for (_uint i = 0; i < pNode->mNumChildren; ++i)
 	{
-		if (FAILED(GenerateBones(pNode->mChildren[i], index)))
+		if (FAILED(CreateBones(pNode->mChildren[i], index)))
 			return E_FAIL;
 	}
 
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::GenerateAnimation(const aiScene* pScene)
+HRESULT FBXLoaderComponent::CreateAnimations(const aiScene* pScene)
 {
-	_uint numAnim = pScene->mNumAnimations;
-	for (_uint i = 0; i < numAnim; ++i)
+	m_iNumAnimations = pScene->mNumAnimations;
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
 	{
-		aiAnimation* ani = pScene->mAnimations[i];
-		ani->mName;
-		ani->mMeshChannels;
-		int a = 1;
+		auto animationClip = FBXAnimationClip::Create(pScene->mAnimations[i], this);
+		if (!animationClip)
+			return E_FAIL;
+
+		m_AnimationClips.push_back(animationClip);
 	}
 
 	return S_OK;
@@ -415,4 +475,36 @@ HRESULT FBXLoaderComponent::WriteBoneFormat(std::ofstream& out)
 	out.write(reinterpret_cast<const char*>(boneFormats.data()), sizeof(BONE_FORMAT) * m_iNumBones);
 
 	return S_OK;
+}
+
+void FBXLoaderComponent::PlayAnimation(_float dt)
+{
+	if (m_iCurrAnimationIndex >= m_iNumAnimations)
+		return;
+
+	m_AnimationClips[m_iCurrAnimationIndex]->Play(dt);
+}
+
+void FBXLoaderComponent::Clear()
+{
+	for (auto& mesh : m_Meshes)
+		Safe_Release(mesh);
+	m_Meshes.clear();
+
+	for (auto& material : m_Materials)
+		Safe_Release(material);
+	m_Materials.clear();
+
+	for (auto& bone : m_Bones)
+		Safe_Release(bone);
+	m_Bones.clear();
+
+	for (auto& animationClip : m_AnimationClips)
+		Safe_Release(animationClip);
+	m_AnimationClips.clear();
+
+	m_iNumMeshes = 0;
+	m_iNumMaterials = 0;
+	m_iNumBones = 0;
+	m_iNumAnimations = 0;
 }

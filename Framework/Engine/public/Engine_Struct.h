@@ -122,8 +122,8 @@ namespace Engine
 		_float2 texCoord;
 		_float3 tangent;
 
-		_uint4 blendIndex;
-		_float4 blendWeight;
+		_uint4 blendIndex{};
+		_float4 blendWeight{};
 
 		static constexpr _uint numElement = 6;
 		static constexpr D3D11_INPUT_ELEMENT_DESC elements[numElement] =
@@ -136,5 +136,21 @@ namespace Engine
 			{"BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 	}VTXSKINNEDMESH;
+
+	typedef struct tagKeyFrame
+	{
+		_float3 scale{};
+		_float4 rotation{};
+		_float3 position{};
+		_float trackPosition{};
+
+	}KEYFRAME;
+
+	typedef struct tagAnimationSet
+	{
+		_uint numAnimations;
+		std::vector<class AnimationClip*> aniamtionClips;
+
+	}ANIMATION_SET;
 }
 #endif // Engine_Struct_h__

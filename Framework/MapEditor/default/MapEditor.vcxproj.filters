@@ -7,12 +7,6 @@
     <Filter Include="01. Level">
       <UniqueIdentifier>{e56f6fec-71e0-4a3e-ba88-ec1476684ab3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object">
-      <UniqueIdentifier>{5d5c350e-d806-4c3a-bf44-ee34e5766126}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Object Component">
-      <UniqueIdentifier>{6a962511-1ace-4899-a68e-46922c2e9e05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Etc">
       <UniqueIdentifier>{fb47e7b4-2d50-43d7-9f48-87ea518f86c4}</UniqueIdentifier>
     </Filter>
@@ -27,6 +21,18 @@
     </Filter>
     <Filter Include="98. Etc\Defines">
       <UniqueIdentifier>{6e2b4b53-20c7-4a56-9383-b6dea40dbf5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level Component">
+      <UniqueIdentifier>{cb1451eb-b470-4ed4-912d-565e65b01a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object">
+      <UniqueIdentifier>{5d5c350e-d806-4c3a-bf44-ee34e5766126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Object Component">
+      <UniqueIdentifier>{6a962511-1ace-4899-a68e-46922c2e9e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level Component\MapEditorPanel">
+      <UniqueIdentifier>{ebaebb85-2a72-453a-a956-09e506eeef21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +57,9 @@
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MapEditorPanel.h">
+      <Filter>02. Level Component\MapEditorPanel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -61,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapEditorPanel.cpp">
+      <Filter>02. Level Component\MapEditorPanel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

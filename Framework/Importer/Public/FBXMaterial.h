@@ -20,6 +20,7 @@ public:
 
     HRESULT ExportMaterialFormat(MTRL_FORMAT& mtrlFormat);
     HRESULT ConvertToDDS(const _string& outFilePath);
+    _string GetName()const { return m_strName; }
     void Free()override;
 
 #ifdef USE_IMGUI
@@ -30,6 +31,7 @@ public:
 private:
     HRESULT AddTexture(const _string& slotTag, const _string& filePath);
 
+    _string m_strName;
     _string m_strModelFilePath{};
     _string m_strShaderTag{};
     std::unordered_map<_string, std::vector<_string>> m_TexNames;

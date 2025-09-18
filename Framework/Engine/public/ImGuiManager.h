@@ -6,6 +6,7 @@
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_win32.h"
 #include "imgui/backends/imgui_impl_dx11.h"
+#include "imgui/IconsFontAwesome7.h"
 #include "guizmo/ImGuizmo.h"
 #include "GUIState.h"
 
@@ -27,11 +28,13 @@ public:
     void Render();
     void EndFrame();
 
+    void AddPanel(IPanel* panel);
     _bool WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     void Free()override;
 
 private:
-    void SetupIO();
+    void SetUpIO();
+    void SetUpStyle();
 
     std::vector<IPanel*> m_Panels;
     GUIState m_GuiState{};

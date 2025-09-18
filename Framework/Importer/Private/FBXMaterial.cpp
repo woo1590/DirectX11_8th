@@ -23,6 +23,7 @@ HRESULT FBXMaterial::Initialize(Shader* pShader, const _string& shaderTag, aiMat
 {
 	namespace fs = std::filesystem;
 
+	m_strName = aiMat->GetName().data;
 	m_strModelFilePath = modelFilePath;
 	m_strShaderTag = shaderTag;
 
@@ -155,13 +156,17 @@ void FBXMaterial::Free()
 void FBXMaterial::RenderInspector()
 {
 	ImGui::PushID(this);
-
-	ImGui::SeparatorText("Diffuse");
-	DrawTextureGrid("g_DiffuseTexture");
-	ImGui::SeparatorText("Normal");
-	DrawTextureGrid("g_NormalTexture");
-	ImGui::SeparatorText("Specular");
-	DrawTextureGrid("g_SpecularTexture");
+	if (ImGui::CollapsingHeader(m_strName.c_str(),
+		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
+		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
+	{
+		ImGui::SeparatorText("Diffuse");
+		DrawTextureGrid("g_DiffuseTexture");
+		ImGui::SeparatorText("Normal");
+		DrawTextureGrid("g_NormalTexture");
+		ImGui::SeparatorText("Specular");
+		DrawTextureGrid("g_SpecularTexture");
+	}
 
 	ImGui::PopID();
 }

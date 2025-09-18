@@ -34,7 +34,7 @@ private:
     ID3D11RenderTargetView* m_BackBufferRTV = nullptr;    //¹é¹öÆÛ rtv
     ID3D11DepthStencilView* m_pDSV = nullptr;              //depth - stencil 
 
-    _float4 m_pClearColor{ 0.f,0.f,1.f,1.f };
+    _float4 m_pClearColor{ 34 / 255.f, 38 / 255.f, 43 / 255.f, 1.0f};
 };
 
 NS_END

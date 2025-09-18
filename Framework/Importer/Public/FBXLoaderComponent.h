@@ -11,6 +11,7 @@ NS_BEGIN(Importer)
 class FBXMesh;
 class FBXMaterial;
 class FBXBone;
+class FBXAnimationClip;
 class FBXLoaderComponent :
     public Component
 {
@@ -29,7 +30,7 @@ public:
     
     HRESULT ImportModel(const _string& filePath);
     HRESULT ExportModel(const _string& outFilePath);
-    HRESULT ExportAnimationClip(const _string& outFilePath) { return S_OK; }//애니메이션은 따로 추출
+    HRESULT ExportAnimations(const _string& outFilePath);
 
     _int GetBoneIndexByName(const _string& boneName);
 
@@ -38,17 +39,22 @@ public:
 
 #ifdef USE_IMGUI
     void RenderInspector()override;
+    void ImportInspector(_string openedFile);
+    void ExportInspector(_string savedFileName);
 #endif
 
 private:
-    HRESULT GenerateMeshes(const aiScene* pScene);
-    HRESULT GenerateMaterials(const aiScene* pScene, const _string& modelFilePath);
-    HRESULT GenerateBones(const aiNode* pNode, _int parentIndex);
-    HRESULT GenerateAnimation(const aiScene* pScene);
+    HRESULT CreateMeshes(const aiScene* pScene);
+    HRESULT CreateMaterials(const aiScene* pScene, const _string& modelFilePath);
+    HRESULT CreateBones(const aiNode* pNode, _int parentIndex);
+    HRESULT CreateAnimations(const aiScene* pScene);
 
     HRESULT WriteMeshFormat(std::ofstream& out);
     HRESULT WriteMaterialFormat(std::ofstream& out);
     HRESULT WriteBoneFormat(std::ofstream& out);
+
+    void PlayAnimation(_float dt);
+    void Clear();
 
     ModelType m_eType = ModelType::Skinned;
 
@@ -59,6 +65,11 @@ private:
     std::vector<FBXMaterial*> m_Materials;
     std::vector<FBXBone*> m_Bones;
     _float4x4 m_PreTransformMatrix{};
+
+    /*For Animation*/
+    _uint m_iNumAnimations{};
+    std::vector<FBXAnimationClip*> m_AnimationClips;
+    _uint m_iCurrAnimationIndex{};
 
     /*--Only Importer--*/
     _bool m_isLoaded = false;

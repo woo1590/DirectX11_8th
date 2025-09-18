@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Model.h"
+#include "AnimationClip.h"
 
 ResourceManager::ResourceManager()
 {
@@ -28,6 +29,7 @@ HRESULT ResourceManager::Initialize(_uint numLevel)
 	m_Materials.resize(numLevel);
 	m_Textures.resize(numLevel);
 	m_Models.resize(numLevel);
+	m_AnimationSets.resize(numLevel);
 
 	return S_OK;
 }
@@ -152,6 +154,39 @@ HRESULT ResourceManager::LoadModelFromFile(_uint levelID, const _string& filePat
 	return S_OK;
 }
 
+HRESULT ResourceManager::LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return E_FAIL;
+
+	std::ifstream file(filePath,std::ifstream::binary);
+	if (!file.is_open())
+	{
+		MSG_BOX("Failed to load : AnimationSet");
+		return E_FAIL;
+	}
+
+	ANIMATION_SET animationSet{};
+	file.read(reinterpret_cast<char*>(&animationSet.numAnimations), sizeof(_uint));
+
+	animationSet.aniamtionClips.resize(animationSet.numAnimations);
+	for (_uint i = 0; i < animationSet.numAnimations; ++i)
+	{
+		auto animationClip = AnimationClip::Create(file);
+		if (!animationClip)
+		{
+			MSG_BOX("Failed to create : Animation Clip");
+			return E_FAIL;
+		}
+
+		animationSet.aniamtionClips[i] = animationClip;
+	}
+
+	m_AnimationSets[levelID].emplace(key, animationSet);
+
+	return S_OK;
+}
+
 VIBuffer* ResourceManager::GetBuffer(_uint levelID, const _string& key)
 {
 	if (levelID >= m_iNumLevel)
@@ -268,4 +303,14 @@ void ResourceManager::Free()
 		model.clear();
 	}
 	m_Models.clear();
+
+	for (auto& animation : m_AnimationSets)
+	{
+		for (auto& pair : animation)
+			for (auto& clip : pair.second.aniamtionClips)
+				Safe_Release(clip);
+		animation.clear();
+	}
+	m_AnimationSets.clear();
+		
 }

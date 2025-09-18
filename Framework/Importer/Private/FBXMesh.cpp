@@ -205,7 +205,7 @@ HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader)
 		_int boneIndex = pLoader->GetBoneIndexByName(bone->mName.data);
 		if (boneIndex == -1)
 		{
-			MSG_BOX("Missing Bone");					//일치하는 뼈가 없음 -> 말도 안되는상황
+			MSG_BOX("Missing Bone");					//일치하는 뼈가 없음, 이 모델 못씀
 			return E_FAIL;
 		}
 		_float4x4 offsetMatrix{};

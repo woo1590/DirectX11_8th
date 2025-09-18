@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\MapEditorPanel.h" />
     <ClInclude Include="..\public\MapEditor_Defines.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MapEditor.h" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\MapEditorPanel.cpp" />
     <ClCompile Include="MapEditor.cpp" />
     <ClCompile Include="MapEditorPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

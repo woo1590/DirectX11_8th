@@ -180,6 +180,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\AiController.h" />
+    <ClInclude Include="..\public\AnimationClip.h" />
     <ClInclude Include="..\public\Animator.h" />
     <ClInclude Include="..\public\AnimatorComponent.h" />
     <ClInclude Include="..\public\AudioListener.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\public\Bone.h" />
     <ClInclude Include="..\public\CameraComponent.h" />
+    <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\EngineCore.h" />
     <ClInclude Include="..\public\Engine_AssetFormat.h" />
@@ -208,6 +210,7 @@
     <ClInclude Include="..\public\ImGuiManager.h" />
     <ClInclude Include="..\public\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="..\public\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="..\public\imgui\IconsFontAwesome7.h" />
     <ClInclude Include="..\public\imgui\imconfig.h" />
     <ClInclude Include="..\public\imgui\imgui.h" />
     <ClInclude Include="..\public\imgui\imgui_internal.h" />
@@ -264,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\AiController.cpp" />
+    <ClCompile Include="..\private\AnimationClip.cpp" />
     <ClCompile Include="..\private\Animator.cpp" />
     <ClCompile Include="..\private\AnimatorComponent.cpp" />
     <ClCompile Include="..\private\AudioListener.cpp" />
@@ -271,6 +275,7 @@
     <ClCompile Include="..\private\Base.cpp" />
     <ClCompile Include="..\private\Bone.cpp" />
     <ClCompile Include="..\private\CameraComponent.cpp" />
+    <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />

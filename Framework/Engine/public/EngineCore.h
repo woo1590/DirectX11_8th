@@ -86,6 +86,7 @@ public:
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key);
 
     VIBuffer* GetBuffer(_uint levelID, const _string& key);
     Shader* GetShader(const _string& key);

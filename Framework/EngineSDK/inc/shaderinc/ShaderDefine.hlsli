@@ -28,5 +28,5 @@ cbuffer PerObject : register(b2)
 
 cbuffer BoneMatrices : register(b3)
 {
-    float4x4 g_BoneMatrices[512];
+    float4x4 g_BonePalette[512];
 };

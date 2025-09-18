@@ -259,6 +259,10 @@ HRESULT EngineCore::LoadModelFromFile(_uint levelID, const _string& filePath, co
 {
 	return m_pResourceManager->LoadModelFromFile(levelID, filePath, key);
 }
+HRESULT EngineCore::LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	return m_pResourceManager->LoadAnimationSetFromFile(levelID, filePath, key);
+}
 VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetBuffer(levelID, key);

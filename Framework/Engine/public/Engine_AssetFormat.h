@@ -68,4 +68,18 @@ namespace Engine
 		_float4x4 combinedTransformationMatrix{};
 
 	}BONE_FORMAT;
+
+	typedef struct tagAnimationClipFormat
+	{
+		_char animationTag[MAX_PATH];
+		_uint numChannels{};
+
+	}ANIMATIONCLIP_FORMAT;
+
+	typedef struct tagChannelFormat
+	{
+		_uint boneIndex{};
+		_uint numKeyFrames{};
+
+	}CHANNEL_FORMAT;
 }

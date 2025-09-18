@@ -129,6 +129,10 @@ HRESULT Loader::LoadingForGamePlay()
 	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/test/test.model", "Model_Test")))
 		return E_FAIL;
 
+	/*Load Animation Set*/
+	if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/test.animationset", "AniamtionSet_Test")))
+		return E_FAIL;
+
 	/*Load Material*/
 	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/materials/terrain.json", "Mtrl_Terrain")))
 		return E_FAIL;
