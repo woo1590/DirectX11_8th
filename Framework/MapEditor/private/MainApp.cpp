@@ -1,6 +1,7 @@
 #include "MapEditorPCH.h"
 #include "MainApp.h"
 #include "EngineCore.h"
+#include "EditorLevel.h"
 
 MainApp::MainApp()
 {
@@ -40,7 +41,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     m_pEngineCore->AddTimer("Timer_Default");
     m_pEngineCore->AddTimer("Timer_144fps");
 
-   // m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Editor), ImportLevel::Create());
+   m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Editor), EditorLevel::Create());
 
     isRunning = true;
 

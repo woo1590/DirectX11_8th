@@ -20,6 +20,8 @@ public:
 private:
     _string m_strName{};
     _uint m_iNumChannels{};
+    _float m_fDuration{};
+    _float m_fTickPerSecond{};
     std::vector<Channel*> m_Channels;
 
 };

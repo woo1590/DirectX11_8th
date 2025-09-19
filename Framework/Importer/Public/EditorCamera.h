@@ -24,6 +24,7 @@ public:
     void Free()override;
 
 private:
-    _bool m_ActiveMouse = true;
+    _bool m_ActiveKeyboard = true;
+
 };
 NS_END

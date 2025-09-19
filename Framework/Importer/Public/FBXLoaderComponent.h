@@ -53,6 +53,7 @@ private:
     HRESULT WriteMaterialFormat(std::ofstream& out);
     HRESULT WriteBoneFormat(std::ofstream& out);
 
+    void FindPlayingAnimation();
     void PlayAnimation(_float dt);
     void Clear();
 
@@ -69,7 +70,7 @@ private:
     /*For Animation*/
     _uint m_iNumAnimations{};
     std::vector<FBXAnimationClip*> m_AnimationClips;
-    _uint m_iCurrAnimationIndex{};
+    _int m_iCurrAnimationIndex{};
 
     /*--Only Importer--*/
     _bool m_isLoaded = false;

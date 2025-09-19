@@ -28,7 +28,7 @@ HRESULT FBXBone::Initialize(const aiNode* pNode, _int parentIndex)
 	return S_OK;
 }
 
-void FBXBone::UpdateCombinedTransformMatrix(std::vector<FBXBone*>& modelBones)
+void FBXBone::UpdateCombiendTransformation(std::vector<FBXBone*>& modelBones)
 {
 	if (m_iParentIndex == -1)
 		m_CombinedTransformationMatrix = m_TransformationMatrix;
@@ -46,6 +46,11 @@ HRESULT FBXBone::ExportBoneFormat(BONE_FORMAT& boneFormat)
 	boneFormat.combinedTransformationMatrix = m_CombinedTransformationMatrix;
 
 	return S_OK;
+}
+
+void FBXBone::SetTransformationMatrix(_float4x4 transformationMatrix)
+{
+	m_TransformationMatrix = transformationMatrix;
 }
 
 void FBXBone::Free()

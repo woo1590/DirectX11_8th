@@ -34,6 +34,12 @@
     <Filter Include="02. Level Component\MapEditorPanel">
       <UniqueIdentifier>{ebaebb85-2a72-453a-a956-09e506eeef21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Level\EditorLevel">
+      <UniqueIdentifier>{0678268d-26a6-4d5d-8c60-71589910ea6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\ShaderFiles">
+      <UniqueIdentifier>{e3b87e0b-d638-4e68-8841-fd1ea0bb3b0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -60,6 +66,9 @@
     <ClInclude Include="..\public\MapEditorPanel.h">
       <Filter>02. Level Component\MapEditorPanel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\EditorLevel.h">
+      <Filter>01. Level\EditorLevel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -74,6 +83,9 @@
     <ClCompile Include="..\private\MapEditorPanel.cpp">
       <Filter>02. Level Component\MapEditorPanel</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\EditorLevel.cpp">
+      <Filter>01. Level\EditorLevel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapEditor.ico">
@@ -87,5 +99,13 @@
     <ResourceCompile Include="MapEditor.rc">
       <Filter>98. Etc\Header</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

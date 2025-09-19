@@ -208,9 +208,6 @@
     <Filter Include="01. Engine Component\Resource Manager\AnimationClip">
       <UniqueIdentifier>{031a3100-97a0-4cef-92bd-4b6df845a4a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Object Component\Rendering\Model Component\Animator">
-      <UniqueIdentifier>{f8ae1d28-c7c6-4188-83b9-3c502381120a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\Resource Manager\AnimationClip\Channel">
       <UniqueIdentifier>{86dacba8-e622-45de-bfe9-312e00d96e69}</UniqueIdentifier>
     </Filter>
@@ -444,9 +441,6 @@
     <ClInclude Include="..\public\AnimatorComponent.h">
       <Filter>05. Object Component\Animator Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Animator.h">
-      <Filter>05. Object Component\Rendering\Model Component\Animator</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AnimationClip.h">
       <Filter>01. Engine Component\Resource Manager\AnimationClip</Filter>
     </ClInclude>
@@ -650,9 +644,6 @@
     <ClCompile Include="..\private\Utility_Function.cpp">
       <Filter>99. Utility\utility function</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Animator.cpp">
-      <Filter>05. Object Component\Rendering\Model Component\Animator</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AnimationClip.cpp">
       <Filter>01. Engine Component\Resource Manager\AnimationClip</Filter>
     </ClCompile>
@@ -661,9 +652,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\public\shaderinc\ConstantBuffer.hlsli">
-      <Filter>98. Etc\ShaderFiles</Filter>
-    </None>
     <None Include="..\public\shaderinc\ShaderDefine.hlsli">
       <Filter>98. Etc\ShaderFiles</Filter>
     </None>

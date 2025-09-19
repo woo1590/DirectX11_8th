@@ -31,6 +31,7 @@ class Object;
 class Layer;
 class Model;
 class LightComponent;
+class IPanel;
 class ENGINE_DLL EngineCore final :
     public Base
 {
@@ -48,6 +49,7 @@ public:
 
 #pragma region ImGui
     _bool WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    void AddPanel(IPanel* panel);
 #pragma endregion
 
 #endif
@@ -92,6 +94,7 @@ public:
     Shader* GetShader(const _string& key);
     Material* GetMaterial(_uint levelID, const _string& key);
     Model* GetModel(_uint levelID, const _string& key);
+    ANIMATION_SET GetAnimation(_uint levelID, const _string& key);
 #pragma endregion
 
 #pragma region Prototype

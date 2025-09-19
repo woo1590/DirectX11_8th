@@ -249,11 +249,13 @@ HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader)
 			}
 			else if (0.f == vertices[vertexIndex].blendWeight.w)
 			{
+				_float4 weight = vertices[i].blendWeight;
+
 				vertices[vertexIndex].blendIndex.w = i;
-				vertices[vertexIndex].blendWeight.w = vertexWeight;
+				vertices[vertexIndex].blendWeight.w = 1.f - (weight.x + weight.y + weight.z);
 
 				m_VertexFormats[vertexIndex].blendIndex.w = i;
-				m_VertexFormats[vertexIndex].blendWeight.w = vertexWeight;
+				m_VertexFormats[vertexIndex].blendWeight.w = 1.f - (weight.x + weight.y + weight.z);
 			}
 		}
 	}

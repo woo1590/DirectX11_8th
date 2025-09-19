@@ -236,6 +236,19 @@ Model* ResourceManager::GetModel(_uint levelID, const _string& key)
 	return iter->second;
 }
 
+ANIMATION_SET ResourceManager::GetAnimation(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return ANIMATION_SET{};
+
+	auto iter = m_AnimationSets[levelID].find(key);
+
+	if (iter == m_AnimationSets[levelID].end())
+		return ANIMATION_SET{};
+
+	return iter->second;
+}
+
 Texture* ResourceManager::GetTexture(_uint levelID, const _string& key)
 {
 	if (levelID >= m_iNumLevel)

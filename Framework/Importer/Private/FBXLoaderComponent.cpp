@@ -46,10 +46,11 @@ void FBXLoaderComponent::Update(_float dt)
 {
 	__super::Update(dt);
 
+	FindPlayingAnimation();
 	PlayAnimation(dt);
 
 	for (const auto& bone : m_Bones)
-		bone->UpdateCombinedTransformMatrix(m_Bones);
+		bone->UpdateCombiendTransformation(m_Bones);
 }
 
 HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, std::vector<RenderProxy>& proxies)
@@ -76,7 +77,9 @@ HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, 
 
 HRESULT FBXLoaderComponent::ImportModel(const _string& filePath)
 {
+	
 	XMStoreFloat4x4(&m_PreTransformMatrix, XMMatrixIdentity());
+	m_iCurrAnimationIndex = -1;
 
 	_uint flag = aiProcessPreset_TargetRealtime_Fast | aiProcess_ConvertToLeftHanded;
 
@@ -246,11 +249,12 @@ void FBXLoaderComponent::RenderInspector()
 			ExportInspector(savedFileName);
 
 			ImGui::SeparatorText("Materials");
-			for (const auto& material : m_Materials)
-				material->RenderInspector();
+			for (_uint i = 0; i < m_iNumMaterials; ++i)
+				m_Materials[i]->RenderInspector(i);
+			
 			ImGui::SeparatorText("Animation Clips");
-			for (const auto& clip : m_AnimationClips)
-				clip->RenderInspector();
+			for (_uint i=0; i<m_iNumAnimations; ++i)
+				m_AnimationClips[i]->RenderInspector(i);
 		}
 	}
 
@@ -477,12 +481,26 @@ HRESULT FBXLoaderComponent::WriteBoneFormat(std::ofstream& out)
 	return S_OK;
 }
 
+void FBXLoaderComponent::FindPlayingAnimation()
+{
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		if (m_AnimationClips[i]->IsPlaying())
+		{
+			if (m_iCurrAnimationIndex != -1 && m_iCurrAnimationIndex!= i) //현재 재생중인 애니메이션이 있음
+				m_AnimationClips[m_iCurrAnimationIndex]->Stop();
+
+			m_iCurrAnimationIndex = i;
+		}
+	}
+}
+
 void FBXLoaderComponent::PlayAnimation(_float dt)
 {
-	if (m_iCurrAnimationIndex >= m_iNumAnimations)
+	if (m_iCurrAnimationIndex >= m_iNumAnimations || m_iCurrAnimationIndex < 0)
 		return;
 
-	m_AnimationClips[m_iCurrAnimationIndex]->Play(dt);
+	m_AnimationClips[m_iCurrAnimationIndex]->Play(dt, m_Bones);
 }
 
 void FBXLoaderComponent::Clear()

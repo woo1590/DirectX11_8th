@@ -23,6 +23,8 @@ HRESULT AnimationClip::Initialize(std::ifstream& file)
 	file.read(reinterpret_cast<char*>(&animationClipFormat), sizeof(ANIMATIONCLIP_FORMAT));
 	m_strName = animationClipFormat.animationTag;
 	m_iNumChannels = animationClipFormat.numChannels;
+	m_fDuration = animationClipFormat.duration;
+	m_fTickPerSecond = animationClipFormat.tickPerSecond;
 
 	m_Channels.resize(m_iNumChannels);
 	for (_uint i = 0; i < m_iNumChannels; ++i)

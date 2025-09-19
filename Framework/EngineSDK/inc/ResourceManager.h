@@ -32,6 +32,7 @@ public:
     Shader*     GetShader(const _string& key);
     Material*   GetMaterial(_uint levelID, const _string& key);
     Model*      GetModel(_uint levelID, const _string& key);
+    ANIMATION_SET GetAnimation(_uint levelID, const _string& key);
 
     void Clear(_uint levelID);
 

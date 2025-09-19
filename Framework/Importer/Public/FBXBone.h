@@ -13,10 +13,11 @@ private:
 public:
     static FBXBone* Create(const aiNode* pNode, _int parentIndex);
     HRESULT Initialize(const aiNode* pNode, _int parentIndex);
-    void UpdateCombinedTransformMatrix(std::vector<FBXBone*>& modelBones);
+    void UpdateCombiendTransformation(std::vector<FBXBone*>& modelBones);
 
     HRESULT ExportBoneFormat(BONE_FORMAT& boneFormat);
     _string GetBoneTag()const { return m_strBoneTag; }
+    void SetTransformationMatrix(_float4x4 transformationMatrix);
     _matrix GetCombinedTransformMatrix()const { return XMLoadFloat4x4(&m_CombinedTransformationMatrix); }
 
     void Free()override;

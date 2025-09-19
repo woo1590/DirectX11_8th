@@ -56,6 +56,10 @@ HRESULT EditorCamera::Initialize(InitDESC* arg)
 void EditorCamera::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
+
+	ImGuiIO& io = ImGui::GetIO();
+	m_ActiveKeyboard = io.WantCaptureKeyboard || io.WantTextInput ? false : true;
+
 	auto engine = EngineCore::GetInstance();
 
 	auto cam = GetComponent<CameraComponent>();
@@ -67,7 +71,7 @@ void EditorCamera::PriorityUpdate(_float dt)
 	_float3 rotation = transform->GetRotation();
 	_float2 mouseDelta = engine->GetMouseDelta();
 
-	if (m_ActiveMouse)
+	if (engine->IsMouseDown(MouseButton::RButton))
 	{
 		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
 		_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
@@ -78,26 +82,26 @@ void EditorCamera::PriorityUpdate(_float dt)
 		transform->SetRotation(rotation);
 	}
 
-	if (engine->IsKeyDown('W'))
-		m_pTransform->Translate(forward * speed * dt);
+	if (m_ActiveKeyboard)
+	{
+		if (engine->IsKeyDown('W'))
+			m_pTransform->Translate(forward * speed * dt);
 
-	if (engine->IsKeyDown('S'))
-		m_pTransform->Translate(-forward * speed * dt);
+		if (engine->IsKeyDown('S'))
+			m_pTransform->Translate(-forward * speed * dt);
 
-	if (engine->IsKeyDown('D'))
-		m_pTransform->Translate(right * speed * dt);
+		if (engine->IsKeyDown('D'))
+			m_pTransform->Translate(right * speed * dt);
 
-	if (engine->IsKeyDown('A'))
-		m_pTransform->Translate(-right * speed * dt);
+		if (engine->IsKeyDown('A'))
+			m_pTransform->Translate(-right * speed * dt);
 
-	if (engine->IsKeyDown(VK_SPACE))
-		m_pTransform->Translate(XMVectorSet(0.f, 1.f, 0.f, 0.f) * 100.f * dt);
+		if (engine->IsKeyDown(VK_SPACE))
+			m_pTransform->Translate(XMVectorSet(0.f, 1.f, 0.f, 0.f) * 100.f * dt);
 
-	if (engine->IsKeyDown(VK_SHIFT))
-		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
-
-	if (engine->IsMousePress(MouseButton::RButton))
-		m_ActiveMouse = m_ActiveMouse ? false : true;
+		if (engine->IsKeyDown(VK_SHIFT))
+			m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
+	}
 
 	engine->SetViewMatrix(cam->GetViewMatrix());
 	engine->SetProjMatrix(cam->GetProjMatrix());

@@ -24,7 +24,7 @@ public:
     void Free()override;
 
 #ifdef USE_IMGUI
-    void RenderInspector();
+    void RenderInspector(_uint id);
     void DrawTextureGrid(const _string& tag);
 #endif
 

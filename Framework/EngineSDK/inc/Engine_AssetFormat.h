@@ -73,11 +73,14 @@ namespace Engine
 	{
 		_char animationTag[MAX_PATH];
 		_uint numChannels{};
+		_float tickPerSecond{};
+		_float duration{};
 
 	}ANIMATIONCLIP_FORMAT;
 
 	typedef struct tagChannelFormat
 	{
+		_char channelTag[MAX_PATH];
 		_uint boneIndex{};
 		_uint numKeyFrames{};
 

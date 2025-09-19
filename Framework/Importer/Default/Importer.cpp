@@ -13,17 +13,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    MainApp* Game = MainApp::Create(hInstance, nCmdShow);
+    MainApp* Importer = MainApp::Create(hInstance, nCmdShow);
 
-    if (!Game)
+    if (!Importer)
     {
         MSG_BOX("Create Failed : MainApp");
         return -1;
     }
 
-    Game->Run();
+    Importer->Run();
 
-    _uint refCnt = Safe_Release(Game);
+    _uint refCnt = Safe_Release(Importer);
     if (refCnt)
     {
         MSG_BOX("Release Failed : MainApp");

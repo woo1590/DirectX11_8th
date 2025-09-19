@@ -153,10 +153,11 @@ void FBXMaterial::Free()
 
 #ifdef USE_IMGUI
 
-void FBXMaterial::RenderInspector()
+void FBXMaterial::RenderInspector(_uint id)
 {
 	ImGui::PushID(this);
-	if (ImGui::CollapsingHeader(m_strName.c_str(),
+	_string name = std::to_string(id) + " : " + m_strName;
+	if (ImGui::CollapsingHeader(name.c_str(),
 		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
 		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
 	{

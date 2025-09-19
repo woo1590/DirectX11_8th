@@ -20,6 +20,7 @@ HRESULT Channel::Initialize(std::ifstream& file)
 	CHANNEL_FORMAT channelFormat{};
 
 	file.read(reinterpret_cast<char*>(&channelFormat), sizeof(CHANNEL_FORMAT));
+	m_strName = channelFormat.channelTag;
 	m_iBoneIndex = channelFormat.boneIndex;
 	m_iNumKeyFrames = channelFormat.numKeyFrames;
 

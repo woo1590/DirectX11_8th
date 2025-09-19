@@ -17,6 +17,7 @@ public:
     void Free()override;
 
 private:
+    _string m_strName{};
     _uint m_iBoneIndex{};
     _uint m_iNumKeyFrames{};
     std::vector<KEYFRAME> m_KeyFrames;

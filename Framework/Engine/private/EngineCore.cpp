@@ -158,6 +158,10 @@ _bool EngineCore::WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 {
 	return m_pImGuiManager->WndProcHandler(hWnd, msg, wParam, lParam);
 }
+void EngineCore::AddPanel(IPanel* panel)
+{
+	m_pImGuiManager->AddPanel(panel);
+}
 #pragma endregion
 #endif
 
@@ -279,6 +283,10 @@ Material* EngineCore::GetMaterial(_uint levelID, const _string& key)
 Model* EngineCore::GetModel(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetModel(levelID, key);
+}
+ANIMATION_SET EngineCore::GetAnimation(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetAnimation(levelID, key);
 }
 #pragma endregion
 

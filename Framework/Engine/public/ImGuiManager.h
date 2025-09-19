@@ -35,6 +35,7 @@ public:
 private:
     void SetUpIO();
     void SetUpStyle();
+    void SetUpDock();
 
     std::vector<IPanel*> m_Panels;
     GUIState m_GuiState{};

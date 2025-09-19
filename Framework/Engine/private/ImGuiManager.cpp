@@ -70,15 +70,21 @@ void ImGuiManager::BeginFrame()
 void ImGuiManager::Render()
 {
 	ImGuiIO& io = ImGui::GetIO();
-
+    static _bool isAvailable = true;
 	ImGui::Begin("Debug");
 	ImGui::Text("FPS : %.1f (%.3f ms)", io.Framerate, 1000.f / io.Framerate);
+    if (ImGui::Button("Visible"))
+        isAvailable = isAvailable ? false : true;
 	ImGui::End();
 
-	for (const auto& panel : m_Panels)
-	{
-		panel->Draw(m_GuiState);
-	}
+
+    if (isAvailable)
+    {
+	    for (const auto& panel : m_Panels)
+	    {
+		    panel->Draw(m_GuiState);
+	    }
+    }
 }
 
 void ImGuiManager::EndFrame()
@@ -185,6 +191,11 @@ void ImGuiManager::SetUpStyle()
             col.w *= alpha_;
         }
     }
+
+}
+
+void ImGuiManager::SetUpDock()
+{
 
 }
 

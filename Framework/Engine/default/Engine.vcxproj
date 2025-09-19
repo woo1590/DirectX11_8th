@@ -181,7 +181,6 @@
   <ItemGroup>
     <ClInclude Include="..\public\AiController.h" />
     <ClInclude Include="..\public\AnimationClip.h" />
-    <ClInclude Include="..\public\Animator.h" />
     <ClInclude Include="..\public\AnimatorComponent.h" />
     <ClInclude Include="..\public\AudioListener.h" />
     <ClInclude Include="..\public\AudioSource.h" />
@@ -268,7 +267,6 @@
   <ItemGroup>
     <ClCompile Include="..\private\AiController.cpp" />
     <ClCompile Include="..\private\AnimationClip.cpp" />
-    <ClCompile Include="..\private\Animator.cpp" />
     <ClCompile Include="..\private\AnimatorComponent.cpp" />
     <ClCompile Include="..\private\AudioListener.cpp" />
     <ClCompile Include="..\private\AudioSource.cpp" />
@@ -411,7 +409,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\public\nfd\nfd_cocoa.m" />
-    <None Include="..\public\shaderinc\ConstantBuffer.hlsli" />
     <None Include="..\public\shaderinc\ShaderDefine.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

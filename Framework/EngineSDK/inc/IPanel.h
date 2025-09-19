@@ -11,7 +11,7 @@
 
 NS_BEGIN(Engine)
 
-class IPanel :
+class ENGINE_DLL IPanel :
     public Base
 {
 protected:
