@@ -12,9 +12,12 @@ private:
     virtual ~AnimationClip() = default;
 
 public:
-    static AnimationClip * Create(std::ifstream& file);
+    static AnimationClip* Create(std::ifstream& file);
     HRESULT Initialize(std::ifstream& file);
+    void UpdateTransformationMatrix(_float dt, ANIMATIONCLIP_CONTEXT& context, std::vector<_float4x4>& matrices);
 
+    void ExtractKeyFrames(std::vector<KEYFRAME>& keyFrames, std::vector<_uint>& mask, std::vector<_uint>& keyFrameIndices);
+    _uint GetNumChannels()const { return m_iNumChannels; }
     void Free()override;
 
 private:

@@ -130,7 +130,7 @@ HRESULT Loader::LoadingForGamePlay()
 		return E_FAIL;
 
 	/*Load Animation Set*/
-	if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/test.animationset", "AniamtionSet_Test")))
+	if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/test.animationset", "AnimationSet_Test")))
 		return E_FAIL;
 
 	/*Load Material*/

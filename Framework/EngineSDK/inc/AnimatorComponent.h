@@ -3,7 +3,7 @@
 
 NS_BEGIN(Engine)
 
-class Bone;
+class Skeleton;
 class ENGINE_DLL AnimatorComponent final:
     public Component
 {
@@ -18,25 +18,45 @@ public:
     HRESULT Initialize(InitDESC* arg)override;
     void Update(_float dt)override;
 
-    HRESULT SetAnimation(_uint levelID, const _string& key);
-    void SetModelBones(std::vector<Bone*>* modelBones) { m_ModelBones = modelBones; }
+    HRESULT     SetAnimation(_uint levelID, const _string& key);
+    void        SetSkeleton(Skeleton* pSkeleton);
+    void        ChangeAnimation(_uint animationIndex, _bool isLoop = false);
 
+    const std::vector<_float4x4>& GetCombinedMatrices() { return m_CombiendMatirices; }
     Component* Clone() { return new AnimatorComponent(*this); }
     void Free()override;
 
 #ifdef USE_IMGUI
-    void RenderInspector()override {};
+    void RenderInspector()override;
 #endif
 
 private:
+    void PlayAnimation(_float dt);
+    void FadeAnimation(_float dt);
+    void UpdateCombinedMatrix();
+
     ANIMATION_SET m_AnimationSet{};
-    _uint m_iCurrAnimationIndex{};
+    ANIMATIONCLIP_CONTEXT m_Context{};
+    _uint m_iCurrAnimationIndex = -1;
 
-    const std::vector<Bone*>* m_ModelBones;
+    Skeleton* m_pSkeleton = nullptr;
+    std::vector<_float4x4> m_TransformationMatirices;
+    std::vector<_float4x4> m_CombiendMatirices;
 
-    std::vector<_float4x4> m_TransformationMatrix;
-    std::vector<_float4x4> m_CombiendTransformationMatrix;
-    std::vector<_float4x4> m_FinalTransformationMatrix;
+    /*Fade To Next Animation*/
+    _bool m_isFade = false;
+    _uint m_iPrevAnimationIndex{};
+    _float m_fFadeTrackPosition{};
+    _float m_fFadeDuration = 0.3f;
+
+    std::vector<KEYFRAME> m_PrevKeyFrames;
+    std::vector<KEYFRAME> m_NextKeyFrames;
+    std::vector<_uint> m_PrevMask;
+    std::vector<_uint> m_NextMask;
+
+    std::vector<_uint> m_NextKeyFrameIndices;
+    /*-----------------------*/
+
 };
 
 NS_END

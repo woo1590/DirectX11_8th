@@ -15,7 +15,7 @@ public:
     HRESULT Initialize(const aiNode* pNode, _int parentIndex);
     void UpdateCombiendTransformation(std::vector<FBXBone*>& modelBones);
 
-    HRESULT ExportBoneFormat(BONE_FORMAT& boneFormat);
+    HRESULT Export(std::ofstream& out);
     _string GetBoneTag()const { return m_strBoneTag; }
     void SetTransformationMatrix(_float4x4 transformationMatrix);
     _matrix GetCombinedTransformMatrix()const { return XMLoadFloat4x4(&m_CombinedTransformationMatrix); }
@@ -24,10 +24,12 @@ public:
 
 private:
     _string m_strBoneTag{};
+    _int m_iParentIndex{};
     _float4x4 m_TransformationMatrix{};
+
+    /*Only Importer*/
     _float4x4 m_CombinedTransformationMatrix{};
 
-    _int m_iParentIndex{};
 };
 
 NS_END

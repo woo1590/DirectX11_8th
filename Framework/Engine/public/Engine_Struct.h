@@ -152,5 +152,19 @@ namespace Engine
 		std::vector<class AnimationClip*> aniamtionClips;
 
 	}ANIMATION_SET;
+
+	typedef struct tagAnimationClipContext
+	{
+		_float trackPosition{};
+		std::vector<_uint> keyFrameIndices;
+		_bool isLoop = false;
+		_bool isFinished = false;
+
+	}ANIMATIONCLIP_CONTEXT;
+
+	typedef struct tagBonePalette
+	{
+		std::vector<_float4x4> boneMatrices;
+	}BONE_PALETTE;
 }
 #endif // Engine_Struct_h__

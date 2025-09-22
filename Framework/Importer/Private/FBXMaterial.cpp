@@ -94,7 +94,7 @@ HRESULT FBXMaterial::Initialize(Shader* pShader, const _string& shaderTag, aiMat
 	return S_OK;
 }
 
-HRESULT FBXMaterial::ExportMaterialFormat(MTRL_FORMAT& mtrlFormat)
+HRESULT FBXMaterial::Export(MTRL_FORMAT& mtrlFormat)
 {
 	mtrlFormat.shaderTag = m_strShaderTag;
 

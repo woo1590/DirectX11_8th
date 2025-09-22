@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Bone.h"
+#include "Skeleton.h"
 #include "TransformComponent.h"
 
 Model::Model()
@@ -33,46 +34,17 @@ HRESULT Model::Initialize(const _string& filePath)
 	file.read(reinterpret_cast<char*>(&modelFormat), sizeof(MODEL_FORMAT));
 	m_iNumMeshes = modelFormat.numMeshes;
 	m_iNumMaterials = modelFormat.numMaterials;
-	m_iNumBones = modelFormat.numBones;
-	m_PreTransformMatrix = modelFormat.preTransformMatrix;
 
 	m_eType = modelFormat.skinnedMesh ? ModelType::Skinned : ModelType::Static;
 
-	if (FAILED(CreateMeshes(file)))
+	if (FAILED(CreateMeshes(file, modelFormat.preTransformMatrix)))
 		return E_FAIL;
 
 	if (FAILED(CreateMaterials(file,filePath)))
 		return E_FAIL;
 
-	if (FAILED(CreateBones(file)))
+	if (FAILED(CreateSkeleton(file, modelFormat.preTransformMatrix)))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-void Model::Update(_float dt)
-{
-	for (const auto& bone : m_Bones)
-		bone->UpdateCombinedTransformMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
-}
-
-HRESULT Model::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies, Material* overrideMaterial)
-{
-	_float4x4 worldMatrix = transform->GetWorldMatrix();
-
-	for (_uint i = 0; i < m_iNumMeshes; ++i)
-	{
-		RenderProxy proxy{};
-
-		proxy.buffer = m_Meshes[i];
-		proxy.material = overrideMaterial ? overrideMaterial : m_Materials[m_Meshes[i]->GetMaterialIndex()];
-		proxy.worldMatrix = worldMatrix;
-
-		if (m_iNumBones)
-			m_Meshes[i]->ExtractBoneMatrices(proxy, m_Bones);
-
-		proxies.push_back(proxy);
-	}
 
 	return S_OK;
 }
@@ -89,27 +61,14 @@ void Model::Free()
 		Safe_Release(material);
 	m_Materials.clear();
 
-	for (auto& bone : m_Bones)
-		Safe_Release(bone);
-	m_Bones.clear();
+	Safe_Release(m_pSkeleton);
 }
 
-HRESULT Model::CreateMeshes(std::ifstream& file)
+HRESULT Model::CreateMeshes(std::ifstream& file, _float4x4 preTransformMatrix)
 {
-	std::vector<MESH_FORMAT> meshFormats(m_iNumMeshes);
-	std::vector<std::vector<VTX_FORMAT>> vertexFormats(m_iNumMeshes);
-	std::vector<std::vector<_uint>> indexFormats(m_iNumMeshes);
-
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		file.read(reinterpret_cast<char*>(&meshFormats[i]), sizeof(MESH_FORMAT));
-		vertexFormats[i].resize(meshFormats[i].numVertices);
-		indexFormats[i].resize(meshFormats[i].numIndices);
-
-		file.read(reinterpret_cast<char*>(vertexFormats[i].data()), sizeof(VTX_FORMAT) * meshFormats[i].numVertices);
-		file.read(reinterpret_cast<char*>(indexFormats[i].data()), sizeof(_uint) * meshFormats[i].numIndices);
-
-		auto mesh = Mesh::Create(m_eType, meshFormats[i], vertexFormats[i], indexFormats[i], XMLoadFloat4x4(&m_PreTransformMatrix));
+		auto mesh = Mesh::Create(m_eType, file, XMLoadFloat4x4(&preTransformMatrix));
 		if (!mesh)
 		{
 			MSG_BOX("Failed to create : Mesh");
@@ -180,19 +139,14 @@ HRESULT Model::CreateMaterials(std::ifstream& file, const _string& filePath)
 	return S_OK;
 }
 
-HRESULT Model::CreateBones(std::ifstream& file)
+HRESULT Model::CreateSkeleton(std::ifstream& file, _float4x4 preTransformMatrix)
 {
-	std::vector<BONE_FORMAT> boneFormats(m_iNumBones);
-
-	file.read(reinterpret_cast<char*>(boneFormats.data()), sizeof(BONE_FORMAT) * m_iNumBones);
-	for (_uint i = 0; i < m_iNumBones; ++i)
+	m_pSkeleton = Skeleton::Create(file, preTransformMatrix);
+	if (!m_pSkeleton)
 	{
-		auto bone = Bone::Create(boneFormats[i]);
-		if (!bone)
-			return E_FAIL;
-
-		m_Bones.push_back(bone);
+		MSG_BOX("Failed to create : Skeleton");
+		return E_FAIL;
 	}
-
+	
 	return S_OK;
 }

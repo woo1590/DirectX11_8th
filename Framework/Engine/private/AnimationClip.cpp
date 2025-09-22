@@ -42,6 +42,31 @@ HRESULT AnimationClip::Initialize(std::ifstream& file)
 	return S_OK;
 }
 
+void AnimationClip::UpdateTransformationMatrix(_float dt, ANIMATIONCLIP_CONTEXT& context, std::vector<_float4x4>& matrices)
+{
+	if (context.isFinished)
+		return;
+
+	context.trackPosition += dt * m_fTickPerSecond;
+
+	if (context.trackPosition >= m_fDuration)
+	{
+		if (!context.isLoop)
+			context.isFinished = true;
+
+		context.trackPosition = 0.f;
+	}
+
+	for (_uint i = 0; i < m_Channels.size(); ++i)
+		m_Channels[i]->UpdateTransformationMatrix(context.trackPosition, context.keyFrameIndices[i], matrices);
+}
+
+void AnimationClip::ExtractKeyFrames(std::vector<KEYFRAME>& keyFrames, std::vector<_uint>& mask, std::vector<_uint>& keyFrameIndices)
+{
+	for (_uint i = 0; i < m_iNumChannels; ++i)
+		m_Channels[i]->ExtractKeyFrame(keyFrames, mask, keyFrameIndices[i]);
+}
+
 void AnimationClip::Free()
 {
 	__super::Free();

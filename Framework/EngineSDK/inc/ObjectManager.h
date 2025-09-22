@@ -5,6 +5,7 @@
 NS_BEGIN(Engine)
 
 class Layer;
+class Object;
 class ObjectManager :
     public Base
 {

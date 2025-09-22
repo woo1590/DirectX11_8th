@@ -59,6 +59,8 @@ void AudioSource::Free()
 	__super::Free();
 }
 
+#ifdef USE_IMGUI
+
 void AudioSource::RenderInspector()
 {
 	ImGui::PushID(this);
@@ -72,6 +74,8 @@ void AudioSource::RenderInspector()
 
 	ImGui::PopID();
 }
+
+#endif
 
 _bool AudioSource::IsPlaying(FMOD::Channel* ch)
 {

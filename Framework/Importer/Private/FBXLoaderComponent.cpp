@@ -8,6 +8,7 @@
 #include "FBXBone.h"
 #include "FBXAnimationClip.h"
 #include "FBXChannel.h"
+#include "FBXSkeleton.h"
 
 FBXLoaderComponent::FBXLoaderComponent(Object* owner)
 	:Component(owner)
@@ -49,8 +50,9 @@ void FBXLoaderComponent::Update(_float dt)
 	FindPlayingAnimation();
 	PlayAnimation(dt);
 
-	for (const auto& bone : m_Bones)
-		bone->UpdateCombiendTransformation(m_Bones);
+	if(m_pSkeleton)
+		m_pSkeleton->UpdateCombiendTransformation();
+
 }
 
 HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, std::vector<RenderProxy>& proxies)
@@ -66,8 +68,8 @@ HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, 
 		proxy.buffer = m_Meshes[i];
 		proxy.material = m_Materials[m_Meshes[i]->GetMaterialIndex()];
 
-		if (m_iNumBones)
-			m_Meshes[i]->ExtractBoneMatrices(proxy, m_Bones);
+		if (m_pSkeleton)
+			m_Meshes[i]->ExtractBoneMatrices(proxy, m_pSkeleton);
 
 		proxies.push_back(proxy);
 	}
@@ -98,9 +100,8 @@ HRESULT FBXLoaderComponent::ImportModel(const _string& filePath)
 
 	m_iNumMeshes = scene->mNumMeshes;
 
-	if (FAILED(CreateBones(scene->mRootNode, -1)))
+	if (FAILED(CreateSkeleton(scene, -1)))
 		return E_FAIL;
-	m_iNumBones = m_Bones.size();
 
 	if (FAILED(CreateMaterials(scene, filePath)))
 		return E_FAIL;
@@ -135,7 +136,6 @@ HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 	MODEL_FORMAT modelFormat{};
 	modelFormat.numMeshes = m_iNumMeshes;
 	modelFormat.numMaterials = m_iNumMaterials;
-	modelFormat.numBones = m_iNumBones;
 	modelFormat.skinnedMesh = (m_eType == ModelType::Static ? 0 : 1);
 	modelFormat.preTransformMatrix = m_PreTransformMatrix;
 
@@ -145,15 +145,15 @@ HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 	out.write(reinterpret_cast<const char*>(&modelFormat), sizeof(MODEL_FORMAT));
 		
 	/*Mesh 포맷 파일 쓰기*/
-	if (FAILED(WriteMeshFormat(out)))
+	if (FAILED(ExportMeshes(out)))
 		return E_FAIL;
 
 	/*Material 포맷 파일 쓰기*/
-	if (FAILED(WriteMaterialFormat(out)))
+	if (FAILED(ExportMaterials(out)))
 		return E_FAIL;
 
 	/*Bone 포맷 파일 쓰기*/
-	if (FAILED(WriteBoneFormat(out)))
+	if (FAILED(ExportSkeleton(out)))
 		return E_FAIL;
 
 	for (const auto& mtrl : m_Materials)
@@ -163,44 +163,6 @@ HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::ExportAnimations(const _string& outFilePath)
-{
-	namespace fs = std::filesystem;
-
-	std::ofstream out(outFilePath.c_str(), std::ios::binary);
-	if (!out.is_open())
-	{
-		MSG_BOX("Failed to save");
-		return E_FAIL;
-	}
-
-	/*Num Animation 정보 먼저*/
-	out.write(reinterpret_cast<const char*>(&m_iNumAnimations), sizeof(_uint));
-
-	/*Animation clip -> channel -> keyframe 순으로 파일 작성*/
-	for (_uint i = 0; i < m_iNumAnimations; ++i)
-		m_AnimationClips[i]->WriteAnimationFormat(out);
-
-	return S_OK;
-}
-
-_int FBXLoaderComponent::GetBoneIndexByName(const _string& boneName)
-{
-	_int index = 0;
-	auto iter = std::find_if(m_Bones.begin(), m_Bones.end(), [&](FBXBone* bone)
-		{
-			if (boneName == bone->GetBoneTag())
-				return true;
-
-			++index;
-			return false;
-		});
-
-	if (iter == m_Bones.begin())
-		return -1;
-	else
-		return index;
-}
 
 void FBXLoaderComponent::Free()
 {
@@ -214,14 +176,11 @@ void FBXLoaderComponent::Free()
 		Safe_Release(material);
 	m_Materials.clear();
 
-	for (auto& bone : m_Bones)
-		Safe_Release(bone);
-	m_Bones.clear();
-
 	for (auto& animationClip : m_AnimationClips)
 		Safe_Release(animationClip);
 	m_AnimationClips.clear();
-
+	
+	Safe_Release(m_pSkeleton);
 	Safe_Release(m_pDefaultMtrl);
 }
 
@@ -255,6 +214,13 @@ void FBXLoaderComponent::RenderInspector()
 			ImGui::SeparatorText("Animation Clips");
 			for (_uint i=0; i<m_iNumAnimations; ++i)
 				m_AnimationClips[i]->RenderInspector(i);
+
+			if (m_pSkeleton)
+			{
+				ImGui::SeparatorText("Skeleton");
+				m_pSkeleton->RenderInspector();
+			}
+			
 		}
 	}
 
@@ -344,7 +310,7 @@ HRESULT FBXLoaderComponent::CreateMeshes(const aiScene* pScene)
 {
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		auto mesh = FBXMesh::Create(pScene->mMeshes[i], m_eType, this);
+		auto mesh = FBXMesh::Create(pScene->mMeshes[i], m_eType, m_pSkeleton);
 		if (!mesh)
 		{
 			MSG_BOX("Failed to generate mesh");
@@ -375,19 +341,13 @@ HRESULT FBXLoaderComponent::CreateMaterials(const aiScene* pScene, const _string
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::CreateBones(const aiNode* pNode, _int parentIndex)
+HRESULT FBXLoaderComponent::CreateSkeleton(const aiScene* pScene, _int parentIndex)
 {
-	auto bone = FBXBone::Create(pNode, parentIndex);
-	if (!bone)
-		return E_FAIL;
-
-	m_Bones.push_back(bone);
-
-	_int index = m_Bones.size() - 1;
-	for (_uint i = 0; i < pNode->mNumChildren; ++i)
+	m_pSkeleton = FBXSkeleton::Create(pScene);
+	if (!m_pSkeleton)
 	{
-		if (FAILED(CreateBones(pNode->mChildren[i], index)))
-			return E_FAIL;
+		MSG_BOX("Failed to create : FBXSkeleton");
+		return E_FAIL;
 	}
 
 	return S_OK;
@@ -399,7 +359,7 @@ HRESULT FBXLoaderComponent::CreateAnimations(const aiScene* pScene)
 
 	for (_uint i = 0; i < m_iNumAnimations; ++i)
 	{
-		auto animationClip = FBXAnimationClip::Create(pScene->mAnimations[i], this);
+		auto animationClip = FBXAnimationClip::Create(pScene->mAnimations[i], m_pSkeleton);
 		if (!animationClip)
 			return E_FAIL;
 
@@ -409,32 +369,20 @@ HRESULT FBXLoaderComponent::CreateAnimations(const aiScene* pScene)
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::WriteMeshFormat(std::ofstream& out)
+HRESULT FBXLoaderComponent::ExportMeshes(std::ofstream& out)
 {
-	std::vector<MESH_FORMAT> meshFormats(m_iNumMeshes);
-	std::vector<std::vector<VTX_FORMAT>> vertexFormats(m_iNumMeshes);
-	std::vector<std::vector<_uint>> indices(m_iNumMeshes);
-
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
-		m_Meshes[i]->ExportMeshFormat(meshFormats[i], vertexFormats[i], indices[i]);
-
-
-	for (_uint i = 0; i < m_iNumMeshes; ++i)
-	{
-		out.write(reinterpret_cast<const char*>(&meshFormats[i]), sizeof(MESH_FORMAT));
-		out.write(reinterpret_cast<const char*>(vertexFormats[i].data()), sizeof(VTX_FORMAT) * meshFormats[i].numVertices);
-		out.write(reinterpret_cast<const char*>(indices[i].data()), sizeof(_uint) * meshFormats[i].numIndices);
-	}
+		m_Meshes[i]->Export(out);
 
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::WriteMaterialFormat(std::ofstream& out)
+HRESULT FBXLoaderComponent::ExportMaterials(std::ofstream& out)
 {
 	std::vector<MTRL_FORMAT> mtrlFormats(m_iNumMaterials);
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
-		m_Materials[i]->ExportMaterialFormat(mtrlFormats[i]);
+		m_Materials[i]->Export(mtrlFormats[i]);
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
 	{
@@ -470,13 +418,30 @@ HRESULT FBXLoaderComponent::WriteMaterialFormat(std::ofstream& out)
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::WriteBoneFormat(std::ofstream& out)
+HRESULT FBXLoaderComponent::ExportSkeleton(std::ofstream& out)
 {
-	std::vector<BONE_FORMAT> boneFormats(m_iNumBones);
-	for (_uint i = 0; i < m_iNumBones; ++i)
-		m_Bones[i]->ExportBoneFormat(boneFormats[i]);
+	m_pSkeleton->Export(out);
 
-	out.write(reinterpret_cast<const char*>(boneFormats.data()), sizeof(BONE_FORMAT) * m_iNumBones);
+	return S_OK;
+}
+
+HRESULT FBXLoaderComponent::ExportAnimations(const _string& outFilePath)
+{
+	namespace fs = std::filesystem;
+
+	std::ofstream out(outFilePath.c_str(), std::ios::binary);
+	if (!out.is_open())
+	{
+		MSG_BOX("Failed to save");
+		return E_FAIL;
+	}
+
+	/*Num Animation 정보 먼저*/
+	out.write(reinterpret_cast<const char*>(&m_iNumAnimations), sizeof(_uint));
+
+	/*Animation clip -> channel -> keyframe 순으로 파일 작성*/
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+		m_AnimationClips[i]->WriteAnimationFormat(out);
 
 	return S_OK;
 }
@@ -500,7 +465,7 @@ void FBXLoaderComponent::PlayAnimation(_float dt)
 	if (m_iCurrAnimationIndex >= m_iNumAnimations || m_iCurrAnimationIndex < 0)
 		return;
 
-	m_AnimationClips[m_iCurrAnimationIndex]->Play(dt, m_Bones);
+	m_AnimationClips[m_iCurrAnimationIndex]->Play(dt, m_pSkeleton->GetBones());
 }
 
 void FBXLoaderComponent::Clear()
@@ -513,16 +478,13 @@ void FBXLoaderComponent::Clear()
 		Safe_Release(material);
 	m_Materials.clear();
 
-	for (auto& bone : m_Bones)
-		Safe_Release(bone);
-	m_Bones.clear();
-
 	for (auto& animationClip : m_AnimationClips)
 		Safe_Release(animationClip);
 	m_AnimationClips.clear();
 
+	Safe_Release(m_pSkeleton);
+
 	m_iNumMeshes = 0;
 	m_iNumMaterials = 0;
-	m_iNumBones = 0;
 	m_iNumAnimations = 0;
 }

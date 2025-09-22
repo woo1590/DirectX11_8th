@@ -185,7 +185,6 @@
     <ClInclude Include="..\public\AudioListener.h" />
     <ClInclude Include="..\public\AudioSource.h" />
     <ClInclude Include="..\public\Base.h" />
-    <ClInclude Include="..\public\Bone.h" />
     <ClInclude Include="..\public\CameraComponent.h" />
     <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\public\Component.h" />
@@ -238,6 +237,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\public\ResourceManager.h" />
+    <ClInclude Include="..\public\Skeleton.h" />
     <ClInclude Include="..\public\SpriteComponent.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\public\GuizmoPanel.h" />
@@ -271,7 +271,6 @@
     <ClCompile Include="..\private\AudioListener.cpp" />
     <ClCompile Include="..\private\AudioSource.cpp" />
     <ClCompile Include="..\private\Base.cpp" />
-    <ClCompile Include="..\private\Bone.cpp" />
     <ClCompile Include="..\private\CameraComponent.cpp" />
     <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
@@ -291,6 +290,7 @@
     <ClCompile Include="..\private\Mesh.cpp" />
     <ClCompile Include="..\private\OutlinerPanel.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
+    <ClCompile Include="..\private\Skeleton.cpp" />
     <ClCompile Include="..\private\SpriteComponent.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\private\GuizmoPanel.cpp" />

@@ -2,25 +2,26 @@
 #include "FBXChannel.h"
 #include "FBXLoaderComponent.h"
 #include "FBXBone.h"
+#include "FBXSkeleton.h"
 
 FBXChannel::FBXChannel()
 {
 }
 
-FBXChannel * FBXChannel::Create(aiNodeAnim* pChannel, FBXLoaderComponent* pLoader)
+FBXChannel * FBXChannel::Create(aiNodeAnim* pChannel, FBXSkeleton* pSkeleton)
 {
 	FBXChannel* Instance = new FBXChannel();
 
-	if (FAILED(Instance->Initialize(pChannel, pLoader)))
+	if (FAILED(Instance->Initialize(pChannel, pSkeleton)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT FBXChannel::Initialize(aiNodeAnim* pChannel, FBXLoaderComponent* pLoader)
+HRESULT FBXChannel::Initialize(aiNodeAnim* pChannel, FBXSkeleton* pSkeleton)
 {
 	m_strName = pChannel->mNodeName.data;
-	m_iBoneIndex = pLoader->GetBoneIndexByName(m_strName);
+	m_iBoneIndex = pSkeleton->GetBoneIndexByName(m_strName);
 	
 	m_iNumKeyFrames = (std::max)(pChannel->mNumScalingKeys, pChannel->mNumRotationKeys);
 	m_iNumKeyFrames = (std::max)(pChannel->mNumPositionKeys, m_iNumKeyFrames);

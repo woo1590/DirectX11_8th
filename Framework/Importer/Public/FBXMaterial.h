@@ -18,7 +18,7 @@ public:
     static FBXMaterial* Create(Shader* pShader, const _string& shaderTag, aiMaterial* aiMat, const _string& modelFilePath);
     HRESULT Initialize(Shader* pShader, const _string& shaderTag, aiMaterial* aiMat, const _string& modelFilePath);
 
-    HRESULT ExportMaterialFormat(MTRL_FORMAT& mtrlFormat);
+    HRESULT Export(MTRL_FORMAT& mtrlFormat);
     HRESULT ConvertToDDS(const _string& outFilePath);
     _string GetName()const { return m_strName; }
     void Free()override;

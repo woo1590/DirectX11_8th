@@ -6,6 +6,7 @@ NS_BEGIN(Importer)
 
 class FBXBone;
 class FBXLoaderComponent;
+class FBXSkeleton;
 class FBXMesh final:
     public VIBuffer
 {
@@ -14,17 +15,17 @@ private:
     virtual ~FBXMesh() = default;
 
 public:
-    static FBXMesh* Create(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* pLoader);
-    HRESULT Initialize(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* pLoader);
+    static FBXMesh * Create(aiMesh* pMesh, ModelType eType, FBXSkeleton* pSkeleton);
+    HRESULT Initialize(aiMesh* pMesh, ModelType eType, FBXSkeleton* pSkeleton);
     _uint GetMaterialIndex()const { return m_iMaterialIndex; }
-    void ExtractBoneMatrices(RenderProxy& proxy, std::vector<FBXBone*>& bones);
+    void ExtractBoneMatrices(RenderProxy& proxy, FBXSkeleton * pSkeleton);
 
-    HRESULT ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertices, std::vector<_uint>& indices);
+    HRESULT Export(std::ofstream& out);
 
     void Free()override;
 private:
     HRESULT CreateStaticMesh(aiMesh* pMesh);
-    HRESULT CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader);
+    HRESULT CreateSkinnedMesh(aiMesh* pMesh, FBXSkeleton* pSkeleton);
 
     _string m_strName{};
     _uint m_iMaterialIndex{};

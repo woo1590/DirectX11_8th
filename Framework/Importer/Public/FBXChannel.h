@@ -5,6 +5,7 @@ NS_BEGIN(Importer)
 
 class FBXLoaderComponent;
 class FBXBone;
+class FBXSkeleton;
 class FBXChannel :
     public Base
 {
@@ -13,8 +14,8 @@ private:
     virtual ~FBXChannel() = default;
 
 public:
-    static FBXChannel * Create(aiNodeAnim* pChannel, FBXLoaderComponent* pLoader);
-    HRESULT Initialize(aiNodeAnim* pChannel, FBXLoaderComponent* pLoader);
+    static FBXChannel * Create(aiNodeAnim* pChannel, FBXSkeleton* pSkeleton);
+    HRESULT Initialize(aiNodeAnim* pChannel, FBXSkeleton* pSkeleton);
     void UpdateTransformationMatrix(_float currTrackPostion, std::vector<FBXBone*>& bones);
 
     void WriteChannelFormat(std::ofstream& out);
@@ -27,8 +28,11 @@ private:
     _string m_strName{};
     _uint m_iBoneIndex{};
     _uint m_iNumKeyFrames{};
-    _uint m_iCurrKeyFrameIndex{};
+
     std::vector<KEYFRAME> m_KeyFrames;
+
+    /*Only Importer*/
+    _uint m_iCurrKeyFrameIndex{};
 };
 
 NS_END

@@ -110,10 +110,10 @@ void EngineCore::Free()
 	Safe_Release(m_pLevelManager);
 	Safe_Release(m_pTaskManager);
 	Safe_Release(m_pPrototypeManager);
+	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pObjectManager);
 	Safe_Release(m_pSoundManager);
 	Safe_Release(m_pPipeLine);
-	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pInputSystem);
 	Safe_Release(m_pLightManager);
 	Safe_Release(m_pGraphicDevice);	/*GraphicDevice는 가장 먼저 생성, 가장 마지막 해제*/

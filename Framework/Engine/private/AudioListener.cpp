@@ -36,6 +36,8 @@ void AudioListener::Free()
 	__super::Free();
 }
 
+#ifdef USE_IMGUI
+
 void AudioListener::RenderInspector()
 {
 	ImGui::PushID(this);
@@ -49,3 +51,5 @@ void AudioListener::RenderInspector()
 
 	ImGui::PopID();
 }
+
+#endif

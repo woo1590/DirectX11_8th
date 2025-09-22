@@ -3,6 +3,9 @@
 #include "EngineCore.h"
 #include "Model.h"
 #include "Material.h"
+#include "Mesh.h"
+#include "Object.h"
+#include "AnimatorComponent.h"
 
 ModelComponent::ModelComponent(Object* owner)
 	:Component(owner)
@@ -36,12 +39,50 @@ HRESULT ModelComponent::Initialize(InitDESC* arg)
 
 void ModelComponent::Update(_float dt)
 {
-	m_pModel->Update(dt);
+	__super::Update(dt);
 }
 
 HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
 {
-	return m_pModel->ExtractRenderProxy(transform, proxies, m_pOverrideMtrl);
+	const auto& meshes = m_pModel->GetBuffers();
+	const auto& materials = m_pModel->GetMaterials();
+
+	for (_uint i = 0; i < meshes.size(); ++i)
+	{
+		RenderProxy proxy{};
+		proxy.buffer = meshes[i];
+		proxy.material = materials[meshes[i]->GetMaterialIndex()];
+		proxy.worldMatrix = transform->GetWorldMatrix();
+
+		if (m_pModel->IsSkinned())
+		{
+			auto animator = m_pOwner->GetComponent<AnimatorComponent>();
+
+			const auto& combinedMatrices = animator->GetCombinedMatrices();
+			meshes[i]->ComputeBonePalette(combinedMatrices, m_BonePalettes[i].boneMatrices);
+
+			proxy.numBones = m_BonePalettes[i].boneMatrices.size();
+			proxy.boneMatrices = m_BonePalettes[i].boneMatrices.data();
+		}
+
+		proxies.push_back(proxy);
+	}
+
+	return S_OK;
+}
+
+HRESULT ModelComponent::ConnectAnimator()
+{
+	auto animator = m_pOwner->GetComponent<AnimatorComponent>();
+	if (!animator)
+	{
+		MSG_BOX("Animator is not available");
+		return E_FAIL;
+	}
+
+	animator->SetSkeleton(m_pModel->GetSkeleton());
+
+	return S_OK;
 }
 
 HRESULT ModelComponent::SetModel(_uint levelID, const _string& key)
@@ -52,6 +93,8 @@ HRESULT ModelComponent::SetModel(_uint levelID, const _string& key)
 
 	m_pModel = model;
 	m_pModel->AddRef();
+
+	m_BonePalettes.resize(m_pModel->GetBuffers().size());
 
 	return S_OK;
 }

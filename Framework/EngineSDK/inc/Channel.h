@@ -13,7 +13,9 @@ private:
 public:
     static Channel* Create(std::ifstream& file);
     HRESULT Initialize(std::ifstream& file);
+    void UpdateTransformationMatrix(_float& trackPosition, _uint& keyframeIndex, std::vector<_float4x4>& matrices);
 
+    void ExtractKeyFrame(std::vector<KEYFRAME>& keyFrames, std::vector<_uint>& mask, _uint index);
     void Free()override;
 
 private:

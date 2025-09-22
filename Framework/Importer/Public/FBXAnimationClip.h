@@ -6,6 +6,7 @@ NS_BEGIN(Importer)
 class FBXChannel;
 class FBXBone;
 class FBXLoaderComponent;
+class FBXSkeleton;
 class FBXAnimationClip :
     public Base
 {
@@ -14,8 +15,8 @@ private:
     virtual ~FBXAnimationClip() = default;
 
 public:
-    static FBXAnimationClip* Create(aiAnimation* pAnimation,FBXLoaderComponent* pLoader);
-    HRESULT Initialize(aiAnimation* pAnimation, FBXLoaderComponent* pLoader);
+    static FBXAnimationClip * Create(aiAnimation* pAnimation, FBXSkeleton* pSkeleton);
+    HRESULT Initialize(aiAnimation* pAnimation, FBXSkeleton* pSkeleton);
 
     void WriteAnimationFormat(std::ofstream& out);
 
@@ -40,10 +41,12 @@ private:
 
     _float m_fDuration{};
     _float m_fTickPerSecond{};
+    std::vector<FBXChannel*> m_Channels;
+
+    /*Only Importer*/
     _float m_fCurrTrackPosition{};
     _bool m_isPlaying = false;
 
-    std::vector<FBXChannel*> m_Channels;
 };
 
 NS_END

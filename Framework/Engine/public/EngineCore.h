@@ -139,6 +139,7 @@ public:
     void UnRegisterLight(LightComponent* light);
 #pragma endregion
 
+    Random* GetRandom()const { return m_pRandom; }
     /*----Window----*/
     HWND GetWindowHandle()const { return m_hWnd; }
     D3D11_VIEWPORT GetViewport()const { return m_Viewport; }

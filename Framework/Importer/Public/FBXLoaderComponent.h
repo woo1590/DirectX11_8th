@@ -12,6 +12,7 @@ class FBXMesh;
 class FBXMaterial;
 class FBXBone;
 class FBXAnimationClip;
+class FBXSkeleton;
 class FBXLoaderComponent :
     public Component
 {
@@ -30,9 +31,6 @@ public:
     
     HRESULT ImportModel(const _string& filePath);
     HRESULT ExportModel(const _string& outFilePath);
-    HRESULT ExportAnimations(const _string& outFilePath);
-
-    _int GetBoneIndexByName(const _string& boneName);
 
     Component* Clone() { return new FBXLoaderComponent(*this); }
     void Free()override;
@@ -46,12 +44,13 @@ public:
 private:
     HRESULT CreateMeshes(const aiScene* pScene);
     HRESULT CreateMaterials(const aiScene* pScene, const _string& modelFilePath);
-    HRESULT CreateBones(const aiNode* pNode, _int parentIndex);
+    HRESULT CreateSkeleton(const aiScene* pScene, _int parentIndex);
     HRESULT CreateAnimations(const aiScene* pScene);
 
-    HRESULT WriteMeshFormat(std::ofstream& out);
-    HRESULT WriteMaterialFormat(std::ofstream& out);
-    HRESULT WriteBoneFormat(std::ofstream& out);
+    HRESULT ExportMeshes(std::ofstream& out);
+    HRESULT ExportMaterials(std::ofstream& out);
+    HRESULT ExportSkeleton(std::ofstream& out);
+    HRESULT ExportAnimations(const _string& outFilePath);
 
     void FindPlayingAnimation();
     void PlayAnimation(_float dt);
@@ -61,12 +60,11 @@ private:
 
     _uint m_iNumMeshes{};
     _uint m_iNumMaterials{};
-    _uint m_iNumBones{};
     std::vector<FBXMesh*> m_Meshes;
     std::vector<FBXMaterial*> m_Materials;
-    std::vector<FBXBone*> m_Bones;
+    FBXSkeleton* m_pSkeleton = nullptr;
     _float4x4 m_PreTransformMatrix{};
-
+    
     /*For Animation*/
     _uint m_iNumAnimations{};
     std::vector<FBXAnimationClip*> m_AnimationClips;

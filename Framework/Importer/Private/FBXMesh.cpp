@@ -1,6 +1,7 @@
 #include "ImporterPCH.h"
 #include "FBXMesh.h"
 #include "FBXLoaderComponent.h"
+#include "FBXSkeleton.h"
 #include "FBXBone.h"
 
 FBXMesh::FBXMesh()
@@ -8,22 +9,22 @@ FBXMesh::FBXMesh()
 {
 }
 
-FBXMesh* FBXMesh::Create(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* pLoader)
+FBXMesh * FBXMesh::Create(aiMesh* pMesh, ModelType eType, FBXSkeleton* pSkeleton)
 {
 	FBXMesh* Instance = new FBXMesh();
 
-	if (FAILED(Instance->Initialize(pMesh, eType, pLoader)))
+	if (FAILED(Instance->Initialize(pMesh, eType, pSkeleton)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT FBXMesh::Initialize(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* pLoader)
+HRESULT FBXMesh::Initialize(aiMesh* pMesh, ModelType eType, FBXSkeleton* pSkeleton)
 {
 	m_strName = pMesh->mName.C_Str();
 
 	/*----Vertex Buffer----*/
-	if (FAILED(eType == ModelType::Static ? CreateStaticMesh(pMesh) : CreateSkinnedMesh(pMesh, pLoader)))
+	if (FAILED(eType == ModelType::Static ? CreateStaticMesh(pMesh) : CreateSkinnedMesh(pMesh, pSkeleton)))
 		return E_FAIL;
 
 	/*----Index Buffer----*/	
@@ -59,17 +60,18 @@ HRESULT FBXMesh::Initialize(aiMesh* pMesh, ModelType eType, FBXLoaderComponent* 
 	return S_OK;
 }
 
-void FBXMesh::ExtractBoneMatrices(RenderProxy& proxy, std::vector<FBXBone*>& bones)
+void FBXMesh::ExtractBoneMatrices(RenderProxy& proxy, FBXSkeleton * pSkeleton)
 {
 	proxy.numBones = m_iNumBones;
 	for (_uint i = 0; i < m_iNumBones; ++i)
-		XMStoreFloat4x4(&m_BoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * bones[m_BoneIndices[i]]->GetCombinedTransformMatrix());
+		XMStoreFloat4x4(&m_BoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * pSkeleton->GetCombinedTransformMatrix(m_BoneIndices[i]));
 
 	proxy.boneMatrices = m_BoneMatrices.data();
 }
 
-HRESULT FBXMesh::ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertices, std::vector<_uint>& indices)
+HRESULT FBXMesh::Export(std::ofstream& out)
 {
+	MESH_FORMAT meshFormat{};
 	strncpy_s(meshFormat.name, MAX_PATH, m_strName.c_str(), sizeof(meshFormat.name) - 1);
 	meshFormat.materialIndex = m_iMaterialIndex;
 	meshFormat.numVertices = m_iNumVertices;
@@ -78,8 +80,12 @@ HRESULT FBXMesh::ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMA
 	meshFormat.indexStride = m_iIndexStride;
 	meshFormat.numBones = m_iNumBones;
 	memcpy_s(&meshFormat.boneIndices, sizeof(_uint) * MAX_BONES, m_BoneIndices.data(), sizeof(_uint) * m_iNumBones);
-	memcpy_s(&meshFormat.offsetMatrices, sizeof(_float4x4) * MAX_BONES, m_OffsetMatrices.data(), sizeof(_float4x4) * m_iNumBones);
 
+	out.write(reinterpret_cast<const char*>(&meshFormat), sizeof(MESH_FORMAT));
+	out.write(reinterpret_cast<const char*>(m_OffsetMatrices.data()), sizeof(_float4x4) * m_iNumBones);
+
+	/*Vertex Format*/
+	std::vector<VTX_FORMAT> vertices;
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		VTX_FORMAT vertex{};
@@ -93,10 +99,15 @@ HRESULT FBXMesh::ExportMeshFormat(MESH_FORMAT& meshFormat, std::vector<VTX_FORMA
 
 		vertices.push_back(vertex);
 	}
+	out.write(reinterpret_cast<const char*>(vertices.data()), sizeof(VTX_FORMAT) * m_iNumVertices);
 
+	/*Index Format*/
+	std::vector<_uint> indices;
 	for (_uint i = 0; i < m_iNumIndices; ++i)
 		indices.push_back(m_Indices[i]);
 
+	out.write(reinterpret_cast<const char*>(indices.data()), sizeof(_uint) * m_iNumIndices);
+	
 	return S_OK;
 }
 
@@ -156,7 +167,7 @@ HRESULT FBXMesh::CreateStaticMesh(aiMesh* pMesh)
 	return S_OK;
 }
 
-HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader)
+HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXSkeleton* pSkeleton)
 {
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = pMesh->mNumVertices;
@@ -202,7 +213,7 @@ HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader)
 	for (_uint i = 0; i < m_iNumBones; ++i)				//영향을 주는 뼈의 갯수
 	{
 		aiBone* bone = pMesh->mBones[i];				//i번째 뼈
-		_int boneIndex = pLoader->GetBoneIndexByName(bone->mName.data);
+		_int boneIndex = pSkeleton->GetBoneIndexByName(bone->mName.data);
 		if (boneIndex == -1)
 		{
 			MSG_BOX("Missing Bone");					//일치하는 뼈가 없음, 이 모델 못씀
@@ -263,7 +274,7 @@ HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXLoaderComponent* pLoader)
 	if (!m_iNumBones)
 	{
 		m_iNumBones = 1;
-		_int boneIndex = pLoader->GetBoneIndexByName(pMesh->mName.data);
+		_int boneIndex = pSkeleton->GetBoneIndexByName(pMesh->mName.data);
 		if (boneIndex == -1)
 		{
 			MSG_BOX("Missing Bone!");					//일치하는 뼈가 없음 -> 말도 안되는상황

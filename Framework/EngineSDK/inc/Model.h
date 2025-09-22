@@ -6,7 +6,7 @@ NS_BEGIN(Engine)
 
 class Material;
 class Mesh;
-class Bone;
+class Skeleton;
 class TransformComponent;
 class ENGINE_DLL Model :
     public Base
@@ -18,27 +18,27 @@ private:
 public:
     static Model* Create(const _string& filePath);
     HRESULT Initialize(const _string& filePath);
-    void Update(_float dt);
 
-    HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies, Material* overrideMaterial = nullptr);
+    Skeleton* GetSkeleton() { return m_pSkeleton; }
+    const std::vector<Mesh*>& GetBuffers() { return m_Meshes; }
+    const std::vector<Material*> GetMaterials() { return m_Materials; }
+    _bool IsSkinned()const { return (m_eType == ModelType::Skinned); }
+
     void Free()override;
 
 private:
-    HRESULT CreateMeshes(std::ifstream& file);
+    HRESULT CreateMeshes(std::ifstream& file, _float4x4 preTransformMatrix);
     HRESULT CreateMaterials(std::ifstream& file, const _string& filePath);
-    HRESULT CreateBones(std::ifstream& file);
+    HRESULT CreateSkeleton(std::ifstream& file, _float4x4 preTransformMatrix);
 
     ModelType m_eType{};
 
     _uint m_iNumMeshes{};
     _uint m_iNumMaterials{};
-    _uint m_iNumBones{};
 
     std::vector<Mesh*> m_Meshes;
     std::vector<Material*> m_Materials;
-    std::vector<Bone*> m_Bones;
-
-    _float4x4 m_PreTransformMatrix{};
+    Skeleton* m_pSkeleton = nullptr;
 };
 
 NS_END

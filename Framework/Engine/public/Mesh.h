@@ -4,7 +4,6 @@
 
 NS_BEGIN(Engine)
 
-class Bone;
 class ENGINE_DLL Mesh :
     public VIBuffer
 {
@@ -13,16 +12,17 @@ private:
     virtual ~Mesh() = default;
 
 public:
-    static Mesh * Create(ModelType eType, const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats,std::vector<_uint>& indexFormats, _fmatrix preTransformMatrix);
-    HRESULT Initialize(ModelType eType, const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats, std::vector<_uint>& indexFormats, _fmatrix preTransformMatrix);
+    static Mesh * Create(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix);
+    HRESULT Initialize(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix);
 
-    void ExtractBoneMatrices(RenderProxy& proxy, std::vector<Bone*>& bones);
+    void ComputeBonePalette(const std::vector<_float4x4>& combinedMatices, std::vector<_float4x4>& bonePalette);
     _uint GetMaterialIndex()const { return m_iMaterialIndex; }
+
     void Free()override;
 
 private:
-    HRESULT CreateStaticMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats, std::vector<_uint>& indexFormats, _fmatrix preTransformMatrix);
-    HRESULT CreateSkinnedMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats, std::vector<_uint>& indexFormats);
+    HRESULT CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix);
+    HRESULT CreateSkinnedMesh(std::ifstream& file);
 
     _string m_strName{};
 

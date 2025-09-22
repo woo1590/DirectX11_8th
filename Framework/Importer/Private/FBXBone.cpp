@@ -38,12 +38,15 @@ void FBXBone::UpdateCombiendTransformation(std::vector<FBXBone*>& modelBones)
 	}
 }
 
-HRESULT FBXBone::ExportBoneFormat(BONE_FORMAT& boneFormat)
+HRESULT FBXBone::Export(std::ofstream& out)
 {
+	BONE_FORMAT boneFormat{};
 	strncpy_s(boneFormat.boneTag, MAX_PATH, m_strBoneTag.c_str(), sizeof(boneFormat.boneTag) - 1);
 	boneFormat.parentIndex = m_iParentIndex;
 	boneFormat.transformationMatrix = m_TransformationMatrix;
 	boneFormat.combinedTransformationMatrix = m_CombinedTransformationMatrix;
+
+	out.write(reinterpret_cast<const char*>(&boneFormat), sizeof(BONE_FORMAT));
 
 	return S_OK;
 }

@@ -6,7 +6,6 @@ namespace Engine
 	{
 		_uint numMeshes;
 		_uint numMaterials;
-		_uint numBones;
 		_uint skinnedMesh;	//0 static , 1 skinned
 		_float4x4 preTransformMatrix{};
 
@@ -25,7 +24,7 @@ namespace Engine
 
 		_uint numBones;
 		_uint boneIndices[MAX_BONES];
-		_float4x4 offsetMatrices[MAX_BONES];
+		//_float4x4 offsetMatrices[MAX_BONES]; 오프셋 행렬 따로 넘기기
 
 	}MESH_FORMAT;
 
@@ -59,6 +58,11 @@ namespace Engine
 		std::vector<_string> specularTextureName;
 		
 	}MTRL_FORMAT;
+	
+	typedef struct tagSkeletonFormat
+	{
+		_uint numBones{};
+	}SKELETON_FORMAT;
 
 	typedef struct tagBoneFormat
 	{

@@ -7,17 +7,17 @@ FBXAnimationClip::FBXAnimationClip()
 {
 }
 
-FBXAnimationClip* FBXAnimationClip::Create(aiAnimation* pAnimation, FBXLoaderComponent* pLoader)
+FBXAnimationClip* FBXAnimationClip::Create(aiAnimation* pAnimation, FBXSkeleton* pSkeleton)
 {
 	FBXAnimationClip* Instance = new FBXAnimationClip();
 
-	if (FAILED(Instance->Initialize(pAnimation, pLoader)))
+	if (FAILED(Instance->Initialize(pAnimation, pSkeleton)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT FBXAnimationClip::Initialize(aiAnimation* pAnimation, FBXLoaderComponent* pLoader)
+HRESULT FBXAnimationClip::Initialize(aiAnimation* pAnimation, FBXSkeleton* pSkeleton)
 {
 	m_strName = pAnimation->mName.data;
 	m_fDuration = pAnimation->mDuration;
@@ -28,7 +28,7 @@ HRESULT FBXAnimationClip::Initialize(aiAnimation* pAnimation, FBXLoaderComponent
 	
 	for (_uint i = 0; i < m_iNumChannels; ++i)
 	{
-		auto channel = FBXChannel::Create(pAnimation->mChannels[i], pLoader);
+		auto channel = FBXChannel::Create(pAnimation->mChannels[i], pSkeleton);
 		if (!channel)
 		{
 			MSG_BOX("Failed to create : FBXChannel");

@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "TestCube.h"
 #include "Material.h"
+#include "Random.h"
 
 //component
 #include "ModelComponent.h"
+#include "AnimatorComponent.h"
 #include "TransformComponent.h"
 #include "AudioSource.h"
 #include "CameraComponent.h"
@@ -30,6 +32,7 @@ HRESULT TestCube::Initialize_Prototype()
 	m_strInstanceTag = "TestCube";
 
 	AddComponent<ModelComponent>();
+	AddComponent<AnimatorComponent>();
 	AddComponent<AudioSource>();
 
 	return S_OK;
@@ -43,9 +46,18 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 	/*---юс╫ц©К---*/
 	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader("Shader_VtxMesh"));
 	/*-----------*/
+	auto random = EngineCore::GetInstance()->GetRandom();
+	
+	m_pTransform->SetPosition(_float3(random->get<_float>(-10.f, 10.f), 0.f,random->get<_float>(-15.f,10.f)));
 
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Test");
+
+	auto animator = GetComponent<AnimatorComponent>();
+	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Test");
+
+	model->ConnectAnimator();
+	animator->ChangeAnimation(random->get<_int>(0,3),true);
 	
 	return S_OK;
 }
@@ -66,10 +78,12 @@ void TestCube::Update(_float dt)
 {
 	__super::Update(dt);
 
-	_float3 rotation = m_pTransform->GetRotation();
-	rotation.y += dt;
-	m_pTransform->SetRotation(rotation);
-
+	if (EngineCore::GetInstance()->IsKeyPressed(VK_UP))
+	{
+		auto random = EngineCore::GetInstance()->GetRandom();
+		_uint randNum = random->get<_int>(0, 20);
+		GetComponent<AnimatorComponent>()->ChangeAnimation(randNum, true);
+	}
 }
 
 void TestCube::LateUpdate(_float dt)

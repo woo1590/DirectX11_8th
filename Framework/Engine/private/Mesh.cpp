@@ -7,52 +7,37 @@ Mesh::Mesh()
 {
 }
 
-Mesh* Mesh::Create(ModelType eType, const MESH_FORMAT& mesh, std::vector<VTX_FORMAT>& vertices, std::vector<_uint>& indices, _fmatrix preTransformMatrix)
+Mesh* Mesh::Create(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix)
 {
 	Mesh* Instance = new Mesh();
 
-	if (FAILED(Instance->Initialize(eType, mesh, vertices, indices, preTransformMatrix)))
+	if (FAILED(Instance->Initialize(eType, file, preTransformMatrix)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT Mesh::Initialize(ModelType eType, const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats, std::vector<_uint>& indexFormats, _fmatrix preTransformMatrix)
+HRESULT Mesh::Initialize(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix)
 {
-	if (FAILED(eType == ModelType::Static ? CreateStaticMesh(meshFormat, vertexFormats, indexFormats, preTransformMatrix) :
-											CreateSkinnedMesh(meshFormat, vertexFormats, indexFormats)))
-		return E_FAIL;
+	MESH_FORMAT meshFormat{};
+	std::vector<VTX_FORMAT> vertexFormats{};
+	std::vector<_uint> indexFormats{};
 
-	/*----Index Buffer----*/
-	D3D11_BUFFER_DESC ibDesc{};
-	ibDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
-	ibDesc.Usage = D3D11_USAGE_DEFAULT;
-	ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibDesc.CPUAccessFlags = 0;
-	ibDesc.MiscFlags = 0;
-	ibDesc.StructureByteStride = m_iIndexStride;
-
-	std::vector<_uint> indices(m_iNumIndices);
-	for (_uint i = 0; i < m_iNumIndices; ++i)
-		indices[i] = indexFormats[i];
-
-	D3D11_SUBRESOURCE_DATA ibInitData{};
-	ibInitData.pSysMem = indices.data();
-	ibInitData.SysMemPitch = 0;
-	ibInitData.SysMemSlicePitch = 0;
-
-	if (FAILED(m_pDevice->CreateBuffer(&ibDesc, &ibInitData, &m_pIB)))
+	if (FAILED(eType == ModelType::Static ? CreateStaticMesh(file, preTransformMatrix) :
+											CreateSkinnedMesh(file)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void Mesh::ExtractBoneMatrices(RenderProxy& proxy, std::vector<Bone*>& bones)
+void Mesh::ComputeBonePalette(const std::vector<_float4x4>& combinedMatices, std::vector<_float4x4>& bonePalette)
 {
-	proxy.numBones = m_iNumBones;
+	if (!bonePalette.size())
+		bonePalette.resize(m_iNumBones);
+
 	for (_uint i = 0; i < m_iNumBones; ++i)
-		XMStoreFloat4x4(&m_BoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * bones[m_BoneIndices[i]]->GetCombinedTransformationMatrix());
-	proxy.boneMatrices = m_BoneMatrices.data();
+		XMStoreFloat4x4(&bonePalette[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(&combinedMatices[m_BoneIndices[i]]));
+
 }
 
 void Mesh::Free()
@@ -60,8 +45,11 @@ void Mesh::Free()
 	__super::Free();
 }
 
-HRESULT Mesh::CreateStaticMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats, std::vector<_uint>& indexFormats, _fmatrix preTransformMatrix)
+HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 {
+	MESH_FORMAT meshFormat{};
+	file.read(reinterpret_cast<char*>(&meshFormat), sizeof(MESH_FORMAT));
+
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = meshFormat.numVertices;
 	m_iVertexStride = sizeof(VTXMESH);
@@ -76,6 +64,9 @@ HRESULT Mesh::CreateStaticMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_FO
 	m_iMaterialIndex = meshFormat.materialIndex;
 
 	/*----Vertex Buffer----*/
+	std::vector<VTX_FORMAT> vertexFormats(m_iNumVertices);
+	file.read(reinterpret_cast<char*>(vertexFormats.data()), sizeof(VTX_FORMAT) * m_iNumVertices);
+
 	D3D11_BUFFER_DESC vbDesc{};
 	vbDesc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	vbDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -105,11 +96,38 @@ HRESULT Mesh::CreateStaticMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_FO
 	if (FAILED(m_pDevice->CreateBuffer(&vbDesc, &vbInitData, &m_pVB)))
 		return E_FAIL;
 
+	/*----Index Buffer----*/
+	std::vector<_uint> indexFormats(m_iNumIndices);
+	file.read(reinterpret_cast<char*>(indexFormats.data()), sizeof(_uint) * m_iNumIndices);
+
+	D3D11_BUFFER_DESC ibDesc{};
+	ibDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
+	ibDesc.Usage = D3D11_USAGE_DEFAULT;
+	ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibDesc.CPUAccessFlags = 0;
+	ibDesc.MiscFlags = 0;
+	ibDesc.StructureByteStride = m_iIndexStride;
+
+	std::vector<_uint> indices(m_iNumIndices);
+	for (_uint i = 0; i < m_iNumIndices; ++i)
+		indices[i] = indexFormats[i];
+
+	D3D11_SUBRESOURCE_DATA ibInitData{};
+	ibInitData.pSysMem = indices.data();
+	ibInitData.SysMemPitch = 0;
+	ibInitData.SysMemSlicePitch = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&ibDesc, &ibInitData, &m_pIB)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT Mesh::CreateSkinnedMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_FORMAT>& vertexFormats, std::vector<_uint>& indexFormats)
+HRESULT Mesh::CreateSkinnedMesh(std::ifstream& file)
 {
+	MESH_FORMAT meshFormat{};
+	file.read(reinterpret_cast<char*>(&meshFormat), sizeof(MESH_FORMAT));
+
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = meshFormat.numVertices;
 	m_iVertexStride = sizeof(VTXSKINNEDMESH);
@@ -125,12 +143,17 @@ HRESULT Mesh::CreateSkinnedMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_F
 	m_iNumBones = meshFormat.numBones;
 	m_BoneMatrices.resize(m_iNumBones);
 
-	m_OffsetMatrices.resize(m_iNumBones);
-	memcpy_s(m_OffsetMatrices.data(), sizeof(_float4x4) * m_iNumBones, meshFormat.offsetMatrices, sizeof(_float4x4) * m_iNumBones);
 	m_BoneIndices.resize(m_iNumBones);
 	memcpy_s(m_BoneIndices.data(), sizeof(_uint) * m_iNumBones, meshFormat.boneIndices, sizeof(_uint) * m_iNumBones);
 
+	/*Offset Matrices*/
+	m_OffsetMatrices.resize(m_iNumBones);
+	file.read(reinterpret_cast<char*>(m_OffsetMatrices.data()), sizeof(_float4x4) * m_iNumBones);
+
 	/*----Vertex Buffer----*/
+	std::vector<VTX_FORMAT> vertexFormats(m_iNumVertices);
+	file.read(reinterpret_cast<char*>(vertexFormats.data()), sizeof(VTX_FORMAT) * m_iNumVertices);
+
 	D3D11_BUFFER_DESC vbDesc{};
 	vbDesc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	vbDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -156,6 +179,30 @@ HRESULT Mesh::CreateSkinnedMesh(const MESH_FORMAT& meshFormat, std::vector<VTX_F
 	vbInitData.SysMemSlicePitch = 0;
 
 	if (FAILED(m_pDevice->CreateBuffer(&vbDesc, &vbInitData, &m_pVB)))
+		return E_FAIL;
+
+	/*----Index Buffer----*/
+	std::vector<_uint> indexFormats(m_iNumIndices);
+	file.read(reinterpret_cast<char*>(indexFormats.data()), sizeof(_uint) * m_iNumIndices);
+
+	D3D11_BUFFER_DESC ibDesc{};
+	ibDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
+	ibDesc.Usage = D3D11_USAGE_DEFAULT;
+	ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibDesc.CPUAccessFlags = 0;
+	ibDesc.MiscFlags = 0;
+	ibDesc.StructureByteStride = m_iIndexStride;
+
+	std::vector<_uint> indices(m_iNumIndices);
+	for (_uint i = 0; i < m_iNumIndices; ++i)
+		indices[i] = indexFormats[i];
+
+	D3D11_SUBRESOURCE_DATA ibInitData{};
+	ibInitData.pSysMem = indices.data();
+	ibInitData.SysMemPitch = 0;
+	ibInitData.SysMemSlicePitch = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&ibDesc, &ibInitData, &m_pIB)))
 		return E_FAIL;
 
 	return S_OK;

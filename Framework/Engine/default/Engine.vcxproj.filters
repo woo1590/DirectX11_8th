@@ -199,9 +199,6 @@
     <Filter Include="01. Engine Component\Resource Manager\Model">
       <UniqueIdentifier>{428a327b-ff06-4bec-9931-0af6946cbb04}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\Resource Manager\Model\Bone">
-      <UniqueIdentifier>{442607ec-83c2-4715-b9bf-a64f32c64deb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Object Component\Animator Component">
       <UniqueIdentifier>{181b9f8b-e9c9-40a9-b8bd-95d5f70247d8}</UniqueIdentifier>
     </Filter>
@@ -210,6 +207,9 @@
     </Filter>
     <Filter Include="01. Engine Component\Resource Manager\AnimationClip\Channel">
       <UniqueIdentifier>{86dacba8-e622-45de-bfe9-312e00d96e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\Model\Skeleton">
+      <UniqueIdentifier>{67089b12-8a9d-43e9-93cb-a883345efe6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -435,9 +435,6 @@
     <ClInclude Include="..\public\nfd\nfd_common.h">
       <Filter>99. Utility\nfd</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Bone.h">
-      <Filter>01. Engine Component\Resource Manager\Model\Bone</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AnimatorComponent.h">
       <Filter>05. Object Component\Animator Component</Filter>
     </ClInclude>
@@ -449,6 +446,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Channel.h">
       <Filter>01. Engine Component\Resource Manager\AnimationClip\Channel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Skeleton.h">
+      <Filter>01. Engine Component\Resource Manager\Model\Skeleton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -635,9 +635,6 @@
     <ClCompile Include="..\public\nfd\nfd_win.cpp">
       <Filter>99. Utility\nfd</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Bone.cpp">
-      <Filter>01. Engine Component\Resource Manager\Model\Bone</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AnimatorComponent.cpp">
       <Filter>05. Object Component\Animator Component</Filter>
     </ClCompile>
@@ -649,6 +646,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Channel.cpp">
       <Filter>01. Engine Component\Resource Manager\AnimationClip\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Skeleton.cpp">
+      <Filter>01. Engine Component\Resource Manager\Model\Skeleton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@
 NS_BEGIN(Engine)
 
 class Model;
-class Animator;
+class AnimatorComponent;
 class TransformComponent;
 class ENGINE_DLL ModelComponent final:
     public Component
@@ -22,6 +22,8 @@ public:
     void Update(_float dt)override;
     
     HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
+
+    HRESULT ConnectAnimator();
     HRESULT SetModel(_uint levelID, const _string& key);
     void SetOverride(Material* pMaterial);
     void ClearOverride();
@@ -35,7 +37,8 @@ public:
 
 private:
     Model* m_pModel = nullptr;
-    Animator* m_pAnimator = nullptr;
+    std::vector<BONE_PALETTE> m_BonePalettes;
+
     Material* m_pOverrideMtrl = nullptr;
 };
 

@@ -194,11 +194,13 @@
     <ClInclude Include="..\public\EditorLight.h" />
     <ClInclude Include="..\public\FBXAnimationClip.h" />
     <ClInclude Include="..\public\FBXBone.h" />
+    <ClInclude Include="..\public\FBXCamLoaderComponent.h" />
     <ClInclude Include="..\public\FBXChannel.h" />
     <ClInclude Include="..\public\FBXLoaderComponent.h" />
     <ClInclude Include="..\public\FBXMaterial.h" />
     <ClInclude Include="..\public\FBXMesh.h" />
     <ClInclude Include="..\public\FBXModelObject.h" />
+    <ClInclude Include="..\public\FBXSkeleton.h" />
     <ClInclude Include="..\Public\Importer_Defines.h" />
     <ClInclude Include="..\public\ImportLevel.h" />
     <ClInclude Include="..\public\MainApp.h" />
@@ -225,11 +227,13 @@
     <ClCompile Include="..\private\EditorLight.cpp" />
     <ClCompile Include="..\private\FBXAnimationClip.cpp" />
     <ClCompile Include="..\private\FBXBone.cpp" />
+    <ClCompile Include="..\private\FBXCamLoaderComponent.cpp" />
     <ClCompile Include="..\private\FBXChannel.cpp" />
     <ClCompile Include="..\private\FBXLoaderComponent.cpp" />
     <ClCompile Include="..\private\FBXMaterial.cpp" />
     <ClCompile Include="..\private\FBXMesh.cpp" />
     <ClCompile Include="..\private\FBXModelObject.cpp" />
+    <ClCompile Include="..\private\FBXSkeleton.cpp" />
     <ClCompile Include="..\private\ImportLevel.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="Importer.cpp" />
