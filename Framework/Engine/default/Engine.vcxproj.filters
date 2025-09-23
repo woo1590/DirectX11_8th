@@ -211,6 +211,12 @@
     <Filter Include="01. Engine Component\Resource Manager\Model\Skeleton">
       <UniqueIdentifier>{67089b12-8a9d-43e9-93cb-a883345efe6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Object\ContainerObject">
+      <UniqueIdentifier>{792b5129-9fed-454f-a011-2e5fe4aff191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Object\ContainerObject\PartObject">
+      <UniqueIdentifier>{1360767d-775c-45b9-bc84-24f21d62d964}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -450,6 +456,12 @@
     <ClInclude Include="..\public\Skeleton.h">
       <Filter>01. Engine Component\Resource Manager\Model\Skeleton</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ContainerObject.h">
+      <Filter>04. Object\ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PartObject.h">
+      <Filter>04. Object\ContainerObject\PartObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -649,6 +661,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Skeleton.cpp">
       <Filter>01. Engine Component\Resource Manager\Model\Skeleton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ContainerObject.cpp">
+      <Filter>04. Object\ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PartObject.cpp">
+      <Filter>04. Object\ContainerObject\PartObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

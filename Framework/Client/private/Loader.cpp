@@ -4,7 +4,7 @@
 
 //object
 #include "BackGround.h"
-#include "TestCube.h"
+#include "TestObject.h"
 #include "FreeCam.h"
 #include "Terrain.h"
 #include "Sun.h"
@@ -146,7 +146,7 @@ HRESULT Loader::LoadingForGamePlay()
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Terrain", Terrain::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestCube", TestCube::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestCube", TestObject::Create())))
 		return E_FAIL;
 
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun", Sun::Create())))

@@ -45,13 +45,13 @@ private:
 
     /*Fade To Next Animation*/
     _bool m_isFade = false;
-    _uint m_iPrevAnimationIndex{};
+    _uint m_iNextAnimationIndex{};
     _float m_fFadeTrackPosition{};
-    _float m_fFadeDuration = 0.3f;
+    _float m_fFadeDuration = 0.4f;
 
-    std::vector<KEYFRAME> m_PrevKeyFrames;
+    std::vector<KEYFRAME> m_CurrKeyFrames;
     std::vector<KEYFRAME> m_NextKeyFrames;
-    std::vector<_uint> m_PrevMask;
+    std::vector<_uint> m_CurrMask;
     std::vector<_uint> m_NextMask;
 
     std::vector<_uint> m_NextKeyFrameIndices;

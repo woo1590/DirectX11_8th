@@ -12,10 +12,10 @@ class ENGINE_DLL Object abstract:
     public Base
 {
 public:
-    struct ObjectDESC : public TransformComponent::TransformDESC
+    typedef struct ObjectDesc : public TransformComponent::TRANSFORM_DESC
     {
         _string instanceTag{};
-    };
+    }OBJECT_DESC;
 
 protected:
     Object();

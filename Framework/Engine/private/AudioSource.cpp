@@ -34,24 +34,7 @@ HRESULT AudioSource::Initialize(InitDESC* arg)
 
 void AudioSource::Update(_float dt)
 {
-	for (auto& ch : m_NonLoopChannels)	//non loop채널만 확인, loop 채널은 명시적으로 해제
-	{
-		if (IsPlaying(ch))
-		{
-
-		}
-		else
-		{
-			ch->stop();					//재생 끝나면 채널 반환
-			ch = nullptr;
-		}
-	}
-}
-
-void AudioSource::Play(const _string& soundTag)
-{
-	auto engine = EngineCore::GetInstance();
-
+	__super::Update(dt);
 }
 
 void AudioSource::Free()
@@ -76,13 +59,3 @@ void AudioSource::RenderInspector()
 }
 
 #endif
-
-_bool AudioSource::IsPlaying(FMOD::Channel* ch)
-{
-	_bool playing = false;
-
-	if (!ch)
-		return false;
-	
-	return ch->isPlaying(&playing) == FMOD_OK && playing;
-}

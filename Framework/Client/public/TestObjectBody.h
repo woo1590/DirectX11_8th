@@ -1,20 +1,21 @@
 #pragma once
-#include "Object.h"
+
+#include "PartObject.h"
 
 NS_BEGIN(Client)
 
-class TestCube final:
-    public Object
+class TestObjectBody :
+    public PartObject
 {
 private:
-    TestCube();
-    virtual ~TestCube() = default;
+    TestObjectBody();
+    TestObjectBody(const TestObjectBody& prototype);
+    virtual ~TestObjectBody() = default;
 
 public:
-    static TestCube* Create();
+    static TestObjectBody* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
@@ -23,7 +24,7 @@ public:
     void Free()override;
 
 private:
-    Material* m_pMaterial = nullptr;
+
 };
 
 NS_END

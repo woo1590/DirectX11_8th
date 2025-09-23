@@ -25,9 +25,6 @@
     <Filter Include="02. Object">
       <UniqueIdentifier>{738b893f-244c-415e-b505-446b6d4fb4aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\TestCube">
-      <UniqueIdentifier>{ee3bf53e-3d0e-4d47-a3bb-f40142af3f83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Level\LoadingLevel">
       <UniqueIdentifier>{e3babc69-cf1f-4475-9fcf-5ce20d4a8621}</UniqueIdentifier>
     </Filter>
@@ -67,6 +64,12 @@
     <Filter Include="02. Object\Light\Sun">
       <UniqueIdentifier>{b085c115-2a92-4c03-ab0c-0d5bf9e3bbd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\TestObject">
+      <UniqueIdentifier>{ee3bf53e-3d0e-4d47-a3bb-f40142af3f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\TestObject\TestObjectBody">
+      <UniqueIdentifier>{935c971c-0550-420c-ae32-5793c55d7ddd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -90,8 +93,8 @@
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TestCube.h">
-      <Filter>02. Object\TestCube</Filter>
+    <ClInclude Include="..\public\TestObject.h">
+      <Filter>02. Object\TestObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LoadingLevel.h">
       <Filter>01. Level\LoadingLevel</Filter>
@@ -120,6 +123,9 @@
     <ClInclude Include="..\public\Sun.h">
       <Filter>02. Object\Light\Sun</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TestObjectBody.h">
+      <Filter>02. Object\TestObject\TestObjectBody</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -131,8 +137,8 @@
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00. MainApp</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TestCube.cpp">
-      <Filter>02. Object\TestCube</Filter>
+    <ClCompile Include="..\private\TestObject.cpp">
+      <Filter>02. Object\TestObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LoadingLevel.cpp">
       <Filter>01. Level\LoadingLevel</Filter>
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Sun.cpp">
       <Filter>02. Object\Light\Sun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TestObjectBody.cpp">
+      <Filter>02. Object\TestObject\TestObjectBody</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

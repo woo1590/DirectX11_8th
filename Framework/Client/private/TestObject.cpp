@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "TestCube.h"
+#include "TestObject.h"
 #include "Material.h"
 #include "Random.h"
+#include "PartObject.h"
 
 //component
 #include "ModelComponent.h"
@@ -10,13 +11,13 @@
 #include "AudioSource.h"
 #include "CameraComponent.h"
 
-TestCube::TestCube()
+TestObject::TestObject()
 {
 }
 
-TestCube* TestCube::Create()
+TestObject* TestObject::Create()
 {
-	TestCube* Instance = new TestCube();
+	TestObject* Instance = new TestObject();
 
 	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
@@ -24,12 +25,12 @@ TestCube* TestCube::Create()
 	return Instance;
 }
 
-HRESULT TestCube::Initialize_Prototype()
+HRESULT TestObject::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_strInstanceTag = "TestCube";
+	m_strInstanceTag = "TestObject";
 
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
@@ -38,14 +39,14 @@ HRESULT TestCube::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT TestCube::Initialize(InitDESC* arg)
+HRESULT TestObject::Initialize(InitDESC* arg)
 {
-	if (FAILED(__super::Initialize(arg)))
+	ContainerObject::CONTAINER_OBJECT_DESC desc{};
+	desc.numPartObjects = ENUM_CLASS(Parts::Count);
+
+	if (FAILED(__super::Initialize(&desc)))
 		return E_FAIL;
 
-	/*---юс╫ц©К---*/
-	m_pMaterial = Material::Create(EngineCore::GetInstance()->GetShader("Shader_VtxMesh"));
-	/*-----------*/
 	auto random = EngineCore::GetInstance()->GetRandom();
 	
 	m_pTransform->SetPosition(_float3(random->get<_float>(-10.f, 10.f), 0.f,random->get<_float>(-15.f,10.f)));
@@ -62,38 +63,41 @@ HRESULT TestCube::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
-void TestCube::Free()
+void TestObject::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pMaterial);
 }
 
-void TestCube::PriorityUpdate(_float dt)
+HRESULT TestObject::CreatePartObjects()
+{
+	PartObject::PART_OBJECT_DESC bodyDesc{};
+	bodyDesc.parent = this;
+	if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestObjectBody", ENUM_CLASS(Parts::Body), &bodyDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void TestObject::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
 }
 
-void TestCube::Update(_float dt)
+void TestObject::Update(_float dt)
 {
 	__super::Update(dt);
 
-	if (EngineCore::GetInstance()->IsKeyPressed(VK_UP))
-	{
-		auto random = EngineCore::GetInstance()->GetRandom();
-		_uint randNum = random->get<_int>(0, 20);
-		GetComponent<AnimatorComponent>()->ChangeAnimation(randNum, true);
-	}
 }
 
-void TestCube::LateUpdate(_float dt)
+void TestObject::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
 }
 
-Object* TestCube::Clone(InitDESC* arg)
+Object* TestObject::Clone(InitDESC* arg)
 {
-	TestCube* Instance = new TestCube(*this);
+	TestObject* Instance = new TestObject(*this);
 
 	if (FAILED(Instance->Initialize(arg)))
 		Safe_Release(Instance);

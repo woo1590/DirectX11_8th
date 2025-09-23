@@ -40,7 +40,7 @@ HRESULT TransformComponent::Initialize(InitDESC* arg)
 {
 	if (arg)
 	{
-		TransformDESC* desc = static_cast<TransformDESC*>(arg);
+		TRANSFORM_DESC* desc = static_cast<TRANSFORM_DESC*>(arg);
 
 		m_Position = desc->position;
 		m_Scale = desc->scale;

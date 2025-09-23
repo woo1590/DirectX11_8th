@@ -7,12 +7,12 @@ class ENGINE_DLL TransformComponent final:
     public Component
 {
 public:
-    struct TransformDESC : public InitDESC
+    typedef struct TransformDesc : public InitDESC
     {
         _float3 position{ 0.f,0.f,0.f };
         _float3 scale{ 1.f,1.f,1.f };
         _float3 rotation{ 0.f,0.f,0.f };
-    };
+    }TRANSFORM_DESC;
 
 private:
     TransformComponent(Object* pOwner);

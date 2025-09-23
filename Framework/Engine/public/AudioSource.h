@@ -18,7 +18,6 @@ public:
 
     void Update(_float dt)override;
     
-    void Play(const _string& soundTag);
     Component* Clone()override { return new AudioSource(*this); }
     void Free()override;
 
@@ -27,11 +26,7 @@ public:
 #endif
 
 private:
-    _bool IsPlaying(FMOD::Channel* ch);
-
-    std::vector<FMOD::Channel*> m_NonLoopChannels;
-    std::unordered_map<_string, FMOD::Channel*> m_LoopChannels;
-
+    
 };
 
 NS_END

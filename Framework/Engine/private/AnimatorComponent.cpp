@@ -78,7 +78,7 @@ void AnimatorComponent::SetSkeleton(Skeleton* pSkeleton)
 
 	_uint numBones = m_TransformationMatirices.size();
 	m_CombiendMatirices.resize(numBones);
-	m_PrevKeyFrames.resize(numBones);
+	m_CurrKeyFrames.resize(numBones);
 	m_NextKeyFrames.resize(numBones);
 }
 
@@ -97,41 +97,30 @@ void AnimatorComponent::ChangeAnimation(_uint animationIndex, _bool isLoop)
 	else
 	{
 		/*Animation Fade Setting*/
+		m_iNextAnimationIndex = animationIndex;
 
-		m_iPrevAnimationIndex = m_iCurrAnimationIndex;
-		m_iCurrAnimationIndex = animationIndex;
+		m_isFade = true;
+		m_fFadeTrackPosition = 0.f;
 	
 		m_Context.isLoop = isLoop;
 		m_Context.trackPosition = 0.f;
 		m_Context.isFinished = false;
 
-		if (m_isFade)	//Already Animation Fade
-		{
-			_uint numChannels = m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->GetNumChannels();
-			m_Context.keyFrameIndices.assign(numChannels, 0);
-		}
-		else
-		{
-
-		}
-		m_isFade = true;
-		m_fFadeTrackPosition = 0.f;
-
-		/*Init Next KeyFrame Indices*/
-		_uint numChannels = m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->GetNumChannels();
-		m_NextKeyFrameIndices.assign(numChannels, 0);
-
 		/*Init KeyFrame Buffers & Mask*/
 		_uint numBones = m_pSkeleton->GetBones().size();
-		m_PrevKeyFrames.assign(numBones, KEYFRAME{});
+		m_CurrKeyFrames.assign(numBones, KEYFRAME{});
 		m_NextKeyFrames.assign(numBones, KEYFRAME{});
 
-		m_PrevMask.assign(numBones, 0);
+		m_CurrMask.assign(numBones, 0);
 		m_NextMask.assign(numBones, 0);
 
+		/*Init Next KeyFrame Indices*/
+		_uint numChannels = m_AnimationSet.aniamtionClips[m_iNextAnimationIndex]->GetNumChannels();
+		m_NextKeyFrameIndices.assign(numChannels, 0);
+
 		/*Extract KeyFrames*/
-		m_AnimationSet.aniamtionClips[m_iPrevAnimationIndex]->ExtractKeyFrames(m_PrevKeyFrames, m_PrevMask, m_Context.keyFrameIndices);
-		m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->ExtractKeyFrames(m_NextKeyFrames, m_NextMask, m_NextKeyFrameIndices);
+		m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->ExtractKeyFrames(m_CurrKeyFrames, m_CurrMask, m_Context.keyFrameIndices);
+		m_AnimationSet.aniamtionClips[m_iNextAnimationIndex]->ExtractKeyFrames(m_NextKeyFrames, m_NextMask, m_NextKeyFrameIndices);
 	}
 }
 
@@ -170,23 +159,25 @@ void AnimatorComponent::FadeAnimation(_float dt)
 	{
 		m_isFade = false;	//Fade End!
 
-		_uint numChannels = m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->GetNumChannels();
+		m_iCurrAnimationIndex = m_iNextAnimationIndex;
+
+		_uint numChannels = m_NextKeyFrameIndices.size();
 		m_Context.keyFrameIndices.assign(numChannels, 0);
 		return;
 	}
 
-	for (_uint i = 0; i < m_PrevKeyFrames.size(); ++i)
+	for (_uint i = 0; i < m_CurrKeyFrames.size(); ++i)
 	{
-		KEYFRAME prevKeyFrame = m_PrevKeyFrames[i];
+		KEYFRAME currKeyFrame = m_CurrKeyFrames[i];
 		KEYFRAME nextKeyFrame = m_NextKeyFrames[i];
 
-		if (m_PrevMask[i] && m_NextMask[i])	//키프레임이 둘 다 존재 -> 보간
+		if (m_CurrMask[i] && m_NextMask[i])	//키프레임이 둘 다 존재 -> 보간
 		{
 			_vector scale, rotation, position;
 			
-			_vector scaleA = XMLoadFloat3(&prevKeyFrame.scale);
-			_vector rotationA = XMLoadFloat4(&prevKeyFrame.rotation);
-			_vector positionA = XMVectorSetW(XMLoadFloat3(&prevKeyFrame.position), 1.f);
+			_vector scaleA = XMLoadFloat3(&currKeyFrame.scale);
+			_vector rotationA = XMLoadFloat4(&currKeyFrame.rotation);
+			_vector positionA = XMVectorSetW(XMLoadFloat3(&currKeyFrame.position), 1.f);
 			
 			_vector scaleB = XMLoadFloat3(&nextKeyFrame.scale);
 			_vector rotationB = XMLoadFloat4(&nextKeyFrame.rotation);
