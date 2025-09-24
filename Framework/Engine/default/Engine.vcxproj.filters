@@ -175,15 +175,6 @@
     <Filter Include="05. Object Component\Light Component">
       <UniqueIdentifier>{a6c02086-75b9-4de4-9f46-20416b4ac8ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Object Component\Rendering">
-      <UniqueIdentifier>{fae8a7cf-dbdb-4448-88c8-0c4b972407cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\Rendering\Model Component">
-      <UniqueIdentifier>{03ccefa1-4978-4881-8cea-f5577301395a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Object Component\Rendering\Sprite Component">
-      <UniqueIdentifier>{3a5ca94e-aae6-4d72-a928-3a917e63471a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\Light Manager">
       <UniqueIdentifier>{7cd08c9e-48b2-49e9-b7b6-ba544e7bd160}</UniqueIdentifier>
     </Filter>
@@ -219,6 +210,12 @@
     </Filter>
     <Filter Include="98. Etc\Defines\Engine_Struct">
       <UniqueIdentifier>{8f885c3a-f1b0-4643-9461-56914a298f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Model Component">
+      <UniqueIdentifier>{03ccefa1-4978-4881-8cea-f5577301395a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Sprite Component">
+      <UniqueIdentifier>{3a5ca94e-aae6-4d72-a928-3a917e63471a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -271,7 +268,7 @@
       <Filter>05. Object Component\Transform Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ModelComponent.h">
-      <Filter>05. Object Component\Rendering\Model Component</Filter>
+      <Filter>05. Object Component\Model Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CameraComponent.h">
       <Filter>05. Object Component\Camera Component</Filter>
@@ -421,7 +418,7 @@
       <Filter>01. Engine Component\Light Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SpriteComponent.h">
-      <Filter>05. Object Component\Rendering\Sprite Component</Filter>
+      <Filter>05. Object Component\Sprite Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LightProxy.h">
       <Filter>01. Engine Component\Rendering</Filter>
@@ -507,7 +504,7 @@
       <Filter>05. Object Component\Transform Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ModelComponent.cpp">
-      <Filter>05. Object Component\Rendering\Model Component</Filter>
+      <Filter>05. Object Component\Model Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CameraComponent.cpp">
       <Filter>05. Object Component\Camera Component</Filter>
@@ -642,7 +639,7 @@
       <Filter>01. Engine Component\Light Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SpriteComponent.cpp">
-      <Filter>05. Object Component\Rendering\Sprite Component</Filter>
+      <Filter>05. Object Component\Sprite Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Mesh.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Mesh</Filter>

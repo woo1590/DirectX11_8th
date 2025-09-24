@@ -55,7 +55,7 @@ _int FBXSkeleton::GetBoneIndexByName(const _string& name)
 			return false;
 		});
 
-	if (iter == m_Bones.begin())
+	if (iter == m_Bones.end())
 		return -1;
 	else
 		return index;

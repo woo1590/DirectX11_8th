@@ -40,6 +40,24 @@ HRESULT Skeleton::Initialize(std::ifstream& file, _float4x4 preTransformMatrix)
 	return S_OK;
 }
 
+_int Skeleton::GetBoneIndexByName(const _string& boneTag)
+{
+	_uint index = 0;
+	auto iter = std::find_if(m_Bones.begin(), m_Bones.end(), [&](Bone bone)
+		{
+			if (boneTag == bone.m_strBoneTag)
+				return true;
+
+			index++;
+			return false;
+		});
+
+	if (iter == m_Bones.end())
+		return -1;
+	else
+		return index;
+}
+
 void Skeleton::Free()
 {
 	__super::Free();

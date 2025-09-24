@@ -28,6 +28,9 @@ public:
     void SetOverride(Material* pMaterial);
     void ClearOverride();
 
+    _int GetBoneIndex(const _string& boneTag);
+    _float4x4 GetBoneMatrixByIndex(_uint index);
+
     Component* Clone()override;
     void Free()override;
 

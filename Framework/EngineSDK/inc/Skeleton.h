@@ -23,6 +23,7 @@ public:
     HRESULT Initialize(std::ifstream& file, _float4x4 preTransformMatrix);
     const std::vector<Bone>& GetBones() { return m_Bones; }
     _float4x4 GetPreTransformMatrix()const { return m_PreTransformMatrix; }
+    _int GetBoneIndexByName(const _string& boneTag);
 
     void Free()override;
 

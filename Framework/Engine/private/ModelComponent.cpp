@@ -4,7 +4,10 @@
 #include "Model.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "Skeleton.h"
 #include "Object.h"
+
+//component
 #include "AnimatorComponent.h"
 
 ModelComponent::ModelComponent(Object* owner)
@@ -108,6 +111,28 @@ void ModelComponent::SetOverride(Material* pMaterial)
 void ModelComponent::ClearOverride()
 {
 	Safe_Release(m_pOverrideMtrl);
+}
+
+_int ModelComponent::GetBoneIndex(const _string& boneTag)
+{
+	auto skeleton = m_pModel->GetSkeleton();
+
+	return skeleton->GetBoneIndexByName(boneTag);
+}
+
+_float4x4 ModelComponent::GetBoneMatrixByIndex(_uint index)
+{
+	auto animator = m_pOwner->GetComponent<AnimatorComponent>();
+
+	if (animator)
+		return animator->GetCombinedMatrices()[index];
+	else
+	{
+		_float4x4 boneMatrix;
+		XMStoreFloat4x4(&boneMatrix, XMMatrixIdentity());
+		
+		return boneMatrix;
+	}
 }
 
 void ModelComponent::Free()
