@@ -32,8 +32,6 @@ HRESULT TestObject::Initialize_Prototype()
 
 	m_strInstanceTag = "TestObject";
 
-	AddComponent<ModelComponent>();
-	AddComponent<AnimatorComponent>();
 	AddComponent<AudioSource>();
 
 	return S_OK;
@@ -47,18 +45,11 @@ HRESULT TestObject::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(&desc)))
 		return E_FAIL;
 
+	if (FAILED(CreatePartObjects()))
+		return E_FAIL;
+
 	auto random = EngineCore::GetInstance()->GetRandom();
-	
 	m_pTransform->SetPosition(_float3(random->get<_float>(-10.f, 10.f), 0.f,random->get<_float>(-15.f,10.f)));
-
-	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Test");
-
-	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Test");
-
-	model->ConnectAnimator();
-	animator->ChangeAnimation(random->get<_int>(0,3),true);
 	
 	return S_OK;
 }
@@ -88,11 +79,49 @@ void TestObject::Update(_float dt)
 {
 	__super::Update(dt);
 
+	auto engine = EngineCore::GetInstance();
+
+	_vector forward = m_pTransform->GetForwardV();
+	_vector right = m_pTransform->GetRightV();
+	_float speed = 5.f;
+	_vector velocity = forward * speed;
+
+	_float3 rotation = m_pTransform->GetRotation();
+
+	if (engine->IsKeyDown(VK_UP))
+		m_pTransform->Translate(forward * speed * dt);
+	if (engine->IsKeyDown(VK_DOWN))
+		m_pTransform->Translate(-forward * speed * dt);
+	if (engine->IsKeyDown(VK_LEFT))
+	{
+		rotation.y -= speed * dt;
+		m_pTransform->SetRotation(rotation);
+	}
+	if (engine->IsKeyDown(VK_RIGHT))
+	{
+		rotation.y += speed * dt;
+		m_pTransform->SetRotation(rotation);
+	}
+
 }
 
 void TestObject::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT TestObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	for (const auto& part : m_PartObjects)
+	{
+		if (part)
+		{
+			if (FAILED(part->ExtractRenderProxies(proxies)))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
 }
 
 Object* TestObject::Clone(InitDESC* arg)

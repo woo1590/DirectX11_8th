@@ -77,7 +77,7 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 	if (!model)
 		return S_OK;
 
-	return model->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::NonBlend)]);;
+	return model->ExtractRenderProxy(m_pTransform->GetWorldMatrix(), proxies[ENUM_CLASS(RenderGroup::NonBlend)]);
 }
 
 void Object::Free()

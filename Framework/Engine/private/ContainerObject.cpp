@@ -92,5 +92,6 @@ HRESULT ContainerObject::AddPartObject(_uint levelID, const _string& prototypeTa
 
 	PartObject* part = static_cast<PartObject*>(object);
 	m_PartObjects[partObjectIndex] = part;
-	part->AddRef();
+
+	return S_OK;
 }

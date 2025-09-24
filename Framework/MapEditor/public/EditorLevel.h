@@ -20,6 +20,8 @@ public:
     void Free()override;
 
 private:
+    HRESULT Initialize_LayerLight(const _string& layerTag);
+    HRESULT Initialize_LayerCamera(const _string& layerTag);
 };
 
 NS_END

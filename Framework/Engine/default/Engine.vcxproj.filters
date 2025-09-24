@@ -217,6 +217,9 @@
     <Filter Include="04. Object\ContainerObject\PartObject">
       <UniqueIdentifier>{1360767d-775c-45b9-bc84-24f21d62d964}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98. Etc\Defines\Engine_Struct">
+      <UniqueIdentifier>{8f885c3a-f1b0-4643-9461-56914a298f84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -238,9 +241,6 @@
       <Filter>98. Etc\Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Engine_Macro.h">
-      <Filter>98. Etc\Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Engine_Struct.h">
       <Filter>98. Etc\Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Engine_Typedef.h">
@@ -462,6 +462,15 @@
     <ClInclude Include="..\public\PartObject.h">
       <Filter>04. Object\ContainerObject\PartObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Engine_Struct.h">
+      <Filter>98. Etc\Defines\Engine_Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Struct_ConstantBuffer.h">
+      <Filter>98. Etc\Defines\Engine_Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Struct_Vertex.h">
+      <Filter>98. Etc\Defines\Engine_Struct</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -556,9 +565,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBufferCube.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Cube</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine_Struct.cpp">
-      <Filter>98. Etc\Defines</Filter>
     </ClCompile>
     <ClCompile Include="..\public\imgui\imgui.cpp">
       <Filter>99. Utility\imgui</Filter>

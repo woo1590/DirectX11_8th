@@ -20,6 +20,14 @@ public:
 private:
     void ImportMapFile();
     void ExportMapFile();
+
+    void AddPrefab();
+    void CreatePreviewObject();
+    void ShowPrefabs();
+
+    PREFAB m_seletedPrefab{};
+    _uint m_iNumPrefabs{};
+    std::vector<PREFAB> m_Prefabs;
 };
 
 NS_END

@@ -1,25 +1,23 @@
 #pragma once
+#include "Object.h"
 
-#include "PartObject.h"
+NS_BEGIN(MapEditor)
 
-NS_BEGIN(Client)
-
-class TestObjectBody :
-    public PartObject
+class MapEditorCamera :
+    public Object
 {
 private:
-    TestObjectBody();
-    TestObjectBody(const TestObjectBody& prototype);
-    virtual ~TestObjectBody() = default;
+    MapEditorCamera();
+    MapEditorCamera(const MapEditorCamera& prototype);
+    virtual ~MapEditorCamera() = default;
 
 public:
-    static TestObjectBody* Create();
+    static MapEditorCamera* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
-    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;

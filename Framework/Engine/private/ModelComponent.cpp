@@ -42,7 +42,7 @@ void ModelComponent::Update(_float dt)
 	__super::Update(dt);
 }
 
-HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
+HRESULT ModelComponent::ExtractRenderProxy(_float4x4 worldMatrix, std::vector<RenderProxy>& proxies)
 {
 	const auto& meshes = m_pModel->GetBuffers();
 	const auto& materials = m_pModel->GetMaterials();
@@ -52,7 +52,7 @@ HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::v
 		RenderProxy proxy{};
 		proxy.buffer = meshes[i];
 		proxy.material = materials[meshes[i]->GetMaterialIndex()];
-		proxy.worldMatrix = transform->GetWorldMatrix();
+		proxy.worldMatrix = worldMatrix;
 
 		if (m_pModel->IsSkinned())
 		{

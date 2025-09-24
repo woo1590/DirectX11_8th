@@ -3,6 +3,10 @@
 #include "EngineCore.h"
 #include "MapEditorPanel.h"
 
+//object
+#include "MapEditorCamera.h"
+#include "MapEditorLight.h"
+
 EditorLevel::EditorLevel()
 {
 }
@@ -28,6 +32,12 @@ HRESULT EditorLevel::Initialize()
 
 	EngineCore::GetInstance()->AddPanel(editorPanel);
 
+	if (FAILED(Initialize_LayerCamera("Layer_Camera")))
+		return E_FAIL;
+
+	if (FAILED(Initialize_LayerLight("Layer_Light")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -49,4 +59,34 @@ void EditorLevel::Free()
 {
 	__super::Free();
 
+}
+
+HRESULT EditorLevel::Initialize_LayerLight(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	/*Add Prototype*/
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_MapEditorLight", MapEditorLight::Create())))
+		return E_FAIL;
+
+	/*Add Object to layer*/
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_MapEditorLight", ENUM_CLASS(LevelID::Editor), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT EditorLevel::Initialize_LayerCamera(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	/*Add Prototype*/
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_MapEditorCamera", MapEditorCamera::Create())))
+		return E_FAIL;
+
+	/*Add Object to layer*/
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_MapEditorCamera", ENUM_CLASS(LevelID::Editor), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
 }

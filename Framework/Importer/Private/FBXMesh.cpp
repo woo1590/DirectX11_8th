@@ -116,6 +116,25 @@ void FBXMesh::Free()
 	__super::Free();
 }
 
+#ifdef USE_IMGUI
+
+void FBXMesh::RenderInspector(_uint id)
+{
+	ImGui::PushID(this);
+	_string name = std::to_string(id) + " : " + m_strName;
+	if (ImGui::CollapsingHeader(name.c_str(),
+		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
+		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
+	{
+		ImGui::Text("Num Vertices : %d", m_iNumVertices);
+		ImGui::Text("Num Bones : %d", m_iNumBones);
+	}
+
+	ImGui::PopID();
+}
+
+#endif
+
 HRESULT FBXMesh::CreateStaticMesh(aiMesh* pMesh)
 {
 	m_iNumVertexBuffers = 1;

@@ -111,8 +111,6 @@ void EditorCamera::Update(_float dt)
 {
 	__super::Update(dt);
 
-
-
 }
 
 void EditorCamera::LateUpdate(_float dt)

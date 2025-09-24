@@ -187,10 +187,13 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\MapEditorCamera.h" />
     <ClInclude Include="..\public\EditorLevel.h" />
+    <ClInclude Include="..\public\MapEditorLight.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\MapEditorPanel.h" />
     <ClInclude Include="..\public\MapEditor_Defines.h" />
+    <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="MapEditorPCH.h" />
@@ -198,9 +201,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\MapEditorCamera.cpp" />
     <ClCompile Include="..\private\EditorLevel.cpp" />
+    <ClCompile Include="..\private\MapEditorLight.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\MapEditorPanel.cpp" />
+    <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="MapEditor.cpp" />
     <ClCompile Include="MapEditorPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

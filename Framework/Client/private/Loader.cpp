@@ -5,6 +5,7 @@
 //object
 #include "BackGround.h"
 #include "TestObject.h"
+#include "TestObjectBody.h"
 #include "FreeCam.h"
 #include "Terrain.h"
 #include "Sun.h"
@@ -146,10 +147,13 @@ HRESULT Loader::LoadingForGamePlay()
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Terrain", Terrain::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestCube", TestObject::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun", Sun::Create())))
 		return E_FAIL;
 
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun", Sun::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestObjectBody", TestObjectBody::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestObject", TestObject::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";

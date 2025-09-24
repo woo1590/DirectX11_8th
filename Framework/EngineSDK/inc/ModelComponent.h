@@ -21,7 +21,7 @@ public:
     HRESULT Initialize(InitDESC* arg)override;
     void Update(_float dt)override;
     
-    HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
+    HRESULT ExtractRenderProxy(_float4x4 worldMatrix, std::vector<RenderProxy>& proxies);
 
     HRESULT ConnectAnimator();
     HRESULT SetModel(_uint levelID, const _string& key);

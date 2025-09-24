@@ -241,6 +241,8 @@
     <ClInclude Include="..\public\ResourceManager.h" />
     <ClInclude Include="..\public\Skeleton.h" />
     <ClInclude Include="..\public\SpriteComponent.h" />
+    <ClInclude Include="..\public\Struct_ConstantBuffer.h" />
+    <ClInclude Include="..\public\Struct_Vertex.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\public\GuizmoPanel.h" />
     <ClInclude Include="..\public\UIObject.h" />
@@ -409,7 +411,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Engine_Struct.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\public\nfd\nfd_cocoa.m" />

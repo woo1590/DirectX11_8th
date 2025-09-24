@@ -23,6 +23,11 @@ public:
     HRESULT Export(std::ofstream& out);
 
     void Free()override;
+
+#ifdef USE_IMGUI
+    void RenderInspector(_uint id);
+#endif
+
 private:
     HRESULT CreateStaticMesh(aiMesh* pMesh);
     HRESULT CreateSkinnedMesh(aiMesh* pMesh, FBXSkeleton* pSkeleton);

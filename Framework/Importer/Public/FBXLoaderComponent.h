@@ -55,6 +55,7 @@ private:
     void FindPlayingAnimation();
     void PlayAnimation(_float dt);
     void Clear();
+    void DeleteMesh(_uint index);
 
     ModelType m_eType = ModelType::Skinned;
 

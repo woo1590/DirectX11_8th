@@ -40,6 +40,15 @@
     <Filter Include="98. Etc\ShaderFiles">
       <UniqueIdentifier>{e3b87e0b-d638-4e68-8841-fd1ea0bb3b0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\Preview Object">
+      <UniqueIdentifier>{991df1cd-883c-41c5-a6a0-8a16912b0540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\EditorCamera">
+      <UniqueIdentifier>{19c5f892-fbab-4ab6-9dd3-8fb22452ab49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\EditorLight">
+      <UniqueIdentifier>{7814f656-85b1-45ac-8efd-bbb2b17003f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -69,6 +78,15 @@
     <ClInclude Include="..\public\EditorLevel.h">
       <Filter>01. Level\EditorLevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PreviewObject.h">
+      <Filter>03. Object\Preview Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapEditorCamera.h">
+      <Filter>03. Object\EditorCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapEditorLight.h">
+      <Filter>03. Object\EditorLight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -85,6 +103,15 @@
     </ClCompile>
     <ClCompile Include="..\private\EditorLevel.cpp">
       <Filter>01. Level\EditorLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PreviewObject.cpp">
+      <Filter>03. Object\Preview Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapEditorCamera.cpp">
+      <Filter>03. Object\EditorCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapEditorLight.cpp">
+      <Filter>03. Object\EditorLight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

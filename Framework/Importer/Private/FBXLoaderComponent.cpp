@@ -207,6 +207,20 @@ void FBXLoaderComponent::RenderInspector()
 		{
 			ExportInspector(savedFileName);
 
+			ImGui::SeparatorText("Meshes");
+			for (_uint i = 0; i < m_iNumMeshes; ++i)
+			{
+				ImGui::PushID(i);
+				m_Meshes[i]->RenderInspector(i);
+				if (ImGui::Button("Delete Mesh"))
+				{
+					DeleteMesh(i);
+					ImGui::PopID();
+					break;
+				}
+				ImGui::PopID();
+			}
+
 			ImGui::SeparatorText("Materials");
 			for (_uint i = 0; i < m_iNumMaterials; ++i)
 				m_Materials[i]->RenderInspector(i);
@@ -487,4 +501,17 @@ void FBXLoaderComponent::Clear()
 	m_iNumMeshes = 0;
 	m_iNumMaterials = 0;
 	m_iNumAnimations = 0;
+}
+
+void FBXLoaderComponent::DeleteMesh(_uint index)
+{
+	if (index >= m_iNumMeshes)
+	{
+		MSG_BOX("Failed to delete : Invalid index");
+		return;
+	}
+
+	m_iNumMeshes--;
+	Safe_Release(m_Meshes[index]);
+	m_Meshes.erase(m_Meshes.begin() + index);
 }
