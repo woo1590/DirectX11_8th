@@ -52,6 +52,42 @@ HRESULT ImportLevel::Initialize()
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
 								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
 		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_FBXModelObject",
+								 ENUM_CLASS(LevelID::Import), "Layer_ImportLevel")))
+		return E_FAIL;
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Import), "Prototype_Object_EditorLight",
 								 ENUM_CLASS(LevelID::Import), "Layer_Light")))

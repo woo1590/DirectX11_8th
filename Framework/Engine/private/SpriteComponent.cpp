@@ -82,11 +82,16 @@ void SpriteComponent::SetMaterial(_uint levelID, const _string& key)
 	m_pMaterial->AddRef();
 }
 
-HRESULT SpriteComponent::ExtractRenderProxy(RenderProxy& proxy)
+HRESULT SpriteComponent::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
 {
+	RenderProxy proxy{};
+
+	proxy.worldMatrix = transform->GetWorldMatrix();
 	proxy.buffer = m_pBuffer;
 	proxy.frameIndex = m_iCurrFrameIndex;
 	proxy.material = m_pMaterial;
+
+	proxies.push_back(proxy);
 
 	return S_OK;
 }

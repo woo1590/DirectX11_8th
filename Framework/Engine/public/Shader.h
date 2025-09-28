@@ -18,6 +18,7 @@ public:
 
     HRESULT Apply(const _string& passTag);
     HRESULT BindTextureValue(const _string& name, Texture* value);
+    HRESULT SetConstantBuffer(ID3D11Buffer* constantBuffer, const _string& name);
 
     void Free()override;
 

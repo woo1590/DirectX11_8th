@@ -192,18 +192,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Cameleon.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\FreeCam.h" />
     <ClInclude Include="..\public\GamePlayLevel.h" />
+    <ClInclude Include="..\public\Hand.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\LoadingLevel.h" />
     <ClInclude Include="..\public\LogoLevel.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\PlayerCam.h" />
     <ClInclude Include="..\public\Sun.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\TestObject.h" />
     <ClInclude Include="..\public\TestLevel.h" />
     <ClInclude Include="..\public\TestObjectBody.h" />
+    <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -212,17 +217,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\Cameleon.cpp" />
     <ClCompile Include="..\private\FreeCam.cpp" />
     <ClCompile Include="..\private\GamePlayLevel.cpp" />
+    <ClCompile Include="..\private\Hand.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\LoadingLevel.cpp" />
     <ClCompile Include="..\private\LogoLevel.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\PlayerCam.cpp" />
     <ClCompile Include="..\private\Sun.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\TestObject.cpp" />
     <ClCompile Include="..\private\TestLevel.cpp" />
     <ClCompile Include="..\private\TestObjectBody.cpp" />
+    <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

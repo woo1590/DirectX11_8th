@@ -57,7 +57,7 @@ public:
     virtual void Free()override;
 
 #ifdef USE_IMGUI
-    void RenderInspector();
+    virtual void RenderInspector();
 #endif
 
 protected:
@@ -67,6 +67,7 @@ protected:
 
     std::vector<Component*> m_Components;
     std::unordered_map<std::type_index, Component*> m_ComponentMap;
+    RenderGroup m_eRenderGroup = RenderGroup::NonBlend;
 };
 
 NS_END

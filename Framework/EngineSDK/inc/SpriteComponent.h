@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 
 class Material;
 class VIBuffer;
+class TransformComponent;
 class ENGINE_DLL SpriteComponent :
     public Component
 {
@@ -33,7 +34,7 @@ public:
     void SetBuffer(_uint levelID, const _string& key);
     void SetMaterial(_uint levelID, const _string& key);
 
-    HRESULT ExtractRenderProxy(RenderProxy& proxy);
+    HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
     Component* Clone() { return new SpriteComponent(*this); }
     void Free()override;
 
@@ -42,7 +43,6 @@ public:
 #endif
 
 private:
-
     RenderGroup m_eGroup{};
 
     VIBuffer* m_pBuffer = nullptr;

@@ -32,7 +32,6 @@ HRESULT TestObject::Initialize_Prototype()
 
 	m_strInstanceTag = "TestObject";
 
-	AddComponent<AudioSource>();
 
 	return S_OK;
 }
@@ -48,9 +47,6 @@ HRESULT TestObject::Initialize(InitDESC* arg)
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
 
-	auto random = EngineCore::GetInstance()->GetRandom();
-	m_pTransform->SetPosition(_float3(random->get<_float>(-10.f, 10.f), 0.f,random->get<_float>(-15.f,10.f)));
-	
 	return S_OK;
 }
 
@@ -120,7 +116,6 @@ HRESULT TestObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& 
 				return E_FAIL;
 		}
 	}
-
 	return S_OK;
 }
 

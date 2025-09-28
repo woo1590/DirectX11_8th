@@ -1,5 +1,6 @@
 #include "EnginePCH.h"
 #include "PartObject.h"
+#include "ContainerObject.h"
 
 PartObject::PartObject()
 	:Object()
@@ -22,7 +23,13 @@ HRESULT PartObject::Initialize_Prototype()
 HRESULT PartObject::Initialize(InitDESC* arg)
 {
 	PART_OBJECT_DESC* desc = static_cast<PART_OBJECT_DESC*>(arg);
-	m_pParent = desc->parent;	//여기서 addref하면 상호참조 걸리는디
+	m_pParent = desc->parent;	//여기서 addref하면 상호참조
+
+	/*If use socket*/
+	if (desc->socketTransform)
+		m_pTransform->SetParent(desc->socketTransform);
+	else
+		m_pTransform->SetParent(m_pParent->GetComponent<TransformComponent>());
 
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;

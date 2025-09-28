@@ -79,10 +79,10 @@ HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		vertices[i].position = vertexFormats[i].position;
-		XMVector3TransformCoord(XMLoadFloat3(&vertices[i].position), preTransformMatrix);
+		XMStoreFloat3(&vertices[i].position, XMVector3TransformCoord(XMLoadFloat3(&vertices[i].position), preTransformMatrix));
 
 		vertices[i].normal = vertexFormats[i].normal;
-		XMVector3TransformNormal(XMLoadFloat3(&vertices[i].normal), preTransformMatrix);
+		XMStoreFloat3(&vertices[i].normal, XMVector3TransformNormal(XMLoadFloat3(&vertices[i].normal), preTransformMatrix));
 
 		vertices[i].texCoord = vertexFormats[i].texCoord;
 		vertices[i].tangent = vertexFormats[i].tangent;

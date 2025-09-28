@@ -18,13 +18,13 @@ public:
     void SetViewMatrix(_float4x4 viewMatrix) { m_ViewMatrix = viewMatrix; }
     void SetProjMatrix(_float4x4 projMatrix) { m_ProjMatrix = projMatrix; }
     
-    // È÷Èý ¿ÀÁÜ¹ß½Î
     _float4x4 GetViewMatirx()const { return m_ViewMatrix; }
     _float4x4 GetViewMatrixInverse()const { return m_ViewMatrixInverse; }
     _float4x4 GetProjMatrix()const { return m_ProjMatrix; }
     _float4x4 GetProjMatrixInverse()const { return m_ProjMatrixInverse; }
 
     _float3 GetCamPosition()const { return m_CamPosition; }
+
 
     void Free()override;
 

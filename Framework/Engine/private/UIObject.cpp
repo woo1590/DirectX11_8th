@@ -70,17 +70,12 @@ void UIObject::LateUpdate(_float dt)
 
 HRESULT UIObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
-	RenderProxy proxy{};
-
 	auto sprite = GetComponent<SpriteComponent>();
+
 	if (!sprite)
 		return S_OK;
-	
-	proxy.worldMatrix = m_pTransform->GetWorldMatrix();
 
-	sprite->ExtractRenderProxy(proxy);
-
-	proxies[ENUM_CLASS(RenderGroup::UI)].push_back(proxy);
+	sprite->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::UI)]);
 
 	return S_OK;
 }

@@ -56,6 +56,7 @@ namespace Engine
 		/*Specular Texture*/	
 		_uint numSpecularTexture{};
 		std::vector<_string> specularTextureName;
+
 		
 	}MTRL_FORMAT;
 	
@@ -63,7 +64,7 @@ namespace Engine
 	{
 		_uint numBones{};
 	}SKELETON_FORMAT;
-
+	
 	typedef struct tagBoneFormat
 	{
 		_char boneTag[MAX_PATH];

@@ -24,10 +24,11 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
-    void SetPosition(_float3 position) { m_Position = position; m_isDirty = true; }
-    void SetScale(_float3 scale) { m_Scale = scale; m_isDirty = true; }
+    void SetPosition(_float3 position) { m_Position = position; MakeDirty(); }
+    void SetScale(_float3 scale) { m_Scale = scale; MakeDirty(); }
     void SetRotation(_float3 rotation);
     void SetForward(_float3 direction);
+    void SetParent(TransformComponent* parent);
 
     void Translate(_fvector velocity);
 
@@ -52,6 +53,8 @@ public:
     _float4x4 GetWorldMatrix();
     _float4x4 GetWorldMatrixInverse();
 
+    _bool IsDirty()const { return m_isDirty; }
+
     Component* Clone()override;
     void Free()override;
 
@@ -61,6 +64,8 @@ public:
 
 private:
     void ResolveDirty();
+    void MakeDirty();
+    void MakeChildrenDirty();
 
     _float3 m_Position{};
     _float3 m_Scale{ 1.f,1.f,1.f };
@@ -75,6 +80,9 @@ private:
     _float4x4 m_WorldMatrixInverse{};
 
     _bool m_isDirty = true;
+    TransformComponent* m_pParent = nullptr;
+    std::vector<TransformComponent*> m_Childrens;
+
 };
 
 NS_END

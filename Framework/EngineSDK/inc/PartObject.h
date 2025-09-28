@@ -11,6 +11,7 @@ public:
     typedef struct PartObjectDesc :public OBJECT_DESC
     {
         ContainerObject* parent = nullptr;
+        TransformComponent* socketTransform = nullptr;
 
     }PART_OBJECT_DESC;
 

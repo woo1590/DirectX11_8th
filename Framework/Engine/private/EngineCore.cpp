@@ -127,9 +127,9 @@ void EngineCore::Tick(_float dt)
 	m_pSoundManager->Update();
 
 	m_pObjectManager->PriorityUpdate(dt);
-	m_pPipeLine->Update();
 	m_pObjectManager->Update(dt);
 	m_pObjectManager->LateUpdate(dt);
+	m_pPipeLine->Update();
 	
 	m_pLevelManager->Update(dt);
 	m_pLevelManager->Render(); /*Debug Only*/

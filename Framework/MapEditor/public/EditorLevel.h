@@ -20,6 +20,7 @@ public:
     void Free()override;
 
 private:
+    HRESULT Initialize_DefaultResource();
     HRESULT Initialize_LayerLight(const _string& layerTag);
     HRESULT Initialize_LayerCamera(const _string& layerTag);
 };

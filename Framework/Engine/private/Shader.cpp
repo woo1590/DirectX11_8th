@@ -110,6 +110,18 @@ HRESULT Shader::BindTextureValue(const _string& name, Texture* value)
     return srvVariable->SetResource(srv);
 }
 
+HRESULT Shader::SetConstantBuffer(ID3D11Buffer* constantBuffer, const _string& name)
+{
+    ID3DX11EffectConstantBuffer* buffer = m_pEffect->GetConstantBufferByName(name.c_str());
+    if (!buffer)
+        return E_FAIL;
+
+    if (FAILED(buffer->SetConstantBuffer(constantBuffer)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 void Shader::Free()
 {
     __super::Free();

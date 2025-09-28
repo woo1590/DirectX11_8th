@@ -63,10 +63,6 @@ HRESULT GamePlayLevel::Intialize_LayerCamera(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_FreeCam",
-								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -79,6 +75,10 @@ HRESULT GamePlayLevel::Initialize_LayerGameObject(const _string& layerTag)
 		return E_FAIL;
 
 	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay),"Prototype_Object_Terrain",
+								ENUM_CLASS(LevelID::GamePlay),layerTag)))
+		return E_FAIL;
+	
+	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay),"Prototype_Object_Player",
 								ENUM_CLASS(LevelID::GamePlay),layerTag)))
 		return E_FAIL;
 

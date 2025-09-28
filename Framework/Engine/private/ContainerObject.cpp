@@ -66,6 +66,17 @@ void ContainerObject::LateUpdate(_float dt)
 	}
 }
 
+HRESULT ContainerObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	for (const auto& part : m_PartObjects)
+	{
+		if (part)
+			part->ExtractRenderProxies(proxies);
+	}
+
+	return S_OK;
+}
+
 void ContainerObject::Free()
 {
 	__super::Free();

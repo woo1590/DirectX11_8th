@@ -1,5 +1,7 @@
 #include "EnginePCH.h"
 #include "TransformComponent.h"
+#include "Object.h"
+#include "ModelComponent.h"
 
 TransformComponent::TransformComponent(Object* pOwner)
 	:Component(pOwner)
@@ -72,7 +74,7 @@ void TransformComponent::SetRotation(_float3 rotation)
 
 	m_Rotation = rotation;
 
-	m_isDirty = true;
+	MakeDirty();
 }
 
 void TransformComponent::SetForward(_float3 direction)
@@ -98,6 +100,13 @@ void TransformComponent::SetForward(_float3 direction)
 	m_Rotation = { pitch,yaw,roll };
 
 	m_isDirty = true;
+	MakeDirty();
+}
+
+void TransformComponent::SetParent(TransformComponent* parent)
+{
+	m_pParent = parent;
+	m_pParent->m_Childrens.push_back(this);
 }
 
 void TransformComponent::Translate(_fvector velocity)
@@ -105,6 +114,7 @@ void TransformComponent::Translate(_fvector velocity)
 	XMStoreFloat3(&m_Position, XMLoadFloat3(&m_Position) + velocity);
 
 	m_isDirty = true;
+	MakeDirty();
 }
 
 _float4x4 TransformComponent::GetWorldMatrix()
@@ -152,6 +162,9 @@ void TransformComponent::RenderInspector()
 
 		m_isDirty |= ImGui::DragFloat3("Position", &m_Position.x, 0.1f, -FLT_MAX, FLT_MAX);
 		m_isDirty |= ImGui::DragFloat3("Scale", &m_Scale.x, 0.1f, -FLT_MAX, FLT_MAX);
+
+		if (m_isDirty)
+			MakeChildrenDirty();
 		
 		if (ImGui::DragFloat3("Rotation", &degree.x, 0.1f, -FLT_MAX, FLT_MAX))
 		{
@@ -174,19 +187,41 @@ void TransformComponent::ResolveDirty()
 	{
 		_vector quat = XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&m_Rotation));
 
-		_matrix s = XMMatrixScalingFromVector(XMLoadFloat3(&m_Scale));
-		_matrix r = XMMatrixRotationQuaternion(quat);
-		_matrix t = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Position));
+		_matrix scaleMat = XMMatrixScalingFromVector(XMLoadFloat3(&m_Scale));
+		_matrix rotMat = XMMatrixRotationQuaternion(quat);
+		_matrix transMat = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Position));
 
-		XMStoreFloat4x4(&m_WorldMatrix, s * r * t);
-		XMStoreFloat4x4(&m_WorldMatrixInverse, XMMatrixInverse(nullptr, s * r * t));
+		if (m_pParent)
+		{
+			_float4x4 parentMat = m_pParent->GetWorldMatrix();
+			XMStoreFloat4x4(&m_WorldMatrix, scaleMat * rotMat * transMat * XMLoadFloat4x4(&parentMat));
+		}
+		else
+			XMStoreFloat4x4(&m_WorldMatrix, scaleMat * rotMat * transMat);
 
-		XMStoreFloat3(&m_Right, r.r[0]);
-		XMStoreFloat3(&m_Up, r.r[1]);
-		XMStoreFloat3(&m_Forward, r.r[2]);
+		XMStoreFloat4x4(&m_WorldMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)));
+
+		XMStoreFloat3(&m_Right, rotMat.r[0]);
+		XMStoreFloat3(&m_Up, rotMat.r[1]);
+		XMStoreFloat3(&m_Forward, rotMat.r[2]);
 		XMStoreFloat4(&m_Quaternion, quat);
 
 		m_isDirty = false;
+	}
+}
+
+void TransformComponent::MakeDirty()
+{
+	m_isDirty = true;
+	MakeChildrenDirty();
+}
+
+void TransformComponent::MakeChildrenDirty()
+{
+	for (const auto& child : m_Childrens)
+	{
+		child->m_isDirty = true;
+		child->MakeChildrenDirty();
 	}
 }
 

@@ -9,6 +9,9 @@
 #include "FreeCam.h"
 #include "Terrain.h"
 #include "Sun.h"
+#include "Player.h"
+#include "PlayerCam.h"
+#include "Hand.h"
 
 //component
 #include "TransformComponent.h"
@@ -122,16 +125,34 @@ HRESULT Loader::LoadingForGamePlay()
 	/*Load Shader*/
 	m_strDebugText = L"셰이더 로딩중..";
 
-	/*Load Model*/
+	/*Load Models*/
 	m_strDebugText = L"리소스 로딩중..";
 	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::GamePlay), "Buffer_Terrain", VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
 		return E_FAIL;
 
-	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/test/test.model", "Model_Test")))
+	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/test/test.model",
+		"Model_Test")))
 		return E_FAIL;
 
+	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/playerhand/playerhand.model",
+		"Model_PlayerHand")))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/stage1/stage1_wall0.model",
+		"Model_Stage1_Wall0")))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/boss/boss_stage.model",
+		"Model_BossStage")))
+		return E_FAIL;
+
+
 	/*Load Animation Set*/
-	if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/test.animationset", "AnimationSet_Test")))
+	if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/test.animationset",
+		"AnimationSet_Test")))
+		return E_FAIL;
+
+	if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/playerhand.animationset", "AnimationSet_PlayerHand")))
 		return E_FAIL;
 
 	/*Load Material*/
@@ -154,6 +175,15 @@ HRESULT Loader::LoadingForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_TestObject", TestObject::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Player", Player::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PlayerCam", PlayerCam::Create())))
+		return E_FAIL;
+
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Hand", Hand::Create())))
 		return E_FAIL;
 
 	m_strDebugText = L"로딩완료";

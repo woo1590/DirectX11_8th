@@ -30,3 +30,18 @@ cbuffer BoneMatrices : register(b3)
 {
     float4x4 g_BonePalette[512];
 };
+
+/*RasterizerState setting*/
+RasterizerState RS_CullNone
+{
+    FillMode = Solid;
+    CullMode = None;
+};
+
+/*Blend setting*/
+BlendState BS_InvSrc
+{
+    BlendEnable[0] = true;
+    SrcBlend = SRC_ALPHA;
+    DestBlend = INV_SRC_ALPHA;
+};

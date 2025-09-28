@@ -49,6 +49,12 @@
     <Filter Include="03. Object\EditorLight">
       <UniqueIdentifier>{7814f656-85b1-45ac-8efd-bbb2b17003f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\Chunk">
+      <UniqueIdentifier>{c7b117fe-1068-4d92-b8c8-dc11480a2350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\Chunk\GridBuffer">
+      <UniqueIdentifier>{6e193719-267a-46d0-b6f6-69ec1a9f8dd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -87,6 +93,12 @@
     <ClInclude Include="..\public\MapEditorLight.h">
       <Filter>03. Object\EditorLight</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Chunk.h">
+      <Filter>03. Object\Chunk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBufferGrid.h">
+      <Filter>03. Object\Chunk\GridBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -113,6 +125,12 @@
     <ClCompile Include="..\private\MapEditorLight.cpp">
       <Filter>03. Object\EditorLight</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Chunk.cpp">
+      <Filter>03. Object\Chunk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBufferGrid.cpp">
+      <Filter>03. Object\Chunk\GridBuffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapEditor.ico">
@@ -132,6 +150,9 @@
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_Chunk.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -3,6 +3,9 @@
 #include "EngineCore.h"
 #include "LoadingLevel.h"
 
+//object
+#include "Socket.h"
+
 MainApp::MainApp()
 {
     // È÷È÷ ¿ÀÁÜ¹ß½Î
@@ -93,6 +96,7 @@ void MainApp::Free()
 
 HRESULT MainApp::LoadStaticLevel()
 {
+    /*Load Shader*/
     if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",
         VTXTEX::elements, VTXTEX::numElement)))
         return E_FAIL;
@@ -111,6 +115,10 @@ HRESULT MainApp::LoadStaticLevel()
 
     if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxSkinnedMesh.hlsl", "Shader_VtxSkinnedMesh",
         VTXSKINNEDMESH::elements, VTXSKINNEDMESH::numElement)))
+        return E_FAIL;
+    
+    /*Load Prototype Object*/
+    if(FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static),"Prototype_Object_Socket",Socket::Create())))
         return E_FAIL;
 
     return S_OK;

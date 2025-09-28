@@ -43,6 +43,11 @@ HRESULT FBXMaterial::Initialize(Shader* pShader, const _string& shaderTag, aiMat
 		aiString filePath;
 		aiMat->GetTexture(aiTextureType_DIFFUSE, i, &filePath);
 
+		fs::path name = filePath.C_Str();
+
+		if (name.stem().string() == "default")
+			return S_OK;
+
 		fs::path fullPath = dirPath / fs::path(filePath.C_Str()).filename();
 		auto tex = Texture::Create(fullPath.string());
 		if (!tex)

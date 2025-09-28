@@ -22,6 +22,38 @@ namespace math
 
 		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(colMatrix), m);
 	}
+
+	inline _float3 ToEuler(_fvector quat)
+	{
+		_float4x4 rotMat;
+		XMStoreFloat4x4(&rotMat, XMMatrixRotationQuaternion(quat));
+
+		_float pitch, yaw, roll;
+
+		_float s = -rotMat._23;
+		if (s < -1.f)
+			s = -1.f;
+		else if (s > 1.f)
+			s = 1.f;
+
+		pitch = asinf(s);
+		if (fabsf(cosf(pitch) > 0.0001f))
+		{
+			yaw = atan2(rotMat._13, rotMat._33);
+			roll = atan2(rotMat._21, rotMat._22);
+		}
+		else
+		{
+			yaw = atan2(-rotMat._31,rotMat._11);
+			roll = 0.f;
+		}
+
+		pitch = XMConvertToDegrees(pitch);
+		yaw = XMConvertToDegrees(yaw);
+		roll = XMConvertToDegrees(roll);
+
+		return _float3(pitch, yaw, roll);
+	}
 };
 
 namespace DXWrap

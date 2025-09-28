@@ -113,6 +113,9 @@ HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
 
 HRESULT Renderer::RenderBlend(const std::vector<RenderProxy>& proxies)
 {
+	for (const auto& proxy : proxies)
+		DrawProxy(proxy, "Blend_Pass");
+
 	return S_OK;
 }
 

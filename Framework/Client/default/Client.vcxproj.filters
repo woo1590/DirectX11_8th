@@ -70,6 +70,21 @@
     <Filter Include="02. Object\TestObject\TestObjectBody">
       <UniqueIdentifier>{935c971c-0550-420c-ae32-5793c55d7ddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Player">
+      <UniqueIdentifier>{250ef2b7-4328-4502-868e-33a41aac750c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon">
+      <UniqueIdentifier>{78e9e4ef-6ee6-4e8e-89df-3d7ad0a0c7f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Hand">
+      <UniqueIdentifier>{a6dcfacb-c174-4d30-a979-d80548f2408e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\PlayerCam">
+      <UniqueIdentifier>{9e69e801-b7e5-4cee-b1c0-6e162a7788fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Cameleon">
+      <UniqueIdentifier>{8b429c1d-86ef-4425-b6fa-a46a682b47ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -126,6 +141,21 @@
     <ClInclude Include="..\public\TestObjectBody.h">
       <Filter>02. Object\TestObject\TestObjectBody</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player.h">
+      <Filter>02. Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerCam.h">
+      <Filter>02. Object\Player\PlayerCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Hand.h">
+      <Filter>02. Object\Player\Hand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon.h">
+      <Filter>02. Object\Player\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cameleon.h">
+      <Filter>02. Object\Player\Weapon\Cameleon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -169,6 +199,21 @@
     </ClCompile>
     <ClCompile Include="..\private\TestObjectBody.cpp">
       <Filter>02. Object\TestObject\TestObjectBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player.cpp">
+      <Filter>02. Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerCam.cpp">
+      <Filter>02. Object\Player\PlayerCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hand.cpp">
+      <Filter>02. Object\Player\Hand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon.cpp">
+      <Filter>02. Object\Player\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cameleon.cpp">
+      <Filter>02. Object\Player\Weapon\Cameleon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -217,6 +217,9 @@
     <Filter Include="05. Object Component\Sprite Component">
       <UniqueIdentifier>{3a5ca94e-aae6-4d72-a928-3a917e63471a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Object\ContainerObject\Socket">
+      <UniqueIdentifier>{34927f9d-20eb-4078-bf77-706579c7a533}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -468,6 +471,9 @@
     <ClInclude Include="..\public\Struct_Vertex.h">
       <Filter>98. Etc\Defines\Engine_Struct</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Socket.h">
+      <Filter>04. Object\ContainerObject\Socket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -670,6 +676,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PartObject.cpp">
       <Filter>04. Object\ContainerObject\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Socket.cpp">
+      <Filter>04. Object\ContainerObject\Socket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

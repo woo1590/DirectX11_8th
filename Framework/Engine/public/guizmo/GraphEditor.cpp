@@ -1056,7 +1056,7 @@ bool EditOptions(Options& options)
         ImColor frameFocus(options.mFrameFocus);
 
         updated |= ImGui::ColorEdit4("Background", (float*)&backgroundColor);
-        updated |= ImGui::ColorEdit4("Grid", (float*)&gridColor);
+        updated |= ImGui::ColorEdit4("Chunk", (float*)&gridColor);
         updated |= ImGui::ColorEdit4("Selected Node Border", (float*)&selectedNodeBorderColor);
         updated |= ImGui::ColorEdit4("Node Border", (float*)&nodeBorderColor);
         updated |= ImGui::ColorEdit4("Quad Selection", (float*)&quadSelection);
@@ -1078,7 +1078,7 @@ bool EditOptions(Options& options)
     {
         updated |= ImGui::InputFloat4("Minimap", &options.mMinimap.Min.x);
         updated |= ImGui::InputFloat("Line Thickness", &options.mLineThickness);
-        updated |= ImGui::InputFloat("Grid Size", &options.mGridSize);
+        updated |= ImGui::InputFloat("Chunk Size", &options.mGridSize);
         updated |= ImGui::InputFloat("Rounding", &options.mRounding);
         updated |= ImGui::InputFloat("Zoom Ratio", &options.mZoomRatio);
         updated |= ImGui::InputFloat("Zoom Lerp Factor", &options.mZoomLerpFactor);
@@ -1101,7 +1101,7 @@ bool EditOptions(Options& options)
         }
 
         updated |= ImGui::Checkbox("Allow Quad Selection", &options.mAllowQuadSelection);
-        updated |= ImGui::Checkbox("Render Grid", &options.mRenderGrid);
+        updated |= ImGui::Checkbox("Render Chunk", &options.mRenderGrid);
         updated |= ImGui::Checkbox("Draw IO names on hover", &options.mDrawIONameOnHover);
     }
 

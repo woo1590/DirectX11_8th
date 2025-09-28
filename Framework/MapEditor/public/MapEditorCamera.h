@@ -23,6 +23,7 @@ public:
     void Free()override;
 
 private:
+    _bool m_ActiveKeyboard = true;
 
 };
 

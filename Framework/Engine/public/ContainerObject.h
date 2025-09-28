@@ -25,6 +25,7 @@ public:
     virtual void PriorityUpdate(_float dt)override;
     virtual void Update(_float dt)override;
     virtual void LateUpdate(_float dt)override;
+    virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;

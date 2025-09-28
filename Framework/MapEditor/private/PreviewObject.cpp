@@ -1,5 +1,6 @@
 #include "MapEditorPCH.h"
 #include "PreviewObject.h"
+#include "ModelComponent.h"
 
 PreviewObject::PreviewObject()
 	:Object()
@@ -7,7 +8,8 @@ PreviewObject::PreviewObject()
 }
 
 PreviewObject::PreviewObject(const PreviewObject& prototype)
-	:Object(prototype)
+	:Object(prototype),
+	m_Prefab(prototype.m_Prefab)
 {
 }
 
@@ -28,6 +30,8 @@ HRESULT PreviewObject::Initialize_Prototype(PREFAB prefab)
 
 	m_Prefab = prefab;
 
+	AddComponent<ModelComponent>();
+
 	return S_OK;
 }
 
@@ -35,6 +39,9 @@ HRESULT PreviewObject::Initialize(InitDESC* arg)
 {
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	auto model = GetComponent<ModelComponent>();
+	model->SetModel(ENUM_CLASS(LevelID::Editor), m_Prefab.modelTag);
 
 	return S_OK;
 }

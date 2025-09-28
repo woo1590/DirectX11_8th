@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "TransformComponent.h"
 #include "ModelComponent.h"
+#include "SpriteComponent.h"
 
 _uint Object::m_iInstanceID = 0;
 
@@ -10,7 +11,8 @@ Object::Object()
 }
 
 Object::Object(const Object& prototype)
-	:m_strInstanceTag(prototype.m_strInstanceTag)
+	:m_strInstanceTag(prototype.m_strInstanceTag),
+	m_eRenderGroup(prototype.m_eRenderGroup)
 {
 	for (const auto& pair : prototype.m_ComponentMap)
 	{
@@ -74,10 +76,17 @@ void Object::LateUpdate(_float dt)
 HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
 	auto model = GetComponent<ModelComponent>();
-	if (!model)
+	auto sprite = GetComponent<SpriteComponent>();
+
+	if (!model && !sprite)
 		return S_OK;
 
-	return model->ExtractRenderProxy(m_pTransform->GetWorldMatrix(), proxies[ENUM_CLASS(RenderGroup::NonBlend)]);
+	if (model)
+		return model->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
+	else if (sprite)
+		return sprite->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
+
+	return S_OK;
 }
 
 void Object::Free()
