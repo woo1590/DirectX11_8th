@@ -55,6 +55,18 @@
     <Filter Include="03. Object\Chunk\GridBuffer">
       <UniqueIdentifier>{6e193719-267a-46d0-b6f6-69ec1a9f8dd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Level Component\PickingSystem">
+      <UniqueIdentifier>{ac05541f-0c33-428a-aa09-0ec7bcfe5490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Object Component\Pickable Component">
+      <UniqueIdentifier>{896e645d-dd1b-444b-a5da-b776974a7172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Object Component\Pickable Component\ChunkPickable">
+      <UniqueIdentifier>{1fe3a464-5bb4-4902-968a-e44dcf66b89f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Object Component\Pickable Component\ModelPickable">
+      <UniqueIdentifier>{b097a0e1-1812-4ce3-9249-83119eeca898}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -99,6 +111,18 @@
     <ClInclude Include="..\public\VIBufferGrid.h">
       <Filter>03. Object\Chunk\GridBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PickingSystem.h">
+      <Filter>02. Level Component\PickingSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PickableComponent.h">
+      <Filter>04. Object Component\Pickable Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ChunkPickable.h">
+      <Filter>04. Object Component\Pickable Component\ChunkPickable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ModelPickable.h">
+      <Filter>04. Object Component\Pickable Component\ModelPickable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -130,6 +154,18 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBufferGrid.cpp">
       <Filter>03. Object\Chunk\GridBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PickingSystem.cpp">
+      <Filter>02. Level Component\PickingSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PickableComponent.cpp">
+      <Filter>04. Object Component\Pickable Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ChunkPickable.cpp">
+      <Filter>04. Object Component\Pickable Component\ChunkPickable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ModelPickable.cpp">
+      <Filter>04. Object Component\Pickable Component\ModelPickable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #include "Chunk.h"
 #include "EngineCore.h"
 #include "SpriteComponent.h"
+#include "ChunkPickable.h"
 #include "Shader.h"
 
 Chunk::Chunk()
@@ -10,29 +11,34 @@ Chunk::Chunk()
 }
 
 Chunk::Chunk(const Chunk& prototype)
-	:Object(prototype)
+	:Object(prototype),
+	m_pPickingSystem(prototype.m_pPickingSystem)
 {
+	m_pPickingSystem->AddRef();
 }
 
-Chunk* Chunk::Create()
+Chunk * Chunk::Create(PickingSystem* picking)
 {
 	Chunk* Instance = new Chunk();
 
-	if (FAILED(Instance->Initialize_Prototype()))
+	if (FAILED(Instance->Initialize_Prototype(picking)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT Chunk::Initialize_Prototype()
+HRESULT Chunk::Initialize_Prototype(PickingSystem* picking)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
 	m_strInstanceTag = "Chunk";
 	m_eRenderGroup = RenderGroup::Blend;
+	m_pPickingSystem = picking;
+	m_pPickingSystem->AddRef();
 
 	AddComponent<SpriteComponent>();
+	AddComponent<ChunkPickable>();
 
 	return S_OK;
 }
@@ -82,8 +88,8 @@ HRESULT Chunk::Initialize(InitDESC* arg)
 	if (FAILED(device->CreateBuffer(&cbDesc, nullptr, &m_pCBPerChunk)))
 		return E_FAIL;
 
-	/*Set Plane*/
-	m_PlaneXZ = _float4(0.f, 1.f, 0.f, 0.f);
+	/*Register PickingSystem*/
+	m_pPickingSystem->RegisterComponent(GetComponent<ChunkPickable>());
 
 	return S_OK;
 }
@@ -97,7 +103,7 @@ void Chunk::Update(_float dt)
 {
 	__super::Update(dt);
 	
-
+	UpdatePlane();
 	UpdateConstantBuffer();
 	BindConstantBuffer();
 
@@ -124,13 +130,13 @@ void Chunk::Free()
 	__super::Free();
 
 	Safe_Release(m_pCBPerChunk);
+	Safe_Release(m_pPickingSystem);
 }
 
-void Chunk::UpdateConstantBuffer()
+_float3 Chunk::GetHoverPosition()
 {
 	auto engine = EngineCore::GetInstance();
 
-	/*Compute HoverPosition (Plane - Ray Intersect)*/
 	POINT mousePos;
 	GetCursorPos(&mousePos);
 	ScreenToClient(engine->GetWindowHandle(), &mousePos);
@@ -139,7 +145,7 @@ void Chunk::UpdateConstantBuffer()
 	_float4x4 viewMat = engine->GetViewMatrix();
 	D3D11_VIEWPORT viewPort{};
 	_uint numView = 1;
-	engine->GetDeviceContext()->RSGetViewports(&numView,&viewPort);
+	engine->GetDeviceContext()->RSGetViewports(&numView, &viewPort);
 
 	XMStoreFloat3(&mouse, XMVector3Unproject(XMVectorSetW(XMLoadFloat3(&mouse), 1.f),
 		viewPort.TopLeftX, viewPort.TopLeftY, viewPort.Width, viewPort.Height,
@@ -152,7 +158,20 @@ void Chunk::UpdateConstantBuffer()
 	_float3 hoverPosition;
 	XMStoreFloat3(&hoverPosition, XMPlaneIntersectLine(XMLoadFloat4(&m_PlaneXZ), XMLoadFloat3(&camPosition), XMLoadFloat3(&mouse)));
 
-	/*Update Constant Buffer*/
+	return hoverPosition;
+}
+
+void Chunk::UpdatePlane()
+{
+	_float y = m_pTransform->GetPosition().y;
+
+	m_PlaneXZ = _float4{ 0.f,1.f,0.f,-y };
+}
+
+void Chunk::UpdateConstantBuffer()
+{
+	auto engine = EngineCore::GetInstance();
+
 	_float3 position = m_pTransform->GetPosition();
 
 	D3D11_MAPPED_SUBRESOURCE cbPerChunkData{};
@@ -160,7 +179,7 @@ void Chunk::UpdateConstantBuffer()
 	chunk.chunkMin.x = position.x - CELL_SIZE * CHUNK_SIZE * 0.5f;
 	chunk.chunkMin.y = 0.f;
 	chunk.chunkMin.z = position.z - CELL_SIZE * CHUNK_SIZE * 0.5f;
-	chunk.hoverPosition = hoverPosition;
+	chunk.hoverPosition = GetHoverPosition();
 	chunk.cellSize = CELL_SIZE;
 
 
@@ -172,7 +191,6 @@ void Chunk::UpdateConstantBuffer()
 
 HRESULT Chunk::BindConstantBuffer()
 {
-	/*Bind Constant Buffer*/
 	auto shader = EngineCore::GetInstance()->GetShader("Shader_Chunk");
 
 	return shader->SetConstantBuffer(m_pCBPerChunk, "PerChunk");

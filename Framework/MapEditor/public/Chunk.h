@@ -17,6 +17,7 @@ typedef struct tagCBPerChunk
 
 }CB_PER_CHUNK;
 
+class PickingSystem;
 class Chunk :
     public Object
 {
@@ -31,8 +32,8 @@ private:
     virtual ~Chunk() = default;
 
 public:
-    static Chunk* Create();
-    HRESULT Initialize_Prototype()override;
+    static Chunk * Create(PickingSystem* picking);
+    HRESULT Initialize_Prototype(PickingSystem* picking);
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
@@ -42,6 +43,8 @@ public:
     void Free()override;
 
 private:
+    _float3 GetHoverPosition();
+    void UpdatePlane();
     void UpdateConstantBuffer();
     HRESULT BindConstantBuffer();
 
@@ -49,6 +52,8 @@ private:
 
     _float4 m_PlaneXZ{};
     ID3D11Buffer* m_pCBPerChunk = nullptr;
+
+    PickingSystem* m_pPickingSystem = nullptr;
 };
 
 NS_END

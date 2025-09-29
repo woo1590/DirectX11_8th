@@ -29,6 +29,7 @@ HRESULT PreviewObject::Initialize_Prototype(PREFAB prefab)
 		return E_FAIL;
 
 	m_Prefab = prefab;
+	m_strInstanceTag = m_Prefab.prototypeTag;
 
 	AddComponent<ModelComponent>();
 
@@ -42,6 +43,8 @@ HRESULT PreviewObject::Initialize(InitDESC* arg)
 
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Editor), m_Prefab.modelTag);
+
+	m_pTransform->SetScale(m_Prefab.scale);
 
 	return S_OK;
 }

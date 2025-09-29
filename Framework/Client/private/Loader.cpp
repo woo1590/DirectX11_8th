@@ -24,6 +24,7 @@
 
 Loader::Loader()
 {
+	
 }
 
 Loader* Loader::Create(LevelID nextLevelID)

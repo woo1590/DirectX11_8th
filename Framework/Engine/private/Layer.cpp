@@ -72,6 +72,17 @@ void Layer::Update(_float dt)
 
 void Layer::LateUpdate(_float dt)
 {
-	for (const auto& object : m_Objects)
-		object->LateUpdate(dt);
+	for (auto iter = m_Objects.begin(); iter != m_Objects.end();)
+	{
+		(*iter)->LateUpdate(dt);
+
+		/*Check Dead Object*/
+		if ((*iter)->IsDead())
+		{
+			Safe_Release(*iter);
+			iter = m_Objects.erase(iter);
+		}
+		else
+			++iter;
+	}
 }

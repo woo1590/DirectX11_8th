@@ -53,6 +53,9 @@ public:
     virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     _string GetInstanceTag()const { return m_strInstanceTag; }
 
+    void SetDead() { m_isDead = true; }
+    _bool IsDead()const { return m_isDead; }
+
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
 
@@ -68,6 +71,7 @@ protected:
     std::vector<Component*> m_Components;
     std::unordered_map<std::type_index, Component*> m_ComponentMap;
     RenderGroup m_eRenderGroup = RenderGroup::NonBlend;
+    _bool m_isDead = false;
 };
 
 NS_END

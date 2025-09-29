@@ -188,12 +188,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Chunk.h" />
+    <ClInclude Include="..\public\ChunkPickable.h" />
     <ClInclude Include="..\public\MapEditorCamera.h" />
     <ClInclude Include="..\public\EditorLevel.h" />
     <ClInclude Include="..\public\MapEditorLight.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\MapEditorPanel.h" />
     <ClInclude Include="..\public\MapEditor_Defines.h" />
+    <ClInclude Include="..\public\ModelPickable.h" />
+    <ClInclude Include="..\public\PickableComponent.h" />
+    <ClInclude Include="..\public\PickingSystem.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="..\public\VIBufferGrid.h" />
     <ClInclude Include="framework.h" />
@@ -204,11 +208,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Chunk.cpp" />
+    <ClCompile Include="..\private\ChunkPickable.cpp" />
     <ClCompile Include="..\private\MapEditorCamera.cpp" />
     <ClCompile Include="..\private\EditorLevel.cpp" />
     <ClCompile Include="..\private\MapEditorLight.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\MapEditorPanel.cpp" />
+    <ClCompile Include="..\private\ModelPickable.cpp" />
+    <ClCompile Include="..\private\PickableComponent.cpp" />
+    <ClCompile Include="..\private\PickingSystem.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\VIBufferGrid.cpp" />
     <ClCompile Include="MapEditor.cpp" />

@@ -1,6 +1,5 @@
 #pragma once
 #include "Object.h"
-
 NS_BEGIN(MapEditor)
 
 class PreviewObject :

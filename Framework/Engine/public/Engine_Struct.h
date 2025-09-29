@@ -51,9 +51,10 @@ namespace Engine
 	{
 		_string prototypeTag{};
 		_string modelTag{};
+		_string layerTag{};
 
 		_float3 position{};
-		_float3 scale{};
+		_float3 scale{ 1.f,1.f,1.f };
 		_float3 rotation{};
 	}PREFAB;
 }
