@@ -107,8 +107,11 @@ void MapEditorPanel::KeyInput(PICK_RESULT pickRes)
 	ImGuiIO& io = ImGui::GetIO();
 	if (engine->IsMousePress(MouseButton::LButton) && m_iSelectedIndex != -1 && !io.WantCaptureMouse)
 		AddObjectToLayer(pickRes);
-	if (engine->IsMousePress(MouseButton::RButton))
-		DeleteObjectFromLayer(pickRes);
+	if (engine->IsKeyDown('Q'))
+	{
+		if (engine->IsMousePress(MouseButton::RButton))
+			DeleteObjectFromLayer(pickRes);
+	}
 	if (engine->IsKeyPressed('Z'))
 		Undo();
 
