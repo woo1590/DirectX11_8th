@@ -17,14 +17,24 @@ public:
 
     void ComputeBonePalette(const std::vector<_float4x4>& combinedMatices, std::vector<_float4x4>& bonePalette);
     _uint GetMaterialIndex()const { return m_iMaterialIndex; }
+    RAY_HIT_DATA RayCast(RAY localRay, PickingType type);
+    BOUNDING_BOX_DATA GetMeshBoundingBoxData()const;
 
     void Free()override;
 
 private:
     HRESULT CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix);
     HRESULT CreateSkinnedMesh(std::ifstream& file);
+    void ComputeBoundingBox();
 
     _string m_strName{};
+
+    /*---For Bounding Box---*/
+    _float3 m_AABBMin{};
+    _float3 m_AABBMax{};
+    BoundingBox m_BoundingBox{};
+    std::vector<_float3> m_VertexPositions;
+    std::vector<_uint> m_Indices;
 
     /*----Only SkinnedMesh----*/
     _uint m_iMaterialIndex{};

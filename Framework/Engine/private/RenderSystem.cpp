@@ -41,6 +41,11 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
 		return E_FAIL;
 
+#ifdef _DEBUG
+	if (FAILED(m_pRenderer->RenderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Debug)])))
+		return E_FAIL;
+#endif
+
 	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
 		return E_FAIL;
 

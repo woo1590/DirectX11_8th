@@ -48,7 +48,7 @@ PICK_RESULT ChunkPickable::IntersectRay(RAY ray)
 	chunkMinXZ.y = 0.f;
 	chunkMinXZ.z = chunkPosition.z - (CELL_SIZE * CHUNK_SIZE * 0.5f);
 
-	_vector posA = XMLoadFloat3(&ray.position);
+	_vector posA = XMLoadFloat3(&ray.origin);
 	_vector posB = posA + XMLoadFloat3(&ray.direction);
 	_float3 hitPosition;
 	XMStoreFloat3(&hitPosition, XMPlaneIntersectLine(XMLoadFloat4(&m_PlaneXZ), posA, posB));
@@ -59,7 +59,7 @@ PICK_RESULT ChunkPickable::IntersectRay(RAY ray)
 	result.object = nullptr;
 	result.indexX = std::floor((hitPosition.x - chunkMinXZ.x) / CELL_SIZE);
 	result.indexZ = std::floor((hitPosition.z - chunkMinXZ.z) / CELL_SIZE);
-	XMStoreFloat(&result.distance, XMVector3Length(XMLoadFloat3(&hitPosition) - XMLoadFloat3(&ray.position)));
+	XMStoreFloat(&result.distance, XMVector3Length(XMLoadFloat3(&hitPosition) - XMLoadFloat3(&ray.origin)));
 
 	return result;
 }

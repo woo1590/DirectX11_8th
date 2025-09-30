@@ -34,6 +34,22 @@ HRESULT Layer::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxi
 	return S_OK;
 }
 
+Object* Layer::GetFrontObject() const
+{
+	if (m_Objects.empty())
+		return nullptr;
+
+	return m_Objects.front();
+}
+
+Object* Layer::GetLastObject() const
+{
+	if (m_Objects.empty())
+		return nullptr;
+
+	return m_Objects.back();
+}
+
 Object* Layer::GetObjectByInstanceTag(const _string& instanceTag)
 {
 	for (const auto& object : m_Objects)

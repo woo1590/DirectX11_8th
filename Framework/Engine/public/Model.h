@@ -20,9 +20,12 @@ public:
     HRESULT Initialize(const _string& filePath);
 
     Skeleton* GetSkeleton() { return m_pSkeleton; }
+    _bool IsSkinned()const { return (m_eType == ModelType::Skinned); }
+    RAY_HIT_DATA RayCastLocal(RAY ray, PickingType type = PickingType::BoundingBox);
+
+    /*Getter*/
     const std::vector<Mesh*>& GetBuffers() { return m_Meshes; }
     const std::vector<Material*> GetMaterials() { return m_Materials; }
-    _bool IsSkinned()const { return (m_eType == ModelType::Skinned); }
 
     void Free()override;
 
@@ -30,6 +33,7 @@ private:
     HRESULT CreateMeshes(std::ifstream& file, _float4x4 preTransformMatrix);
     HRESULT CreateMaterials(std::ifstream& file, const _string& filePath);
     HRESULT CreateSkeleton(std::ifstream& file, _float4x4 preTransformMatrix);
+    void ComputeBoundingBox();
 
     ModelType m_eType{};
 
@@ -39,6 +43,11 @@ private:
     std::vector<Mesh*> m_Meshes;
     std::vector<Material*> m_Materials;
     Skeleton* m_pSkeleton = nullptr;
+
+    /*For BoundingBox*/
+    _float3 m_AABBMin{};
+    _float3 m_AABBMax{};
+    BoundingBox m_BoundingBox{};
 };
 
 NS_END

@@ -57,5 +57,23 @@ namespace Engine
 		_float3 scale{ 1.f,1.f,1.f };
 		_float3 rotation{};
 	}PREFAB;
+
+	typedef struct tagBoundingBoxData
+	{
+		_float3 AABBMin{};
+		_float3 AABBMax{};
+	}BOUNDING_BOX_DATA;
+
+	typedef struct tagRay
+	{
+		_float3 origin{};
+		_float3 direction{};
+	}RAY;
+
+	typedef struct tagRayHitData
+	{
+		_bool isHit = false;
+		_float localDistance;
+	}RAY_HIT_DATA;
 }
 #endif // Engine_Struct_h__

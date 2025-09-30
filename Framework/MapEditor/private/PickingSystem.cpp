@@ -59,6 +59,12 @@ void PickingSystem::RegisterComponent(PickableComponent* component)
 	component->AddRef();
 }
 
+void PickingSystem::UnRegisterComponent(PickableComponent* component)
+{
+	Safe_Release(component);
+	m_Pickables.remove(component);
+}
+
 void PickingSystem::Free()
 {
 	for (auto& object : m_Pickables)
@@ -76,6 +82,10 @@ void PickingSystem::RayCast(RAY ray)
 		result = pickable->IntersectRay(ray);
 		
 		if (result.isHit && result.distance < m_LastPickResult.distance)
+		{
 			m_LastPickResult = result;
+			//m_LastPickResult.origin = ray.position;
+			//m_LastPickResult.direction = ray.direction;
+		}
 	}
 }

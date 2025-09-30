@@ -1,6 +1,8 @@
 #include "MapEditorPCH.h"
 #include "PreviewObject.h"
 #include "ModelComponent.h"
+#include "ModelPickable.h"
+#include "PickingSystem.h"
 
 PreviewObject::PreviewObject()
 	:Object()
@@ -9,21 +11,23 @@ PreviewObject::PreviewObject()
 
 PreviewObject::PreviewObject(const PreviewObject& prototype)
 	:Object(prototype),
-	m_Prefab(prototype.m_Prefab)
+	m_Prefab(prototype.m_Prefab),
+	m_pPickingSystem(prototype.m_pPickingSystem)
 {
+	m_pPickingSystem->AddRef();
 }
 
-PreviewObject* PreviewObject::Create(PREFAB prefab)
+PreviewObject* PreviewObject::Create(PREFAB prefab, PickingSystem* picking)
 {
 	PreviewObject* Instance = new PreviewObject();
 
-	if (FAILED(Instance->Initialize_Prototype(prefab)))
+	if (FAILED(Instance->Initialize_Prototype(prefab,picking)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT PreviewObject::Initialize_Prototype(PREFAB prefab)
+HRESULT PreviewObject::Initialize_Prototype(PREFAB prefab, PickingSystem* picking)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -31,7 +35,11 @@ HRESULT PreviewObject::Initialize_Prototype(PREFAB prefab)
 	m_Prefab = prefab;
 	m_strInstanceTag = m_Prefab.prototypeTag;
 
+	m_pPickingSystem = picking;
+	m_pPickingSystem->AddRef();
+
 	AddComponent<ModelComponent>();
+	AddComponent<ModelPickable>();
 
 	return S_OK;
 }
@@ -44,7 +52,13 @@ HRESULT PreviewObject::Initialize(InitDESC* arg)
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Editor), m_Prefab.modelTag);
 
+	auto pickable = GetComponent<ModelPickable>();
+	pickable->SetModel(ENUM_CLASS(LevelID::Editor), m_Prefab.modelTag);
+
 	m_pTransform->SetScale(m_Prefab.scale);
+
+	/*Register PickingSystem*/
+	m_pPickingSystem->RegisterComponent(GetComponent<ModelPickable>());
 
 	return S_OK;
 }
@@ -76,5 +90,7 @@ Object* PreviewObject::Clone(InitDESC* arg)
 
 void PreviewObject::Free()
 {
+	m_pPickingSystem->UnRegisterComponent(GetComponent<ModelPickable>());
+	Safe_Release(m_pPickingSystem);
 	__super::Free();
 }

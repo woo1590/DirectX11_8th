@@ -3,6 +3,7 @@
 #include "PickingSystem.h"
 #include "EngineCore.h"
 #include "PreviewObject.h"
+#include "Layer.h"
 
 MapEditorPanel::MapEditorPanel(PickingSystem* picking)
 	:IPanel(),
@@ -31,7 +32,6 @@ void MapEditorPanel::Draw(GUIState& state)
 	static _bool show = true;
 	if (!show)
 		return;
-
 	PICK_RESULT pickRes = m_pPickingSystem->GetLastPickResult();
 
 	if (ImGui::Begin("Map Editor Menu", &show, ImGuiWindowFlags_MenuBar))
@@ -60,13 +60,12 @@ void MapEditorPanel::Draw(GUIState& state)
 	{
 		ImGui::DragInt("Index X : ", reinterpret_cast<int*>(&pickRes.indexX));
 		ImGui::DragInt("Index Z : ", reinterpret_cast<int*>(&pickRes.indexZ));
+		
 		ShowPrefabs();
-
-		ImGuiIO& io = ImGui::GetIO();
-		if (EngineCore::GetInstance()->IsMousePress(MouseButton::LButton) && m_iSelectedIndex != -1 && !io.WantCaptureMouse)
-			AddObjectToLayer(pickRes);
 	}
 	ImGui::End();
+
+	KeyInput(pickRes);
 }
 
 void MapEditorPanel::LoadPrefabs(const _string& filePath)
@@ -86,7 +85,7 @@ void MapEditorPanel::LoadPrefabs(const _string& filePath)
 			prefab.modelTag = val.value("ModelTag", "");
 			prefab.layerTag = val.value("LayerTag", "");
 			
-			engine->AddPrototype(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, PreviewObject::Create(prefab));
+			engine->AddPrototype(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, PreviewObject::Create(prefab, m_pPickingSystem));
 			m_Prefabs.push_back(prefab);
 		}
 	}
@@ -98,6 +97,22 @@ void MapEditorPanel::Free()
 {
 	__super::Free();
 	Safe_Release(m_pPickingSystem);
+}
+
+void MapEditorPanel::KeyInput(PICK_RESULT pickRes)
+{
+	
+	auto engine = EngineCore::GetInstance();
+
+	ImGuiIO& io = ImGui::GetIO();
+	if (engine->IsMousePress(MouseButton::LButton) && m_iSelectedIndex != -1 && !io.WantCaptureMouse)
+		AddObjectToLayer(pickRes);
+	if (engine->IsMousePress(MouseButton::RButton))
+		DeleteObjectFromLayer(pickRes);
+	if (engine->IsKeyPressed('Z'))
+		Undo();
+
+	//ShowPreviewObject(pickRes);
 }
 
 void MapEditorPanel::AddObjectToLayer(PICK_RESULT pickRes)
@@ -113,7 +128,7 @@ void MapEditorPanel::AddObjectToLayer(PICK_RESULT pickRes)
 	{
 	case PickType::Model:
 	{
-
+		prefab.position = pickRes.hitPosition;
 	}break;
 	case PickType::Chunk:
 	{
@@ -129,6 +144,67 @@ void MapEditorPanel::AddObjectToLayer(PICK_RESULT pickRes)
 	Object::OBJECT_DESC desc{};
 	desc.position = prefab.position;
 	engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), prefab.layerTag, &desc);
+	//m_LastUsedPrefab = prefab;
+}
+
+void MapEditorPanel::DeleteObjectFromLayer(PICK_RESULT pickRes)
+{
+	if (!pickRes.isHit || !pickRes.object)
+		return;
+	
+	pickRes.object->SetDead();
+}
+
+void MapEditorPanel::Undo()
+{
+	
+}
+
+void MapEditorPanel::Redo()
+{
+
+}
+
+void MapEditorPanel::ShowPreviewObject(PICK_RESULT pickRes)
+{
+	/*auto engine = EngineCore::GetInstance();
+
+	_float3 position{};
+	if (!m_pPreviewObject && m_iSelectedIndex != -1)
+	{
+		if (pickRes.object)
+		{
+			XMStoreFloat3(&position, XMLoadFloat3(&pickRes.origin) + XMVector3Normalize(XMLoadFloat3(&pickRes.direction)) * XMLoadFloat(&pickRes.distance));
+		}
+		else
+		{
+			position.x = -(CHUNK_SIZE * 0.5f * CELL_SIZE) + pickRes.indexX * CELL_SIZE + CELL_SIZE * 0.5f;
+			position.y = 0.f;
+			position.z = -(CHUNK_SIZE * 0.5f * CELL_SIZE) + pickRes.indexZ * CELL_SIZE + CELL_SIZE * 0.5f;
+		}
+
+		PREFAB prefab = m_Prefabs[m_iSelectedIndex];
+		Object::OBJECT_DESC desc{};
+		desc.position = position;
+		engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), "Layer_ShowPreview", &desc);
+
+		m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetFrontObject();
+	}
+	else if (m_pPreviewObject)
+	{
+		if (pickRes.object)
+		{
+			XMStoreFloat3(&position, XMLoadFloat3(&pickRes.origin) + XMVector3Normalize(XMLoadFloat3(&pickRes.direction)) * XMLoadFloat(&pickRes.distance));
+		}
+		else
+		{
+			position.x = -(CHUNK_SIZE * 0.5f * CELL_SIZE) + pickRes.indexX * CELL_SIZE + CELL_SIZE * 0.5f;
+			position.y = 0.f;
+			position.z = -(CHUNK_SIZE * 0.5f * CELL_SIZE) + pickRes.indexZ * CELL_SIZE + CELL_SIZE * 0.5f;
+		}
+
+		m_pPreviewObject->GetComponent<TransformComponent>()->SetPosition(position);
+	}*/
 }
 
 void MapEditorPanel::ShowPrefabs()

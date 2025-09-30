@@ -26,7 +26,9 @@ public:
     _bool IsUpdatable()const { return m_isUpdatable; }
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     std::list<Object*>& GetObjects() { return m_Objects; }
-    Object* GetFrontObject()const { return m_Objects.front(); }
+
+    Object* GetFrontObject()const;
+    Object* GetLastObject()const;
     Object* GetObjectByInstanceTag(const _string& instanceTag);
 
     void Free()override;

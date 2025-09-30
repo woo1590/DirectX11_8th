@@ -137,6 +137,13 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 	return S_OK;
 }
 
+HRESULT Renderer::RenderDebug(const std::vector<RenderProxy>& proxies)
+{
+
+
+	return S_OK;
+}
+
 HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 {
 	{

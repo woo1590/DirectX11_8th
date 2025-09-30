@@ -22,12 +22,14 @@ public:
     void Update(_float dt)override;
     
     HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
-
     HRESULT ConnectAnimator();
+
+    /*Setter*/
     HRESULT SetModel(_uint levelID, const _string& key);
     void SetOverride(Material* pMaterial);
     void ClearOverride();
 
+    /*Getter*/
     _int GetBoneIndex(const _string& boneTag);
     _float4x4 GetBoneMatrixByIndex(_uint index);
 

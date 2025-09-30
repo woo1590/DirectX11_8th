@@ -51,6 +51,9 @@ HRESULT MapEditorCamera::Initialize(InitDESC* arg)
 	if (FAILED(GetComponent<CameraComponent>()->Initialize(&camDesc)))
 		return E_FAIL;
 
+	m_pTransform->SetPosition(_float3(0.f, 100.f, 0.f));
+	m_pTransform->SetRotation(_float3(math::ToRadian(45.f), 0.f, 0.f));
+
 	return S_OK;
 }
 

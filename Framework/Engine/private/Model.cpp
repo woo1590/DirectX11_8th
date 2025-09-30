@@ -46,7 +46,46 @@ HRESULT Model::Initialize(const _string& filePath)
 	if (FAILED(CreateSkeleton(file, modelFormat.preTransformMatrix)))
 		return E_FAIL;
 
+	ComputeBoundingBox();
+
 	return S_OK;
+}
+
+RAY_HIT_DATA Model::RayCastLocal(RAY ray, PickingType type)
+{
+	RAY_HIT_DATA hitData{};
+
+	_float distance = FLT_MAX;
+	if (m_BoundingBox.Intersects(XMLoadFloat3(&ray.origin), XMVector3Normalize(XMLoadFloat3(&ray.direction)), distance))
+	{
+		if (type == PickingType::BoundingBox)
+		{
+			hitData.isHit = true;
+			hitData.localDistance = distance;
+		}
+		else
+		{
+			_float minDistance = FLT_MAX;
+			if (m_iNumMeshes > m_Meshes.size())
+				int a = 1;
+
+			for (_uint i = 0; i < m_iNumMeshes; ++i)
+			{
+				RAY_HIT_DATA meshHitData{};
+				meshHitData = m_Meshes[i]->RayCast(ray, type);
+
+				if (meshHitData.isHit && meshHitData.localDistance < minDistance)
+				{
+					hitData.isHit = true;
+					minDistance = meshHitData.localDistance;
+				}
+			}
+
+			hitData.localDistance = minDistance;
+		}
+	}
+
+	return hitData;
 }
 
 void Model::Free()
@@ -149,4 +188,30 @@ HRESULT Model::CreateSkeleton(std::ifstream& file, _float4x4 preTransformMatrix)
 	}
 	
 	return S_OK;
+}
+
+void Model::ComputeBoundingBox()
+{
+	_float3 min{ FLT_MAX,FLT_MAX,FLT_MAX };
+	_float3 max{ -FLT_MAX,-FLT_MAX,-FLT_MAX };
+
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
+	{
+		BOUNDING_BOX_DATA meshBoudingBox = m_Meshes[i]->GetMeshBoundingBoxData();
+		_float3 meshMin = meshBoudingBox.AABBMin;
+		_float3 meshMax = meshBoudingBox.AABBMax;
+
+		if (meshMin.x < min.x) min.x = meshMin.x;
+		if (meshMin.y < min.y) min.y = meshMin.y;
+		if (meshMin.z < min.z) min.z = meshMin.z;
+
+		if (meshMax.x > max.x) max.x = meshMax.x;
+		if (meshMax.y > max.y) max.y = meshMax.y;
+		if (meshMax.z > max.z) max.z = meshMax.z;
+	}
+
+	m_AABBMin = min;
+	m_AABBMax = max;
+
+	m_BoundingBox.CreateFromPoints(m_BoundingBox, XMLoadFloat3(&m_AABBMin), XMLoadFloat3(&m_AABBMax));
 }

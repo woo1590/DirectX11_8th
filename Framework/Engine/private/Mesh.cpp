@@ -27,6 +27,8 @@ HRESULT Mesh::Initialize(ModelType eType, std::ifstream& file, _fmatrix preTrans
 											CreateSkinnedMesh(file)))
 		return E_FAIL;
 
+	ComputeBoundingBox();
+
 	return S_OK;
 }
 
@@ -38,6 +40,60 @@ void Mesh::ComputeBonePalette(const std::vector<_float4x4>& combinedMatices, std
 	for (_uint i = 0; i < m_iNumBones; ++i)
 		XMStoreFloat4x4(&bonePalette[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(&combinedMatices[m_BoneIndices[i]]));
 
+}
+
+RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
+{
+	RAY_HIT_DATA hitData{};
+
+	_bool isHit = false;
+	_float distance = FLT_MAX;
+	if (m_BoundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), distance))
+	{
+		if (type == PickingType::BoundingBox)
+		{
+			hitData.isHit = true;
+			hitData.localDistance = distance;
+		}
+		else
+		{
+			_float minDistance = FLT_MAX;
+			for (_uint i = 0; i < m_iNumIndices / 3; ++i)
+			{
+				_uint index = i * 3;
+
+				_float3 p0 = m_VertexPositions[m_Indices[index]];
+				_float3 p1 = m_VertexPositions[m_Indices[index + 1]];
+				_float3 p2 = m_VertexPositions[m_Indices[index + 2]];
+
+				if (TriangleTests::Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction),
+										      XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), distance))
+				{
+					isHit = true;
+
+					if (distance < minDistance)
+						minDistance = distance;
+				}
+			}
+
+			if (isHit)
+			{
+				hitData.isHit = true;
+				hitData.localDistance = minDistance;
+			}
+		}
+	}
+
+	return hitData;
+}
+
+BOUNDING_BOX_DATA Mesh::GetMeshBoundingBoxData() const
+{
+	BOUNDING_BOX_DATA data{};
+	data.AABBMin = m_AABBMin;
+	data.AABBMax = m_AABBMax;
+
+	return data;
 }
 
 void Mesh::Free()
@@ -76,6 +132,7 @@ HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 	vbDesc.StructureByteStride = m_iVertexStride;
 
 	std::vector<VTXMESH> vertices(m_iNumVertices);
+	m_VertexPositions.resize(m_iNumVertices);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		vertices[i].position = vertexFormats[i].position;
@@ -86,6 +143,9 @@ HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 
 		vertices[i].texCoord = vertexFormats[i].texCoord;
 		vertices[i].tangent = vertexFormats[i].tangent;
+
+		/*For BoundingBox*/
+		m_VertexPositions[i] = vertices[i].position;
 	}
 
 	D3D11_SUBRESOURCE_DATA vbInitData{};
@@ -119,6 +179,10 @@ HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 
 	if (FAILED(m_pDevice->CreateBuffer(&ibDesc, &ibInitData, &m_pIB)))
 		return E_FAIL;
+
+	/*For BoundingBox*/
+	m_Indices.resize(m_iNumIndices);
+	memcpy_s(m_Indices.data(), sizeof(_uint) * m_iNumIndices, indexFormats.data(), sizeof(_uint) * m_iNumIndices);
 
 	return S_OK;
 }
@@ -171,6 +235,9 @@ HRESULT Mesh::CreateSkinnedMesh(std::ifstream& file)
 		vertices[i].tangent = vertexFormats[i].tangent;
 		vertices[i].blendIndex = vertexFormats[i].blendIndex;
 		vertices[i].blendWeight = vertexFormats[i].blendWeight;
+
+		/*For BoundingBox*/
+		m_VertexPositions[i] = vertices[i].position;
 	}
 
 	D3D11_SUBRESOURCE_DATA vbInitData{};
@@ -205,5 +272,33 @@ HRESULT Mesh::CreateSkinnedMesh(std::ifstream& file)
 	if (FAILED(m_pDevice->CreateBuffer(&ibDesc, &ibInitData, &m_pIB)))
 		return E_FAIL;
 
+	/*For BoundingBox*/
+	m_Indices.resize(m_iNumIndices);
+	memcpy_s(m_Indices.data(), sizeof(_uint) * m_iNumIndices, indexFormats.data(), sizeof(_uint) * m_iNumIndices);
+
 	return S_OK;
+}
+
+void Mesh::ComputeBoundingBox()
+{
+	_float3 min{ FLT_MAX,FLT_MAX,FLT_MAX };
+	_float3 max{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
+		_float3 position = m_VertexPositions[i];
+
+		if (position.x < min.x) min.x = position.x;
+		if (position.y < min.y)min.y = position.y;
+		if (position.z < min.z)min.z = position.z;
+
+		if (position.x > max.x) max.x = position.x;
+		if (position.y > max.y)max.y = position.y;
+		if (position.z > max.z)max.z = position.z;
+
+	}
+	m_AABBMin = min;
+	m_AABBMax = max;
+
+	m_BoundingBox.CreateFromPoints(m_BoundingBox, XMLoadFloat3(&m_AABBMin), XMLoadFloat3(&m_AABBMax));
 }
