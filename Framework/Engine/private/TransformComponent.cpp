@@ -46,8 +46,9 @@ HRESULT TransformComponent::Initialize(InitDESC* arg)
 
 		m_Position = desc->position;
 		m_Scale = desc->scale;
-		m_Rotation = desc->rotation;
+		m_Quaternion = desc->quaternion;
 
+		MakeDirty();
 		return S_OK;
 	}
 
@@ -72,7 +73,14 @@ void TransformComponent::SetRotation(_float3 rotation)
 	normalizeAngle(rotation.y);
 	normalizeAngle(rotation.z);
 
-	m_Rotation = rotation;
+	XMStoreFloat4(&m_Quaternion, XMQuaternionNormalize(XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z)));
+
+	MakeDirty();
+}
+
+void TransformComponent::SetQuaternion(_float4 quaternion)
+{
+	m_Quaternion = quaternion;
 
 	MakeDirty();
 }
@@ -85,19 +93,15 @@ void TransformComponent::SetForward(_float3 direction)
 	_vector right = XMVector3Normalize(XMVector3Cross(worldUp, forward));
 	_vector up = XMVector3Normalize(XMVector3Cross(forward, right));
 
-	/*구면 좌표계를 통해서 pitch yaw roll 뽑아냄*/
 	_float pitch = asin(std::clamp(-XMVectorGetY(forward), -1.f, 1.f));
 	_float yaw = atan2(XMVectorGetX(forward), XMVectorGetZ(forward));
 	_float roll = 0.f;
 
-	/*짐벌락 생기면 roll 버림
-	  버려도 되는 이유? 각 축에 대한 회전을 순차적으로 연산하지 않고 쿼터니언을 통해 회전행렬 계산 -> 결과는 제대로 나옴
-	  but rotation에 저장되는 pitch, yaw, roll은 비정상적*/
 	if (fabsf(cosf(pitch)) > 0.0001f) {
 		roll = atan2f(XMVectorGetY(right), XMVectorGetY(up));
 	}
 
-	m_Rotation = { pitch,yaw,roll };
+	XMStoreFloat4(&m_Quaternion, XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
 
 	m_isDirty = true;
 	MakeDirty();
@@ -114,6 +118,62 @@ void TransformComponent::Translate(_fvector velocity)
 	XMStoreFloat3(&m_Position, XMLoadFloat3(&m_Position) + velocity);
 
 	m_isDirty = true;
+	MakeDirty();
+}
+
+void TransformComponent::Turn(_float deltaPitch, _float deltaYaw)
+{
+	_vector quaternion = XMLoadFloat4(&m_Quaternion);
+
+	_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector yawQuternion = XMQuaternionRotationAxis(worldUp, deltaYaw);
+	quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, yawQuternion));
+	
+	_matrix yawRotMat = XMMatrixRotationQuaternion(quaternion);
+	
+	_vector right = XMVector3Normalize(yawRotMat.r[0]);
+	_vector pitchQuternion = XMQuaternionRotationAxis(right, deltaPitch);
+	
+	quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, pitchQuternion));
+
+	XMStoreFloat4(&m_Quaternion, quaternion);
+
+	MakeDirty();
+}
+
+void TransformComponent::Turn(_float3 deltaRadian)
+{
+	_vector quaternion = XMLoadFloat4(&m_Quaternion);
+
+	_vector deltaQuaternion = XMQuaternionRotationRollPitchYaw(deltaRadian.x, deltaRadian.y, deltaRadian.z);
+
+	quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion,deltaQuaternion));
+
+	//_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	//_vector yawQuternion = XMQuaternionRotationAxis(worldUp, deltaRadian.y);
+	//quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, yawQuternion));
+	//
+	//_matrix yawRotMat = XMMatrixRotationQuaternion(quaternion);
+	//
+	//_vector right = XMVector3Normalize(yawRotMat.r[0]);
+	//_vector pitchQuternion = XMQuaternionRotationAxis(right, deltaRadian.x);
+	//
+	//quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, pitchQuternion));
+	//
+	//_vector forward = XMVector3Normalize(yawRotMat.r[2]);
+	//_vector rollQuaternion = XMQuaternionRotationAxis(forward, deltaRadian.z);
+	//
+	//quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, rollQuaternion));
+
+	XMStoreFloat4(&m_Quaternion, quaternion);
+
+	MakeDirty();
+}
+
+void TransformComponent::Rotate(_float3 euler)
+{
+	XMStoreFloat4(&m_Quaternion, XMQuaternionRotationRollPitchYaw(euler.x, euler.y, euler.z));
+
 	MakeDirty();
 }
 
@@ -155,7 +215,7 @@ void TransformComponent::RenderInspector()
 	{
 		ImGui::Separator();
 
-		_float3 degree{}, radian{};
+		_float3 degree{}, radian{}, deltaRad{};
 		degree.x = math::ToDegree(m_Rotation.x);
 		degree.y = math::ToDegree(m_Rotation.y);
 		degree.z = math::ToDegree(m_Rotation.z);
@@ -166,14 +226,33 @@ void TransformComponent::RenderInspector()
 		if (m_isDirty)
 			MakeChildrenDirty();
 		
-		if (ImGui::DragFloat3("Rotation", &degree.x, 0.1f, -FLT_MAX, FLT_MAX))
+		if (ImGui::DragFloat3("Rotation", &degree.x, 1.f, -FLT_MAX, FLT_MAX))
 		{
 			radian.x = math::ToRadian(degree.x);
 			radian.y = math::ToRadian(degree.y);
 			radian.z = math::ToRadian(degree.z);
 
-			SetRotation(radian);
+			deltaRad.x = radian.x - m_Rotation.x;
+			deltaRad.y = radian.y - m_Rotation.y;
+			deltaRad.z = radian.z - m_Rotation.z;
+
+			_vector quaternion = XMLoadFloat4(&m_Quaternion);
+			_vector deltaQuternion = XMQuaternionRotationRollPitchYaw(deltaRad.x, deltaRad.y, deltaRad.z);
+			_float4 newQuternion;
+			XMStoreFloat4(&newQuternion, XMQuaternionNormalize(XMQuaternionMultiply(quaternion, deltaQuternion)));
+
+			SetQuaternion(newQuternion);
+			m_Rotation = radian;
 		}
+
+		ImGui::SeparatorText("Rotate 90");
+		if (ImGui::Button("Pitch"))
+			Turn(_float3(math::PI * 0.5f, 0.f, 0.f));
+		if (ImGui::Button("Yaw"))
+			Turn(_float3(0.f, math::PI * 0.5f, 0.f));
+		if (ImGui::Button("Roll"))
+			Turn(_float3(0.f, 0.f, math::PI * 0.5f));
+
 	}
 
 	ImGui::PopID();
@@ -185,10 +264,8 @@ void TransformComponent::ResolveDirty()
 {
 	if (m_isDirty)
 	{
-		_vector quat = XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&m_Rotation));
-
 		_matrix scaleMat = XMMatrixScalingFromVector(XMLoadFloat3(&m_Scale));
-		_matrix rotMat = XMMatrixRotationQuaternion(quat);
+		_matrix rotMat = XMMatrixRotationQuaternion(XMLoadFloat4(&m_Quaternion));
 		_matrix transMat = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Position));
 
 		if (m_pParent)
@@ -204,7 +281,10 @@ void TransformComponent::ResolveDirty()
 		XMStoreFloat3(&m_Right, rotMat.r[0]);
 		XMStoreFloat3(&m_Up, rotMat.r[1]);
 		XMStoreFloat3(&m_Forward, rotMat.r[2]);
-		XMStoreFloat4(&m_Quaternion, quat);
+
+		_float3 euler{};
+		euler = math::ToEuler(XMLoadFloat4(&m_Quaternion));
+		m_Rotation = euler;
 
 		m_isDirty = false;
 	}
@@ -223,5 +303,24 @@ void TransformComponent::MakeChildrenDirty()
 		child->m_isDirty = true;
 		child->MakeChildrenDirty();
 	}
+}
+
+_vector TransformComponent::RemoveRoll(_fvector quaternion)
+{
+	_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	_matrix rotMat = XMMatrixRotationQuaternion(quaternion);
+	_vector forward = XMVector3Normalize(rotMat.r[2]);
+	_vector up = XMVector3Normalize(rotMat.r[1]);
+
+	_vector crossUp = XMVector3Cross(up, worldUp);
+
+	_float rollNum = XMVectorGetX(XMVector3Dot(crossUp, forward));
+	_float rollDen = XMVectorGetX(XMVector3Dot(up, worldUp));
+	_float rollAngle = std::atan2(rollNum, rollDen);
+
+	_vector rollFixQuaternion = XMQuaternionNormalize(XMQuaternionRotationAxis(forward, -rollAngle));
+
+	return XMQuaternionNormalize(XMQuaternionMultiply(quaternion, rollFixQuaternion));
 }
 

@@ -4,6 +4,7 @@
 #include "VIBuffer.h"
 #include "Material.h"
 #include "Object.h"
+#include "MaterialInstance.h"
 #include "TransformComponent.h"
 
 SpriteComponent::SpriteComponent(Object* owner)
@@ -42,6 +43,10 @@ HRESULT SpriteComponent::Initialize(InitDESC* arg)
 		m_iMaxFrameIndex = desc->iMaxFrameIndex;
 		m_fSpeed = desc->fSpeed;
 	}
+
+	m_pMaterialInstance = MaterialInstance::Create();
+	if (!m_pMaterialInstance)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -84,12 +89,16 @@ void SpriteComponent::SetMaterial(_uint levelID, const _string& key)
 
 HRESULT SpriteComponent::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
 {
+	if (!m_pBuffer || !m_pMaterial)
+		return S_OK;
+
 	RenderProxy proxy{};
 
 	proxy.worldMatrix = transform->GetWorldMatrix();
 	proxy.buffer = m_pBuffer;
 	proxy.frameIndex = m_iCurrFrameIndex;
 	proxy.material = m_pMaterial;
+	proxy.materialInstance = m_pMaterialInstance;
 
 	proxies.push_back(proxy);
 
@@ -100,6 +109,7 @@ void SpriteComponent::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pMaterialInstance);
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pMaterial);
 }

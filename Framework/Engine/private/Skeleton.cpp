@@ -37,7 +37,31 @@ HRESULT Skeleton::Initialize(std::ifstream& file, _float4x4 preTransformMatrix)
 		m_Bones.push_back(bone);
 	}
 
+	m_OffsetMatrices.resize(m_iNumBones);
+	for (_uint i = 0; i < m_iNumBones; ++i)
+	{
+		_int parentIndex = m_Bones[i].m_iParentIndex;
+
+		if (-1 == parentIndex)
+			XMStoreFloat4x4(&m_OffsetMatrices[i], XMLoadFloat4x4(&m_Bones[i].m_TransformationMatrix) * XMLoadFloat4x4(&m_PreTransformMatrix));
+		else
+			XMStoreFloat4x4(&m_OffsetMatrices[i], XMLoadFloat4x4(&m_Bones[i].m_TransformationMatrix) * XMLoadFloat4x4(&m_OffsetMatrices[parentIndex]));
+	}
+
 	return S_OK;
+}
+
+_float4x4 Skeleton::GetOffsetMatrixByIndex(_uint index)
+{
+	if (index >= m_iNumBones)
+	{
+		_float4x4 matrix{};
+		XMStoreFloat4x4(&matrix, XMMatrixIdentity());
+
+		return matrix;
+	}
+
+	return m_OffsetMatrices[index];
 }
 
 _int Skeleton::GetBoneIndexByName(const _string& boneTag)

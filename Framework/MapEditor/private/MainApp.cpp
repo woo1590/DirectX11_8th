@@ -125,7 +125,7 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     int y = static_cast<_int>(WinSizeY / 4);
 
     hWnd = CreateWindowW(
-        CLASS_NAME, L"My Game Window",
+        CLASS_NAME, L"Map Editor",
         WS_OVERLAPPEDWINDOW,
         x, y,
         windowWidth,

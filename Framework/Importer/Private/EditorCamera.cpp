@@ -68,18 +68,14 @@ void EditorCamera::PriorityUpdate(_float dt)
 	_vector forward = transform->GetForwardV();
 	_vector right = transform->GetRightV();
 	_float speed = 100.f;
-	_float3 rotation = transform->GetRotation();
 	_float2 mouseDelta = engine->GetMouseDelta();
 
 	if (engine->IsMouseDown(MouseButton::RButton))
 	{
 		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
 		_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
-		rotation.y += yaw;
-		rotation.x += pitch;
 
-		rotation.x = std::clamp(rotation.x, -math::PI + 0.1f, math::PI - 0.1f);
-		transform->SetRotation(rotation);
+		transform->Turn(_float3(pitch, yaw, 0.f));
 	}
 
 	if (m_ActiveKeyboard)
@@ -105,6 +101,7 @@ void EditorCamera::PriorityUpdate(_float dt)
 
 	engine->SetViewMatrix(cam->GetViewMatrix());
 	engine->SetProjMatrix(cam->GetProjMatrix());
+
 }
 
 void EditorCamera::Update(_float dt)

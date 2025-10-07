@@ -3,6 +3,7 @@
 #include "EngineCore.h"
 #include "SpriteComponent.h"
 #include "ChunkPickable.h"
+#include "MaterialInstance.h"
 #include "Shader.h"
 
 Chunk::Chunk()
@@ -50,7 +51,7 @@ HRESULT Chunk::Initialize(InitDESC* arg)
 
 	CHUNK_DESC* desc = static_cast<CHUNK_DESC*>(arg);
 
-	m_pTransform->SetRotation(_float3(math::ToRadian(90.f), 0.f, 0.f));
+	m_pTransform->Rotate(_float3(math::ToRadian(90.f), 0.f, 0.f));
 	m_pTransform->SetScale(_float3(CHUNK_SIZE * CELL_SIZE, CHUNK_SIZE * CELL_SIZE, 1.f));
 	m_pTransform->SetPosition(desc->chunkPosition);
 
@@ -71,22 +72,13 @@ HRESULT Chunk::Initialize(InitDESC* arg)
 		}
 
 	auto sprite = GetComponent<SpriteComponent>();
+
+	if (FAILED(sprite->Initialize(arg)))
+		return E_FAIL;
+
 	sprite->SetBuffer(ENUM_CLASS(LevelID::Editor), "Buffer_Quad");
 	sprite->SetMaterial(ENUM_CLASS(LevelID::Editor), "Mtrl_Chunk");
 
-	/*Create Constant Buffer*/
-	auto device = EngineCore::GetInstance()->GetDevice();
-
-	D3D11_BUFFER_DESC cbDesc{};
-	cbDesc.ByteWidth = sizeof(CB_PER_CHUNK);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	if (FAILED(device->CreateBuffer(&cbDesc, nullptr, &m_pCBPerChunk)))
-		return E_FAIL;
 
 	/*Register PickingSystem*/
 	m_pPickingSystem->RegisterComponent(GetComponent<ChunkPickable>());
@@ -104,15 +96,13 @@ void Chunk::Update(_float dt)
 	__super::Update(dt);
 	
 	UpdatePlane();
-	UpdateConstantBuffer();
-	BindConstantBuffer();
+	UpdateParams();
 
 }
 
 void Chunk::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
-
 }
 
 Object* Chunk::Clone(InitDESC* arg)
@@ -127,10 +117,10 @@ Object* Chunk::Clone(InitDESC* arg)
 
 void Chunk::Free()
 {
+	m_pPickingSystem->UnRegisterComponent(GetComponent<ChunkPickable>());
+	Safe_Release(m_pPickingSystem);
 	__super::Free();
 
-	Safe_Release(m_pCBPerChunk);
-	Safe_Release(m_pPickingSystem);
 }
 
 _float3 Chunk::GetHoverPosition()
@@ -168,30 +158,23 @@ void Chunk::UpdatePlane()
 	m_PlaneXZ = _float4{ 0.f,1.f,0.f,-y };
 }
 
-void Chunk::UpdateConstantBuffer()
+void Chunk::UpdateParams()
 {
 	auto engine = EngineCore::GetInstance();
+	auto mtrlInstance = GetComponent<SpriteComponent>()->GetMaterialInstance();
 
 	_float3 position = m_pTransform->GetPosition();
+	_float3 chunkMin{};
+	_float cellSize{};
+	_float3 hoverPosition{};
 
-	D3D11_MAPPED_SUBRESOURCE cbPerChunkData{};
-	CB_PER_CHUNK chunk{};
-	chunk.chunkMin.x = position.x - CELL_SIZE * CHUNK_SIZE * 0.5f;
-	chunk.chunkMin.y = 0.f;
-	chunk.chunkMin.z = position.z - CELL_SIZE * CHUNK_SIZE * 0.5f;
-	chunk.hoverPosition = GetHoverPosition();
-	chunk.cellSize = CELL_SIZE;
+	chunkMin.x = position.x - CELL_SIZE * CHUNK_SIZE * 0.5f;
+	chunkMin.y = 0.f;
+	chunkMin.z = position.z - CELL_SIZE * CHUNK_SIZE * 0.5f;
+	hoverPosition = GetHoverPosition();
+	cellSize = CELL_SIZE;
 
-
-	auto context = EngineCore::GetInstance()->GetDeviceContext();
-	context->Map(m_pCBPerChunk, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerChunkData);
-	memcpy_s(cbPerChunkData.pData, sizeof(CB_PER_CHUNK), &chunk, sizeof(CB_PER_CHUNK));
-	context->Unmap(m_pCBPerChunk, 0);
-}
-
-HRESULT Chunk::BindConstantBuffer()
-{
-	auto shader = EngineCore::GetInstance()->GetShader("Shader_Chunk");
-
-	return shader->SetConstantBuffer(m_pCBPerChunk, "PerChunk");
+	mtrlInstance->SetFloat3("g_HoverPosition", hoverPosition);
+	mtrlInstance->SetFloat("g_CellSize", cellSize);
+	mtrlInstance->SetFloat3("g_ChunkMin", chunkMin);
 }

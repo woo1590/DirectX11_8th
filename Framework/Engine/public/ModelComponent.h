@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class Model;
 class AnimatorComponent;
 class TransformComponent;
+class MaterialInstance;
 class ENGINE_DLL ModelComponent final:
     public Component
 {
@@ -30,8 +31,10 @@ public:
     void ClearOverride();
 
     /*Getter*/
+    MaterialInstance* GetMaterialInstance()const { return m_pMateriaInstance; }
     _int GetBoneIndex(const _string& boneTag);
-    _float4x4 GetBoneMatrixByIndex(_uint index);
+    _float4x4 GetOffsetMatrixByIndex(_uint index);
+    _float4x4 GetCombinedMatrixByIndex(_uint index);
 
     Component* Clone()override;
     void Free()override;
@@ -45,6 +48,7 @@ private:
     std::vector<BONE_PALETTE> m_BonePalettes;
 
     Material* m_pOverrideMtrl = nullptr;
+    MaterialInstance* m_pMateriaInstance = nullptr;
 };
 
 NS_END

@@ -16,6 +16,9 @@ namespace Importer
 	constexpr unsigned int WinSizeX = 1280;
 	constexpr unsigned int WinSizeY = 720;
 
+	constexpr unsigned int CHUNK_SIZE = 256;
+	constexpr unsigned int CELL_SIZE = 40;
+
 	enum class LevelID { Import, Count };
 
 }

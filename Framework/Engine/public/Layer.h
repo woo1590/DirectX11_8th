@@ -29,6 +29,7 @@ public:
 
     Object* GetFrontObject()const;
     Object* GetLastObject()const;
+    const std::list<Object*>& GetObjects()const { return m_Objects; }
     Object* GetObjectByInstanceTag(const _string& instanceTag);
 
     void Free()override;

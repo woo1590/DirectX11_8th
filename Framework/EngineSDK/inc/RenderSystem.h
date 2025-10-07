@@ -5,6 +5,9 @@
 
 NS_BEGIN(Engine)
 
+
+
+class DebugRenderer;
 class Renderer;
 class ENGINE_DLL RenderSystem :
     public Base
@@ -31,6 +34,7 @@ private:
     std::vector<LightProxy> m_CurrFrameLights;
 
     Renderer* m_pRenderer = nullptr;
+    DebugRenderer* m_pDebugRenderer = nullptr;
 };
 
 NS_END

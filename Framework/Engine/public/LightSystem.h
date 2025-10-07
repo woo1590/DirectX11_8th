@@ -5,15 +5,15 @@
 NS_BEGIN(Engine)
 
 class LightComponent;
-class LightManager :
+class LightSystem :
     public Base
 {
 private:
-    LightManager();
-    virtual ~LightManager() = default;
+    LightSystem();
+    virtual ~LightSystem() = default;
 
 public:
-    static LightManager* Create();
+    static LightSystem* Create();
     HRESULT Initialize();
 
     void RegisterLight(LightComponent* light);

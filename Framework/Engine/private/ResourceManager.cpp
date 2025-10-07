@@ -1,5 +1,7 @@
 #include "EnginePCH.h"
 #include "ResourceManager.h"
+#include "Renderer.h"
+#include "EngineCore.h"
 #include "VIBuffer.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -134,6 +136,8 @@ HRESULT ResourceManager::LoadShaderFromFile(const _string& filePath, const _stri
 	auto shader = Shader::Create(filePath, pElement, numElement);
 	if (!shader)
 		return E_FAIL;
+
+	EngineCore::GetInstance()->GetRenderer()->ConnectConstantBuffer(shader);
 
 	m_Shaders.emplace(key, shader);
 

@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Skeleton.h"
 #include "Object.h"
+#include "MaterialInstance.h"
 
 //component
 #include "AnimatorComponent.h"
@@ -37,6 +38,10 @@ HRESULT ModelComponent::Initialize_Prototype()
 
 HRESULT ModelComponent::Initialize(InitDESC* arg)
 {
+	m_pMateriaInstance = MaterialInstance::Create();
+	if (!m_pMateriaInstance)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -47,6 +52,9 @@ void ModelComponent::Update(_float dt)
 
 HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
 {
+	if (!m_pModel)
+		return S_OK;
+	
 	const auto& meshes = m_pModel->GetBuffers();
 	const auto& materials = m_pModel->GetMaterials();
 
@@ -55,6 +63,7 @@ HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::v
 		RenderProxy proxy{};
 		proxy.buffer = meshes[i];
 		proxy.material = materials[meshes[i]->GetMaterialIndex()];
+		proxy.materialInstance = m_pMateriaInstance;
 		proxy.worldMatrix = transform->GetWorldMatrix();
 
 		if (m_pModel->IsSkinned())
@@ -98,7 +107,7 @@ HRESULT ModelComponent::SetModel(_uint levelID, const _string& key)
 	m_pModel->AddRef();
 
 	m_BonePalettes.resize(m_pModel->GetBuffers().size());
-
+	
 	return S_OK;
 }
 
@@ -120,7 +129,14 @@ _int ModelComponent::GetBoneIndex(const _string& boneTag)
 	return skeleton->GetBoneIndexByName(boneTag);
 }
 
-_float4x4 ModelComponent::GetBoneMatrixByIndex(_uint index)
+_float4x4 ModelComponent::GetOffsetMatrixByIndex(_uint index)
+{
+	auto skeleton = m_pModel->GetSkeleton();
+
+	return skeleton->GetOffsetMatrixByIndex(index);
+}
+
+_float4x4 ModelComponent::GetCombinedMatrixByIndex(_uint index)
 {
 	auto animator = m_pOwner->GetComponent<AnimatorComponent>();
 
@@ -142,6 +158,7 @@ void ModelComponent::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pMateriaInstance);
 	Safe_Release(m_pOverrideMtrl);
 	Safe_Release(m_pModel);
 }

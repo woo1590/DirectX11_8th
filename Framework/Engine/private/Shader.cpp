@@ -44,7 +44,6 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
     if (FAILED(D3DX11CompileEffectFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderFlag, 0, m_pDevice, &m_pEffect, nullptr)))
         return E_FAIL;
 
-    /* 셰이더 안에서 정의된 패스들이 내가 그리고자 하는 정점 구조체와 호환이 되는지? */
     ID3DX11EffectTechnique* technique = nullptr;
     technique = m_pEffect->GetTechniqueByIndex(0);
     if (!technique)
@@ -73,8 +72,8 @@ HRESULT Shader::Initialize(const _string& filePath, const D3D11_INPUT_ELEMENT_DE
         m_EffectPasses[passName] = pass;
     }
 
-    /* Renderer에서 들고 있는 전역적인 상수버퍼와 현재 effect객체 연결 -> perframe, perlight, perobject..*/
-    EngineCore::GetInstance()->GetRenderer()->ConnectConstantBuffer(m_pEffect);
+    if (FAILED(BuildMetaData()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -93,33 +92,42 @@ HRESULT Shader::Apply(const _string& passTag)
     return iter->second->Apply(0, m_pDeviceContext);
 }
 
-HRESULT Shader::BindTextureValue(const _string& name, Texture* value)
+HRESULT Shader::BindMatrix(const _string& name, const _float4x4* value)
 {
-    ID3D11ShaderResourceView* srv = value->GetSRV();
-    if (!srv)
+    auto iter = m_GlobalVariables.find(name);
+    if (iter == m_GlobalVariables.end())
         return E_FAIL;
 
-    ID3DX11EffectVariable* variable = m_pEffect->GetVariableByName(name.c_str());
-    if (!variable)
-        return E_FAIL;
-
-    ID3DX11EffectShaderResourceVariable* srvVariable = variable->AsShaderResource();
-    if (!srvVariable)
-        return E_FAIL;
-    
-    return srvVariable->SetResource(srv);
+    return iter->second.variableHandle->AsMatrix()->BindMatrixValue(reinterpret_cast<const _float*>(value));
 }
 
-HRESULT Shader::SetConstantBuffer(ID3D11Buffer* constantBuffer, const _string& name)
+HRESULT Shader::BindRawValue(const _string& name, const void* value, _uint size)
 {
-    ID3DX11EffectConstantBuffer* buffer = m_pEffect->GetConstantBufferByName(name.c_str());
-    if (!buffer)
+    auto iter = m_GlobalVariables.find(name);
+    if (iter == m_GlobalVariables.end())
         return E_FAIL;
 
-    if (FAILED(buffer->SetConstantBuffer(constantBuffer)))
+    return iter->second.variableHandle->SetRawValue(value, 0, size);
+}
+
+HRESULT Shader::BindTextureValue(const _string& name, Texture* value)
+{
+    auto iter = m_Resources.find(name);
+    if (iter == m_Resources.end())
         return E_FAIL;
 
-    return S_OK;
+    auto srv = value->GetSRV();
+
+    return iter->second.srvHandle->SetResource(srv);
+}
+
+HRESULT Shader::SetConstantBuffer(const _string& name, ID3D11Buffer* constantBuffer)
+{
+    auto iter = m_CBuffers.find(name);
+    if (iter == m_CBuffers.end())
+        return E_FAIL;
+
+    return iter->second.bufferHandle->SetConstantBuffer(constantBuffer);
 }
 
 void Shader::Free()
@@ -136,4 +144,101 @@ void Shader::Free()
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pDeviceContext);
+}
+
+HRESULT Shader::BuildMetaData()
+{
+    D3DX11_EFFECT_DESC effectDesc;
+    m_pEffect->GetDesc(&effectDesc);
+
+    for (_uint i = 0; i < effectDesc.ConstantBuffers; ++i)
+    {
+        ID3DX11EffectConstantBuffer* cbuffer = m_pEffect->GetConstantBufferByIndex(i);
+        if (cbuffer && cbuffer->IsValid())
+        {
+            D3DX11_EFFECT_VARIABLE_DESC cbufferDesc{};
+            D3DX11_EFFECT_TYPE_DESC cbufferTypeDesc{};
+            cbuffer->GetDesc(&cbufferDesc);
+            cbuffer->GetType()->GetDesc(&cbufferTypeDesc);
+
+            //global variable
+            if (!strcmp(cbufferDesc.Name, "$Globals"))
+            {
+                for (_uint j = 0; j < cbufferTypeDesc.Members; ++j)
+                {
+                    ID3DX11EffectVariable* member = cbuffer->GetMemberByIndex(j);
+
+                    D3DX11_EFFECT_VARIABLE_DESC varDesc{};
+                    D3DX11_EFFECT_TYPE_DESC varTypeDesc{};
+                    member->GetDesc(&varDesc);
+                    member->GetType()->GetDesc(&varTypeDesc);
+
+                    GLOBAL_VARIABLE_META varMeta{};
+                    varMeta.name = varDesc.Name;
+                    varMeta.varType = varTypeDesc.TypeName;
+                    varMeta.size = varTypeDesc.UnpackedSize;
+                    varMeta.offset = varDesc.BufferOffset;
+                    varMeta.rows = varTypeDesc.Rows;
+                    varMeta.cols = varTypeDesc.Columns;
+                    varMeta.elements = varTypeDesc.Elements;
+                    varMeta.variableHandle = member;
+
+                    m_GlobalVariables.emplace(varMeta.name, varMeta);
+                }
+            }
+            /*cbuffer*/
+            else
+            {
+                CBUFFER_META cbufferMeta{};
+                cbufferMeta.name = cbufferDesc.Name;
+                cbufferMeta.size = cbufferTypeDesc.UnpackedSize;
+                cbufferMeta.bufferHandle = cbuffer;
+           
+                for (_uint j = 0; j < cbufferTypeDesc.Members; ++j)
+                {
+                    ID3DX11EffectVariable* member = cbuffer->GetMemberByIndex(j);
+
+                    D3DX11_EFFECT_VARIABLE_DESC varDesc{};
+                    D3DX11_EFFECT_TYPE_DESC varTypeDesc{};
+                    member->GetDesc(&varDesc);
+                    member->GetType()->GetDesc(&varTypeDesc);
+
+                    VARIABLE_META varMeta{};
+                    varMeta.name = varDesc.Name;
+                    varMeta.varType = varTypeDesc.TypeName;
+                    varMeta.size = varTypeDesc.UnpackedSize;
+                    varMeta.offset = varDesc.BufferOffset;
+                    varMeta.rows = varTypeDesc.Rows;
+                    varMeta.cols = varTypeDesc.Columns;
+                    varMeta.elements = varTypeDesc.Elements;
+
+                    cbufferMeta.variables.push_back(varMeta);
+                }
+
+                m_CBuffers.emplace(cbufferMeta.name, cbufferMeta);
+            }
+        }
+    }
+
+    for (_uint i = 0; i < effectDesc.GlobalVariables; ++i)
+    {
+        ID3DX11EffectShaderResourceVariable* srvVar = m_pEffect->GetVariableByIndex(i)->AsShaderResource();
+
+        if (srvVar && srvVar->IsValid())
+        {
+            D3DX11_EFFECT_VARIABLE_DESC varDesc{};
+            D3DX11_EFFECT_TYPE_DESC varTypeDesc{};
+            srvVar->GetDesc(&varDesc);
+            srvVar->GetType()->GetDesc(&varTypeDesc);
+
+            RESOURCE_META resMeta{};
+            resMeta.name = varDesc.Name;
+            resMeta.typeName = varTypeDesc.TypeName;
+            resMeta.srvHandle = srvVar;
+
+            m_Resources.emplace(resMeta.name, resMeta);
+        }
+    }
+
+    return S_OK;
 }

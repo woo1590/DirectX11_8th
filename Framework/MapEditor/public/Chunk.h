@@ -45,14 +45,11 @@ public:
 private:
     _float3 GetHoverPosition();
     void UpdatePlane();
-    void UpdateConstantBuffer();
-    HRESULT BindConstantBuffer();
+    void UpdateParams();
 
     CELL m_Cells[CHUNK_SIZE][CHUNK_SIZE];
 
     _float4 m_PlaneXZ{};
-    ID3D11Buffer* m_pCBPerChunk = nullptr;
-
     PickingSystem* m_pPickingSystem = nullptr;
 };
 

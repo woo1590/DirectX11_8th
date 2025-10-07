@@ -4,16 +4,12 @@
 
 NS_BEGIN(MapEditor)
 
-typedef struct tagHistory
-{
-    PREFAB prefab{};
-
-}HISTORY;
-
+class Chunk;
 class PickingSystem;
 class MapEditorPanel :
     public IPanel
 {
+    enum class EditMode { Guizmo, Placement, Count };
 private:
     MapEditorPanel(PickingSystem* picking);
     virtual ~MapEditorPanel() = default;
@@ -27,25 +23,28 @@ public:
     void Free()override;
 
 private:
-    void ImportMapFile();
-    void ExportMapFile();
+    void ImportMapFile(const _string& filePath);
+    void ExportMapFile(const _string& outFilePath);
     void ShowPrefabs();
     
     /*Placement*/
-    void KeyInput(PICK_RESULT pickRes);
+    void Placement(GUIState& state, PICK_RESULT pickRes);
     void AddObjectToLayer(PICK_RESULT pickRes);
-    void DeleteObjectFromLayer(PICK_RESULT pickRes);
+    void DeleteObjectFromLayer(GUIState& state, PICK_RESULT pickRes);
     void Undo();
     void Redo();
     void ShowPreviewObject(PICK_RESULT pickRes);
 
     _int m_iSelectedIndex = -1;
+
+    _uint m_iPreviewObjectIndex = 0;
     Object* m_pPreviewObject = nullptr;
 
     _uint m_iNumPrefabs{};
     std::vector<PREFAB> m_Prefabs;
 
     PickingSystem* m_pPickingSystem = nullptr;
+    EditMode m_eMode = EditMode::Placement;
 };
 
 NS_END

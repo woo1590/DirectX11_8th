@@ -1,8 +1,9 @@
 #include "EnginePCH.h"
 #include "Material.h"
+#include "EngineCore.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "EngineCore.h"
+#include "MaterialInstance.h"
 
 Material::Material()
 {
@@ -79,7 +80,7 @@ HRESULT Material::Initialize(MTRL_FORMAT mtrlFormat, const _string& modelFilePat
 	return S_OK;
 }
 
-HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex)
+HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex, MaterialInstance* mtrlInstance)
 {
 	/*Bind Parameter*/
 
@@ -95,6 +96,10 @@ HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex)
 		if (FAILED(m_pShader->BindTextureValue(pair.first, pair.second[frameIndex])))
 			return E_FAIL;
 	}
+
+	/*Bind material instance*/
+	if (mtrlInstance)
+		mtrlInstance->BindMaterialInstance(m_pShader);
 
 	return m_pShader->Apply(passTag);
 }

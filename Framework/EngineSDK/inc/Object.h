@@ -55,6 +55,7 @@ public:
 
     void SetDead() { m_isDead = true; }
     _bool IsDead()const { return m_isDead; }
+    void SetRenderGroup(RenderGroup group) { m_eRenderGroup = group; }
 
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
@@ -70,8 +71,33 @@ protected:
 
     std::vector<Component*> m_Components;
     std::unordered_map<std::type_index, Component*> m_ComponentMap;
+
     RenderGroup m_eRenderGroup = RenderGroup::NonBlend;
     _bool m_isDead = false;
+
+protected:
+    /*fsm*/
+    class State
+    {
+    public:
+        virtual void Enter(Object* object) = 0;
+        virtual void Update(Object* object, _float dt) = 0;
+        virtual void TestForExit(Object* object) = 0;
+    };
+
+    class StateNothing :public State
+    {
+    public:
+        void Enter(Object* object)override {};
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override {};
+    };
+
+    StateNothing m_StateNothing;
+    State* m_CurrState = &m_StateNothing;
+public:
+    void ChangeState(State* state);
+    State* GetState()const { return m_CurrState; }
 };
 
 NS_END

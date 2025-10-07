@@ -186,9 +186,11 @@
     <ClInclude Include="..\public\AudioSource.h" />
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\public\CameraComponent.h" />
+    <ClInclude Include="..\public\Cell.h" />
     <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\ContainerObject.h" />
+    <ClInclude Include="..\public\DebugRenderer.h" />
     <ClInclude Include="..\public\EngineCore.h" />
     <ClInclude Include="..\public\Engine_AssetFormat.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
@@ -222,11 +224,15 @@
     <ClInclude Include="..\public\Level.h" />
     <ClInclude Include="..\public\LevelManager.h" />
     <ClInclude Include="..\public\LightComponent.h" />
-    <ClInclude Include="..\public\LightManager.h" />
+    <ClInclude Include="..\public\LightSystem.h" />
     <ClInclude Include="..\public\LightProxy.h" />
     <ClInclude Include="..\public\Material.h" />
     <ClInclude Include="..\public\IPanel.h" />
+    <ClInclude Include="..\public\MaterialInstance.h" />
     <ClInclude Include="..\public\Mesh.h" />
+    <ClInclude Include="..\public\NavigationComponent.h" />
+    <ClInclude Include="..\public\NavigationSystem.h" />
+    <ClInclude Include="..\public\NavMesh.h" />
     <ClInclude Include="..\public\nfd\common.h" />
     <ClInclude Include="..\public\nfd\nfd.h" />
     <ClInclude Include="..\public\nfd\nfd_common.h" />
@@ -243,6 +249,7 @@
     <ClInclude Include="..\public\Socket.h" />
     <ClInclude Include="..\public\SpriteComponent.h" />
     <ClInclude Include="..\public\Struct_ConstantBuffer.h" />
+    <ClInclude Include="..\public\Struct_ShaderMetaData.h" />
     <ClInclude Include="..\public\Struct_Vertex.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\public\GuizmoPanel.h" />
@@ -277,9 +284,11 @@
     <ClCompile Include="..\private\AudioSource.cpp" />
     <ClCompile Include="..\private\Base.cpp" />
     <ClCompile Include="..\private\CameraComponent.cpp" />
+    <ClCompile Include="..\private\Cell.cpp" />
     <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\ContainerObject.cpp" />
+    <ClCompile Include="..\private\DebugRenderer.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />
@@ -290,10 +299,14 @@
     <ClCompile Include="..\private\Level.cpp" />
     <ClCompile Include="..\private\LevelManager.cpp" />
     <ClCompile Include="..\private\LightComponent.cpp" />
-    <ClCompile Include="..\private\LightManager.cpp" />
+    <ClCompile Include="..\private\LightSystem.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
     <ClCompile Include="..\private\IPanel.cpp" />
+    <ClCompile Include="..\private\MaterialInstance.cpp" />
     <ClCompile Include="..\private\Mesh.cpp" />
+    <ClCompile Include="..\private\NavigationComponent.cpp" />
+    <ClCompile Include="..\private\NavigationSystem.cpp" />
+    <ClCompile Include="..\private\NavMesh.cpp" />
     <ClCompile Include="..\private\OutlinerPanel.cpp" />
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
@@ -415,8 +428,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\bin\shaderfiles\BlendStates.hlsli" />
+    <None Include="..\bin\shaderfiles\ContantBuffer.hlsli" />
+    <None Include="..\bin\shaderfiles\DepthStencilStates.hlsli" />
+    <None Include="..\bin\shaderfiles\RasterizerStates.hlsli" />
+    <None Include="..\bin\shaderfiles\Samplers.hlsli" />
+    <None Include="..\bin\shaderfiles\ShaderDefine.hlsli" />
     <None Include="..\public\nfd\nfd_cocoa.m" />
-    <None Include="..\public\shaderinc\ShaderDefine.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\bin\shaderfiles\Shader_Debug.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

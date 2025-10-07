@@ -5,6 +5,7 @@
 
 NS_BEGIN(Engine)
 
+class Shader;
 class ENGINE_DLL Renderer :
     public Base
 {
@@ -17,15 +18,13 @@ public:
     HRESULT Initialize();
 
     HRESULT BeginFrame(std::vector<LightProxy>& lights);
-    HRESULT EndFrame() { return S_OK; }
 
     HRESULT RenderPriority(const std::vector<RenderProxy>& proxies);
     HRESULT RenderNonBlend(const std::vector<RenderProxy>& proxies);
     HRESULT RenderBlend(const std::vector<RenderProxy>& proxies);
     HRESULT RenderUI(const std::vector<RenderProxy>& proxies);
-    HRESULT RenderDebug(const std::vector<RenderProxy>& proxies);
 
-    HRESULT ConnectConstantBuffer(ID3DX11Effect* pEffect);
+    HRESULT ConnectConstantBuffer(Shader* shader);
     void Free()override;
 
 private:

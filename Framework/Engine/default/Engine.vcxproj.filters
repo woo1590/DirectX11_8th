@@ -175,9 +175,6 @@
     <Filter Include="05. Object Component\Light Component">
       <UniqueIdentifier>{a6c02086-75b9-4de4-9f46-20416b4ac8ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\Light Manager">
-      <UniqueIdentifier>{7cd08c9e-48b2-49e9-b7b6-ba544e7bd160}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Etc\ShaderFiles">
       <UniqueIdentifier>{72f025ae-5e05-4fd3-850e-962a5cd69e13}</UniqueIdentifier>
     </Filter>
@@ -219,6 +216,27 @@
     </Filter>
     <Filter Include="04. Object\ContainerObject\Socket">
       <UniqueIdentifier>{34927f9d-20eb-4078-bf77-706579c7a533}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\Material\Material Instance">
+      <UniqueIdentifier>{3a4f1ba7-4332-492f-999d-2dcf0866468a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Navigation Component">
+      <UniqueIdentifier>{9a82a125-a71d-4c6f-b31e-4946549c9229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\NavMesh">
+      <UniqueIdentifier>{3e1762be-a1ef-40af-9eff-660df2e24920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\NavMesh\Cell">
+      <UniqueIdentifier>{6afe16c0-56d0-4b17-86e6-1caabef00ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Navigation System">
+      <UniqueIdentifier>{6c2a2a2f-ab6b-4dc9-8738-3bcf9d5c6c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Light System">
+      <UniqueIdentifier>{7cd08c9e-48b2-49e9-b7b6-ba544e7bd160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Rendering\DebugRenderer">
+      <UniqueIdentifier>{03d227c5-fede-4a4b-9f47-85feb1180f65}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -417,8 +435,8 @@
     <ClInclude Include="..\public\LightComponent.h">
       <Filter>05. Object Component\Light Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\LightManager.h">
-      <Filter>01. Engine Component\Light Manager</Filter>
+    <ClInclude Include="..\public\LightSystem.h">
+      <Filter>01. Engine Component\Light System</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SpriteComponent.h">
       <Filter>05. Object Component\Sprite Component</Filter>
@@ -473,6 +491,27 @@
     </ClInclude>
     <ClInclude Include="..\public\Socket.h">
       <Filter>04. Object\ContainerObject\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Struct_ShaderMetaData.h">
+      <Filter>98. Etc\Defines\Engine_Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MaterialInstance.h">
+      <Filter>01. Engine Component\Resource Manager\Material\Material Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\NavMesh.h">
+      <Filter>01. Engine Component\Resource Manager\NavMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cell.h">
+      <Filter>01. Engine Component\Resource Manager\NavMesh\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\NavigationComponent.h">
+      <Filter>05. Object Component\Navigation Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\NavigationSystem.h">
+      <Filter>01. Engine Component\Navigation System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DebugRenderer.h">
+      <Filter>01. Engine Component\Rendering\DebugRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -641,8 +680,8 @@
     <ClCompile Include="..\private\LightComponent.cpp">
       <Filter>05. Object Component\Light Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\LightManager.cpp">
-      <Filter>01. Engine Component\Light Manager</Filter>
+    <ClCompile Include="..\private\LightSystem.cpp">
+      <Filter>01. Engine Component\Light System</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SpriteComponent.cpp">
       <Filter>05. Object Component\Sprite Component</Filter>
@@ -680,13 +719,51 @@
     <ClCompile Include="..\private\Socket.cpp">
       <Filter>04. Object\ContainerObject\Socket</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\MaterialInstance.cpp">
+      <Filter>01. Engine Component\Resource Manager\Material\Material Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\NavMesh.cpp">
+      <Filter>01. Engine Component\Resource Manager\NavMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cell.cpp">
+      <Filter>01. Engine Component\Resource Manager\NavMesh\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\NavigationComponent.cpp">
+      <Filter>05. Object Component\Navigation Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\NavigationSystem.cpp">
+      <Filter>01. Engine Component\Navigation System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DebugRenderer.cpp">
+      <Filter>01. Engine Component\Rendering\DebugRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\public\shaderinc\ShaderDefine.hlsli">
-      <Filter>98. Etc\ShaderFiles</Filter>
-    </None>
     <None Include="..\public\nfd\nfd_cocoa.m">
       <Filter>99. Utility\nfd</Filter>
     </None>
+    <None Include="..\bin\shaderfiles\ShaderDefine.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\bin\shaderfiles\DepthStencilStates.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\bin\shaderfiles\RasterizerStates.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\bin\shaderfiles\BlendStates.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\bin\shaderfiles\ContantBuffer.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+    <None Include="..\bin\shaderfiles\Samplers.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\bin\shaderfiles\Shader_Debug.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

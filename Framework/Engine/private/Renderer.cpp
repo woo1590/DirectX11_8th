@@ -4,6 +4,7 @@
 #include "VIBuffer.h"
 #include "Material.h"
 #include "LightProxy.h"
+#include "Shader.h"
 
 Renderer::Renderer()
 	:m_pDevice(EngineCore::GetInstance()->GetDevice()),
@@ -70,7 +71,6 @@ HRESULT Renderer::BeginFrame(std::vector<LightProxy>& lights)
 
 	auto engine = EngineCore::GetInstance();
 
-	/* 멀티스레드 확장 시 rendersystem에서 큐로 받아와야 함 -> 게임 로직에 직접 접근 ㄴㄴ */
 	{
 		D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
 		CBPerFrame perFrame{};
@@ -137,13 +137,6 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 	return S_OK;
 }
 
-HRESULT Renderer::RenderDebug(const std::vector<RenderProxy>& proxies)
-{
-
-
-	return S_OK;
-}
-
 HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 {
 	{
@@ -167,24 +160,21 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 	
-	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex)))
+	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex,proxy.materialInstance)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();
 }
 
-HRESULT Renderer::ConnectConstantBuffer(ID3DX11Effect* pEffect)
+HRESULT Renderer::ConnectConstantBuffer(Shader* shader)
 {
-	auto perFrame = pEffect->GetConstantBufferByIndex(0);
-	if (FAILED(perFrame->SetConstantBuffer(m_pCBPerFrame)))
+	if (FAILED(shader->SetConstantBuffer("PerFrame", m_pCBPerFrame)))
 		return E_FAIL;
-
-	auto perObject = pEffect->GetConstantBufferByIndex(2);
-	if (FAILED(perObject->SetConstantBuffer(m_pCBPerObject)))
+	
+	if (FAILED(shader->SetConstantBuffer("PerObject", m_pCBPerObject)))
 		return E_FAIL;
-
-	auto boneMatrices = pEffect->GetConstantBufferByIndex(3);
-	if (FAILED(boneMatrices->SetConstantBuffer(m_pCBBonePalatte)))
+	
+	if (FAILED(shader->SetConstantBuffer("BoneMatrices", m_pCBBonePalatte)))
 		return E_FAIL;
 
 	return S_OK;

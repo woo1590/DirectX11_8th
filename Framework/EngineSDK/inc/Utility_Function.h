@@ -48,10 +48,7 @@ namespace math
 			roll = 0.f;
 		}
 
-		pitch = XMConvertToDegrees(pitch);
-		yaw = XMConvertToDegrees(yaw);
-		roll = XMConvertToDegrees(roll);
-
+		/*Return Radian*/
 		return _float3(pitch, yaw, roll);
 	}
 };
@@ -61,6 +58,43 @@ namespace DXWrap
 	HRESULT ENGINE_DLL EngineCreateWICTextureFromFile(ID3D11Device* device, _wstring fileName, ID3D11Resource** ppResource, ID3D11ShaderResourceView** ppSRV);
 
 	HRESULT ENGINE_DLL EngineSaveDDSTextureToFile(ID3D11DeviceContext* context, ID3D11Resource* pResource, _wstring outFilePath);
+}
+
+namespace map
+{
+	inline void PrefabToJson(nlohmann::ordered_json& j, const PREFAB& prefab)
+	{
+		using nlohmann::ordered_json;
+		j = ordered_json
+		{
+			{"PrototypeTag",	prefab.prototypeTag},
+			{"ModelTag",		prefab.modelTag},
+			{"LayerTag",		prefab.layerTag},
+			{"Position",		{{"x",prefab.position.x},{"y",prefab.position.y},{"z",prefab.position.z}}},
+			{"Scale",			{{"x",prefab.scale.x},{"y",prefab.scale.y},{"z",prefab.scale.z}}},
+			{"Quaternion",		{{"x",prefab.quaternion.x},{"y",prefab.quaternion.y},{"z",prefab.quaternion.z},{"w",prefab.quaternion.w}}}
+		};
+	}
+
+	inline void PrefabFromJson(const nlohmann::ordered_json& j, PREFAB& prefab)
+	{
+		prefab.prototypeTag = j.at("PrototypeTag").get<_string>();
+		prefab.modelTag = j.at("ModelTag").get<_string>();
+		prefab.layerTag = j.at("LayerTag").get<_string>();
+
+		prefab.position.x = j.at("Position").at("x").get<_float>();
+		prefab.position.y = j.at("Position").at("y").get<_float>();
+		prefab.position.z = j.at("Position").at("z").get<_float>();
+
+		prefab.scale.x = j.at("Scale").at("x").get<_float>();
+		prefab.scale.y = j.at("Scale").at("y").get<_float>();
+		prefab.scale.z = j.at("Scale").at("z").get<_float>();
+
+		prefab.quaternion.x = j.at("Quaternion").at("x").get<_float>();
+		prefab.quaternion.y = j.at("Quaternion").at("y").get<_float>();
+		prefab.quaternion.z = j.at("Quaternion").at("z").get<_float>();
+		prefab.quaternion.w = j.at("Quaternion").at("w").get<_float>();
+	}
 }
 
 NS_END

@@ -3,11 +3,13 @@
 
 NS_BEGIN(Client)
 
+class Weapon;
 class Player final:
     public ContainerObject
 {
 public:
-    enum class Parts { Hand, PlayerCam, Count };
+    enum class Parts { Hand, RightHandSocket, Weapon, PlayerCam, Count };
+    enum class WeaponSlot { None, Weapon1, Weapon2, Weapon3, Count };
 private:
     Player();
     Player(const Player& prototype);
@@ -20,6 +22,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     Object* Clone(InitDESC* arg)override;
@@ -27,7 +30,12 @@ public:
 
 private:
     HRESULT CreatePartObjects();
+    void EquipWeapon(WeaponSlot slot);
+
     void KeyInput(_float dt);
+
+    std::vector<Weapon*> m_Weapons;
+    WeaponSlot m_eCurrWeaponSlot = WeaponSlot::None;
 };
 
 NS_END

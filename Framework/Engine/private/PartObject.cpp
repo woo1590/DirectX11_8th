@@ -25,9 +25,9 @@ HRESULT PartObject::Initialize(InitDESC* arg)
 	PART_OBJECT_DESC* desc = static_cast<PART_OBJECT_DESC*>(arg);
 	m_pParent = desc->parent;	//여기서 addref하면 상호참조
 
-	/*If use socket*/
-	if (desc->socketTransform)
-		m_pTransform->SetParent(desc->socketTransform);
+	/*if use socket*/
+	if (desc->parentSocketTransform)
+		m_pTransform->SetParent(desc->parentSocketTransform);
 	else
 		m_pTransform->SetParent(m_pParent->GetComponent<TransformComponent>());
 

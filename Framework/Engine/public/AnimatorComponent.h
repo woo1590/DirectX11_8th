@@ -22,7 +22,21 @@ public:
     void        SetSkeleton(Skeleton* pSkeleton);
     void        ChangeAnimation(_uint animationIndex, _bool isLoop = false);
 
+    /*Getter*/
     const std::vector<_float4x4>& GetCombinedMatrices() { return m_CombiendMatirices; }
+    const std::vector<_float4x4>& GetTransformationMatrices() { return m_TransformationMatrices; }
+    ANIMATIONCLIP_CONTEXT& GetContext() { return m_Context; }
+    AnimationClip* GetCurrAnimationClip()const { return m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]; }
+    const std::vector<Bone>& GetBones();
+    _uint GetNumBones()const;
+
+    /*Setter*/
+    void SetOverride(std::vector<_float4x4> overrideMatrices, std::vector<_uint> masks);
+
+    /*API*/
+    BONE_MAP MakeBoneMap(AnimatorComponent* other);
+    _bool IsFinished()const { return m_Context.isFinished; }
+
     Component* Clone() { return new AnimatorComponent(*this); }
     void Free()override;
 
@@ -33,6 +47,7 @@ public:
 private:
     void PlayAnimation(_float dt);
     void FadeAnimation(_float dt);
+    void ApplyOverride();
     void UpdateCombinedMatrix();
 
     ANIMATION_SET m_AnimationSet{};
@@ -40,8 +55,11 @@ private:
     _uint m_iCurrAnimationIndex = -1;
 
     Skeleton* m_pSkeleton = nullptr;
-    std::vector<_float4x4> m_TransformationMatirices;
+    std::vector<_float4x4> m_TransformationMatrices;
     std::vector<_float4x4> m_CombiendMatirices;
+
+    std::vector<_float4x4> m_OverrideMatrices;
+    std::vector<_uint> m_OverrideMask;
 
     /*Fade To Next Animation*/
     _bool m_isFade = false;

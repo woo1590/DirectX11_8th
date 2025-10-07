@@ -34,6 +34,14 @@ void OutlinerPanel::Draw(GUIState& state)
     static _bool show = true;
     if (!show) return;
 
+    const ImGuiViewport* vp = ImGui::GetMainViewport();
+    ImVec2 pad = ImVec2(12, 12);
+
+    ImVec2 pos = ImVec2(0, 0);
+    ImVec2 size = ImVec2(vp->WorkSize.x * 0.2f, vp->WorkSize.y);
+    ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0, 0));
+    ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
+
     if (ImGui::Begin("Outliner", &show, ImGuiWindowFlags_MenuBar)) {
         if (ImGui::BeginMenuBar()) {
             ImGui::TextUnformatted("Outliner");

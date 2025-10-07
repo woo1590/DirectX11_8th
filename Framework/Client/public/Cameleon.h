@@ -20,8 +20,38 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void Reload() override;
+    void Fire() override;
+
     Object* Clone(InitDESC* arg);
     void Free()override;
+
+private:
+    class CameleonIdle : public State
+    {
+        void Enter(Engine::Object* object) override;
+        void Update(Engine::Object* object, Engine::_float dt) override;
+        void TestForExit(Engine::Object* object) override;
+    };
+
+    class CameleonReload : public State
+    {
+        void Enter(Engine::Object* object) override;
+        void Update(Engine::Object* object, Engine::_float dt) override;
+        void TestForExit(Engine::Object* object) override;
+    };
+
+    class CameleonFire : public State
+    {
+        void Enter(Engine::Object* object) override;
+        void Update(Engine::Object* object, Engine::_float dt) override;
+        void TestForExit(Engine::Object* object) override;
+    };
+
+    CameleonIdle m_CameleonIdle;
+    CameleonReload m_CameleonReload;
+    CameleonFire m_CameleonFire;
+
 };
 
 NS_END

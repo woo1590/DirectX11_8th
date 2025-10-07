@@ -2,6 +2,8 @@
 #include "RenderSystem.h"
 #include "EngineCore.h"
 #include "Renderer.h"
+#include "DebugRenderer.h"
+
 
 RenderSystem::RenderSystem()
 {
@@ -25,11 +27,17 @@ HRESULT RenderSystem::Initialize()
 	if (!m_pRenderer)
 		return E_FAIL;
 
+	m_pDebugRenderer = DebugRenderer::Create();
+	if (!m_pDebugRenderer)
+		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT RenderSystem::RenderLoop()
 {
+	auto engine = EngineCore::GetInstance();
+
 	m_pRenderer->BeginFrame(m_CurrFrameLights);
 
 	if (FAILED(m_pRenderer->RenderPriority(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Priority)])))
@@ -41,15 +49,19 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
 		return E_FAIL;
 
-#ifdef _DEBUG
-	if (FAILED(m_pRenderer->RenderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Debug)])))
-		return E_FAIL;
-#endif
+	if (engine->IsDebugEnable())
+	{
+		m_pDebugRenderer->BeginFrame();
+
+		if (FAILED(m_pDebugRenderer->RenderNavMeshDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NavMeshDebug)])))
+			return E_FAIL;
+
+		if (FAILED(m_pDebugRenderer->RenderColliderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
 		return E_FAIL;
-
-	m_pRenderer->EndFrame();
 
 	Clear();
 
@@ -66,6 +78,7 @@ void RenderSystem::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pDebugRenderer);
 	Safe_Release(m_pRenderer);
 	Clear();
 }

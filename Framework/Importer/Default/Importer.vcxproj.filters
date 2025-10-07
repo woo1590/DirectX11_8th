@@ -70,6 +70,9 @@
     <Filter Include="03. Object Component\FBXCamLoader Component">
       <UniqueIdentifier>{3b246449-8454-4fe7-99b4-bdabf3d0d9ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\EditorGrid">
+      <UniqueIdentifier>{cdb10472-6fe0-49ae-8ad3-ff2f9b4c5b64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="..\public\FBXCamLoaderComponent.h">
       <Filter>03. Object Component\FBXCamLoader Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\EditorGrid.h">
+      <Filter>02. Object\EditorGrid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Importer.ico">
@@ -204,12 +210,18 @@
     <ClCompile Include="..\private\FBXCamLoaderComponent.cpp">
       <Filter>03. Object Component\FBXCamLoader Component</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\EditorGrid.cpp">
+      <Filter>02. Object\EditorGrid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\shaderfiles\Shader_VtxMesh.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\shaderfiles\Shader_Grid.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

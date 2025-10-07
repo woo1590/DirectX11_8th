@@ -43,7 +43,7 @@ HRESULT PlayerCam::Initialize(InitDESC* arg)
 	camDesc.aspect = static_cast<_float>(WinSizeX) / WinSizeY;
 	camDesc.fov = math::ToRadian(60.f);
 	camDesc.nearZ = 0.1f;
-	camDesc.farZ = 1000.f;
+	camDesc.farZ = 500.f;
 
 	if (FAILED(GetComponent<CameraComponent>()->Initialize(&camDesc)))
 		return E_FAIL;

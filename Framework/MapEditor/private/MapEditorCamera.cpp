@@ -52,7 +52,7 @@ HRESULT MapEditorCamera::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	m_pTransform->SetPosition(_float3(0.f, 100.f, 0.f));
-	m_pTransform->SetRotation(_float3(math::ToRadian(45.f), 0.f, 0.f));
+	m_pTransform->Rotate(_float3(math::ToRadian(45.f), 0.f, 0.f));
 
 	return S_OK;
 }
@@ -72,18 +72,17 @@ void MapEditorCamera::PriorityUpdate(_float dt)
 	_vector forward = transform->GetForwardV();
 	_vector right = transform->GetRightV();
 	_float speed = 100.f;
-	_float3 rotation = transform->GetRotation();
 	_float2 mouseDelta = engine->GetMouseDelta();
 
-	if (engine->IsMouseDown(MouseButton::RButton))
+	if (engine->IsKeyAway('Q'))
 	{
-		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
-		_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
-		rotation.y += yaw;
-		rotation.x += pitch;
+		if (engine->IsMouseDown(MouseButton::RButton))
+		{
+			_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
+			_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
 
-		rotation.x = std::clamp(rotation.x, -math::PI + 0.1f, math::PI - 0.1f);
-		transform->SetRotation(rotation);
+			transform->Turn(_float3(pitch, yaw, 0.f));
+		}
 	}
 
 	if (m_ActiveKeyboard)

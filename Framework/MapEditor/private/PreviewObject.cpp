@@ -3,6 +3,8 @@
 #include "ModelComponent.h"
 #include "ModelPickable.h"
 #include "PickingSystem.h"
+#include "MaterialInstance.h"
+#include "MakePrefabComponent.h"
 
 PreviewObject::PreviewObject()
 	:Object()
@@ -40,6 +42,7 @@ HRESULT PreviewObject::Initialize_Prototype(PREFAB prefab, PickingSystem* pickin
 
 	AddComponent<ModelComponent>();
 	AddComponent<ModelPickable>();
+	AddComponent<MakePrefabComponent>();
 
 	return S_OK;
 }
@@ -50,12 +53,22 @@ HRESULT PreviewObject::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto model = GetComponent<ModelComponent>();
+	if(FAILED(model->Initialize(arg)))
+		return E_FAIL;
+
 	model->SetModel(ENUM_CLASS(LevelID::Editor), m_Prefab.modelTag);
 
 	auto pickable = GetComponent<ModelPickable>();
 	pickable->SetModel(ENUM_CLASS(LevelID::Editor), m_Prefab.modelTag);
 
-	m_pTransform->SetScale(m_Prefab.scale);
+	MakePrefabComponent::MAKE_PREFAB_DESC desc{};
+	desc.prototypeTag = m_Prefab.prototypeTag;
+	desc.modelTag = m_Prefab.modelTag;
+	desc.layerTag = m_Prefab.layerTag;
+
+	auto makePrefab = GetComponent<MakePrefabComponent>();
+	if (FAILED(makePrefab->Initialize(&desc)))
+		return E_FAIL;
 
 	/*Register PickingSystem*/
 	m_pPickingSystem->RegisterComponent(GetComponent<ModelPickable>());
@@ -92,5 +105,6 @@ void PreviewObject::Free()
 {
 	m_pPickingSystem->UnRegisterComponent(GetComponent<ModelPickable>());
 	Safe_Release(m_pPickingSystem);
+
 	__super::Free();
 }

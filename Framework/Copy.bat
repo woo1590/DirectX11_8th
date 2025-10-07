@@ -16,4 +16,8 @@ xcopy	/y	.\Engine\bin\release\Engine.dll	.\MapEditor\bin\release\
 xcopy	/y	.\Engine\bin\debug\Engine.lib	.\EngineSDK\Lib\debug\
 xcopy	/y	.\Engine\bin\release\Engine.lib	.\EngineSDK\Lib\release\
 
+xcopy	/y	.\Engine\bin\shaderfiles\*.*	.\Client\bin\shaderfiles\
+xcopy	/y	.\Engine\bin\shaderfiles\*.*	.\Importer\bin\shaderfiles\
+xcopy	/y	.\Engine\bin\shaderfiles\*.*	.\MapEditor\bin\shaderfiles\
+
 pause

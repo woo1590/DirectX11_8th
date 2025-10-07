@@ -46,13 +46,13 @@ HRESULT ImGuiManager::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	if (!inspector)
 		return E_FAIL;
 
-	//auto guizmo = GuizmoPanel::Create();
-	//if (!guizmo)
-	//	return E_FAIL;
+	auto guizmo = GuizmoPanel::Create();
+	if (!guizmo)
+		return E_FAIL;
 
 	m_Panels.push_back(outliner);
 	m_Panels.push_back(inspector);
-	//m_Panels.push_back(guizmo);
+	m_Panels.push_back(guizmo);
 
 	m_GuiState = state;
 
@@ -69,12 +69,16 @@ void ImGuiManager::BeginFrame()
 
 void ImGuiManager::Render()
 {
+    auto engine = EngineCore::GetInstance();
+
 	ImGuiIO& io = ImGui::GetIO();
     static _bool isAvailable = true;
 	ImGui::Begin("Debug");
 	ImGui::Text("FPS : %.1f (%.3f ms)", io.Framerate, 1000.f / io.Framerate);
     if (ImGui::Button("Visible"))
         isAvailable = isAvailable ? false : true;
+    if (ImGui::Button("Debug Mode"))
+        engine->IsDebugEnable() ? engine->DebugDisable() : engine->DebugEnable();
 	ImGui::End();
 
 

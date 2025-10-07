@@ -67,6 +67,12 @@
     <Filter Include="04. Object Component\Pickable Component\ModelPickable">
       <UniqueIdentifier>{b097a0e1-1812-4ce3-9249-83119eeca898}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Object Component\MakePrefab Component">
+      <UniqueIdentifier>{dd5755cb-675b-4019-85f2-48b38d84a4cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\nfd">
+      <UniqueIdentifier>{f35380b5-dadc-4862-8723-800940151df5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -123,6 +129,18 @@
     <ClInclude Include="..\public\ModelPickable.h">
       <Filter>04. Object Component\Pickable Component\ModelPickable</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MakePrefabComponent.h">
+      <Filter>04. Object Component\MakePrefab Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\common.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -167,6 +185,15 @@
     <ClCompile Include="..\private\ModelPickable.cpp">
       <Filter>04. Object Component\Pickable Component\ModelPickable</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\MakePrefabComponent.cpp">
+      <Filter>04. Object Component\MakePrefab Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_common.c">
+      <Filter>98. Etc\nfd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
+      <Filter>98. Etc\nfd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapEditor.ico">
@@ -191,5 +218,10 @@
     <FxCompile Include="..\bin\shaderfiles\Shader_Chunk.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\EngineSDK\inc\nfd\nfd_cocoa.m">
+      <Filter>98. Etc\nfd</Filter>
+    </None>
   </ItemGroup>
 </Project>

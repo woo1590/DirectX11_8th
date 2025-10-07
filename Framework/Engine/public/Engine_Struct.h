@@ -4,6 +4,7 @@
 #include "Engine_Typedef.h"
 #include "Struct_ConstantBuffer.h"
 #include "Struct_Vertex.h"
+#include "Struct_ShaderMetaData.h"
 
 namespace Engine
 {
@@ -47,6 +48,21 @@ namespace Engine
 		std::vector<_float4x4> boneMatrices;
 	}BONE_PALETTE;
 
+	typedef struct tagBoneMap
+	{
+		std::vector<_int> mappedBoneIndex;
+		std::unordered_map<_string, _int> nameToIndex;
+	}BONE_MAP;
+
+	typedef struct tagBone
+	{
+		_string m_strBoneTag{};
+		_int m_iParentIndex{};
+		_float4x4 m_TransformationMatrix{};
+
+	}Bone;
+
+
 	typedef struct tagPrefab
 	{
 		_string prototypeTag{};
@@ -55,7 +71,7 @@ namespace Engine
 
 		_float3 position{};
 		_float3 scale{ 1.f,1.f,1.f };
-		_float3 rotation{};
+		_float4 quaternion{};	//quaternion
 	}PREFAB;
 
 	typedef struct tagBoundingBoxData
@@ -75,5 +91,11 @@ namespace Engine
 		_bool isHit = false;
 		_float localDistance;
 	}RAY_HIT_DATA;
+
+	typedef struct tagCellDesc
+	{
+		_float3	points[3];
+		_uint index{};
+	}CELL_DESC;
 }
 #endif // Engine_Struct_h__

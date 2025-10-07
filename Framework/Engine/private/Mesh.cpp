@@ -227,6 +227,7 @@ HRESULT Mesh::CreateSkinnedMesh(std::ifstream& file)
 	vbDesc.StructureByteStride = m_iVertexStride;
 
 	std::vector<VTXSKINNEDMESH> vertices(m_iNumVertices);
+	m_VertexPositions.resize(m_iNumVertices);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		vertices[i].position = vertexFormats[i].position;

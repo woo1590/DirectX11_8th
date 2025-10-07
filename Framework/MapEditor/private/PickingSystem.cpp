@@ -25,6 +25,9 @@ HRESULT PickingSystem::Initialize()
 
 void PickingSystem::Update()
 {
+	if (ImGuizmo::IsUsing())
+		return;
+
 	auto engine = EngineCore::GetInstance();
 
 	_float3 camPosition = engine->GetCamPosition();
@@ -61,8 +64,11 @@ void PickingSystem::RegisterComponent(PickableComponent* component)
 
 void PickingSystem::UnRegisterComponent(PickableComponent* component)
 {
-	Safe_Release(component);
+	_uint currSize = m_Pickables.size();
+
 	m_Pickables.remove(component);
+	if(currSize != m_Pickables.size())
+		Safe_Release(component);
 }
 
 void PickingSystem::Free()

@@ -7,21 +7,22 @@ NS_END
 
 NS_BEGIN(MapEditor)
 
-enum class PickType { Model, Chunk, Count };
+enum class PickType { Guizmo, Model, Chunk, Count };
 
 typedef struct tagPickResult
 {
 	_bool isHit = false;
 	_float distance = FLT_MAX;
-	_float3 hitPosition{};
 	PickType type{};
 
 	/*Model Pick*/
 	Object* object = nullptr;
+	_float3 worldHitPosition{};
 
 	/*Chunk Pick*/
 	_uint indexX{};
 	_uint indexZ{};
+	_float3 chunkPosition{};
 	_bool isUsed = false;
 
 }PICK_RESULT;

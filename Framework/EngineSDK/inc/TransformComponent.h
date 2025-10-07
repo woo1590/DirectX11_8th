@@ -11,7 +11,7 @@ public:
     {
         _float3 position{ 0.f,0.f,0.f };
         _float3 scale{ 1.f,1.f,1.f };
-        _float3 rotation{ 0.f,0.f,0.f };
+        _float4 quaternion{ 0.f,0.f,0.f,1.f };
     }TRANSFORM_DESC;
 
 private:
@@ -27,19 +27,25 @@ public:
     void SetPosition(_float3 position) { m_Position = position; MakeDirty(); }
     void SetScale(_float3 scale) { m_Scale = scale; MakeDirty(); }
     void SetRotation(_float3 rotation);
+    void SetQuaternion(_float4 quaternion);
     void SetForward(_float3 direction);
     void SetParent(TransformComponent* parent);
-
+    
+    /*API*/
     void Translate(_fvector velocity);
+    void Turn(_float deltaPitch, _float deltaYaw); //no roll
+    void Turn(_float3 deltaRadian);
+    void Rotate(_float3 euler);
 
+    /*Getter*/
     _float3 GetPosition()const { return m_Position; }
     _vector GetPositionV()const { return XMLoadFloat3(&m_Position); }
 
     _float3 GetScale()const { return m_Scale; }
     _vector GetScaleV()const { return XMLoadFloat3(&m_Scale); }  
 
-    _float3 GetRotation()const { return m_Rotation; }
-    _vector GetRotationV()const { return XMLoadFloat3(&m_Rotation); }
+    _float4 GetQuaternion()const { return m_Quaternion; }
+    _vector GetQuaternionV()const { return XMLoadFloat4(&m_Quaternion); }
 
     _float3 GetForward()const { return m_Forward; }
     _vector GetForwardV()const { return XMLoadFloat3(&m_Forward); }
@@ -67,10 +73,12 @@ private:
     void MakeDirty();
     void MakeChildrenDirty();
 
+    _vector RemoveRoll(_fvector quaternion);
+
     _float3 m_Position{};
     _float3 m_Scale{ 1.f,1.f,1.f };
-    _float3 m_Rotation{};   //radian(pitch,yaw,roll)
-    _float4 m_Quaternion{}; //cached quternion
+    _float4 m_Quaternion{ 0.f,0.f,0.f,1.f };
+    _float3 m_Rotation{};   //cached euler only ui
 
     _float3 m_Forward{};
     _float3 m_Up{};

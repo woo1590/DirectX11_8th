@@ -5,6 +5,7 @@ NS_BEGIN(Engine)
 
 class Shader;
 class Texture;
+class MaterialInstance;
 class ENGINE_DLL Material :
     public Base
 {
@@ -18,7 +19,7 @@ public:
     HRESULT Initialize(Shader* pShader);
     HRESULT Initialize(MTRL_FORMAT mtrlFormat, const _string& modelFilePath);
 
-    HRESULT BindMaterial(const _string& passTag, _int frameIndex);
+    HRESULT BindMaterial(const _string& passTag, _int frameIndex, MaterialInstance* mtrlInstance);
     void SetTexture(const _string& key, Texture* value);
 
     void Free()override;

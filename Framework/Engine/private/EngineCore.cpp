@@ -1,23 +1,29 @@
 #include "EnginePCH.h"
 #include "EngineCore.h"
 
+//manager
 #ifdef USE_IMGUI
 #include "ImGuiManager.h"
 #endif
 
 #include "SoundManager.h"
-#include "RenderSystem.h"
 #include "TimerManager.h"
-#include "GraphicDevice.h"
 #include "ObjectManager.h"
-#include "TaskManager.h"
 #include "PrototypeManager.h"
 #include "ResourceManager.h"
+#include "TaskManager.h"
 #include "LevelManager.h"
-#include "Random.h"
-#include "InputSystem.h"
 #include "PipeLine.h"
-#include "LightManager.h"
+
+//system
+#include "RenderSystem.h"
+#include "InputSystem.h"
+#include "LightSystem.h"
+#include "NavigationSystem.h"
+
+//utill
+#include "GraphicDevice.h"
+#include "Random.h"
 
 IMPLEMENT_SINGLETON(EngineCore);
 
@@ -77,8 +83,12 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pResourceManager)
 		return E_FAIL;
 
-	m_pLightManager = LightManager::Create();
+	m_pLightManager = LightSystem::Create();
 	if (!m_pLightManager)
+		return E_FAIL;
+
+	m_pNavigationSystem = NavigationSystem::Create();
+	if (!m_pNavigationSystem)
 		return E_FAIL;
 
 #ifdef USE_IMGUI
@@ -116,6 +126,7 @@ void EngineCore::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pInputSystem);
 	Safe_Release(m_pLightManager);
+	Safe_Release(m_pNavigationSystem);
 	Safe_Release(m_pGraphicDevice);	/*GraphicDevice는 가장 먼저 생성, 가장 마지막 해제*/
 
 }
@@ -394,7 +405,19 @@ _bool EngineCore::IsMouseAway(MouseButton button) const
 }
 #pragma endregion
 
-#pragma region Light
+#pragma region Navigation System
+void EngineCore::RegisterNavigation(NavigationComponent* component)
+{
+	m_pNavigationSystem->RegisterNavigation(component);
+}
+void EngineCore::UnRegisterNavigation(NavigationComponent* component)
+{
+	m_pNavigationSystem->UnRegisterNavigation(component);
+}
+#pragma endregion
+
+
+#pragma region LightSystem
 void EngineCore::RegisterLight(LightComponent* light)
 {
 	m_pLightManager->RegisterLight(light);
@@ -477,7 +500,6 @@ HRESULT EngineCore::Render()
 	m_pImGuiManager->Render();
 	m_pImGuiManager->EndFrame();
 #endif
-
 
 	return S_OK;
 }

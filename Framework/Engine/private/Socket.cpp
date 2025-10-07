@@ -54,9 +54,10 @@ void Socket::Update(_float dt)
 {
 	__super::Update(dt);
 
-	_float4x4 socketMat = m_pParentModel->GetBoneMatrixByIndex(m_iBoneIndex);
+	_float4x4 socketMat = m_pParentModel->GetCombinedMatrixByIndex(m_iBoneIndex);
 	_vector vScale, vRotation, vPosition;
-	_float3 scale, rotation, position;
+	_float3 scale, position;
+	_float4 rotation;
 
 	/*Decompose Bone Matrix*/
 	XMMatrixDecompose(&vScale, &vRotation, &vPosition, XMLoadFloat4x4(&socketMat));
@@ -69,12 +70,10 @@ void Socket::Update(_float dt)
 	m_pTransform->SetScale(scale);
 	
 	/*Set Rotation*/
-	rotation = math::ToEuler(vRotation);
-	m_pTransform->SetRotation(rotation);
+	XMStoreFloat4(&rotation, XMQuaternionNormalize(vRotation));
+	m_pTransform->SetQuaternion(rotation);
 
 	/*Set Position*/
-	_vector backward = -1.f * m_pTransform->GetForwardV();
-
 	XMStoreFloat3(&position, vPosition);
 	m_pTransform->SetPosition(position);
 }

@@ -64,12 +64,6 @@
     <Filter Include="02. Object\Light\Sun">
       <UniqueIdentifier>{b085c115-2a92-4c03-ab0c-0d5bf9e3bbd7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\TestObject">
-      <UniqueIdentifier>{ee3bf53e-3d0e-4d47-a3bb-f40142af3f83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\TestObject\TestObjectBody">
-      <UniqueIdentifier>{935c971c-0550-420c-ae32-5793c55d7ddd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\Player">
       <UniqueIdentifier>{250ef2b7-4328-4502-868e-33a41aac750c}</UniqueIdentifier>
     </Filter>
@@ -84,6 +78,15 @@
     </Filter>
     <Filter Include="02. Object\Player\Weapon\Cameleon">
       <UniqueIdentifier>{8b429c1d-86ef-4425-b6fa-a46a682b47ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component">
+      <UniqueIdentifier>{8444149c-a8cf-4f6d-a3d8-bcde65b6c68c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\PlayerAnim Controller">
+      <UniqueIdentifier>{d73f6de8-cb0f-4685-a773-f01d788afb69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Lightning Blast">
+      <UniqueIdentifier>{7b024412-3d22-41ff-bee6-2e6edd4c17bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +110,6 @@
     </ClInclude>
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00. MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\TestObject.h">
-      <Filter>02. Object\TestObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LoadingLevel.h">
       <Filter>01. Level\LoadingLevel</Filter>
@@ -138,9 +138,6 @@
     <ClInclude Include="..\public\Sun.h">
       <Filter>02. Object\Light\Sun</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TestObjectBody.h">
-      <Filter>02. Object\TestObject\TestObjectBody</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Player.h">
       <Filter>02. Object\Player</Filter>
     </ClInclude>
@@ -156,6 +153,12 @@
     <ClInclude Include="..\public\Cameleon.h">
       <Filter>02. Object\Player\Weapon\Cameleon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerAnimController.h">
+      <Filter>03. Object Component\PlayerAnim Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LightningBlast.h">
+      <Filter>02. Object\Player\Weapon\Lightning Blast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -166,9 +169,6 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00. MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TestObject.cpp">
-      <Filter>02. Object\TestObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LoadingLevel.cpp">
       <Filter>01. Level\LoadingLevel</Filter>
@@ -197,9 +197,6 @@
     <ClCompile Include="..\private\Sun.cpp">
       <Filter>02. Object\Light\Sun</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TestObjectBody.cpp">
-      <Filter>02. Object\TestObject\TestObjectBody</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02. Object\Player</Filter>
     </ClCompile>
@@ -214,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Cameleon.cpp">
       <Filter>02. Object\Player\Weapon\Cameleon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerAnimController.cpp">
+      <Filter>03. Object Component\PlayerAnim Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LightningBlast.cpp">
+      <Filter>02. Object\Player\Weapon\Lightning Blast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

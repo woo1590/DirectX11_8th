@@ -56,9 +56,9 @@ PICK_RESULT ChunkPickable::IntersectRay(RAY ray)
 	PICK_RESULT result{};
 	result.type = PickType::Chunk;
 	result.isHit = true;
-	result.object = nullptr;
 	result.indexX = std::floor((hitPosition.x - chunkMinXZ.x) / CELL_SIZE);
 	result.indexZ = std::floor((hitPosition.z - chunkMinXZ.z) / CELL_SIZE);
+	result.chunkPosition = chunkPosition;
 	XMStoreFloat(&result.distance, XMVector3Length(XMLoadFloat3(&hitPosition) - XMLoadFloat3(&ray.origin)));
 
 	return result;

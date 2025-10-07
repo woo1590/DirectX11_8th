@@ -1,14 +1,14 @@
 #include "EnginePCH.h"
-#include "LightManager.h"
+#include "LightSystem.h"
 #include "LightComponent.h"
 
-LightManager::LightManager()
+LightSystem::LightSystem()
 {
 }
 
-LightManager* LightManager::Create()
+LightSystem* LightSystem::Create()
 {
-	LightManager* Instance = new LightManager();
+	LightSystem* Instance = new LightSystem();
 
 	if (FAILED(Instance->Initialize()))
 		Safe_Release(Instance);
@@ -16,17 +16,17 @@ LightManager* LightManager::Create()
 	return Instance;
 }
 
-HRESULT LightManager::Initialize()
+HRESULT LightSystem::Initialize()
 {
 	return S_OK;
 }
 
-void LightManager::RegisterLight(LightComponent* light)
+void LightSystem::RegisterLight(LightComponent* light)
 {
 	m_Lights.push_back(light);
 }
 
-void LightManager::UnRegisterLight(LightComponent* light)
+void LightSystem::UnRegisterLight(LightComponent* light)
 {
 	auto iter = std::find(m_Lights.begin(), m_Lights.end(), light);
 
@@ -34,7 +34,7 @@ void LightManager::UnRegisterLight(LightComponent* light)
 		m_Lights.erase(iter);
 }
 
-HRESULT LightManager::ExtractLightProxy(std::vector<LightProxy>& lights)
+HRESULT LightSystem::ExtractLightProxy(std::vector<LightProxy>& lights)
 {
 	for (const auto& light : m_Lights)
 	{
@@ -45,7 +45,7 @@ HRESULT LightManager::ExtractLightProxy(std::vector<LightProxy>& lights)
 	return S_OK;
 }
 
-void LightManager::Free()
+void LightSystem::Free()
 {
 	__super::Free();
 

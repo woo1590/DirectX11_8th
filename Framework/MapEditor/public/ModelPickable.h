@@ -22,6 +22,7 @@ public:
 
     PICK_RESULT IntersectRay(RAY ray)override;
     void SetModel(_uint levelID, const _string& key);
+    void SetActive(_bool active) { m_isActive = false;   }
 
     Component* Clone()override { return new ModelPickable(*this); }
     void Free()override;
@@ -31,8 +32,8 @@ public:
 #endif 
 
 private:
+    _bool m_isActive = true;
     Model* m_pModel = nullptr;
-
 };
 
 NS_END

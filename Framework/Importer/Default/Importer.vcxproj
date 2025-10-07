@@ -191,6 +191,7 @@
     <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h" />
     <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h" />
     <ClInclude Include="..\public\EditorCamera.h" />
+    <ClInclude Include="..\public\EditorGrid.h" />
     <ClInclude Include="..\public\EditorLight.h" />
     <ClInclude Include="..\public\FBXAnimationClip.h" />
     <ClInclude Include="..\public\FBXBone.h" />
@@ -224,6 +225,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\private\EditorCamera.cpp" />
+    <ClCompile Include="..\private\EditorGrid.cpp" />
     <ClCompile Include="..\private\EditorLight.cpp" />
     <ClCompile Include="..\private\FBXAnimationClip.cpp" />
     <ClCompile Include="..\private\FBXBone.cpp" />
@@ -252,6 +254,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\shaderfiles\Shader_Grid.hlsl" />
     <FxCompile Include="..\Bin\shaderfiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />
   </ItemGroup>

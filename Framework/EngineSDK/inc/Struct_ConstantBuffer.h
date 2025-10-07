@@ -30,4 +30,17 @@ namespace Engine
 
 	}CBPerObject;
 
+
+	typedef struct tagDebugConstantBufferPerFrame
+	{
+		_float4x4 viewMatrix{};
+		_float4x4 projMatrix{};
+
+	}DEBUG_CBPerFrame;
+
+	typedef struct tagDebugConstantBufferPerDraw
+	{
+		_float4x4 worldMatrix{};
+
+	}DEBUG_CBPerDraw;
 }

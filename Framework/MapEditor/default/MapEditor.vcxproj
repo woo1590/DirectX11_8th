@@ -187,8 +187,12 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\common.h" />
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h" />
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h" />
     <ClInclude Include="..\public\Chunk.h" />
     <ClInclude Include="..\public\ChunkPickable.h" />
+    <ClInclude Include="..\public\MakePrefabComponent.h" />
     <ClInclude Include="..\public\MapEditorCamera.h" />
     <ClInclude Include="..\public\EditorLevel.h" />
     <ClInclude Include="..\public\MapEditorLight.h" />
@@ -207,8 +211,21 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_common.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\private\Chunk.cpp" />
     <ClCompile Include="..\private\ChunkPickable.cpp" />
+    <ClCompile Include="..\private\MakePrefabComponent.cpp" />
     <ClCompile Include="..\private\MapEditorCamera.cpp" />
     <ClCompile Include="..\private\EditorLevel.cpp" />
     <ClCompile Include="..\private\MapEditorLight.cpp" />
@@ -247,6 +264,9 @@
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\EngineSDK\inc\nfd\nfd_cocoa.m" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

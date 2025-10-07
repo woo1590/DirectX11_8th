@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 
 class Material;
 class VIBuffer;
+class MaterialInstance;
 class TransformComponent;
 class ENGINE_DLL SpriteComponent :
     public Component
@@ -35,6 +36,10 @@ public:
     void SetMaterial(_uint levelID, const _string& key);
 
     HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
+
+    /*Getter*/
+    MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
+
     Component* Clone() { return new SpriteComponent(*this); }
     void Free()override;
 
@@ -47,6 +52,7 @@ private:
 
     VIBuffer* m_pBuffer = nullptr;
     Material* m_pMaterial = nullptr;
+    MaterialInstance* m_pMaterialInstance = nullptr;
 
     _bool m_isAnimated = false;
     _bool m_isRepeat = false;

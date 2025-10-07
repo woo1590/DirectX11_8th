@@ -65,6 +65,9 @@ void Object::Update(_float dt)
 {
 	for (const auto& comp : m_Components)
 		comp->Update(dt);
+
+	m_CurrState->Update(this, dt);
+	m_CurrState->TestForExit(this);
 }
 
 void Object::LateUpdate(_float dt)
@@ -112,3 +115,9 @@ void Object::RenderInspector()
 }
 
 #endif
+
+void Object::ChangeState(State* state)
+{
+	m_CurrState = state;
+	m_CurrState->Enter(this);
+}

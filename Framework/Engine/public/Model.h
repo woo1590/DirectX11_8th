@@ -19,11 +19,11 @@ public:
     static Model* Create(const _string& filePath);
     HRESULT Initialize(const _string& filePath);
 
-    Skeleton* GetSkeleton() { return m_pSkeleton; }
     _bool IsSkinned()const { return (m_eType == ModelType::Skinned); }
     RAY_HIT_DATA RayCastLocal(RAY ray, PickingType type = PickingType::BoundingBox);
 
     /*Getter*/
+    Skeleton* GetSkeleton() { return m_pSkeleton; }
     const std::vector<Mesh*>& GetBuffers() { return m_Meshes; }
     const std::vector<Material*> GetMaterials() { return m_Materials; }
 

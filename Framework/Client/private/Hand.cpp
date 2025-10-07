@@ -48,7 +48,9 @@ HRESULT Hand::Initialize(InitDESC* arg)
 	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_PlayerHand");
 
 	model->ConnectAnimator();
-	animator->ChangeAnimation(1, true);
+	animator->ChangeAnimation(1, false);
+
+	m_pTransform->SetPosition(_float3(0.f, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -62,20 +64,7 @@ void Hand::Update(_float dt)
 {
 	__super::Update(dt);
 
-	/*For Animation Test*/
-	{
-		auto engine = EngineCore::GetInstance();
-		auto animator = GetComponent<AnimatorComponent>();
-
-		if (engine->IsKeyPressed(VK_F1))
-			animator->ChangeAnimation(0, true);
-
-		if (engine->IsKeyPressed(VK_F2))
-			animator->ChangeAnimation(1, true);
-
-		if (engine->IsKeyPressed(VK_F3))
-			animator->ChangeAnimation(2, true);
-	}
+	
 }
 
 void Hand::LateUpdate(_float dt)

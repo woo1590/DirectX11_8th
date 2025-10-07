@@ -85,6 +85,37 @@ void FBXSkeleton::RenderInspector()
 		_string name = std::to_string(i) + " : " + m_Bones[i]->GetBoneTag();
 
 		ImGui::Text(name.c_str());
+
+		ImGui::PushID(this + i);
+		if (ImGui::Button("Rename"))
+			ImGui::OpenPopup("Rename##clip");
+
+		if (ImGui::BeginPopupModal("Rename##clip", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+		{
+			static char rename[128];
+
+			if (ImGui::IsWindowAppearing())
+			{
+				strncpy_s(rename, 128, name.c_str(), 128);
+				ImGui::SetKeyboardFocusHere();
+			}
+
+			ImGui::TextUnformatted("Input new clip name..");
+			if (ImGui::InputText("##name", rename, 128,
+				ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				m_Bones[i]->SetBoneTag(rename);
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
+		ImGui::PopID();
 	}
 
 	ImGui::PopID();

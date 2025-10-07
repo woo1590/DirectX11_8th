@@ -16,6 +16,7 @@ public:
     void UpdateCombiendTransformation(std::vector<FBXBone*>& modelBones);
 
     HRESULT Export(std::ofstream& out);
+    void SetBoneTag(const _string& boneTag) { m_strBoneTag = boneTag; }
     _string GetBoneTag()const { return m_strBoneTag; }
     void SetTransformationMatrix(_float4x4 transformationMatrix);
     _matrix GetCombinedTransformMatrix()const { return XMLoadFloat4x4(&m_CombinedTransformationMatrix); }
