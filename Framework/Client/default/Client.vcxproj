@@ -206,6 +206,7 @@
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerAnimController.h" />
     <ClInclude Include="..\public\PlayerCam.h" />
+    <ClInclude Include="..\public\SkyBox.h" />
     <ClInclude Include="..\public\Sun.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\TestLevel.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerAnimController.cpp" />
     <ClCompile Include="..\private\PlayerCam.cpp" />
+    <ClCompile Include="..\private\SkyBox.cpp" />
     <ClCompile Include="..\private\Sun.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\TestLevel.cpp" />

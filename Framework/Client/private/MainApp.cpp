@@ -2,6 +2,8 @@
 #include "MainApp.h"
 #include "EngineCore.h"
 #include "LoadingLevel.h"
+#include "VIBufferCube.h"
+#include "VIBufferQuad.h"
 
 //object
 #include "Socket.h"
@@ -97,30 +99,41 @@ void MainApp::Free()
 HRESULT MainApp::LoadStaticLevel()
 {
     /*Load Shader*/
-    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",
-        VTXTEX::elements, VTXTEX::numElement)))
-        return E_FAIL;
+    {
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",
+            VTXTEX::elements, VTXTEX::numElement)))
+            return E_FAIL;
 
-    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube",
-        VTXCUBE::elements, VTXCUBE::numElement)))
-        return E_FAIL;
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxCube.hlsl", "Shader_VtxCube",
+            VTXCUBE::elements, VTXCUBE::numElement)))
+            return E_FAIL;
 
-    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxNorTex.hlsl", "Shader_VtxNorTex",
-        VTXNORTEX::elements, VTXNORTEX::numElement)))
-        return E_FAIL;
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxNorTex.hlsl", "Shader_VtxNorTex",
+            VTXNORTEX::elements, VTXNORTEX::numElement)))
+            return E_FAIL;
 
-    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
-        VTXMESH::elements, VTXMESH::numElement)))
-        return E_FAIL;
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxMesh.hlsl", "Shader_VtxMesh",
+            VTXMESH::elements, VTXMESH::numElement)))
+            return E_FAIL;
 
-    if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxSkinnedMesh.hlsl", "Shader_VtxSkinnedMesh",
-        VTXSKINNEDMESH::elements, VTXSKINNEDMESH::numElement)))
-        return E_FAIL;
-    
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxSkinnedMesh.hlsl", "Shader_VtxSkinnedMesh",
+            VTXSKINNEDMESH::elements, VTXSKINNEDMESH::numElement)))
+            return E_FAIL;
+    }
+    /*Load Buffer*/
+    {
+        if (FAILED(m_pEngineCore->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
+            return E_FAIL;
+
+        if (FAILED(m_pEngineCore->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
+            return E_FAIL;
+    }
     /*Load Prototype Object*/
-    if(FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static),"Prototype_Object_Socket",Socket::Create())))
-        return E_FAIL;
+    {
+        if(FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static),"Prototype_Object_Socket",Socket::Create())))
+            return E_FAIL;
 
+    }
     return S_OK;
 }
 
@@ -162,7 +175,7 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     int y = static_cast<_int>(WinSizeY/4);
 
     hWnd = CreateWindowW(
-        CLASS_NAME, L"My Game Window",
+        CLASS_NAME, L"GunFire Reborn",
         WS_OVERLAPPEDWINDOW,
         x, y,
         windowWidth,

@@ -94,6 +94,9 @@
     <Filter Include="02. Object\Enemy">
       <UniqueIdentifier>{4d50c74a-5fd5-4de6-b751-06b1ca29f0b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\SkyBox">
+      <UniqueIdentifier>{49aeb3cb-9155-4be6-835f-b357c2d16236}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="..\public\IcySpear.h">
       <Filter>02. Object\Player\Weapon\IcySpear</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SkyBox.h">
+      <Filter>02. Object\SkyBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -229,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="..\private\IcySpear.cpp">
       <Filter>02. Object\Player\Weapon\IcySpear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkyBox.cpp">
+      <Filter>02. Object\SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

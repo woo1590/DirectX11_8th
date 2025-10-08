@@ -98,9 +98,7 @@ HRESULT Loader::LoadingForLogo()
 
 	/*Load Buffer*/
 	m_strDebugText = L"리소스 로딩중..";
-	if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad", VIBufferQuad::Create())))
-		return E_FAIL;
-
+	
 	/*Load Material*/
 	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Logo), "../bin/resource/materials/loading.json", "Mtrl_Background_Logo")))
 		return E_FAIL;
