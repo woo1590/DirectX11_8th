@@ -54,6 +54,10 @@ HRESULT MapEditorCamera::Initialize(InitDESC* arg)
 	m_pTransform->SetPosition(_float3(0.f, 100.f, 0.f));
 	m_pTransform->Rotate(_float3(math::ToRadian(45.f), 0.f, 0.f));
 
+	auto engine = EngineCore::GetInstance();
+	engine->AddCamera("EditorCamera", GetComponent<CameraComponent>());
+	engine->SetMainCamera("EditorCamera");
+
 	return S_OK;
 }
 
@@ -81,7 +85,7 @@ void MapEditorCamera::PriorityUpdate(_float dt)
 			_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
 			_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
 
-			transform->Turn(_float3(pitch, yaw, 0.f));
+			transform->Turn(pitch, yaw);
 		}
 	}
 
@@ -105,10 +109,6 @@ void MapEditorCamera::PriorityUpdate(_float dt)
 		if (engine->IsKeyDown(VK_SHIFT))
 			m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
 	}
-
-	engine->SetViewMatrix(cam->GetViewMatrix());
-	engine->SetProjMatrix(cam->GetProjMatrix());
-
 }
 
 void MapEditorCamera::Update(_float dt)

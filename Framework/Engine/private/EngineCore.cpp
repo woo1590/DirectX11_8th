@@ -13,7 +13,7 @@
 #include "ResourceManager.h"
 #include "TaskManager.h"
 #include "LevelManager.h"
-#include "PipeLine.h"
+#include "CameraManager.h"
 
 //system
 #include "RenderSystem.h"
@@ -75,8 +75,8 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pTaskManager)
 		return E_FAIL;
 
-	m_pPipeLine = PipeLine::Create();
-	if (!m_pPipeLine)
+	m_pCameraManager = CameraManager::Create();
+	if (!m_pCameraManager)
 		return E_FAIL;
 
 	m_pResourceManager = ResourceManager::Create(desc.levelCnt);
@@ -94,7 +94,7 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 #ifdef USE_IMGUI
 	GUIState state{};
 	state.pObjectManager = m_pObjectManager;
-	state.pPipeLine = m_pPipeLine;
+	state.pCameraManager = m_pCameraManager;
 	state.pLevelManager = m_pLevelManager;
 
 	m_pImGuiManager = ImGuiManager::Create(m_hWnd, m_pGraphicDevice->GetDevice(),m_pGraphicDevice->GetDeviceContext(),state);
@@ -123,7 +123,7 @@ void EngineCore::Free()
 	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pObjectManager);
 	Safe_Release(m_pSoundManager);
-	Safe_Release(m_pPipeLine);
+	Safe_Release(m_pCameraManager);
 	Safe_Release(m_pInputSystem);
 	Safe_Release(m_pLightManager);
 	Safe_Release(m_pNavigationSystem);
@@ -140,7 +140,7 @@ void EngineCore::Tick(_float dt)
 	m_pObjectManager->PriorityUpdate(dt);
 	m_pObjectManager->Update(dt);
 	m_pObjectManager->LateUpdate(dt);
-	m_pPipeLine->Update();
+	m_pCameraManager->Update();
 	
 	m_pLevelManager->Update(dt);
 	m_pLevelManager->Render(); /*Debug Only*/
@@ -223,37 +223,21 @@ ID3D11DeviceContext* EngineCore::GetDeviceContext()
 {
 	return m_pGraphicDevice->GetDeviceContext();
 }
+
 #pragma endregion
 
-#pragma region PipeLine
-void EngineCore::SetViewMatrix(_float4x4 viewMatrix)
+#pragma region CameraManager
+void EngineCore::AddCamera(const _string& cameraTag, CameraComponent* component)
 {
-	m_pPipeLine->SetViewMatrix(viewMatrix);
+	m_pCameraManager->AddCamera(cameraTag, component);
 }
-void EngineCore::SetProjMatrix(_float4x4 projMatrix)
+void EngineCore::SetMainCamera(const _string& cameraTag)
 {
-	m_pPipeLine->SetProjMatrix(projMatrix);
+	m_pCameraManager->SetMainCamera(cameraTag);
 }
-_float4x4 EngineCore::GetViewMatrix()
+CAMERA_CONTEXT EngineCore::GetCameraContext()
 {
-	return m_pPipeLine->GetViewMatirx();
-}
-_float4x4 EngineCore::GetViewMatrixInverse()
-{
-	return m_pPipeLine->GetViewMatrixInverse();
-}
-_float4x4 EngineCore::GetProjMatrix()
-{
-	return m_pPipeLine->GetProjMatrix();
-}
-
-_float4x4 EngineCore::GetProjMatrixInverse()
-{
-	return m_pPipeLine->GetProjMatrixInverse();
-}
-_float3 EngineCore::GetCamPosition()
-{
-	return m_pPipeLine->GetCamPosition();
+	return m_pCameraManager->GetCameraContext();
 }
 #pragma endregion
 

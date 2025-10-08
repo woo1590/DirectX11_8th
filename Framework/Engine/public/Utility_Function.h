@@ -51,6 +51,13 @@ namespace math
 		/*Return Radian*/
 		return _float3(pitch, yaw, roll);
 	}
+
+	inline _float EaseOutQuint(_float t)
+	{
+		t = std::clamp(t, 0.f, 1.f);
+
+		return 1.f - std::pow(1.f - t, 5.f);
+	}
 };
 
 namespace DXWrap

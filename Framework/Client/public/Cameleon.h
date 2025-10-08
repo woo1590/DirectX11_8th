@@ -20,8 +20,10 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void Idle()override;
     void Reload() override;
     void Fire() override;
+    void Skill()override {};
 
     Object* Clone(InitDESC* arg);
     void Free()override;

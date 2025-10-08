@@ -9,7 +9,7 @@ class PickingSystem;
 class MapEditorPanel :
     public IPanel
 {
-    enum class EditMode { Guizmo, Placement, Count };
+    enum class EditMode { Guizmo, Placement, NavPlacement, Count };
 private:
     MapEditorPanel(PickingSystem* picking);
     virtual ~MapEditorPanel() = default;
@@ -34,6 +34,9 @@ private:
     void Undo();
     void Redo();
     void ShowPreviewObject(PICK_RESULT pickRes);
+
+    /*Nav Placement*/   
+    void NavPlacement(GUIState& state, PICK_RESULT pickRes) {};
 
     _int m_iSelectedIndex = -1;
 

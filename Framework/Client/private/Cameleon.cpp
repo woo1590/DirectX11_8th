@@ -51,7 +51,7 @@ HRESULT Cameleon::Initialize(InitDESC* arg)
 	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_Cameleon");
 
 	model->ConnectAnimator();
-	animator->ChangeAnimation(0, true);
+	animator->ChangeAnimation(0, true, false);
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
@@ -78,17 +78,21 @@ void Cameleon::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+void Cameleon::Idle()
+{
+	ChangeState(&m_CameleonIdle);
+}
+
 void Cameleon::Reload()
 {
-	ChangeState(&m_CameleonReload);
+	if (&m_CameleonIdle == m_CurrState)
+		ChangeState(&m_CameleonReload);
 }
 
 void Cameleon::Fire()
 {
-	if (&m_CameleonFire == m_CurrState)
-		return;
-	
-	ChangeState(&m_CameleonFire);
+	if (&m_CameleonIdle == m_CurrState)
+		ChangeState(&m_CameleonFire);
 }
 
 Object* Cameleon::Clone(InitDESC* arg)
@@ -109,7 +113,8 @@ void Cameleon::Free()
 void Cameleon::CameleonIdle::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	animator->ChangeAnimation(0, true);
+	animator->SetFadeDurtaion(0.2f);
+	animator->ChangeAnimation(0, true, false);
 }
 
 void Cameleon::CameleonIdle::Update(Engine::Object* object, Engine::_float dt)
@@ -123,7 +128,7 @@ void Cameleon::CameleonIdle::TestForExit(Engine::Object* object)
 void Cameleon::CameleonReload::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	animator->ChangeAnimation(1, false);
+	animator->ChangeAnimation(1, false, false);
 }
 
 void Cameleon::CameleonReload::Update(Engine::Object* object, Engine::_float dt)
@@ -134,15 +139,16 @@ void Cameleon::CameleonReload::TestForExit(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	auto cameleon = static_cast<Cameleon*>(object);
+	_float progress = animator->GetProgress();
 
-	if (animator->IsFinished())
+	if (progress>0.99f)
 		object->ChangeState(&cameleon->m_CameleonIdle);
 }
 
 void Cameleon::CameleonFire::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	animator->ChangeAnimation(3, false);
+	animator->ChangeAnimation(3, true, false);
 }
 
 void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)

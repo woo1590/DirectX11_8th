@@ -197,7 +197,8 @@
     <ClInclude Include="..\public\FreeCam.h" />
     <ClInclude Include="..\public\GamePlayLevel.h" />
     <ClInclude Include="..\public\Hand.h" />
-    <ClInclude Include="..\public\LightningBlast.h" />
+    <ClInclude Include="..\public\ConcealedAmmo.h" />
+    <ClInclude Include="..\public\IcySpear.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\LoadingLevel.h" />
     <ClInclude Include="..\public\LogoLevel.h" />
@@ -221,7 +222,8 @@
     <ClCompile Include="..\private\FreeCam.cpp" />
     <ClCompile Include="..\private\GamePlayLevel.cpp" />
     <ClCompile Include="..\private\Hand.cpp" />
-    <ClCompile Include="..\private\LightningBlast.cpp" />
+    <ClCompile Include="..\private\ConcealedAmmo.cpp" />
+    <ClCompile Include="..\private\IcySpear.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\LoadingLevel.cpp" />
     <ClCompile Include="..\private\LogoLevel.cpp" />

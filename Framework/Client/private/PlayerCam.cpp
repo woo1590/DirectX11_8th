@@ -45,8 +45,16 @@ HRESULT PlayerCam::Initialize(InitDESC* arg)
 	camDesc.nearZ = 0.1f;
 	camDesc.farZ = 500.f;
 
-	if (FAILED(GetComponent<CameraComponent>()->Initialize(&camDesc)))
+	auto engine = EngineCore::GetInstance();
+
+	auto cam = GetComponent<CameraComponent>();
+	if (FAILED(cam->Initialize(&camDesc)))
 		return E_FAIL;
+
+	m_pTransform->SetPosition(_float3{ -0.0f,0.f,0.15f });
+
+	engine->AddCamera("PlayerCamera", cam);
+	engine->SetMainCamera("PlayerCamera");
 
 	return S_OK;
 }
@@ -64,12 +72,6 @@ void PlayerCam::Update(_float dt)
 void PlayerCam::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
-
-	auto engine = EngineCore::GetInstance();
-	auto cam = GetComponent<CameraComponent>();
-
-	engine->SetViewMatrix(cam->GetViewMatrix());
-	engine->SetProjMatrix(cam->GetProjMatrix());
 }
 
 Object* PlayerCam::Clone(InitDESC* arg)

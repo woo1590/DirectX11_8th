@@ -3,16 +3,17 @@
 
 NS_BEGIN(Client)
 
-class LightningBlast :
+class ConcealedAmmo :
     public Weapon
 {
+    enum class AnimationState { Idle, Reload, Fire, Count };
 private:
-    LightningBlast();
-    LightningBlast(const LightningBlast& prototype);
-    virtual ~LightningBlast() = default;
+    ConcealedAmmo();
+    ConcealedAmmo(const ConcealedAmmo& prototype);
+    virtual ~ConcealedAmmo() = default;
 
 public:
-    static LightningBlast* Create();
+    static ConcealedAmmo* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
@@ -20,39 +21,47 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void Idle()override;
     void Reload()override;
     void Fire()override;
+    void Skill()override;
 
     Object* Clone(InitDESC* arg);
     void Free()override;
 
 private:
-    class LightningBlastIdle : public State
+    class ConcealedAmmoIdle : public State
     {
         void Enter(Engine::Object* object) override;
         void Update(Engine::Object* object, Engine::_float dt) override;
         void TestForExit(Engine::Object* object) override;
     };
 
-    class LightningBlastReload : public State
+    class ConcealedAmmoReload : public State
     {
         void Enter(Engine::Object* object) override;
         void Update(Engine::Object* object, Engine::_float dt) override;
         void TestForExit(Engine::Object* object) override;
     };
 
-    class LightningBlastFire : public State
+    class ConcealedAmmoFire : public State
     {
         void Enter(Engine::Object* object) override;
         void Update(Engine::Object* object, Engine::_float dt) override;
         void TestForExit(Engine::Object* object) override;
     };
 
-    LightningBlastIdle m_LightningBlastIdle;
-    LightningBlastReload m_LightningBlastReload;
-    LightningBlastFire m_LightningBlastFire;
+    class ConcealedAmmoSkill : public State
+    {
+        void Enter(Object* object) override;
+        void Update(Object* object, _float dt) override;
+        void TestForExit(Object* object) override;
+    };
 
-
+    ConcealedAmmoIdle m_ConcealedAmmoIdle;
+    ConcealedAmmoReload m_ConcealedAmmoReload;
+    ConcealedAmmoFire m_ConcealedAmmoFire;
+    ConcealedAmmoSkill m_ConcealedAmmoSkill;
 };
 
 NS_END

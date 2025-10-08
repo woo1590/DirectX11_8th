@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "Hand.h"
-#include "ModelComponent.h"
+
+//component
+#include "TransformComponent.h"
 #include "AnimatorComponent.h"
+#include "ModelComponent.h"
 
 Hand::Hand()
 	:PartObject()
@@ -48,9 +51,8 @@ HRESULT Hand::Initialize(InitDESC* arg)
 	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_PlayerHand");
 
 	model->ConnectAnimator();
-	animator->ChangeAnimation(1, false);
 
-	m_pTransform->SetPosition(_float3(0.f, 0.f, 0.f));
+	ChangeState(&m_HandIdle);
 
 	return S_OK;
 }

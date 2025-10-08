@@ -9,13 +9,13 @@ class Layer;
 class Object;
 class ObjectManager;
 class LevelManager;
-class PipeLine;
+class CameraManager;
 
 struct GUIState
 {
     LevelManager* pLevelManager = nullptr;
     ObjectManager* pObjectManager = nullptr;
-    PipeLine* pPipeLine = nullptr;
+    CameraManager* pCameraManager = nullptr;
 
     Level* pLevel = nullptr;
     Layer* pLayer = nullptr;

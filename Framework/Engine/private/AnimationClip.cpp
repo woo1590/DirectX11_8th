@@ -47,7 +47,7 @@ void AnimationClip::UpdateTransformationMatrix(_float dt, ANIMATIONCLIP_CONTEXT&
 	if (context.isFinished)
 		return;
 
-	context.trackPosition += dt * m_fTickPerSecond;
+	context.trackPosition += dt * m_fTickPerSecond * context.playSpeedScale;
 
 	if (context.trackPosition >= m_fDuration)
 	{

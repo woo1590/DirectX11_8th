@@ -51,7 +51,7 @@ void PlayerAnimController::Update(_float dt)
 	for (_uint i = 0; i < weaponTransformations.size(); ++i)
 	{
 		_int index = m_BoneMap.mappedBoneIndex[i];
-		if (-1 == index)
+		if (-1 == index || 0 == index)
 			continue;
 
 		m_HandOverrideMatrices[index] = weaponTransformations[i];
@@ -59,7 +59,6 @@ void PlayerAnimController::Update(_float dt)
 	}
 
 	m_pHandAnimator->SetOverride(m_HandOverrideMatrices, m_HandMasks);
-
 }
 
 void PlayerAnimController::SetWeaponAnimator(AnimatorComponent* weaponAnimator)

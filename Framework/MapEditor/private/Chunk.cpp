@@ -126,13 +126,14 @@ void Chunk::Free()
 _float3 Chunk::GetHoverPosition()
 {
 	auto engine = EngineCore::GetInstance();
+	CAMERA_CONTEXT camContext = engine->GetCameraContext();
 
 	POINT mousePos;
 	GetCursorPos(&mousePos);
 	ScreenToClient(engine->GetWindowHandle(), &mousePos);
 	_float3 mouse{ static_cast<_float>(mousePos.x),static_cast<_float>(mousePos.y),0.f };
-	_float4x4 projMat = engine->GetProjMatrix();
-	_float4x4 viewMat = engine->GetViewMatrix();
+	_float4x4 projMat = camContext.projMatrix;
+	_float4x4 viewMat = camContext.viewMatrix;
 	D3D11_VIEWPORT viewPort{};
 	_uint numView = 1;
 	engine->GetDeviceContext()->RSGetViewports(&numView, &viewPort);
@@ -144,7 +145,7 @@ _float3 Chunk::GetHoverPosition()
 		XMLoadFloat4x4(&viewMat),
 		XMMatrixIdentity()));
 
-	_float3 camPosition = engine->GetCamPosition();
+	_float3 camPosition = camContext.camPosition;
 	_float3 hoverPosition;
 	XMStoreFloat3(&hoverPosition, XMPlaneIntersectLine(XMLoadFloat4(&m_PlaneXZ), XMLoadFloat3(&camPosition), XMLoadFloat3(&mouse)));
 

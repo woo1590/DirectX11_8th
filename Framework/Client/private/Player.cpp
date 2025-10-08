@@ -76,15 +76,27 @@ HRESULT Player::Initialize(InitDESC* arg)
 
 	/*add second weapon*/
 	Object* secondWeapon = nullptr;
-	Weapon::WEAPON_DESC lightningBlastDesc{};
-	lightningBlastDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
-	lightningBlastDesc.parent = this;
-	secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_LightningBlast", &lightningBlastDesc);
+	Weapon::WEAPON_DESC concealedAmmoDesc{};
+	concealedAmmoDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+	concealedAmmoDesc.parent = this;
+	secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
 
 	if (secondWeapon)
 		m_Weapons[ENUM_CLASS(WeaponSlot::Weapon2)] = static_cast<Weapon*>(secondWeapon);
+
+	/*add third weapon*/
+	Object* thirdWeapon = nullptr;
+	Weapon::WEAPON_DESC icySpearDesc{};
+	icySpearDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+	icySpearDesc.parent = this;
+	thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_IcySpear",&icySpearDesc);
+
+	if (thirdWeapon)
+		m_Weapons[ENUM_CLASS(WeaponSlot::Weapon3)] = static_cast<Weapon*>(thirdWeapon);
 	
-	EquipWeapon(WeaponSlot::Weapon1);
+	m_eCurrWeaponSlot = WeaponSlot::Weapon1;
+	Equip();
+	ChangeState(&m_PlayerIdle);
 
 	return S_OK;
 }
@@ -141,27 +153,29 @@ HRESULT Player::CreatePartObjects()
 	if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PlayerCam", ENUM_CLASS(Parts::PlayerCam), &camDesc)))
 		return E_FAIL;
 
-	Socket::SOCKET_DESC rightHandSocketDesc{};
-	rightHandSocketDesc.parent = this;
-	rightHandSocketDesc.parentModel = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>();
-	rightHandSocketDesc.boneIndex = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>()->GetBoneIndex("Bip001 R Hand");
-	if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::RightHandSocket), &rightHandSocketDesc)))
-		return E_FAIL;
-
+	/*add right hand socket*/
+	{
+		Socket::SOCKET_DESC rightHandSocketDesc{};
+		rightHandSocketDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<TransformComponent>();
+		rightHandSocketDesc.parent = this;
+		rightHandSocketDesc.parentModel = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>();
+		rightHandSocketDesc.boneIndex = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>()->GetBoneIndex("Bip001 R Hand");
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::RightHandSocket), &rightHandSocketDesc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
-void Player::EquipWeapon(WeaponSlot slot)
+void Player::Equip()
 {
 	/*check first*/
 	Safe_Release(m_PartObjects[ENUM_CLASS(Parts::Weapon)]);
 
-	Weapon* equipWeapon = m_Weapons[ENUM_CLASS(slot)];
+	Weapon* equipWeapon = m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)];
 
+	equipWeapon->Idle();
 	m_PartObjects[ENUM_CLASS(Parts::Weapon)] = equipWeapon;
 	m_PartObjects[ENUM_CLASS(Parts::Weapon)]->AddRef();
-
-	m_eCurrWeaponSlot = slot;
 
 	auto animatorController = GetComponent<PlayerAnimController>();
 	animatorController->SetWeaponAnimator(equipWeapon->GetComponent<AnimatorComponent>());
@@ -200,15 +214,111 @@ void Player::KeyInput(_float dt)
 		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
 
 
-	if (engine->IsKeyPressed('Q'))
-		EquipWeapon(WeaponSlot::Weapon1);
+	if (engine->IsKeyPressed('1'))
+	{
+		m_eCurrWeaponSlot = WeaponSlot::Weapon1;
+		ChangeState(&m_PlayerStartEquip);
+	}
 
-	if (engine->IsKeyPressed('E'))
-		EquipWeapon(WeaponSlot::Weapon2);
+	if (engine->IsKeyPressed('2'))
+	{
+		m_eCurrWeaponSlot = WeaponSlot::Weapon2;
+		ChangeState(&m_PlayerStartEquip);
+	}
+	
+	if (engine->IsKeyPressed('3'))
+	{
+		m_eCurrWeaponSlot = WeaponSlot::Weapon3;
+		ChangeState(&m_PlayerStartEquip);
+	}
 
 	if (engine->IsKeyPressed('R'))
 		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Reload();
 
 	if (engine->IsMouseDown(MouseButton::LButton))
 		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Fire();
+
+	if (engine->IsMousePress(MouseButton::RButton))
+		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Skill();
+
+	if (engine->IsMouseAway(MouseButton::LButton))
+		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Idle();
+}
+
+void Player::PlayerStartEquip::Enter(Object* object)
+{
+	m_fElapsedTime = 0.f;
+}
+
+void Player::PlayerStartEquip::Update(Object* object, _float dt)
+{
+	m_fElapsedTime += dt;
+
+	_float 	t = m_fElapsedTime / m_fDuration;
+	t = math::EaseOutQuint(t);
+
+	_vector q0, q1;
+	_float4 result;
+	q0 = XMQuaternionRotationRollPitchYaw(math::ToRadian(0.f), 0.f, 0.f);
+	q1 = XMQuaternionRotationRollPitchYaw(45.f, 0.f, 0.f);
+
+	XMStoreFloat4(&result, XMQuaternionSlerp(q0, q1, t));
+	
+	auto player = static_cast<Player*>(object);
+	auto handTransform = player->m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<TransformComponent>();
+
+	handTransform->SetQuaternion(result);
+}
+
+void Player::PlayerStartEquip::TestForExit(Object* object)
+{
+	auto player = static_cast<Player*>(object);
+
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		player->ChangeState(&player->m_PlayerEndEquip);
+	}
+}
+
+void Player::PlayerEndEquip::Enter(Object* object)
+{
+	m_fElapsedTime = 0.f;
+
+	auto player = static_cast<Player*>(object);
+	player->Equip();
+}
+
+void Player::PlayerEndEquip::Update(Object* object, _float dt)
+{
+	m_fElapsedTime += dt;
+
+	_float 	t = m_fElapsedTime / m_fDuration;
+	t = math::EaseOutQuint(t);
+
+	_vector q0, q1;
+	_float4 result;
+	q0 = XMQuaternionRotationRollPitchYaw(math::ToRadian(45.f), 0.f, 0.f);
+	q1 = XMQuaternionRotationRollPitchYaw(0.f, 0.f, 0.f);
+
+	XMStoreFloat4(&result, XMQuaternionSlerp(q0, q1, t));
+
+	auto player = static_cast<Player*>(object);
+	auto handTransform = player->m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<TransformComponent>();
+
+	handTransform->SetQuaternion(result);
+}
+
+void Player::PlayerEndEquip::TestForExit(Object* object)
+{
+	auto player = static_cast<Player*>(object);
+
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto handTransform = player->m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<TransformComponent>();
+		_float4 quaternion{};
+		XMStoreFloat4(&quaternion, XMQuaternionRotationRollPitchYaw(0.f, 0.f, 0.f));
+		handTransform->SetQuaternion(quaternion);
+
+		player->ChangeState(&player->m_PlayerIdle);
+	}
 }

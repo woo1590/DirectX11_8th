@@ -50,6 +50,7 @@ void AnimatorComponent::Update(_float dt)
 	{
 		PlayAnimation(dt);
 		ApplyOverride();
+		//ApplyAdditve();
 	}
 
 	UpdateCombinedMatrix();
@@ -83,20 +84,27 @@ void AnimatorComponent::SetSkeleton(Skeleton* pSkeleton)
 
 	_uint numBones = m_TransformationMatrices.size();
 	m_CombiendMatirices.resize(numBones);
-	m_OverrideMatrices.resize(numBones);
-	m_OverrideMask.resize(numBones);
 	m_CurrKeyFrames.resize(numBones);
 	m_NextKeyFrames.resize(numBones);
+	
+	/*Init override layer*/
+	m_OverrideMatrices.resize(numBones);
+	m_OverrideMask.resize(numBones);
+
+	/*Init additive layer*/
+	m_AdditiveRotation.resize(numBones);
+	m_AdditiveMask.resize(numBones);
 }
 
-void AnimatorComponent::ChangeAnimation(_uint animationIndex, _bool isLoop)
+void AnimatorComponent::ChangeAnimation(_uint animationIndex, _bool isLoop, _bool immediateChange)
 {
-	if (-1 == m_iCurrAnimationIndex || m_Context.isFinished)	// First Animation and PreAnimation finished
+	if (-1 == m_iCurrAnimationIndex || m_Context.isFinished || immediateChange)	// First Animation and PreAnimation finished
 	{
 		m_iCurrAnimationIndex = animationIndex;
 		m_Context.isLoop = isLoop;
 		m_Context.trackPosition = 0.f;
 		m_Context.isFinished = false;
+		m_Context.playSpeedScale = 1.f;
 
 		_uint numChannels = m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->GetNumChannels();
 		m_Context.keyFrameIndices.assign(numChannels, 0);
@@ -112,6 +120,7 @@ void AnimatorComponent::ChangeAnimation(_uint animationIndex, _bool isLoop)
 		m_Context.isLoop = isLoop;
 		m_Context.trackPosition = 0.f;
 		m_Context.isFinished = false;
+		m_Context.playSpeedScale = 1.f;
 
 		/*Init KeyFrame Buffers & Mask*/
 		_uint numBones = m_pSkeleton->GetBones().size();
@@ -147,6 +156,12 @@ void AnimatorComponent::SetOverride(std::vector<_float4x4> overrideMatrices, std
 	m_OverrideMask = masks;
 }
 
+void AnimatorComponent::SetAdditiveRotation(std::vector<_float4> additives, std::vector<_uint> masks)
+{
+	m_AdditiveRotation = additives;
+	m_AdditiveMask = masks;
+}
+
 BONE_MAP AnimatorComponent::MakeBoneMap(AnimatorComponent* other)
 {
 	BONE_MAP boneMap{};
@@ -159,6 +174,14 @@ BONE_MAP AnimatorComponent::MakeBoneMap(AnimatorComponent* other)
 	}
 
 	return boneMap;
+}
+
+_float AnimatorComponent::GetProgress()
+{
+	_float animDuration = m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]->GetDuration();
+	_float progress = std::clamp(m_Context.trackPosition / animDuration, 0.f, 1.f);
+
+	return progress;
 }
 
 void AnimatorComponent::Free()
@@ -199,9 +222,11 @@ void AnimatorComponent::FadeAnimation(_float dt)
 
 	if (m_fFadeTrackPosition >= m_fFadeDuration)
 	{
-		m_isFade = false;	//Fade End!
+		m_isFade = false;	/*Fade End!*/
+		m_fFadeDuration = 0.1f; /*Default fae duration*/
 
 		m_iCurrAnimationIndex = m_iNextAnimationIndex;
+		m_Context.trackPosition = 0.f;
 
 		_uint numChannels = m_NextKeyFrameIndices.size();
 		m_Context.keyFrameIndices.assign(numChannels, 0);
@@ -250,6 +275,19 @@ void AnimatorComponent::ApplyOverride()
 			continue;
 
 		m_TransformationMatrices[i] = m_OverrideMatrices[i];
+	}
+}
+
+void AnimatorComponent::ApplyAdditve()
+{
+	auto& bones = m_pSkeleton->GetBones();
+	for (_uint i = 0; i < bones.size(); ++i)
+	{
+		if (!m_AdditiveMask[i])
+			continue;
+
+		_matrix rotMat = XMMatrixRotationQuaternion(XMLoadFloat4(&m_AdditiveRotation[i]));
+		XMStoreFloat4x4(&m_TransformationMatrices[i], XMLoadFloat4x4(&m_TransformationMatrices[i]) * rotMat);
 	}
 }
 

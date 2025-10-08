@@ -50,6 +50,10 @@ HRESULT EditorCamera::Initialize(InitDESC* arg)
 	if (FAILED(GetComponent<CameraComponent>()->Initialize(&camDesc)))
 		return E_FAIL;
 
+	auto engine = EngineCore::GetInstance();
+	engine->AddCamera("EditorCamera", GetComponent<CameraComponent>());
+	engine->SetMainCamera("EditorCamera");
+
 	return S_OK;
 }
 
@@ -75,7 +79,7 @@ void EditorCamera::PriorityUpdate(_float dt)
 		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
 		_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
 
-		transform->Turn(_float3(pitch, yaw, 0.f));
+		transform->Turn(pitch,yaw);
 	}
 
 	if (m_ActiveKeyboard)
@@ -98,10 +102,6 @@ void EditorCamera::PriorityUpdate(_float dt)
 		if (engine->IsKeyDown(VK_SHIFT))
 			m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
 	}
-
-	engine->SetViewMatrix(cam->GetViewMatrix());
-	engine->SetProjMatrix(cam->GetProjMatrix());
-
 }
 
 void EditorCamera::Update(_float dt)

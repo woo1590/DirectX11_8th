@@ -27,8 +27,10 @@ public:
     virtual void Update(_float dt)override;
     virtual void LateUpdate(_float dt)override;
 
+    virtual void Idle() = 0;
     virtual void Reload() = 0;
     virtual void Fire() = 0;
+    virtual void Skill() = 0;
 
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;

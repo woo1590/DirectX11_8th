@@ -76,9 +76,10 @@ HRESULT Renderer::BeginFrame(std::vector<LightProxy>& lights)
 		CBPerFrame perFrame{};
 
 		/*View, Proj Matrix*/
-		perFrame.viewMatrix = engine->GetViewMatrix();
-		perFrame.projMatrix = engine->GetProjMatrix();
-		_float3 campos = engine->GetCamPosition();
+		CAMERA_CONTEXT camContext = engine->GetCameraContext();
+		perFrame.viewMatrix = camContext.viewMatrix;
+		perFrame.projMatrix = camContext.projMatrix;
+		_float3 campos = camContext.camPosition;
 		perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
 	
 		/*Light Data -> 이후 지연 렌더링으로 넘어가면서 구조 변경 예정*/

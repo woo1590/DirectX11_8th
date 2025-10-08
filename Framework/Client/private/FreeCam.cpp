@@ -51,8 +51,11 @@ HRESULT FreeCam::Initialize(InitDESC* arg)
 	camDesc.nearZ = 1.f;
 	camDesc.farZ = 1000.f;
 
-	if (FAILED(GetComponent<CameraComponent>()->Initialize(&camDesc)))
+	auto cam = GetComponent<CameraComponent>();
+	if (FAILED(cam->Initialize(&camDesc)))
 		return E_FAIL;
+
+	EngineCore::GetInstance()->AddCamera("FreeCamera", cam);
 
 	return S_OK;
 }
@@ -98,9 +101,6 @@ void FreeCam::PriorityUpdate(_float dt)
 
 	if (engine->IsMousePress(MouseButton::RButton))
 		m_ActiveMouse = m_ActiveMouse ? false : true;
-
-	engine->SetViewMatrix(cam->GetViewMatrix());
-	engine->SetProjMatrix(cam->GetProjMatrix());
 }
 
 void FreeCam::Update(_float dt)

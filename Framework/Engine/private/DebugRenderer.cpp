@@ -75,8 +75,9 @@ HRESULT DebugRenderer::BeginFrame()
 
 	D3D11_MAPPED_SUBRESOURCE mapData{};
 	DEBUG_CBPerFrame cbPerFrame{};
-	cbPerFrame.viewMatrix = engine->GetViewMatrix();
-	cbPerFrame.projMatrix = engine->GetProjMatrix();
+	CAMERA_CONTEXT camContext = engine->GetCameraContext();
+	cbPerFrame.viewMatrix = camContext.viewMatrix;
+	cbPerFrame.projMatrix = camContext.projMatrix;
 
 	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapData);
 	memcpy_s(mapData.pData, sizeof(DEBUG_CBPerFrame), &cbPerFrame, sizeof(DEBUG_CBPerFrame));

@@ -49,8 +49,14 @@ void MapEditorPanel::Draw(GUIState& state)
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::Button("Change Mode"))
-				m_eMode = m_eMode == EditMode::Guizmo ? EditMode::Placement : EditMode::Guizmo;
+			if (ImGui::Button("Guizmo"))
+				m_eMode = EditMode::Guizmo;
+			ImGui::SameLine();
+			if (ImGui::Button("Placement"))
+				m_eMode = EditMode::Placement;
+			ImGui::SameLine();
+			if (ImGui::Button("NavPlacement"))
+				m_eMode = EditMode::NavPlacement;
 
 			if (ImGui::BeginMenu("File"))
 			{
@@ -101,7 +107,9 @@ void MapEditorPanel::Draw(GUIState& state)
 
 	if (m_eMode == EditMode::Placement)
 		Placement(state, pickRes);
-	else if (m_eMode == EditMode::Guizmo)
+	else if(m_eMode==EditMode::NavPlacement)
+		NavPlacement(state, pickRes);
+	else
 	{
 		if (pickRes.object && engine->IsMousePress(MouseButton::LButton))
 			state.pObject = pickRes.object;
@@ -147,15 +155,18 @@ void MapEditorPanel::Placement(GUIState& state, PICK_RESULT pickRes)
 	ImGuiIO& io = ImGui::GetIO();
 	if (engine->IsMousePress(MouseButton::LButton) && m_iSelectedIndex != -1 && !io.WantCaptureMouse)
 		AddObjectToLayer(pickRes);
+	
 	if (engine->IsKeyDown('Q'))
 	{
 		if (engine->IsMousePress(MouseButton::RButton))
 			DeleteObjectFromLayer(state, pickRes);
 	}
+
 	if (engine->IsKeyPressed('Z'))
 		Undo();
 
-	ShowPreviewObject(pickRes);
+	if (engine->IsKeyAway('Q'))
+		ShowPreviewObject(pickRes);
 }
 
 void MapEditorPanel::AddObjectToLayer(PICK_RESULT pickRes)

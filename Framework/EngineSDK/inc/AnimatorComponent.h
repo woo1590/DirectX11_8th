@@ -20,22 +20,26 @@ public:
 
     HRESULT     SetAnimation(_uint levelID, const _string& key);
     void        SetSkeleton(Skeleton* pSkeleton);
-    void        ChangeAnimation(_uint animationIndex, _bool isLoop = false);
+    void ChangeAnimation(_uint animationIndex, _bool isLoop = false, _bool immediateChange = false);
 
     /*Getter*/
     const std::vector<_float4x4>& GetCombinedMatrices() { return m_CombiendMatirices; }
     const std::vector<_float4x4>& GetTransformationMatrices() { return m_TransformationMatrices; }
-    ANIMATIONCLIP_CONTEXT& GetContext() { return m_Context; }
+    ANIMATIONCLIP_CONTEXT& GetCameraContext() { return m_Context; }
     AnimationClip* GetCurrAnimationClip()const { return m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]; }
     const std::vector<Bone>& GetBones();
     _uint GetNumBones()const;
 
     /*Setter*/
     void SetOverride(std::vector<_float4x4> overrideMatrices, std::vector<_uint> masks);
+    void SetAdditiveRotation(std::vector<_float4> additives, std::vector<_uint> masks);
+    void SetFadeDurtaion(_float durtaion) { m_fFadeDuration = durtaion; }
 
     /*API*/
     BONE_MAP MakeBoneMap(AnimatorComponent* other);
     _bool IsFinished()const { return m_Context.isFinished; }
+    void SetPlaySpeedScale(_float scale) { m_Context.playSpeedScale = scale; }
+    _float GetProgress();
 
     Component* Clone() { return new AnimatorComponent(*this); }
     void Free()override;
@@ -48,6 +52,7 @@ private:
     void PlayAnimation(_float dt);
     void FadeAnimation(_float dt);
     void ApplyOverride();
+    void ApplyAdditve();
     void UpdateCombinedMatrix();
 
     ANIMATION_SET m_AnimationSet{};
@@ -58,14 +63,16 @@ private:
     std::vector<_float4x4> m_TransformationMatrices;
     std::vector<_float4x4> m_CombiendMatirices;
 
+    std::vector<_float4> m_AdditiveRotation;
     std::vector<_float4x4> m_OverrideMatrices;
+    std::vector<_uint> m_AdditiveMask;
     std::vector<_uint> m_OverrideMask;
 
     /*Fade To Next Animation*/
     _bool m_isFade = false;
     _uint m_iNextAnimationIndex{};
     _float m_fFadeTrackPosition{};
-    _float m_fFadeDuration = 0.4f;
+    _float m_fFadeDuration = 0.1f;
 
     std::vector<KEYFRAME> m_CurrKeyFrames;
     std::vector<KEYFRAME> m_NextKeyFrames;

@@ -29,7 +29,14 @@ public:
     void Free()override;
 
 private:
+    class HandIdle : public State
+    {
+        void Enter(Object* object) override {};
+        void Update(Object* object, _float dt) override {};
+        void TestForExit(Object* object) override {};
+    };
 
+    HandIdle m_HandIdle;
 };
 
 NS_END

@@ -149,22 +149,6 @@ void TransformComponent::Turn(_float3 deltaRadian)
 
 	quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion,deltaQuaternion));
 
-	//_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	//_vector yawQuternion = XMQuaternionRotationAxis(worldUp, deltaRadian.y);
-	//quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, yawQuternion));
-	//
-	//_matrix yawRotMat = XMMatrixRotationQuaternion(quaternion);
-	//
-	//_vector right = XMVector3Normalize(yawRotMat.r[0]);
-	//_vector pitchQuternion = XMQuaternionRotationAxis(right, deltaRadian.x);
-	//
-	//quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, pitchQuternion));
-	//
-	//_vector forward = XMVector3Normalize(yawRotMat.r[2]);
-	//_vector rollQuaternion = XMQuaternionRotationAxis(forward, deltaRadian.z);
-	//
-	//quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, rollQuaternion));
-
 	XMStoreFloat4(&m_Quaternion, quaternion);
 
 	MakeDirty();

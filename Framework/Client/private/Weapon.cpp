@@ -57,11 +57,11 @@ void Weapon::Update(_float dt)
 	/*set position*/
 	XMStoreFloat3(&position, positionV);
 	m_pTransform->SetPosition(position);
-
+	
 	/*set scale*/
 	XMStoreFloat3(&scale, scaleV);
 	m_pTransform->SetScale(scale);
-
+	
 	/*set quaternion*/
 	XMStoreFloat4(&quaternion, XMQuaternionNormalize(quaternionV));
 	m_pTransform->SetQuaternion(quaternion);

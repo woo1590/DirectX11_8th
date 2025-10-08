@@ -11,7 +11,8 @@
 #include "PlayerCam.h"
 #include "Hand.h"
 #include "Cameleon.h"
-#include "LightningBlast.h"
+#include "ConcealedAmmo.h"
+#include "IcySpear.h"
 
 //component
 #include "TransformComponent.h"
@@ -141,8 +142,12 @@ HRESULT Loader::LoadingForGamePlay()
 			"Model_Weapon_Cameleon")))
 			return E_FAIL;
 
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/weapon/lightning_blast/lightning_blast.model",
-			"Model_Weapon_LightningBlast")))
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/weapon/concealed_ammo/concealed_ammo.model",
+			"Model_Weapon_ConcealedAmmo")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/weapon/icy_spear/icy_spear.model",
+			"Model_Weapon_IcySpear")))
 			return E_FAIL;
 
 		/*Map*/
@@ -169,8 +174,12 @@ HRESULT Loader::LoadingForGamePlay()
 			"AnimationSet_Weapon_Cameleon")))
 			return E_FAIL;
 
-		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/lightning_blast.animationset",
-			"AnimationSet_Weapon_LightningBlast")))
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/concealed_ammo.animationset",
+			"AnimationSet_Weapon_ConcealedAmmo")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/animationsets/icy_spear.animationset",
+			"AnimationSet_Weapon_IcySpear")))
 			return E_FAIL;
 	}
 	/*Load Material*/
@@ -202,7 +211,10 @@ HRESULT Loader::LoadingForGamePlay()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Cameleon", Cameleon::Create())))
 			return E_FAIL;
 
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_LightningBlast", LightningBlast::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ConcealedAmmo", ConcealedAmmo::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_IcySpear", IcySpear::Create())))
 			return E_FAIL;
 	}
 	m_strDebugText = L"로딩완료";

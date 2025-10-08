@@ -30,12 +30,42 @@ public:
 
 private:
     HRESULT CreatePartObjects();
-    void EquipWeapon(WeaponSlot slot);
-
     void KeyInput(_float dt);
+    void Equip();
+
 
     std::vector<Weapon*> m_Weapons;
     WeaponSlot m_eCurrWeaponSlot = WeaponSlot::None;
+
+private:
+    class PlayerIdle : public State
+    {
+        void Enter(Object* object) override {};
+        void Update(Object* object, _float dt) override {};
+        void TestForExit(Object* object) override {};
+    };
+    class PlayerStartEquip : public State
+    {
+        void Enter(Object* object) override;
+        void Update(Object* object, _float dt) override;
+        void TestForExit(Object* object) override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 0.3f;
+    };
+    class PlayerEndEquip : public State
+    {
+        void Enter(Object* object) override;
+        void Update(Object* object, _float dt) override;
+        void TestForExit(Object* object) override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 0.3f;
+    };
+
+    PlayerIdle m_PlayerIdle;
+    PlayerStartEquip m_PlayerStartEquip;
+    PlayerEndEquip m_PlayerEndEquip;
 };
 
 NS_END

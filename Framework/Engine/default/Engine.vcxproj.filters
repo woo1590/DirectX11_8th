@@ -103,9 +103,6 @@
     <Filter Include="05. Object Component\AIController Component\BlackBoard">
       <UniqueIdentifier>{8792580c-3d16-4c69-9ca2-94d2329d0798}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\PipeLine">
-      <UniqueIdentifier>{766b4cac-a335-432e-8007-33318c41cfd4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\ImGui Manager">
       <UniqueIdentifier>{11357618-2854-49b6-b3e4-68cca55ef47c}</UniqueIdentifier>
     </Filter>
@@ -238,6 +235,9 @@
     <Filter Include="01. Engine Component\Rendering\DebugRenderer">
       <UniqueIdentifier>{03d227c5-fede-4a4b-9f47-85feb1180f65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Camera Manager">
+      <UniqueIdentifier>{766b4cac-a335-432e-8007-33318c41cfd4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -324,8 +324,8 @@
     <ClInclude Include="..\public\InputSystem.h">
       <Filter>01. Engine Component\Input System</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PipeLine.h">
-      <Filter>01. Engine Component\PipeLine</Filter>
+    <ClInclude Include="..\public\CameraManager.h">
+      <Filter>01. Engine Component\Camera Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Model.h">
       <Filter>01. Engine Component\Resource Manager\Model</Filter>
@@ -584,8 +584,8 @@
     <ClCompile Include="..\private\InputSystem.cpp">
       <Filter>01. Engine Component\Input System</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PipeLine.cpp">
-      <Filter>01. Engine Component\PipeLine</Filter>
+    <ClCompile Include="..\private\CameraManager.cpp">
+      <Filter>01. Engine Component\Camera Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Model.cpp">
       <Filter>01. Engine Component\Resource Manager\Model</Filter>

@@ -21,6 +21,7 @@ public:
     /*Getter*/
     _uint GetNumChannels()const { return m_iNumChannels; }
     _string GetAnimationName()const { return m_strName; }
+    _float GetDuration()const { return m_fDuration; }
     void Free()override;
 
 private:

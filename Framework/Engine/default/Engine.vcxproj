@@ -262,7 +262,7 @@
     <ClInclude Include="..\public\ModelComponent.h" />
     <ClInclude Include="..\public\Object.h" />
     <ClInclude Include="..\public\ObjectManager.h" />
-    <ClInclude Include="..\public\PipeLine.h" />
+    <ClInclude Include="..\public\CameraManager.h" />
     <ClInclude Include="..\public\PrototypeManager.h" />
     <ClInclude Include="..\public\Random.h" />
     <ClInclude Include="..\public\Renderer.h" />
@@ -324,7 +324,7 @@
     <ClCompile Include="..\private\ModelComponent.cpp" />
     <ClCompile Include="..\private\Object.cpp" />
     <ClCompile Include="..\private\ObjectManager.cpp" />
-    <ClCompile Include="..\private\PipeLine.cpp" />
+    <ClCompile Include="..\private\CameraManager.cpp" />
     <ClCompile Include="..\private\PrototypeManager.cpp" />
     <ClCompile Include="..\private\Random.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />

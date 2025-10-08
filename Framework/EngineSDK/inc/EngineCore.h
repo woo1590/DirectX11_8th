@@ -47,14 +47,10 @@ public:
     ID3D11DeviceContext* GetDeviceContext();
 #pragma endregion
 
-#pragma region PipeLine
-    void SetViewMatrix(_float4x4 viewMatrix);
-    void SetProjMatrix(_float4x4 projMatrix);
-    _float4x4 GetViewMatrix();
-    _float4x4 GetViewMatrixInverse();
-    _float4x4 GetProjMatrix();
-    _float4x4 GetProjMatrixInverse();
-    _float3 GetCamPosition();
+#pragma region CameraManager
+    void AddCamera(const _string& cameraTag, class CameraComponent* component);
+    void SetMainCamera(const _string& cameraTag);
+    CAMERA_CONTEXT GetCameraContext();
 #pragma endregion
 
 #pragma region Resource
@@ -154,7 +150,7 @@ private:
     class PrototypeManager*   m_pPrototypeManager = nullptr;
     class ObjectManager*      m_pObjectManager = nullptr;
     class TaskManager*        m_pTaskManager = nullptr;
-    class PipeLine*           m_pPipeLine = nullptr;
+    class CameraManager*      m_pCameraManager = nullptr;
     // 경인이 왔다감
     class ResourceManager*    m_pResourceManager = nullptr;
     class InputSystem*        m_pInputSystem = nullptr;

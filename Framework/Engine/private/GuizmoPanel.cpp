@@ -1,6 +1,6 @@
 #include "EnginePCH.h"
 #include "GuizmoPanel.h"
-#include "PipeLine.h"
+#include "CameraManager.h"
 #include "Object.h"
 #include "TransformComponent.h"
 
@@ -51,9 +51,10 @@ void GuizmoPanel::Draw(GUIState& state)
 	ImGuizmo::SetRect(viewPort.TopLeftX, viewPort.TopLeftY, viewPort.Width, viewPort.Height);
 	ImGuizmo::SetOrthographic(false);
 
+	CAMERA_CONTEXT camContext = state.pCameraManager->GetCameraContext();
 	auto transform = state.pObject->GetComponent<TransformComponent>();
-	_float4x4 view = state.pPipeLine->GetViewMatirx();
-	_float4x4 proj = state.pPipeLine->GetProjMatrix();
+	_float4x4 view = camContext.viewMatrix;
+	_float4x4 proj = camContext.projMatrix;
 	_float4x4 model = transform->GetWorldMatrix();
 	
 	_float colView[16];

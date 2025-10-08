@@ -40,6 +40,7 @@ namespace Engine
 		std::vector<_uint> keyFrameIndices;
 		_bool isLoop = false;
 		_bool isFinished = false;
+		_float playSpeedScale = 1.f;
 
 	}ANIMATIONCLIP_CONTEXT;
 
@@ -97,5 +98,16 @@ namespace Engine
 		_float3	points[3];
 		_uint index{};
 	}CELL_DESC;
+
+	typedef struct tagCameraContext 
+	{
+		_float4x4 viewMatrix{};
+		_float4x4 viewMatrixInverse{};
+
+		_float4x4 projMatrix{};
+		_float4x4 projMatrixInverse{};
+
+		_float3 camPosition{};
+	}CAMERA_CONTEXT;
 }
 #endif // Engine_Struct_h__

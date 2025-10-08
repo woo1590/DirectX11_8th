@@ -85,8 +85,14 @@
     <Filter Include="03. Object Component\PlayerAnim Controller">
       <UniqueIdentifier>{d73f6de8-cb0f-4685-a773-f01d788afb69}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Player\Weapon\Lightning Blast">
+    <Filter Include="02. Object\Player\Weapon\ConcealedAmmo">
       <UniqueIdentifier>{7b024412-3d22-41ff-bee6-2e6edd4c17bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\IcySpear">
+      <UniqueIdentifier>{37fb6ffb-7fb8-4030-ad2d-bc912f5001f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy">
+      <UniqueIdentifier>{4d50c74a-5fd5-4de6-b751-06b1ca29f0b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -156,8 +162,11 @@
     <ClInclude Include="..\public\PlayerAnimController.h">
       <Filter>03. Object Component\PlayerAnim Controller</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\LightningBlast.h">
-      <Filter>02. Object\Player\Weapon\Lightning Blast</Filter>
+    <ClInclude Include="..\public\ConcealedAmmo.h">
+      <Filter>02. Object\Player\Weapon\ConcealedAmmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\IcySpear.h">
+      <Filter>02. Object\Player\Weapon\IcySpear</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,8 +224,11 @@
     <ClCompile Include="..\private\PlayerAnimController.cpp">
       <Filter>03. Object Component\PlayerAnim Controller</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\LightningBlast.cpp">
-      <Filter>02. Object\Player\Weapon\Lightning Blast</Filter>
+    <ClCompile Include="..\private\ConcealedAmmo.cpp">
+      <Filter>02. Object\Player\Weapon\ConcealedAmmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\IcySpear.cpp">
+      <Filter>02. Object\Player\Weapon\IcySpear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
