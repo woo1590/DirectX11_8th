@@ -41,7 +41,7 @@ void LoadingLevel::Free()
 
 void LoadingLevel::Update(_float dt)
 {
-	if (m_pLoader->IsFinish() && GetAsyncKeyState(VK_TAB))
+	if (m_pLoader->IsFinish())
 	{
 		Level* nextLevel = nullptr;
 

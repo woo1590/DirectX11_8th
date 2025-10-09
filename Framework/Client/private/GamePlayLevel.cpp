@@ -18,8 +18,10 @@ GamePlayLevel* GamePlayLevel::Create()
 
 HRESULT GamePlayLevel::Initialize()
 {
-
 	if (FAILED(Initialize_LayerLights("Layer_Lights")))
+		return E_FAIL;
+
+	if (FAILED(Initialize_LayerSkybox("Layer_Skybox")))
 		return E_FAIL;
 
 	if (FAILED(Initialize_LayerGameObject("Layer_GameObject")))
@@ -60,6 +62,17 @@ HRESULT GamePlayLevel::Initialize_LayerLights(const _string& layerTag)
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sun",
 								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
 								 return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT GamePlayLevel::Initialize_LayerSkybox(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Skybox",
+								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

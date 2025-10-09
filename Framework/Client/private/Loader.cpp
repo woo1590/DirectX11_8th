@@ -13,6 +13,7 @@
 #include "Cameleon.h"
 #include "ConcealedAmmo.h"
 #include "IcySpear.h"
+#include "SkyBox.h"
 
 //component
 #include "TransformComponent.h"
@@ -100,7 +101,7 @@ HRESULT Loader::LoadingForLogo()
 	m_strDebugText = L"리소스 로딩중..";
 	
 	/*Load Material*/
-	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Logo), "../bin/resource/materials/loading.json", "Mtrl_Background_Logo")))
+	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Logo), "../bin/resource/materials/background_logo.json", "Mtrl_Background_Logo")))
 		return E_FAIL;
 
 	/*Load Prototype Object*/
@@ -181,8 +182,13 @@ HRESULT Loader::LoadingForGamePlay()
 			return E_FAIL;
 	}
 	/*Load Material*/
-	if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/materials/terrain.json", "Mtrl_Terrain")))
-		return E_FAIL;
+	{
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/materials/terrain.json", "Mtrl_Terrain")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/materials/skybox.json", "Mtrl_Skybox")))
+			return E_FAIL;
+	}
 
 	/*Load Prototype Object*/
 	{
@@ -213,6 +219,9 @@ HRESULT Loader::LoadingForGamePlay()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_IcySpear", IcySpear::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Skybox", SkyBox::Create())))
 			return E_FAIL;
 	}
 	m_strDebugText = L"로딩완료";

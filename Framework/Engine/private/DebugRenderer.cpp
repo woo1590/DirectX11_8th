@@ -86,6 +86,14 @@ HRESULT DebugRenderer::BeginFrame()
 	return S_OK;
 }
 
+HRESULT DebugRenderer::RenderNavMeshDebug(const std::vector<RenderProxy>& proxies)
+{
+	for (const auto& proxy : proxies) 
+		DrawDebugProxy(proxy, "NavMeshDebug_Pass");
+
+	return S_OK;
+}
+
 void DebugRenderer::Free()
 {
 	__super::Free();

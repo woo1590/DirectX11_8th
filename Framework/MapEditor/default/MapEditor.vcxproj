@@ -199,7 +199,11 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\MapEditorPanel.h" />
     <ClInclude Include="..\public\MapEditor_Defines.h" />
+    <ClInclude Include="..\public\MapEditor_Struct.h" />
     <ClInclude Include="..\public\ModelPickable.h" />
+    <ClInclude Include="..\public\NavMeshObject.h" />
+    <ClInclude Include="..\public\NavDataComponent.h" />
+    <ClInclude Include="..\public\NavPickable.h" />
     <ClInclude Include="..\public\PickableComponent.h" />
     <ClInclude Include="..\public\PickingSystem.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
@@ -232,6 +236,9 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\MapEditorPanel.cpp" />
     <ClCompile Include="..\private\ModelPickable.cpp" />
+    <ClCompile Include="..\private\NavMeshObject.cpp" />
+    <ClCompile Include="..\private\NavDataComponent.cpp" />
+    <ClCompile Include="..\private\NavPickable.cpp" />
     <ClCompile Include="..\private\PickableComponent.cpp" />
     <ClCompile Include="..\private\PickingSystem.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />

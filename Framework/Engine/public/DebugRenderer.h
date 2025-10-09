@@ -17,7 +17,7 @@ public:
     HRESULT Initialize();
 
     HRESULT BeginFrame();
-    HRESULT RenderNavMeshDebug(const std::vector<RenderProxy>& proxies) { return S_OK; }
+    HRESULT RenderNavMeshDebug(const std::vector<RenderProxy>& proxies);
     HRESULT RenderColliderDebug(const std::vector<RenderProxy>& proxies) { return S_OK; }
 
     void Free()override;

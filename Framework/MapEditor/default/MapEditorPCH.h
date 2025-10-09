@@ -6,7 +6,7 @@
 #include "Engine_Defines.h"
 #include "MapEditor_Defines.h"
 
-using namespace MapEditor;
 using namespace Engine;
+using namespace MapEditor;
 
 #endif //PCH_H

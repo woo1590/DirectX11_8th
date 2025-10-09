@@ -10,6 +10,8 @@
 //component
 #include "MakePrefabComponent.h"
 #include "ModelPickable.h"
+#include "NavDataComponent.h"
+#include "NavPickable.h"
 
 MapEditorPanel::MapEditorPanel(PickingSystem* picking)
 	:IPanel(),
@@ -286,6 +288,39 @@ void MapEditorPanel::ShowPreviewObject(PICK_RESULT pickRes)
 			m_pPreviewObject->AddRef();
 			m_iPreviewObjectIndex = m_iSelectedIndex;
 		}
+	}
+}
+
+void MapEditorPanel::NavPlacement(GUIState& state, PICK_RESULT pickRes)
+{
+	if (!pickRes.isHit)
+		return;
+
+	auto engine = EngineCore::GetInstance();
+
+	if (pickRes.object)
+	{
+		if (engine->IsMousePress(MouseButton::LButton))
+		{
+			/*first add*/
+			_float3 position = pickRes.worldHitPosition;
+			position.y += 0.2f;
+			m_PickPositions.push_back(position);
+			if (m_PickPositions.size() >= 3)
+				AddNavData();
+		}
+	}
+}
+
+void MapEditorPanel::AddNavData()
+{
+	auto engine = EngineCore::GetInstance();
+	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
+	if (navMeshObject)
+	{
+		auto navData = navMeshObject->GetComponent<NavDataComponent>();
+
+		navData->AddNavCell(m_PickPositions.data());
 	}
 }
 

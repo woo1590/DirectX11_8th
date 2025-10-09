@@ -27,7 +27,7 @@ private:
     void ExportMapFile(const _string& outFilePath);
     void ShowPrefabs();
     
-    /*Placement*/
+    /*-----------Placement-----------*/
     void Placement(GUIState& state, PICK_RESULT pickRes);
     void AddObjectToLayer(PICK_RESULT pickRes);
     void DeleteObjectFromLayer(GUIState& state, PICK_RESULT pickRes);
@@ -35,16 +35,19 @@ private:
     void Redo();
     void ShowPreviewObject(PICK_RESULT pickRes);
 
-    /*Nav Placement*/   
-    void NavPlacement(GUIState& state, PICK_RESULT pickRes) {};
-
     _int m_iSelectedIndex = -1;
-
     _uint m_iPreviewObjectIndex = 0;
     Object* m_pPreviewObject = nullptr;
 
     _uint m_iNumPrefabs{};
     std::vector<PREFAB> m_Prefabs;
+    /*----------------------------------*/
+
+    /*-----------Nav Placement-----------*/   
+    void NavPlacement(GUIState& state, PICK_RESULT pickRes);
+    void AddNavData();
+    std::vector<_float3> m_PickPositions;
+    /*----------------------------------*/
 
     PickingSystem* m_pPickingSystem = nullptr;
     EditMode m_eMode = EditMode::Placement;

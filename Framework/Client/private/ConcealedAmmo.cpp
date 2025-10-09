@@ -32,6 +32,8 @@ HRESULT ConcealedAmmo::Initialize_Prototype()
 
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
+	m_strInstanceTag = "ConcealedAmmo";
+	m_eRenderGroup = RenderGroup::NonBlend;
 
 	return S_OK;
 }

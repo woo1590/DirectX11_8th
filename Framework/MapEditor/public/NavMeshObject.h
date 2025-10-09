@@ -2,22 +2,30 @@
 #include "Object.h"
 
 NS_BEGIN(Engine)
-class VIBuffer;
-class Material;
+class VIBufferCell;
+class MaterialInstance;
 NS_END
 
-NS_BEGIN(Client)
 
-class SkyBox :
+NS_BEGIN(MapEditor)
+
+class NavMeshObject :
     public Object
 {
+public:
+    typedef struct tagNavCellDesc : public Object::OBJECT_DESC
+    {
+        const _float3* points = nullptr;
+        _uint index{};
+    }NAVCELL_DESC;
+
 private:
-    SkyBox();
-    SkyBox(const SkyBox& prototype);
-    virtual ~SkyBox() = default;
+    NavMeshObject();
+    NavMeshObject(const NavMeshObject& prototype);
+    virtual ~NavMeshObject() = default;
 
 public:
-    static SkyBox* Create();
+    static NavMeshObject* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
@@ -30,8 +38,7 @@ public:
     void Free()override;
 
 private:
-    VIBuffer* m_pVIBuffer = nullptr;
-    Material* m_pMaterial = nullptr;
+
 };
 
 NS_END

@@ -39,10 +39,10 @@ HRESULT BackGround::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	SpriteComponent::SPRITE_DESC spriteDesc{};
-	spriteDesc.fSpeed = 30.f;
-	spriteDesc.iMaxFrameIndex = 100;
-	spriteDesc.isAnimated = true;
-	spriteDesc.isRepeat = true;
+	spriteDesc.fSpeed = 0.f;
+	spriteDesc.iMaxFrameIndex = 1;
+	spriteDesc.isAnimated = false;
+	spriteDesc.isRepeat = false;
 
 	auto sprite = GetComponent<SpriteComponent>();
 	if (FAILED(sprite->Initialize(&spriteDesc)))

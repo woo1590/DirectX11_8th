@@ -20,6 +20,7 @@ public:
 
 private:
     HRESULT Initialize_LayerLights(const _string& layerTag);
+    HRESULT Initialize_LayerSkybox(const _string& layerTag);
     HRESULT Intialize_LayerCamera(const _string& layerTag);
     HRESULT Initialize_LayerGameObject(const _string& layerTag);
 };

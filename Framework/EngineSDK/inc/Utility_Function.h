@@ -6,6 +6,14 @@ namespace math
 	static constexpr _float PI = XM_PI;
 	static constexpr _float TWO_PI = XM_2PI;
 
+	inline _bool Elipson(_float x, _float y)
+	{
+		_float bigger = (std::max)(x, y);
+		_float lower = (std::min)(x, y);
+
+		return (bigger - lower) <= FLT_EPSILON;
+	}
+
 	inline _float ToRadian(_float degree)
 	{
 		return XMConvertToRadians(degree);

@@ -101,6 +101,9 @@ HRESULT Renderer::BeginFrame(std::vector<LightProxy>& lights)
 
 HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 {
+	for (const auto& proxy : proxies)
+		DrawProxy(proxy, "Priority_Pass");
+
 	return S_OK;
 }
 
@@ -161,7 +164,7 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 	
-	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex,proxy.materialInstance)))
+	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex, proxy.materialInstance)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

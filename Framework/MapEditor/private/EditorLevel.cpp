@@ -9,6 +9,7 @@
 #include "MapEditorCamera.h"
 #include "MapEditorLight.h"
 #include "PreviewObject.h"
+#include "NavMeshObject.h"
 #include "Chunk.h"
 
 EditorLevel::EditorLevel()
@@ -38,6 +39,9 @@ HRESULT EditorLevel::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Initialize_LayerLight("Layer_Light")))
+		return E_FAIL;
+
+	if (FAILED(Initialize_LayerNavMeshObject("Layer_NavMeshObject")))
 		return E_FAIL;
 
 	if (FAILED(Initialize_LayerMapObject("Layer_MapObject")))
@@ -177,6 +181,21 @@ HRESULT EditorLevel::Initialize_LayerCamera(const _string& layerTag)
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_MapEditorCamera", ENUM_CLASS(LevelID::Editor), layerTag)))
 		return E_FAIL;
 	
+
+	return S_OK;
+}
+
+HRESULT EditorLevel::Initialize_LayerNavMeshObject(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	/*Add Prototype*/
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_NavMeshObject", NavMeshObject::Create())))
+		return E_FAIL;
+
+	/*Add Object to layer*/
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_NavMeshObject", ENUM_CLASS(LevelID::Editor), layerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -11,19 +11,22 @@ enum class PickType { Guizmo, Model, Chunk, Count };
 
 typedef struct tagPickResult
 {
-	_bool isHit = false;
-	_float distance = FLT_MAX;
+	bool isHit = false;
+	float distance = FLT_MAX;
 	PickType type{};
 
 	/*Model Pick*/
-	Object* object = nullptr;
-	_float3 worldHitPosition{};
+	class Object* object = nullptr;
+	XMFLOAT3 worldHitPosition{};
 
 	/*Chunk Pick*/
-	_uint indexX{};
-	_uint indexZ{};
-	_float3 chunkPosition{};
-	_bool isUsed = false;
+	unsigned int indexX{};
+	unsigned int indexZ{};
+	XMFLOAT3 chunkPosition{};
+	bool isUsed = false;
+
+	/*NavCell Pick*/
+	std::pair<_uint, _uint> edge;
 
 }PICK_RESULT;
 

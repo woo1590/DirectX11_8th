@@ -23,7 +23,6 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
-    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;

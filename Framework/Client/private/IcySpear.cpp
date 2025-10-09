@@ -32,6 +32,8 @@ HRESULT IcySpear::Initialize_Prototype()
 
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
+	m_strInstanceTag = "IcySpear";
+	m_eRenderGroup = RenderGroup::NonBlend;
 
 	return S_OK;
 }

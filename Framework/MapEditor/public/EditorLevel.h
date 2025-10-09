@@ -24,6 +24,7 @@ private:
     HRESULT Initialize_DefaultResource();
     HRESULT Initialize_LayerLight(const _string& layerTag);
     HRESULT Initialize_LayerCamera(const _string& layerTag);
+    HRESULT Initialize_LayerNavMeshObject(const _string& layerTag);
     HRESULT Initialize_LayerMapObject(const _string& layerTag);
 
     PickingSystem* m_pPickingSystem = nullptr;

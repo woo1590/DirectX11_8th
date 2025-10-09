@@ -7,6 +7,8 @@
 #include "guizmo/ImGuizmo.h"
 #endif
 
+#include "MapEditor_Struct.h"
+
 namespace MapEditor
 {
 	constexpr unsigned int WinSizeX = 1280;

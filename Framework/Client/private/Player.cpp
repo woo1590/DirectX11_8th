@@ -72,7 +72,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 	firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Cameleon", &cameleonDesc);
 
 	if (firstWeapon)
-		m_Weapons[ENUM_CLASS(WeaponSlot::Weapon1)] = static_cast<Weapon*>(firstWeapon);
+		m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
 
 	/*add second weapon*/
 	Object* secondWeapon = nullptr;
@@ -82,7 +82,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 	secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
 
 	if (secondWeapon)
-		m_Weapons[ENUM_CLASS(WeaponSlot::Weapon2)] = static_cast<Weapon*>(secondWeapon);
+		m_Weapons[ENUM_CLASS(WeaponSlot::Slot2)] = static_cast<Weapon*>(secondWeapon);
 
 	/*add third weapon*/
 	Object* thirdWeapon = nullptr;
@@ -92,9 +92,9 @@ HRESULT Player::Initialize(InitDESC* arg)
 	thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_IcySpear",&icySpearDesc);
 
 	if (thirdWeapon)
-		m_Weapons[ENUM_CLASS(WeaponSlot::Weapon3)] = static_cast<Weapon*>(thirdWeapon);
+		m_Weapons[ENUM_CLASS(WeaponSlot::Slot3)] = static_cast<Weapon*>(thirdWeapon);
 	
-	m_eCurrWeaponSlot = WeaponSlot::Weapon1;
+	m_eCurrWeaponSlot = WeaponSlot::Slot1;
 	Equip();
 	ChangeState(&m_PlayerIdle);
 
@@ -216,19 +216,19 @@ void Player::KeyInput(_float dt)
 
 	if (engine->IsKeyPressed('1'))
 	{
-		m_eCurrWeaponSlot = WeaponSlot::Weapon1;
+		m_eCurrWeaponSlot = WeaponSlot::Slot1;
 		ChangeState(&m_PlayerStartEquip);
 	}
 
 	if (engine->IsKeyPressed('2'))
 	{
-		m_eCurrWeaponSlot = WeaponSlot::Weapon2;
+		m_eCurrWeaponSlot = WeaponSlot::Slot2;
 		ChangeState(&m_PlayerStartEquip);
 	}
 	
 	if (engine->IsKeyPressed('3'))
 	{
-		m_eCurrWeaponSlot = WeaponSlot::Weapon3;
+		m_eCurrWeaponSlot = WeaponSlot::Slot3;
 		ChangeState(&m_PlayerStartEquip);
 	}
 

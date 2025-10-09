@@ -9,7 +9,7 @@ class Player final:
 {
 public:
     enum class Parts { Hand, RightHandSocket, Weapon, PlayerCam, Count };
-    enum class WeaponSlot { None, Weapon1, Weapon2, Weapon3, Count };
+    enum class WeaponSlot { None, Slot1, Slot2, Slot3, Count };
 private:
     Player();
     Player(const Player& prototype);
@@ -32,7 +32,6 @@ private:
     HRESULT CreatePartObjects();
     void KeyInput(_float dt);
     void Equip();
-
 
     std::vector<Weapon*> m_Weapons;
     WeaponSlot m_eCurrWeaponSlot = WeaponSlot::None;

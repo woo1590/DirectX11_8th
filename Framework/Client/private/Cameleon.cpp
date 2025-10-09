@@ -32,10 +32,10 @@ HRESULT Cameleon::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_strInstanceTag = "Cameleon";
-
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
+	m_strInstanceTag = "Cameleon";
+	m_eRenderGroup = RenderGroup::NonBlend;
 
 	return S_OK;
 }

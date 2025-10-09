@@ -33,6 +33,8 @@ HRESULT Hand::Initialize_Prototype()
 
 	AddComponent<AnimatorComponent>();
 	AddComponent<ModelComponent>();
+	m_strInstanceTag = "Hand";
+	m_eRenderGroup = RenderGroup::NonBlend;
 
 	return S_OK;
 }
@@ -72,15 +74,6 @@ void Hand::Update(_float dt)
 void Hand::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
-}
-
-HRESULT Hand::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
-{
-	auto model = GetComponent<ModelComponent>();
-	if (!model)
-		return S_OK;
-
-	return model->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::NonBlend)]);
 }
 
 Object* Hand::Clone(InitDESC* arg)

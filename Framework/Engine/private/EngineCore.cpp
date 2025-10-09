@@ -139,8 +139,8 @@ void EngineCore::Tick(_float dt)
 
 	m_pObjectManager->PriorityUpdate(dt);
 	m_pObjectManager->Update(dt);
-	m_pObjectManager->LateUpdate(dt);
 	m_pCameraManager->Update();
+	m_pObjectManager->LateUpdate(dt);
 	
 	m_pLevelManager->Update(dt);
 	m_pLevelManager->Render(); /*Debug Only*/

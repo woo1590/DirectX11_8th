@@ -255,6 +255,7 @@
     <ClInclude Include="..\public\GuizmoPanel.h" />
     <ClInclude Include="..\public\UIObject.h" />
     <ClInclude Include="..\public\Utility_Function.h" />
+    <ClInclude Include="..\public\VIBufferCell.h" />
     <ClInclude Include="..\public\VIBufferCube.h" />
     <ClInclude Include="..\public\VIBufferQuad.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\private\GuizmoPanel.cpp" />
     <ClCompile Include="..\private\UIObject.cpp" />
     <ClCompile Include="..\private\Utility_Function.cpp" />
+    <ClCompile Include="..\private\VIBufferCell.cpp" />
     <ClCompile Include="..\private\VIBufferCube.cpp" />
     <ClCompile Include="..\private\VIBufferQuad.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />

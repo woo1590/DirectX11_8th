@@ -238,6 +238,9 @@
     <Filter Include="01. Engine Component\Camera Manager">
       <UniqueIdentifier>{766b4cac-a335-432e-8007-33318c41cfd4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Cell">
+      <UniqueIdentifier>{1b3dd41e-9a6f-466f-a7c3-f29713fbfb0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -513,6 +516,9 @@
     <ClInclude Include="..\public\DebugRenderer.h">
       <Filter>01. Engine Component\Rendering\DebugRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBufferCell.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -736,6 +742,9 @@
     </ClCompile>
     <ClCompile Include="..\private\DebugRenderer.cpp">
       <Filter>01. Engine Component\Rendering\DebugRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBufferCell.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Cell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
