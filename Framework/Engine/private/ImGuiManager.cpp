@@ -77,8 +77,10 @@ void ImGuiManager::Render()
 	ImGui::Text("FPS : %.1f (%.3f ms)", io.Framerate, 1000.f / io.Framerate);
     if (ImGui::Button("Visible"))
         isAvailable = isAvailable ? false : true;
-    if (ImGui::Button("Debug Mode"))
-        engine->IsDebugEnable() ? engine->DebugDisable() : engine->DebugEnable();
+    if (ImGui::Button("Nav Debug"))
+        engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
+    if (ImGui::Button("Collider Debug"))
+        engine->IsColliderDebugEnable() ? engine->ColliderDebugDisable() : engine->ColliderDebugEnable();
 	ImGui::End();
 
 

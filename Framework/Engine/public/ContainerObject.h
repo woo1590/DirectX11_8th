@@ -30,6 +30,12 @@ public:
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
 
+    PartObject* GetPartObject(_uint index);
+
+#ifdef USE_IMGUI
+    virtual void RenderInspector()override;
+#endif
+
 protected:
     HRESULT AddPartObject(_uint levelID, const _string& prototypeTag, _uint partObjectIndex, InitDESC* arg);
 

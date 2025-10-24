@@ -45,8 +45,6 @@ void GuizmoPanel::Draw(GUIState& state)
 	if (!show || !state.pObject)
 		return;
 
-	ImGuiIO& io = ImGui::GetIO();
-
 	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 	ImGuizmo::SetRect(viewPort.TopLeftX, viewPort.TopLeftY, viewPort.Width, viewPort.Height);
 	ImGuizmo::SetOrthographic(false);

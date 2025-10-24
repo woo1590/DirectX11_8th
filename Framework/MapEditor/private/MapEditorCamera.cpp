@@ -85,7 +85,8 @@ void MapEditorCamera::PriorityUpdate(_float dt)
 			_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
 			_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
 
-			transform->Turn(pitch, yaw);
+			m_fTargetPitchYaw.x += pitch;
+			m_fTargetPitchYaw.y += yaw;
 		}
 	}
 
@@ -114,6 +115,22 @@ void MapEditorCamera::PriorityUpdate(_float dt)
 void MapEditorCamera::Update(_float dt)
 {
 	__super::Update(dt);
+
+	auto shortestDelta = [](float curr, float target) {
+		float d = fmodf(target - curr, XM_2PI);
+		if (d > XM_PI)  d -= XM_2PI;
+		if (d < -XM_PI) d += XM_2PI;
+		return d;
+		};
+
+	_float t = 1.f - std::powf(2.f, -dt / 0.06);
+
+	m_fCurrentPitchYaw.x += shortestDelta(m_fCurrentPitchYaw.x, m_fTargetPitchYaw.x) * t;
+	m_fCurrentPitchYaw.y += shortestDelta(m_fCurrentPitchYaw.y, m_fTargetPitchYaw.y) * t;
+
+	m_fCurrentPitchYaw.x = std::clamp(m_fCurrentPitchYaw.x, math::ToRadian(-89.f), math::ToRadian(89.f));
+
+	m_pTransform->Rotate(_float3(m_fCurrentPitchYaw.x, m_fCurrentPitchYaw.y, 0.f));
 }
 
 void MapEditorCamera::LateUpdate(_float dt)

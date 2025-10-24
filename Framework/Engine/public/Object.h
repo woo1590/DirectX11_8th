@@ -7,6 +7,7 @@
 NS_BEGIN(Engine)
 
 class Component;
+class ColliderComponent;
 class TransformComponent;
 class ENGINE_DLL Object abstract:
     public Base
@@ -15,6 +16,7 @@ public:
     typedef struct ObjectDesc : public TransformComponent::TRANSFORM_DESC
     {
         _string instanceTag{};
+        _string modelTag{};
     }OBJECT_DESC;
 
 protected:
@@ -56,6 +58,11 @@ public:
     void SetDead() { m_isDead = true; }
     _bool IsDead()const { return m_isDead; }
     void SetRenderGroup(RenderGroup group) { m_eRenderGroup = group; }
+
+    /*collision*/
+    virtual void OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider) {};
+    virtual void OnCollisionStay(ColliderComponent* collider, ColliderComponent* otherCollider) {};
+    virtual void OnCollisionExit(ColliderComponent* collider, ColliderComponent* otherCollider) {};
 
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;

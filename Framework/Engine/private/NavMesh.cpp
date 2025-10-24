@@ -27,9 +27,9 @@ HRESULT NavMesh::Initialize(const _string& filePath)
 
 	file.read(reinterpret_cast<char*>(&m_iNumCells), sizeof(_uint));
 
-	std::vector<CELL_DESC> cellDatas;
+	std::vector<NAVCELL_DATA> cellDatas;
 	cellDatas.resize(m_iNumCells);
-	file.read(reinterpret_cast<char*>(cellDatas.data()), sizeof(CELL_DESC) * m_iNumCells);
+	file.read(reinterpret_cast<char*>(cellDatas.data()), sizeof(NAVCELL_DATA) * m_iNumCells);
 
 	for (_uint i = 0; i < m_iNumCells; ++i)
 	{
@@ -43,6 +43,85 @@ HRESULT NavMesh::Initialize(const _string& filePath)
 	}
 
 	return S_OK;
+}
+
+HRESULT NavMesh::ExtractDebugProxies(std::vector<RenderProxy>& proxies)
+{
+	for (const auto& cell : m_Cells)
+	{
+		RenderProxy proxy{};
+		
+		XMStoreFloat4x4(&proxy.worldMatrix, XMMatrixIdentity());
+		proxy.buffer = cell->GetBuffer();
+		proxy.materialInstance = cell->GetMaterialInstance();
+
+		proxies.push_back(proxy);
+	}
+
+	return S_OK;
+}
+
+_bool NavMesh::IsCellExist(_uint cellIndex)
+{
+	if (cellIndex >= m_Cells.size())
+		return false;
+
+	return true;
+}
+
+_float3 NavMesh::GetPositionInCell(_uint cellIndex)
+{
+	return m_Cells[cellIndex]->GetPositionInCell();
+}
+
+_bool NavMesh::IsMove(_float3 position, _uint& currCellIndex)
+{
+	_int neighborIndex = -1;
+	std::unordered_set<_uint> visited;
+	visited.emplace(currCellIndex);
+	
+	if (!m_Cells[currCellIndex]->IsInCell(position, neighborIndex))
+	{
+		if (-1 != neighborIndex)
+		{
+			while (true)
+			{
+				visited.emplace(neighborIndex);
+
+				if (m_Cells[neighborIndex]->IsInCell(position, neighborIndex))
+				{
+					int a = 1;
+					break;
+				}
+
+				if (visited.count(neighborIndex))
+				{
+					int a = 1;
+					break;
+				}
+
+				if (-1 == neighborIndex)
+					return false;
+			}
+
+			currCellIndex = neighborIndex;
+			return true;
+		}
+		else
+			return false;
+	}
+	else
+		return true;
+}
+
+_float NavMesh::GetHeight(_float3 position, _uint currCellIndex)
+{
+	return m_Cells[currCellIndex]->GetHeight(position);
+}
+
+_float3 NavMesh::MakeSlideVector(_float3 position, _float3 nextPosition, _uint& currCellIndex)
+{
+	return m_Cells[currCellIndex]->MakeSlideVector(position, nextPosition, currCellIndex);
 }
 
 void NavMesh::Free()

@@ -20,7 +20,7 @@ public:
 
     HRESULT     SetAnimation(_uint levelID, const _string& key);
     void        SetSkeleton(Skeleton* pSkeleton);
-    void ChangeAnimation(_uint animationIndex, _bool isLoop = false, _bool immediateChange = false);
+    void ChangeAnimation(_int animationIndex, _bool isLoop = false, _bool immediateChange = false);
 
     /*Getter*/
     const std::vector<_float4x4>& GetCombinedMatrices() { return m_CombiendMatirices; }
@@ -29,10 +29,11 @@ public:
     AnimationClip* GetCurrAnimationClip()const { return m_AnimationSet.aniamtionClips[m_iCurrAnimationIndex]; }
     const std::vector<Bone>& GetBones();
     _uint GetNumBones()const;
+    _float4x4 GetAdditiveMatrix(_uint boneIndex)const;
 
     /*Setter*/
     void SetOverride(std::vector<_float4x4> overrideMatrices, std::vector<_uint> masks);
-    void SetAdditiveRotation(std::vector<_float4> additives, std::vector<_uint> masks);
+    void SetAdditiveMatrix(_float4x4 matrix, _uint boneIndex);
     void SetFadeDurtaion(_float durtaion) { m_fFadeDuration = durtaion; }
 
     /*API*/
@@ -52,18 +53,17 @@ private:
     void PlayAnimation(_float dt);
     void FadeAnimation(_float dt);
     void ApplyOverride();
-    void ApplyAdditve();
     void UpdateCombinedMatrix();
 
     ANIMATION_SET m_AnimationSet{};
     ANIMATIONCLIP_CONTEXT m_Context{};
-    _uint m_iCurrAnimationIndex = -1;
+    _int m_iCurrAnimationIndex = -1;
 
     Skeleton* m_pSkeleton = nullptr;
     std::vector<_float4x4> m_TransformationMatrices;
     std::vector<_float4x4> m_CombiendMatirices;
 
-    std::vector<_float4> m_AdditiveRotation;
+    std::vector<_float4x4> m_AdditiveMatrices;
     std::vector<_float4x4> m_OverrideMatrices;
     std::vector<_uint> m_AdditiveMask;
     std::vector<_uint> m_OverrideMask;

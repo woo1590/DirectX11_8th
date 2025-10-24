@@ -3,6 +3,10 @@
 #include "EngineCore.h"
 #include "Shader.h"
 #include "VIBuffer.h"
+#include "MaterialInstance.h"
+
+//component
+#include "ColliderComponent.h"
 
 
 DebugRenderer::DebugRenderer()
@@ -29,10 +33,10 @@ HRESULT DebugRenderer::Initialize()
 	m_pDevice->AddRef();
 	m_pDeviceContext->AddRef();
 
-	m_pDebugShader = Shader::Create("../bin/shaderfiles/Shader_Debug.hlsl", VTXPOS::elements, VTXPOS::numElement);
-	if (!m_pDebugShader)
+	m_pCellDebugShader = Shader::Create("../bin/shaderfiles/Shader_VtxCell.hlsl", VTXPOS::elements, VTXPOS::numElement);
+	if (!m_pCellDebugShader)
 	{
-		MSG_BOX("Failed to create : Debug Shader");
+		MSG_BOX("Failed to create : Cell Debug Shader");
 		return E_FAIL;
 	}
 
@@ -61,9 +65,9 @@ HRESULT DebugRenderer::Initialize()
 		return E_FAIL;
 
 	/*Connect constant buffer to debug shader*/
-	if (FAILED(m_pDebugShader->SetConstantBuffer("DebugPerFrame", m_pCBPerFrame)))
+	if (FAILED(m_pCellDebugShader->SetConstantBuffer("DebugPerFrame", m_pCBPerFrame)))
 		return E_FAIL;
-	if (FAILED(m_pDebugShader->SetConstantBuffer("DebugPerDraw", m_pCBPerDraw)))
+	if (FAILED(m_pCellDebugShader->SetConstantBuffer("DebugPerDraw", m_pCBPerDraw)))
 		return E_FAIL;
 
 	return S_OK;
@@ -89,7 +93,15 @@ HRESULT DebugRenderer::BeginFrame()
 HRESULT DebugRenderer::RenderNavMeshDebug(const std::vector<RenderProxy>& proxies)
 {
 	for (const auto& proxy : proxies) 
-		DrawDebugProxy(proxy, "NavMeshDebug_Pass");
+		DrawDebugProxy(proxy, "CellDebug_Pass");
+
+	return S_OK;
+}
+
+HRESULT DebugRenderer::RenderColliderDebug(const std::vector<RenderProxy>& proxies)
+{
+	for (const auto& proxy : proxies)
+		proxy.collider->Draw();
 
 	return S_OK;
 }
@@ -103,7 +115,7 @@ void DebugRenderer::Free()
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
-	Safe_Release(m_pDebugShader);
+	Safe_Release(m_pCellDebugShader);
 }
 
 HRESULT DebugRenderer::DrawDebugProxy(const RenderProxy& proxy, const _string& passTag)
@@ -119,7 +131,10 @@ HRESULT DebugRenderer::DrawDebugProxy(const RenderProxy& proxy, const _string& p
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 
-	if (FAILED(m_pDebugShader->Apply(passTag)))
+	if (proxy.materialInstance)
+		proxy.materialInstance->BindMaterialInstance(m_pCellDebugShader);
+
+	if (FAILED(m_pCellDebugShader->Apply(passTag)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

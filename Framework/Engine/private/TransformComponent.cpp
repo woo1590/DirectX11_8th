@@ -1,7 +1,11 @@
 #include "EnginePCH.h"
 #include "TransformComponent.h"
 #include "Object.h"
+
+//component
 #include "ModelComponent.h"
+#include "NavigationComponent.h"
+#include "RigidBodyComponent.h"
 
 TransformComponent::TransformComponent(Object* pOwner)
 	:Component(pOwner)
@@ -55,29 +59,6 @@ HRESULT TransformComponent::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
-void TransformComponent::SetRotation(_float3 rotation)
-{
-	static auto normalizeAngle = [](_float& radian)
-		{
-			if (radian < -XM_PI)
-			{
-				radian += 2.f * XM_PI;
-			}
-			else if (radian > XM_PI)
-			{
-				radian -= 2.f * XM_PI;
-			}
-		};
-
-	normalizeAngle(rotation.x);
-	normalizeAngle(rotation.y);
-	normalizeAngle(rotation.z);
-
-	XMStoreFloat4(&m_Quaternion, XMQuaternionNormalize(XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z)));
-
-	MakeDirty();
-}
-
 void TransformComponent::SetQuaternion(_float4 quaternion)
 {
 	m_Quaternion = quaternion;
@@ -113,27 +94,30 @@ void TransformComponent::SetParent(TransformComponent* parent)
 	m_pParent->m_Childrens.push_back(this);
 }
 
-void TransformComponent::Translate(_fvector velocity)
+void TransformComponent::Translate(_fvector deltaMove)
 {
-	XMStoreFloat3(&m_Position, XMLoadFloat3(&m_Position) + velocity);
-
-	m_isDirty = true;
+	XMStoreFloat3(&m_Position, XMLoadFloat3(&m_Position) + deltaMove);
+	
 	MakeDirty();
 }
 
 void TransformComponent::Turn(_float deltaPitch, _float deltaYaw)
 {
-	_vector quaternion = XMLoadFloat4(&m_Quaternion);
+	m_PitchYaw.x += deltaPitch;
+	m_PitchYaw.y += deltaYaw;
 
+	m_PitchYaw.x = std::clamp(m_PitchYaw.x, math::ToRadian(-89.f), math::ToRadian(89.f));
+
+	_vector quaternion = XMQuaternionIdentity();
 	_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector yawQuternion = XMQuaternionRotationAxis(worldUp, deltaYaw);
+	_vector yawQuternion = XMQuaternionRotationAxis(worldUp, m_PitchYaw.y);
 	quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, yawQuternion));
-	
+
 	_matrix yawRotMat = XMMatrixRotationQuaternion(quaternion);
-	
+
 	_vector right = XMVector3Normalize(yawRotMat.r[0]);
-	_vector pitchQuternion = XMQuaternionRotationAxis(right, deltaPitch);
-	
+	_vector pitchQuternion = XMQuaternionRotationAxis(right, m_PitchYaw.x);
+
 	quaternion = XMQuaternionNormalize(XMQuaternionMultiply(quaternion, pitchQuternion));
 
 	XMStoreFloat4(&m_Quaternion, quaternion);
@@ -175,6 +159,20 @@ _float4x4 TransformComponent::GetWorldMatrixInverse()
 	return m_WorldMatrixInverse;
 }
 
+_float4x4 TransformComponent::GetLocalMatrix()
+{
+	ResolveDirty();
+
+	_float4x4 localMat{};
+	_matrix scaleMat = XMMatrixScalingFromVector(XMLoadFloat3(&m_Scale));
+	_matrix rotMat = XMMatrixRotationQuaternion(XMLoadFloat4(&m_Quaternion));
+	_matrix transMat = XMMatrixTranslationFromVector(XMLoadFloat3(&m_Position));
+	
+	XMStoreFloat4x4(&localMat, scaleMat * rotMat * transMat);
+
+	return localMat;
+}
+
 Component* TransformComponent::Clone()
 {
 	TransformComponent* Instance = new TransformComponent(*this);
@@ -185,6 +183,7 @@ Component* TransformComponent::Clone()
 void TransformComponent::Free()
 {
 	__super::Free();
+
 }
 
 #ifdef USE_IMGUI

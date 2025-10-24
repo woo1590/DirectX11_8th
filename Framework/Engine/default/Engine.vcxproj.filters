@@ -241,6 +241,36 @@
     <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Cell">
       <UniqueIdentifier>{1b3dd41e-9a6f-466f-a7c3-f29713fbfb0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Object Component\Collider Component">
+      <UniqueIdentifier>{9178adc0-0590-47d0-9386-f44875a8f6f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\RigidBody Component">
+      <UniqueIdentifier>{1de26f8a-5d4d-439b-b012-813044c2880e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Collider Component\Bounding">
+      <UniqueIdentifier>{a063d1f6-70d3-4dbc-b7e6-8c008b0131f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Collider Component\Bounding\AABB">
+      <UniqueIdentifier>{9843df38-b772-448b-8024-6529231dc88b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Collider Component\Bounding\OBB">
+      <UniqueIdentifier>{0214a773-15c2-4096-a118-383244a096a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Collider Component\Bounding\Sphere">
+      <UniqueIdentifier>{b9c03180-f639-4819-9baa-5f6883009cb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Collider Component\Bounding\DebugDraw">
+      <UniqueIdentifier>{e0ad1bee-1bfb-4766-8151-df5b5a8befe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Instancing">
+      <UniqueIdentifier>{19335e34-ea85-4047-b67c-9e7a511a9062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Collision System">
+      <UniqueIdentifier>{66004534-5581-4873-b2b4-98aa99fd95cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\ParticleSystem Component">
+      <UniqueIdentifier>{b667864d-82d7-4856-9352-7e4175757edc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -519,6 +549,33 @@
     <ClInclude Include="..\public\VIBufferCell.h">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\RigidBodyComponent.h">
+      <Filter>05. Object Component\RigidBody Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ColliderComponent.h">
+      <Filter>05. Object Component\Collider Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding.h">
+      <Filter>05. Object Component\Collider Component\Bounding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding_AABB.h">
+      <Filter>05. Object Component\Collider Component\Bounding\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DebugDraw.h">
+      <Filter>05. Object Component\Collider Component\Bounding\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding_Sphere.h">
+      <Filter>05. Object Component\Collider Component\Bounding\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding_OBB.h">
+      <Filter>05. Object Component\Collider Component\Bounding\OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Instancing.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CollisionSystem.h">
+      <Filter>01. Engine Component\Collision System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -746,6 +803,33 @@
     <ClCompile Include="..\private\VIBufferCell.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Cell</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\RigidBodyComponent.cpp">
+      <Filter>05. Object Component\RigidBody Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ColliderComponent.cpp">
+      <Filter>05. Object Component\Collider Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding.cpp">
+      <Filter>05. Object Component\Collider Component\Bounding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding_AABB.cpp">
+      <Filter>05. Object Component\Collider Component\Bounding\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DebugDraw.cpp">
+      <Filter>05. Object Component\Collider Component\Bounding\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding_Sphere.cpp">
+      <Filter>05. Object Component\Collider Component\Bounding\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding_OBB.cpp">
+      <Filter>05. Object Component\Collider Component\Bounding\OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Instancing.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CollisionSystem.cpp">
+      <Filter>01. Engine Component\Collision System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\public\nfd\nfd_cocoa.m">
@@ -769,9 +853,12 @@
     <None Include="..\bin\shaderfiles\Samplers.hlsli">
       <Filter>98. Etc\ShaderFiles</Filter>
     </None>
+    <None Include="..\bin\shaderfiles\Func.hlsli">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\bin\shaderfiles\Shader_Debug.hlsl">
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxCell.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

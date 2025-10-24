@@ -24,7 +24,8 @@ public:
 
 private:
     _bool m_ActiveKeyboard = true;
-
+    _float2 m_fTargetPitchYaw{};
+    _float2 m_fCurrentPitchYaw{};
 };
 
 NS_END

@@ -6,6 +6,7 @@
 
 //object
 #include "PreviewObject.h"
+#include "Door.h"
 
 //component
 #include "MakePrefabComponent.h"
@@ -59,6 +60,9 @@ void MapEditorPanel::Draw(GUIState& state)
 			ImGui::SameLine();
 			if (ImGui::Button("NavPlacement"))
 				m_eMode = EditMode::NavPlacement;
+			ImGui::SameLine();
+			if (ImGui::Button("SpawnerPlacement"))
+				m_eMode = EditMode::SpawnerPlacement;
 
 			if (ImGui::BeginMenu("File"))
 			{
@@ -88,6 +92,32 @@ void MapEditorPanel::Draw(GUIState& state)
 						ImportMapFile(path);
 					}
 				}
+				if (ImGui::MenuItem("Save Nav"))
+				{
+					nfdchar_t* outPath = nullptr;
+					nfdresult_t res = NFD_SaveDialog(nullptr, nullptr, &outPath);
+
+					if (res == NFD_OKAY)
+					{
+						_string path = outPath;
+						NFDi_Free(outPath);
+
+						ExportNavFile(path);
+					}
+				}
+				if (ImGui::MenuItem("Load Nav"))
+				{
+					nfdchar_t* importPath = nullptr;
+					nfdresult_t res = NFD_OpenDialog(nullptr, nullptr, &importPath);
+
+					if (res == NFD_OKAY)
+					{
+						_string path = importPath;
+						NFDi_Free(importPath);
+
+						ImportNavFile(path);
+					}
+				}
 				ImGui::EndMenu();
 			}
 		}
@@ -96,25 +126,34 @@ void MapEditorPanel::Draw(GUIState& state)
 	}
 	ImGui::End();
 
-
-
 	if (ImGui::Begin("Prefabs", &show, ImGuiWindowFlags_MenuBar))
 	{
 		ImGui::DragInt("Index X : ", reinterpret_cast<int*>(&pickRes.indexX));
 		ImGui::DragInt("Index Z : ", reinterpret_cast<int*>(&pickRes.indexZ));
 		
+		ImGui::DragInt("First Nav Index : ", reinterpret_cast<int*>(&m_iFirstPickNavIndex));
+		ImGui::DragInt("Second Nav Index : ", reinterpret_cast<int*>(&m_iSecondPickNavIndex));
+
 		ShowPrefabs();
 	}
 	ImGui::End();
 
 	if (m_eMode == EditMode::Placement)
 		Placement(state, pickRes);
-	else if(m_eMode==EditMode::NavPlacement)
+	else if (m_eMode == EditMode::NavPlacement)
 		NavPlacement(state, pickRes);
+	else if (m_eMode == EditMode::SpawnerPlacement)
+	{
+
+	}
 	else
 	{
-		if (pickRes.object && engine->IsMousePress(MouseButton::LButton))
-			state.pObject = pickRes.object;
+		ImGuiIO& io = ImGui::GetIO();
+		if (!io.WantCaptureMouse)
+		{
+			if (pickRes.object && engine->IsMousePress(MouseButton::LButton))
+				state.pObject = pickRes.object;
+		}
 	}
 }
 
@@ -134,8 +173,12 @@ void MapEditorPanel::LoadPrefabs(const _string& filePath)
 			prefab.prototypeTag = val.value("PrototypeTag", "");
 			prefab.modelTag = val.value("ModelTag", "");
 			prefab.layerTag = val.value("LayerTag", "");
-			
-			engine->AddPrototype(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, PreviewObject::Create(prefab, m_pPickingSystem));
+
+			if (prefab.prototypeTag == "Prototype_Object_Door")
+				engine->AddPrototype(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, Door::Create());
+			else
+				engine->AddPrototype(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, PreviewObject::Create(prefab, m_pPickingSystem));
+
 			m_Prefabs.push_back(prefab);
 		}
 	}
@@ -200,7 +243,6 @@ void MapEditorPanel::AddObjectToLayer(PICK_RESULT pickRes)
 	Object::OBJECT_DESC desc{};
 	desc.position = prefab.position;
 	engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), prefab.layerTag, &desc);
-	//m_LastUsedPrefab = prefab;
 }
 
 void MapEditorPanel::DeleteObjectFromLayer(GUIState& state, PICK_RESULT pickRes)
@@ -244,15 +286,19 @@ void MapEditorPanel::ShowPreviewObject(PICK_RESULT pickRes)
 		}
 
 		PREFAB prefab = m_Prefabs[m_iSelectedIndex];
-		Object::OBJECT_DESC desc{};
-		desc.position = position;
-		engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), "Layer_ShowPreview", &desc);
 
-		m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetFrontObject();
-		m_pPreviewObject->GetComponent<ModelPickable>()->SetActive(false);
-		m_pPreviewObject->SetRenderGroup(RenderGroup::Blend);
-		m_pPreviewObject->AddRef();
-		m_iPreviewObjectIndex = m_iSelectedIndex;
+		if (prefab.prototypeTag != "Prototype_Object_Door")
+		{
+			Object::OBJECT_DESC desc{};
+			desc.position = position;
+			engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), "Layer_ShowPreview", &desc);
+
+			m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetFrontObject();
+			m_pPreviewObject->GetComponent<ModelPickable>()->SetActive(false);
+			m_pPreviewObject->SetRenderGroup(RenderGroup::Blend);
+			m_pPreviewObject->AddRef();
+			m_iPreviewObjectIndex = m_iSelectedIndex;
+		}
 	}
 	/*Alreay exist preview object*/
 	else if (m_pPreviewObject)
@@ -278,15 +324,19 @@ void MapEditorPanel::ShowPreviewObject(PICK_RESULT pickRes)
 			Safe_Release(m_pPreviewObject);
 
 			PREFAB prefab = m_Prefabs[m_iSelectedIndex];
-			Object::OBJECT_DESC desc{};
-			desc.position = position;
-			engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), "Layer_ShowPreview", &desc);
 
-			m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetLastObject();
-			m_pPreviewObject->GetComponent<ModelPickable>()->SetActive(false);
-			m_pPreviewObject->SetRenderGroup(RenderGroup::Blend);
-			m_pPreviewObject->AddRef();
-			m_iPreviewObjectIndex = m_iSelectedIndex;
+			if (prefab.prototypeTag != "Prototype_Object_Door")
+			{
+				Object::OBJECT_DESC desc{};
+				desc.position = position;
+				engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), "Layer_ShowPreview", &desc);
+
+				m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetLastObject();
+				m_pPreviewObject->GetComponent<ModelPickable>()->SetActive(false);
+				m_pPreviewObject->SetRenderGroup(RenderGroup::Blend);
+				m_pPreviewObject->AddRef();
+				m_iPreviewObjectIndex = m_iSelectedIndex;
+			}
 		}
 	}
 }
@@ -298,18 +348,36 @@ void MapEditorPanel::NavPlacement(GUIState& state, PICK_RESULT pickRes)
 
 	auto engine = EngineCore::GetInstance();
 
-	if (pickRes.object)
+	if (engine->IsMousePress(MouseButton::LButton))
 	{
-		if (engine->IsMousePress(MouseButton::LButton))
+		if (PickType::Model ==  pickRes.type)
 		{
-			/*first add*/
-			_float3 position = pickRes.worldHitPosition;
-			position.y += 0.2f;
-			m_PickPositions.push_back(position);
-			if (m_PickPositions.size() >= 3)
-				AddNavData();
+			if (!m_isNavAdded)
+			{
+				_float3 position = pickRes.worldHitPosition;
+				position.y += 1.f;
+				m_PickPositions.push_back(position);
+			}
+			else if(-1 != m_iFirstPickNavIndex)
+			{
+				_float3 position = pickRes.worldHitPosition;
+				position.y += 1.f;
+				m_PickPositions.push_back(position);
+			}
 		}
+		else if (PickType::Nav == pickRes.type)
+		{
+			if (-1 == m_iFirstPickNavIndex)
+				m_iFirstPickNavIndex = pickRes.navCellIndex;
+			else
+				m_iSecondPickNavIndex = pickRes.navCellIndex;
+		}
+
+		AddNavData();
 	}
+
+	if (engine->IsKeyPressed('Z'))
+		UndoNavData();
 }
 
 void MapEditorPanel::AddNavData()
@@ -320,8 +388,57 @@ void MapEditorPanel::AddNavData()
 	{
 		auto navData = navMeshObject->GetComponent<NavDataComponent>();
 
-		navData->AddNavCell(m_PickPositions.data());
+		if (!m_isNavAdded)
+		{
+			if (3 == m_PickPositions.size())
+			{
+				navData->AddNavCell(m_PickPositions.data());
+				m_isNavAdded = true;
+				m_PickPositions.clear();
+			}
+		}
+		else
+		{
+			if (-1 != m_iFirstPickNavIndex && 1 == m_PickPositions.size())
+			{
+				navData->AddNavCell(m_iFirstPickNavIndex, m_PickPositions[0]);
+				m_iFirstPickNavIndex = -1;
+				m_PickPositions.clear();
+			}
+			else if (-1 != m_iFirstPickNavIndex && -1 != m_iSecondPickNavIndex)
+			{
+				navData->AddNavCell(m_iFirstPickNavIndex, m_iSecondPickNavIndex);
+				m_iFirstPickNavIndex = -1;
+				m_iSecondPickNavIndex = -1;
+			}
+		}
 	}
+}
+
+void MapEditorPanel::UndoNavData()
+{
+	auto engine = EngineCore::GetInstance();
+	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
+	if (navMeshObject)
+	{
+		auto navData = navMeshObject->GetComponent<NavDataComponent>();
+		navData->ReomoveLastCell();
+	}
+}
+
+void MapEditorPanel::SpanwerPlacement(GUIState& state, PICK_RESULT pickRes)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (engine->IsMousePress(MouseButton::LButton))
+	{
+
+	}
+}
+
+void MapEditorPanel::AddSpawner()
+{
+
 }
 
 void MapEditorPanel::ImportMapFile(const _string& filePath)
@@ -398,6 +515,41 @@ void MapEditorPanel::ExportMapFile(const _string& outFilePath)
 	out << map.dump(2);
 
 	MSG_BOX("Save Success!");
+}
+
+void MapEditorPanel::ImportNavFile(const _string& filePath)
+{
+	std::ifstream file(filePath, std::ios::binary);
+	if (!file.is_open())
+	{
+		MSG_BOX("Failed to load");
+		return;
+	}
+
+	auto engine = EngineCore::GetInstance();
+	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
+
+	navMeshObject->GetComponent<NavDataComponent>()->ImportNavData(file);
+
+	m_isNavAdded = true;
+	m_PickPositions.clear();
+	m_iFirstPickNavIndex = -1;
+	m_iSecondPickNavIndex = -1;
+}
+
+void MapEditorPanel::ExportNavFile(const _string& filePath)
+{
+	std::ofstream out(filePath, std::ios::binary);
+	if (!out.is_open())
+	{
+		MSG_BOX("Failed to save");
+		return;
+	}
+
+	auto engine = EngineCore::GetInstance();
+	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
+
+	navMeshObject->GetComponent<NavDataComponent>()->ExportNavData(out);
 }
 
 void MapEditorPanel::ShowPrefabs()

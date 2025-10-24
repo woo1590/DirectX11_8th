@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ConcealedAmmo.h"
+#include "Player.h"
 
 //component
 #include "ModelComponent.h"
@@ -47,6 +48,8 @@ HRESULT ConcealedAmmo::Initialize(InitDESC* arg)
 	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_ConcealedAmmo");
 
 	model->ConnectAnimator();
+
+	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
 
 	ChangeState(&m_ConcealedAmmoIdle);
 
@@ -129,6 +132,7 @@ void ConcealedAmmo::ConcealedAmmoReload::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(2, false, true);
+	animator->SetPlaySpeedScale(1.3f);
 }
 
 void ConcealedAmmo::ConcealedAmmoReload::Update(Engine::Object* object, Engine::_float dt)
@@ -138,21 +142,48 @@ void ConcealedAmmo::ConcealedAmmoReload::Update(Engine::Object* object, Engine::
 void ConcealedAmmo::ConcealedAmmoReload::TestForExit(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	auto blast = static_cast<ConcealedAmmo*>(object);
+	auto ammo = static_cast<ConcealedAmmo*>(object);
 
 	if (animator->IsFinished())
-		blast->ChangeState(&blast->m_ConcealedAmmoIdle);
+		ammo->ChangeState(&ammo->m_ConcealedAmmoIdle);
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	animator->ChangeAnimation(0, true, true);
+	animator->ChangeAnimation(0, false, true);
 	animator->SetPlaySpeedScale(4.f);
+
+	auto ammo = static_cast<ConcealedAmmo*>(object);
+	auto player = static_cast<Player*>(ammo->m_pParent);
+	player->AddRecoil(3.f);
+
+	/*for test*/
+	_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[ammo->m_iFireLightBoneIndex];
+	_float4x4 worldMat = object->GetComponent<TransformComponent>()->GetWorldMatrix();
+	XMStoreFloat4x4(&worldMat, XMLoadFloat4x4(&boneMat) * XMLoadFloat4x4(&worldMat));
+
+	_float3 aimPosition = player->GetAimPosition();
+	_float3 position{};
+	_vector positionV, scale, rot;
+	XMMatrixDecompose(&scale, &rot, &positionV, XMLoadFloat4x4(&worldMat));
+	XMStoreFloat3(&position, positionV);
+
+	_float3 forward{};
+	XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&aimPosition) - XMLoadFloat3(&position)));
+
+	Object* defaultBullet = nullptr;
+	Object::OBJECT_DESC desc{};
+	desc.scale = _float3{ 3.f,3.f,3.f };
+	desc.position = position;
+	EngineCore::GetInstance()->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Default_Bullet", ENUM_CLASS(LevelID::GamePlay), "Layer_Projectile", &desc, &defaultBullet);
+
+	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::Update(Engine::Object* object, Engine::_float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::TestForExit(Engine::Object* object)

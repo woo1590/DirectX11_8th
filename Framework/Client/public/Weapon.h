@@ -36,8 +36,8 @@ public:
     virtual void Free()override;
 
 protected:
-
     _uint m_iBip001_R_Hand_Index{};
+    
 };
 
 NS_END

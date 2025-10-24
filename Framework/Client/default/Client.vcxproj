@@ -92,6 +92,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +120,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +148,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -173,6 +176,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./;../public/;../../EngineSDK/inc;../../EngineSDK/inc/imgui/;../../EngineSDK/inc/nfd/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,12 +196,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\BobbingController.h" />
+    <ClInclude Include="..\public\Bomber.h" />
+    <ClInclude Include="..\public\Boss.h" />
+    <ClInclude Include="..\public\BossStage.h" />
     <ClInclude Include="..\public\Cameleon.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
-    <ClInclude Include="..\public\FreeCam.h" />
+    <ClInclude Include="..\public\DefaultBullet.h" />
+    <ClInclude Include="..\public\Door.h" />
+    <ClInclude Include="..\public\Door_L.h" />
+    <ClInclude Include="..\public\Door_R.h" />
+    <ClInclude Include="..\public\Enemy.h" />
+    <ClInclude Include="..\public\Foundry.h" />
+    <ClInclude Include="..\public\HorseHead_Head.h" />
+    <ClInclude Include="..\public\HorseHead_Shield.h" />
+    <ClInclude Include="..\public\HorseHead_Sword.h" />
+    <ClInclude Include="..\public\EnemySpawner.h" />
+    <ClInclude Include="..\public\Projectile.h" />
+    <ClInclude Include="..\public\Soldier.h" />
+    <ClInclude Include="..\public\Soldier_Head.h" />
+    <ClInclude Include="..\public\StaticMapObject.h" />
+    <ClInclude Include="..\public\StatusComponent.h" />
+    <ClInclude Include="..\public\ThirdCam.h" />
     <ClInclude Include="..\public\GamePlayLevel.h" />
     <ClInclude Include="..\public\Hand.h" />
     <ClInclude Include="..\public\ConcealedAmmo.h" />
+    <ClInclude Include="..\public\HorseHead.h" />
     <ClInclude Include="..\public\IcySpear.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\LoadingLevel.h" />
@@ -206,6 +230,7 @@
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerAnimController.h" />
     <ClInclude Include="..\public\PlayerCam.h" />
+    <ClInclude Include="..\public\PoisonousGhost.h" />
     <ClInclude Include="..\public\SkyBox.h" />
     <ClInclude Include="..\public\Sun.h" />
     <ClInclude Include="..\public\Terrain.h" />
@@ -219,11 +244,31 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\BobbingController.cpp" />
+    <ClCompile Include="..\private\Bomber.cpp" />
+    <ClCompile Include="..\private\Boss.cpp" />
+    <ClCompile Include="..\private\BossStage.cpp" />
     <ClCompile Include="..\private\Cameleon.cpp" />
-    <ClCompile Include="..\private\FreeCam.cpp" />
+    <ClCompile Include="..\private\DefaultBullet.cpp" />
+    <ClCompile Include="..\private\Door.cpp" />
+    <ClCompile Include="..\private\Door_L.cpp" />
+    <ClCompile Include="..\private\Door_R.cpp" />
+    <ClCompile Include="..\private\Enemy.cpp" />
+    <ClCompile Include="..\private\Foundry.cpp" />
+    <ClCompile Include="..\private\HorseHead_Head.cpp" />
+    <ClCompile Include="..\private\HorseHead_Shield.cpp" />
+    <ClCompile Include="..\private\HorseHead_Sword.cpp" />
+    <ClCompile Include="..\private\EnemySpawner.cpp" />
+    <ClCompile Include="..\private\Projectile.cpp" />
+    <ClCompile Include="..\private\Soldier.cpp" />
+    <ClCompile Include="..\private\Soldier_Head.cpp" />
+    <ClCompile Include="..\private\StaticMapObject.cpp" />
+    <ClCompile Include="..\private\StatusComponent.cpp" />
+    <ClCompile Include="..\private\ThirdCam.cpp" />
     <ClCompile Include="..\private\GamePlayLevel.cpp" />
     <ClCompile Include="..\private\Hand.cpp" />
     <ClCompile Include="..\private\ConcealedAmmo.cpp" />
+    <ClCompile Include="..\private\HorseHead.cpp" />
     <ClCompile Include="..\private\IcySpear.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\LoadingLevel.cpp" />
@@ -232,6 +277,7 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerAnimController.cpp" />
     <ClCompile Include="..\private\PlayerCam.cpp" />
+    <ClCompile Include="..\private\PoisonousGhost.cpp" />
     <ClCompile Include="..\private\SkyBox.cpp" />
     <ClCompile Include="..\private\Sun.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />

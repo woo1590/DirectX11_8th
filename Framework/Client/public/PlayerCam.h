@@ -23,11 +23,13 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    _float3 GetAimPosition()const { return m_AimPosition; }
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
-
+    _float3 m_AimPosition{};
 };
 
 NS_END

@@ -3,6 +3,9 @@
 #include "Model.h"
 #include "Skeleton.h"
 #include "EngineCore.h"
+#include "Bounding_AABB.h"
+#include "Bounding_OBB.h"
+#include "Bounding_Sphere.h"
 
 //object
 #include "Hand.h"
@@ -14,6 +17,9 @@
 #include "ModelComponent.h"
 #include "PlayerAnimController.h"
 #include "AnimatorComponent.h"
+#include "NavigationComponent.h"
+#include "RigidBodyComponent.h"
+#include "ColliderComponent.h"
 
 Player::Player()
 	:ContainerObject()
@@ -42,6 +48,9 @@ HRESULT Player::Initialize_Prototype()
 
 	m_strInstanceTag = "Player";
 	AddComponent<PlayerAnimController>();
+	AddComponent<NavigationComponent>();
+	AddComponent<RigidBodyComponent>();
+	AddComponent<ColliderComponent>();
 
 	return S_OK;
 }
@@ -57,45 +66,61 @@ HRESULT Player::Initialize(InitDESC* arg)
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
 
+	auto engine = EngineCore::GetInstance();
+
+	Bounding_Sphere::SPHERE_DESC obbDesc{};
+	obbDesc.type = ColliderType::Sphere;
+	obbDesc.center = _float3{ 0.f,5.f,0.f };
+	obbDesc.radius = 10.f;
+
+	auto collider = GetComponent<ColliderComponent>();
+	collider->Initialize(&obbDesc);
+
 	auto animatorController = GetComponent<PlayerAnimController>();
 	animatorController->SetHandAnimator(m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<AnimatorComponent>());
 
-	/*equip first weapon*/
-	m_Weapons.resize(ENUM_CLASS(WeaponSlot::Count));
-	auto engine = EngineCore::GetInstance();
+	auto nav = GetComponent<NavigationComponent>();
+	engine->RegisterNavigation(nav);
+	nav->AttachTransform();
+	nav->AttachRigidBody();
+	{
+		/*equip first weapon*/
+		m_Weapons.resize(ENUM_CLASS(WeaponSlot::Count));
 
-	Object* firstWeapon = nullptr;
+		Object* firstWeapon = nullptr;
 
-	Weapon::WEAPON_DESC cameleonDesc{};
-	cameleonDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
-	cameleonDesc.parent = this;
-	firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Cameleon", &cameleonDesc);
+		Weapon::WEAPON_DESC cameleonDesc{};
+		cameleonDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		cameleonDesc.parent = this;
+		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Foundry", &cameleonDesc);
 
-	if (firstWeapon)
-		m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
+		if (firstWeapon)
+			m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
 
-	/*add second weapon*/
-	Object* secondWeapon = nullptr;
-	Weapon::WEAPON_DESC concealedAmmoDesc{};
-	concealedAmmoDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
-	concealedAmmoDesc.parent = this;
-	secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
+		/*add second weapon*/
+		Object* secondWeapon = nullptr;
+		Weapon::WEAPON_DESC concealedAmmoDesc{};
+		concealedAmmoDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		concealedAmmoDesc.parent = this;
+		secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
 
-	if (secondWeapon)
-		m_Weapons[ENUM_CLASS(WeaponSlot::Slot2)] = static_cast<Weapon*>(secondWeapon);
+		if (secondWeapon)
+			m_Weapons[ENUM_CLASS(WeaponSlot::Slot2)] = static_cast<Weapon*>(secondWeapon);
 
-	/*add third weapon*/
-	Object* thirdWeapon = nullptr;
-	Weapon::WEAPON_DESC icySpearDesc{};
-	icySpearDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
-	icySpearDesc.parent = this;
-	thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_IcySpear",&icySpearDesc);
+		/*add third weapon*/
+		Object* thirdWeapon = nullptr;
+		Weapon::WEAPON_DESC icySpearDesc{};
+		icySpearDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		icySpearDesc.parent = this;
+		thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PoisonousGhost", &icySpearDesc);
 
-	if (thirdWeapon)
-		m_Weapons[ENUM_CLASS(WeaponSlot::Slot3)] = static_cast<Weapon*>(thirdWeapon);
+		if (thirdWeapon)
+			m_Weapons[ENUM_CLASS(WeaponSlot::Slot3)] = static_cast<Weapon*>(thirdWeapon);
+
+		m_eCurrWeaponSlot = WeaponSlot::Slot1;
+		Equip();
+	}
 	
-	m_eCurrWeaponSlot = WeaponSlot::Slot1;
-	Equip();
 	ChangeState(&m_PlayerIdle);
 
 	return S_OK;
@@ -108,9 +133,10 @@ void Player::PriorityUpdate(_float dt)
 
 void Player::Update(_float dt)
 {
-	__super::Update(dt);
 	KeyInput(dt);
+	__super::Update(dt);
 
+	MakeHandState();
 }
 
 void Player::LateUpdate(_float dt)
@@ -118,9 +144,14 @@ void Player::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
-HRESULT Player::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+void Player::AddRecoil(_float power)
 {
-	return __super::ExtractRenderProxies(proxies);
+	static_cast<Hand*>(m_PartObjects[ENUM_CLASS(Parts::Hand)])->AddRecoil(power);
+}
+
+_float3 Player::GetAimPosition()
+{
+	return static_cast<PlayerCam*>(m_PartObjects[ENUM_CLASS(Parts::PlayerCam)])->GetAimPosition();
 }
 
 Object* Player::Clone(InitDESC* arg)
@@ -143,26 +174,33 @@ void Player::Free()
 
 HRESULT Player::CreatePartObjects()
 {
-	Hand::HAND_DESC handDesc{};
-	handDesc.parent = this;
-	if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Hand", ENUM_CLASS(Parts::Hand), &handDesc)))
-		return E_FAIL;
-
-	PlayerCam::PLAYER_CAM_DESC camDesc{};
-	camDesc.parent = this;
-	if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PlayerCam", ENUM_CLASS(Parts::PlayerCam), &camDesc)))
-		return E_FAIL;
-
-	/*add right hand socket*/
+	/*add player cam*/
 	{
-		Socket::SOCKET_DESC rightHandSocketDesc{};
-		rightHandSocketDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<TransformComponent>();
-		rightHandSocketDesc.parent = this;
-		rightHandSocketDesc.parentModel = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>();
-		rightHandSocketDesc.boneIndex = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>()->GetBoneIndex("Bip001 R Hand");
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::RightHandSocket), &rightHandSocketDesc)))
+		PlayerCam::PLAYER_CAM_DESC camDesc{};
+		camDesc.parent = this;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PlayerCam", ENUM_CLASS(Parts::PlayerCam), &camDesc)))
 			return E_FAIL;
 	}
+	/*add hand*/
+	{
+		Hand::HAND_DESC handDesc{};
+		handDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::PlayerCam)]->GetComponent<TransformComponent>();
+		handDesc.parent = this;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Hand", ENUM_CLASS(Parts::Hand), &handDesc)))
+			return E_FAIL;
+	}
+	/*add neck socket*/
+	{
+		Socket::SOCKET_DESC neckSocket{};
+		neckSocket.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<TransformComponent>();
+		neckSocket.parent = this;
+		neckSocket.parentModel = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>();
+		neckSocket.boneIndex = m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<ModelComponent>()->GetBoneIndex("Bip001 Neck");
+		neckSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::RightHandSocket), &neckSocket)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -185,69 +223,216 @@ void Player::KeyInput(_float dt)
 {
 	/*마우스 보간 넣어야함*/
 	auto engine = EngineCore::GetInstance();
+	auto hand = static_cast<Hand*>(m_PartObjects[ENUM_CLASS(Parts::Hand)]);
 
-	_vector forward = m_pTransform->GetForwardV();
-	_vector right = m_pTransform->GetRightV();
-	_float speed = 100.f;
-	_float2 mouseDelta = engine->GetMouseDelta();
-
-	_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
-	_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
-
-	m_pTransform->Turn(pitch, yaw);
-	if (engine->IsKeyDown('W'))
-		m_pTransform->Translate(forward * speed * dt);
-	
-	if (engine->IsKeyDown('S'))
-		m_pTransform->Translate(-forward * speed * dt);
-	
-	if (engine->IsKeyDown('D'))
-		m_pTransform->Translate(right * speed * dt);
-	
-	if (engine->IsKeyDown('A'))
-		m_pTransform->Translate(-right * speed * dt);
-	
-	if (engine->IsKeyDown(VK_SPACE))
-		m_pTransform->Translate(XMVectorSet(0.f, 1.f, 0.f, 0.f) * 100.f * dt);
-	
-	if (engine->IsKeyDown(VK_SHIFT))
-		m_pTransform->Translate(XMVectorSet(0.f, -1.f, 0.f, 0.f) * 100.f * dt);
-
-
-	if (engine->IsKeyPressed('1'))
+	/*direction controll*/
 	{
-		m_eCurrWeaponSlot = WeaponSlot::Slot1;
-		ChangeState(&m_PlayerStartEquip);
+
+		_float2 mouseDelta = engine->GetMouseDelta();
+		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
+		if (std::abs(yaw) > 0.f)
+		{
+			m_pTransform->Turn(0.f, yaw);
+			hand->SetSwayTargetRoation(-yaw);
+		}
 	}
 
-	if (engine->IsKeyPressed('2'))
+	/*weapon controll*/
 	{
-		m_eCurrWeaponSlot = WeaponSlot::Slot2;
-		ChangeState(&m_PlayerStartEquip);
+		if (engine->IsKeyPressed('1'))
+		{
+			m_eCurrWeaponSlot = WeaponSlot::Slot1;
+			ChangeState(&m_PlayerStartEquip);
+		}
+
+		if (engine->IsKeyPressed('2'))
+		{
+			m_eCurrWeaponSlot = WeaponSlot::Slot2;
+			ChangeState(&m_PlayerStartEquip);
+		}
+
+		if (engine->IsKeyPressed('3'))
+		{
+			m_eCurrWeaponSlot = WeaponSlot::Slot3;
+			ChangeState(&m_PlayerStartEquip);
+		}
+
+		if (engine->IsKeyPressed('R'))
+			m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Reload();
+
+		if (engine->IsMouseDown(MouseButton::LButton))
+			m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Fire();
+
+		if (engine->IsMousePress(MouseButton::RButton))
+			m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Skill();
+
+		if (engine->IsMouseAway(MouseButton::LButton))
+			m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Idle();
 	}
+
+	/*move controll*/
+	{
+		auto rigid = GetComponent<RigidBodyComponent>();
+		auto nav = GetComponent<NavigationComponent>();
+
+		if (!m_IsDash)
+		{
+			_vector forward = m_pTransform->GetForwardV();
+			_vector right = m_pTransform->GetRightV();
+			_float speed = 80.f;
+			m_IsWalk = false;
+
+
+			_vector dir = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+			_float3 originVelocity = rigid->GetVelocity();
+			_float3 velocity{};
+
+			if (engine->IsKeyDown('W'))
+			{
+				dir += forward;
+				m_IsWalk = true;
+			}
 	
-	if (engine->IsKeyPressed('3'))
+			if (engine->IsKeyDown('S'))
+			{
+				dir -= forward;
+				m_IsWalk = true;
+			}
+	
+			if (engine->IsKeyDown('D'))
+			{
+				dir += right;
+				m_IsWalk = true;
+			}
+	
+			if (engine->IsKeyDown('A'))
+			{
+				dir -= right;
+				m_IsWalk = true;
+			}
+
+			if (engine->IsKeyPressed(VK_SHIFT))
+				ChangeState(&m_PlayerDash);
+
+			XMStoreFloat3(&velocity, XMVector3Normalize(dir) * speed);
+			velocity.y = originVelocity.y;
+			GetComponent<RigidBodyComponent>()->SetVelocity(velocity);
+
+			if (!m_IsJump)
+			{
+				if (engine->IsKeyDown(VK_SPACE))
+				{
+					rigid->SetGround(false);
+					rigid->AddForce(_float3{ 0.f,90.f,0.f });
+					m_IsJump = true;
+
+					hand->StartJump();
+				}
+			}
+			else
+			{
+				if (rigid->IsGround())
+				{
+					m_IsJump = false;
+
+					hand->EndJump();
+				}
+				else
+				{
+					_float3 velocity = rigid->GetVelocity();
+				}
+			}
+
+		}
+
+		nav->MoveByVelocity(dt);
+	}
+}
+
+void Player::MakeHandState()
+{
+	auto hand = static_cast<Hand*>(m_PartObjects[ENUM_CLASS(Parts::Hand)]);
+
+	if (m_IsWalk)
+		hand->Walk();
+	else
+		hand->Idle();
+}
+
+void Player::PlayerIdle::Enter(Object* object)
+{
+	auto player = static_cast<Player*>(object);
+	static_cast<Hand*>(player->m_PartObjects[ENUM_CLASS(Parts::Hand)])->SwayEnable();
+}
+
+void Player::PlayerDash::Enter(Object* object)
+{
+	m_fElapsedTime = 0.f;
+
+	auto player = static_cast<Player*>(object);
+	if (player->m_IsWalk)
 	{
-		m_eCurrWeaponSlot = WeaponSlot::Slot3;
-		ChangeState(&m_PlayerStartEquip);
+		auto rigidBody = object->GetComponent<RigidBodyComponent>();
+		_float3 velocity = rigidBody->GetVelocity();
+		velocity.y = 0.f;
+		XMStoreFloat3(&m_DashDirection, XMVector3Normalize(XMLoadFloat3(&velocity)));
+	}
+	else
+	{
+		auto transform = object->GetComponent<TransformComponent>();
+		m_DashDirection = transform->GetForward();
 	}
 
-	if (engine->IsKeyPressed('R'))
-		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Reload();
+	player->m_IsWalk = false;
+	player->m_IsDash = true;
+}
 
-	if (engine->IsMouseDown(MouseButton::LButton))
-		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Fire();
+void Player::PlayerDash::Update(Object* object, _float dt)
+{
+	m_fElapsedTime += dt;
 
-	if (engine->IsMousePress(MouseButton::RButton))
-		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Skill();
+	if (m_fElapsedTime < m_fDuration)
+	{
+		_float t = m_fElapsedTime / m_fDuration;
+		t = std::clamp(t, 0.f, 1.f);
 
-	if (engine->IsMouseAway(MouseButton::LButton))
-		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->Idle();
+		auto rigidBody = object->GetComponent<RigidBodyComponent>();
+		_float3 velocity{};
+		if (t < 0.8f)
+		{
+			XMStoreFloat3(&velocity, m_fStartSpeed * XMLoadFloat3(&m_DashDirection));
+			velocity.y = rigidBody->GetVelocity().y;
+		}
+		else
+		{
+			t = (t - 0.8f) / 0.2f;
+
+			_float speed = math::Lerp(m_fStartSpeed, m_fEndSpeed, t);
+			XMStoreFloat3(&velocity, m_fStartSpeed * XMLoadFloat3(&m_DashDirection));
+			velocity.y = rigidBody->GetVelocity().y;
+		}
+
+		rigidBody->SetVelocity(velocity);
+	}
+}
+
+void Player::PlayerDash::TestForExit(Object* object)
+{
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto player = static_cast<Player*>(object);
+		player->ChangeState(&player->m_PlayerIdle);
+
+		player->m_IsDash = false;
+	}
 }
 
 void Player::PlayerStartEquip::Enter(Object* object)
 {
 	m_fElapsedTime = 0.f;
+
+	auto player = static_cast<Player*>(object);
+	static_cast<Hand*>(player->m_PartObjects[ENUM_CLASS(Parts::Hand)])->SwayDisable();
 }
 
 void Player::PlayerStartEquip::Update(Object* object, _float dt)
@@ -322,3 +507,5 @@ void Player::PlayerEndEquip::TestForExit(Object* object)
 		player->ChangeState(&player->m_PlayerIdle);
 	}
 }
+
+

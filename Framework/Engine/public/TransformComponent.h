@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 
+class NavigationComponent;
 class ENGINE_DLL TransformComponent final:
     public Component
 {
@@ -26,13 +27,12 @@ public:
 
     void SetPosition(_float3 position) { m_Position = position; MakeDirty(); }
     void SetScale(_float3 scale) { m_Scale = scale; MakeDirty(); }
-    void SetRotation(_float3 rotation);
     void SetQuaternion(_float4 quaternion);
     void SetForward(_float3 direction);
     void SetParent(TransformComponent* parent);
     
     /*API*/
-    void Translate(_fvector velocity);
+    void Translate(_fvector deltaMove);
     void Turn(_float deltaPitch, _float deltaYaw); //no roll
     void Turn(_float3 deltaRadian);
     void Rotate(_float3 euler);
@@ -56,8 +56,11 @@ public:
     _float3 GetRight()const { return m_Right; }
     _vector GetRightV()const { return XMLoadFloat3(&m_Right); }
 
+    _float2 GetPitchYaw()const { return m_PitchYaw; }
+
     _float4x4 GetWorldMatrix();
     _float4x4 GetWorldMatrixInverse();
+    _float4x4 GetLocalMatrix();
 
     _bool IsDirty()const { return m_isDirty; }
 
@@ -78,7 +81,8 @@ private:
     _float3 m_Position{};
     _float3 m_Scale{ 1.f,1.f,1.f };
     _float4 m_Quaternion{ 0.f,0.f,0.f,1.f };
-    _float3 m_Rotation{};   //cached euler only ui
+    _float2 m_PitchYaw{};
+    _float3 m_Rotation{}; //only ui
 
     _float3 m_Forward{};
     _float3 m_Up{};
@@ -90,7 +94,6 @@ private:
     _bool m_isDirty = true;
     TransformComponent* m_pParent = nullptr;
     std::vector<TransformComponent*> m_Childrens;
-
 };
 
 NS_END

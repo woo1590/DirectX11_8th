@@ -28,6 +28,10 @@ void PickingSystem::Update()
 	if (ImGuizmo::IsUsing())
 		return;
 
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse)
+		return;
+	
 	auto engine = EngineCore::GetInstance();
 	CAMERA_CONTEXT camContext = engine->GetCameraContext();
 
@@ -91,8 +95,9 @@ void PickingSystem::RayCast(RAY ray)
 		if (result.isHit && result.distance < m_LastPickResult.distance)
 		{
 			m_LastPickResult = result;
-			//m_LastPickResult.origin = ray.position;
-			//m_LastPickResult.direction = ray.direction;
 		}
 	}
+
+	if (m_LastPickResult.type == PickType::Model || m_LastPickResult.type == PickType::Nav)
+		int a = 1;
 }

@@ -50,7 +50,6 @@ void AnimatorComponent::Update(_float dt)
 	{
 		PlayAnimation(dt);
 		ApplyOverride();
-		//ApplyAdditve();
 	}
 
 	UpdateCombinedMatrix();
@@ -92,11 +91,14 @@ void AnimatorComponent::SetSkeleton(Skeleton* pSkeleton)
 	m_OverrideMask.resize(numBones);
 
 	/*Init additive layer*/
-	m_AdditiveRotation.resize(numBones);
+	m_AdditiveMatrices.resize(numBones);
 	m_AdditiveMask.resize(numBones);
+	
+	for (_uint i = 0; i < numBones; ++i)
+		XMStoreFloat4x4(&m_AdditiveMatrices[i], XMMatrixIdentity());
 }
 
-void AnimatorComponent::ChangeAnimation(_uint animationIndex, _bool isLoop, _bool immediateChange)
+void AnimatorComponent::ChangeAnimation(_int animationIndex, _bool isLoop, _bool immediateChange)
 {
 	if (-1 == m_iCurrAnimationIndex || m_Context.isFinished || immediateChange)	// First Animation and PreAnimation finished
 	{
@@ -145,6 +147,17 @@ _uint AnimatorComponent::GetNumBones() const
 	return m_pSkeleton->GetBones().size();
 }
 
+_float4x4 AnimatorComponent::GetAdditiveMatrix(_uint boneIndex) const
+{
+	_float4x4 additive{};
+	XMStoreFloat4x4(&additive, XMMatrixIdentity());
+
+	if (boneIndex >= m_AdditiveMatrices.size())
+		return additive;
+
+	return m_AdditiveMatrices[boneIndex];
+}
+
 const std::vector<Bone>& AnimatorComponent::GetBones()
 {
 	return m_pSkeleton->GetBones();
@@ -156,10 +169,10 @@ void AnimatorComponent::SetOverride(std::vector<_float4x4> overrideMatrices, std
 	m_OverrideMask = masks;
 }
 
-void AnimatorComponent::SetAdditiveRotation(std::vector<_float4> additives, std::vector<_uint> masks)
+void AnimatorComponent::SetAdditiveMatrix(_float4x4 matrix, _uint boneIndex)
 {
-	m_AdditiveRotation = additives;
-	m_AdditiveMask = masks;
+	m_AdditiveMatrices[boneIndex] = matrix;
+	m_AdditiveMask[boneIndex] = 1;
 }
 
 BONE_MAP AnimatorComponent::MakeBoneMap(AnimatorComponent* other)
@@ -278,19 +291,6 @@ void AnimatorComponent::ApplyOverride()
 	}
 }
 
-void AnimatorComponent::ApplyAdditve()
-{
-	auto& bones = m_pSkeleton->GetBones();
-	for (_uint i = 0; i < bones.size(); ++i)
-	{
-		if (!m_AdditiveMask[i])
-			continue;
-
-		_matrix rotMat = XMMatrixRotationQuaternion(XMLoadFloat4(&m_AdditiveRotation[i]));
-		XMStoreFloat4x4(&m_TransformationMatrices[i], XMLoadFloat4x4(&m_TransformationMatrices[i]) * rotMat);
-	}
-}
-
 void AnimatorComponent::UpdateCombinedMatrix()
 {
 	auto& bones = m_pSkeleton->GetBones();
@@ -301,8 +301,12 @@ void AnimatorComponent::UpdateCombinedMatrix()
 		_int parentBoneIndex = bones[i].m_iParentIndex;
 
 		if (-1 == parentBoneIndex)
-			XMStoreFloat4x4(&m_CombiendMatirices[i], XMLoadFloat4x4(&m_TransformationMatrices[i]) * XMLoadFloat4x4(&preTransformMatrix));
+			XMStoreFloat4x4(&m_CombiendMatirices[i], XMLoadFloat4x4(&m_TransformationMatrices[i])
+												   * XMLoadFloat4x4(&m_AdditiveMatrices[i])
+												   * XMLoadFloat4x4(&preTransformMatrix));
 		else
-			XMStoreFloat4x4(&m_CombiendMatirices[i], XMLoadFloat4x4(&m_TransformationMatrices[i]) * XMLoadFloat4x4(&m_CombiendMatirices[parentBoneIndex]));
+			XMStoreFloat4x4(&m_CombiendMatirices[i], XMLoadFloat4x4(&m_TransformationMatrices[i]) 
+												   * XMLoadFloat4x4(&m_AdditiveMatrices[i]) 
+												   * XMLoadFloat4x4(&m_CombiendMatirices[parentBoneIndex]));
 	}
 }

@@ -40,13 +40,38 @@ HRESULT NavPickable::Initialize(InitDESC* arg)
 PICK_RESULT NavPickable::IntersectRay(RAY ray)
 {
 	PICK_RESULT result{};
-	auto& navCellDatas = m_pOwner->GetComponent<NavDataComponent>()->GetNavCellDatas();
-	
-	for (const auto& cellData : navCellDatas)
+	result.type = PickType::Nav;
+
+	auto navData = m_pOwner->GetComponent<NavDataComponent>();
+	auto& navCellDatas = navData->GetNavCellDatas();
+	auto& navMaterials = navData->GetMaterialInstances();
+
+	_float minDistance = FLT_MAX;
+	for (_uint i=0; i<navCellDatas.size(); ++i)
 	{
-		
+		_float distance = FLT_MAX;
+		NAVCELL_DATA cellData = navCellDatas[i];
+		_vector p0 = XMLoadFloat3(&cellData.points[0]);
+		_vector p1 = XMLoadFloat3(&cellData.points[1]);
+		_vector p2 = XMLoadFloat3(&cellData.points[2]);
+
+		if (TriangleTests::Intersects(XMLoadFloat3(&ray.origin), XMLoadFloat3(&ray.direction), p0, p1, p2, distance))
+		{
+			if (distance < minDistance)
+			{
+				minDistance = distance;
+
+				result.isHit = true;
+				result.distance = minDistance;
+				result.navCellIndex = cellData.index;
+			}
+		}
 	}
 
+	if (result.isHit)
+		navData->SetHoverIndex(result.navCellIndex);
+	else
+		navData->SetHoverIndex(-1);
 
 	return result;
 }

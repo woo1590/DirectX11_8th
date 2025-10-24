@@ -24,6 +24,7 @@ namespace Engine
 
 		_uint numBones;
 		_uint boneIndices[MAX_BONES];
+		
 		//_float4x4 offsetMatrices[MAX_BONES]; 오프셋 행렬 따로 넘기기
 
 	}MESH_FORMAT;
@@ -56,7 +57,6 @@ namespace Engine
 		/*Specular Texture*/	
 		_uint numSpecularTexture{};
 		std::vector<_string> specularTextureName;
-
 		
 	}MTRL_FORMAT;
 	

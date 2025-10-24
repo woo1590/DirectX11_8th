@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -14,6 +15,16 @@ private:
 public:
     static NavMesh* Create(const _string& filePath);
     HRESULT Initialize(const _string& filePath);
+
+    /*for debug*/
+    HRESULT ExtractDebugProxies(std::vector<RenderProxy>& proxies);
+
+    /*API*/
+    _bool IsCellExist(_uint cellIndex);
+    _float3 GetPositionInCell(_uint cellIndex);
+    _bool IsMove(_float3 position, _uint& currCellIndex);
+    _float GetHeight(_float3 position, _uint currCellIndex);
+    _float3 MakeSlideVector(_float3 position, _float3 nextPosition, _uint& currCellIndex);
 
     void Free()override;
 

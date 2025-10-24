@@ -5,6 +5,7 @@ NS_BEGIN(Engine)
 class VIBuffer;
 class Material;
 class MaterialInstance;
+class ColliderComponent;
 struct RenderProxy
 {
 	VIBuffer* buffer = nullptr;
@@ -20,6 +21,9 @@ struct RenderProxy
 
 	/*For blend object*/
 	_float viewZ = 0.f;
+
+	/*For Debug Collider*/
+	ColliderComponent* collider = nullptr;
 
 	RenderGroup group{};
 };

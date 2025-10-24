@@ -8,6 +8,7 @@
 #include "Material.h"
 #include "Model.h"
 #include "AnimationClip.h"
+#include "NavMesh.h"
 
 ResourceManager::ResourceManager()
 {
@@ -32,6 +33,7 @@ HRESULT ResourceManager::Initialize(_uint numLevel)
 	m_Textures.resize(numLevel);
 	m_Models.resize(numLevel);
 	m_AnimationSets.resize(numLevel);
+	m_NavMeshes.resize(numLevel);
 
 	return S_OK;
 }
@@ -191,6 +193,23 @@ HRESULT ResourceManager::LoadAnimationSetFromFile(_uint levelID, const _string& 
 	return S_OK;
 }
 
+HRESULT ResourceManager::LoadNavMeshFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return E_FAIL;
+
+	auto navMesh = NavMesh::Create(filePath);
+	if (!navMesh)
+	{
+		MSG_BOX("Failed to load : NavMesh");
+		return E_FAIL;
+	}
+
+	m_NavMeshes[levelID].emplace(key, navMesh);
+
+	return S_OK;
+}
+
 VIBuffer* ResourceManager::GetBuffer(_uint levelID, const _string& key)
 {
 	if (levelID >= m_iNumLevel)
@@ -253,6 +272,19 @@ ANIMATION_SET ResourceManager::GetAnimation(_uint levelID, const _string& key)
 	return iter->second;
 }
 
+NavMesh* ResourceManager::GetNavMesh(_uint levelID, const _string& key)
+{
+	if (levelID >= m_iNumLevel)
+		return nullptr;
+
+	auto iter = m_NavMeshes[levelID].find(key);
+
+	if (iter == m_NavMeshes[levelID].end())
+		return nullptr;
+
+	return iter->second;
+}
+
 Texture* ResourceManager::GetTexture(_uint levelID, const _string& key)
 {
 	if (levelID >= m_iNumLevel)
@@ -279,6 +311,10 @@ void ResourceManager::Clear(_uint levelID)
 	for (auto& pair : m_Textures[levelID])
 		Safe_Release(pair.second);
 	m_Textures[levelID].clear();
+
+	for (auto& pair : m_NavMeshes[levelID])
+		Safe_Release(pair.second);
+	m_NavMeshes[levelID].clear();
 }
 
 void ResourceManager::Free()
@@ -329,5 +365,13 @@ void ResourceManager::Free()
 		animation.clear();
 	}
 	m_AnimationSets.clear();
+
+	for (auto& navMesh : m_NavMeshes)
+	{
+		for (auto& pair : navMesh)
+			Safe_Release(pair.second);
+		navMesh.clear();
+	}
+	m_NavMeshes.clear();
 		
 }

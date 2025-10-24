@@ -10,6 +10,8 @@ namespace Engine
 	enum class LightType{Directional, Point, Spot, Count};
 	enum class ModelType{Static, Skinned, Count};
 	enum class PickingType { Triangle, BoundingBox, Count };
-	enum class CellPoint { A, B, C, Count };
+	enum class NavCellPoint { A, B, C, Count };
+	enum class NavCellLine { AB, BC, CA, Count };
+	enum class ColliderType { AABB, OBB, Sphere, Count };
 }
 #endif // Engine_Enum_h__

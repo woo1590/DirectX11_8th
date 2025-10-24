@@ -1,5 +1,6 @@
 #include "MapEditorPCH.h"
 #include "NavMeshObject.h"
+#include "PickingSystem.h"
 
 //component
 #include "NavDataComponent.h"
@@ -11,21 +12,23 @@ NavMeshObject::NavMeshObject()
 }
 
 NavMeshObject::NavMeshObject(const NavMeshObject& prototype)
-	:Object(prototype)
+	:Object(prototype),
+	m_pPickingSystem(prototype.m_pPickingSystem)
 {
+	m_pPickingSystem->AddRef();
 }
 
-NavMeshObject* NavMeshObject::Create()
+NavMeshObject* NavMeshObject::Create(PickingSystem* picking)
 {
 	NavMeshObject* Instance = new NavMeshObject();
 
-	if (FAILED(Instance->Initialize_Prototype()))
+	if (FAILED(Instance->Initialize_Prototype(picking)))
 		Safe_Release(Instance);
 
 	return Instance;
 }
 
-HRESULT NavMeshObject::Initialize_Prototype()
+HRESULT NavMeshObject::Initialize_Prototype(PickingSystem* picking)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -36,6 +39,9 @@ HRESULT NavMeshObject::Initialize_Prototype()
 	AddComponent<NavDataComponent>();
 	AddComponent<NavPickable>();
 
+	m_pPickingSystem = picking;
+	m_pPickingSystem->AddRef();
+
 	return S_OK;
 }
 
@@ -43,6 +49,8 @@ HRESULT NavMeshObject::Initialize(InitDESC* arg)
 {
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	m_pPickingSystem->RegisterComponent(GetComponent<NavPickable>());
 
 	return S_OK;
 }
@@ -69,6 +77,20 @@ HRESULT NavMeshObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>
 	return navData->ExtractRenderProxy(proxies[ENUM_CLASS(m_eRenderGroup)]);
 }
 
+void NavMeshObject::ExportNavData(std::ofstream& file)
+{
+	auto navData = GetComponent<NavDataComponent>();
+
+	navData->ExportNavData(file);
+}
+
+void NavMeshObject::ImportNavData(std::ifstream& file)
+{
+	auto navData = GetComponent<NavDataComponent>();
+
+	navData->ImportNavData(file);
+}
+
 Object* NavMeshObject::Clone(InitDESC* arg)
 {
 	NavMeshObject* Instance = new NavMeshObject(*this);
@@ -81,5 +103,8 @@ Object* NavMeshObject::Clone(InitDESC* arg)
 
 void NavMeshObject::Free()
 {
+	m_pPickingSystem->UnRegisterComponent(GetComponent<NavPickable>());
+	Safe_Release(m_pPickingSystem);
+
 	__super::Free();
 }

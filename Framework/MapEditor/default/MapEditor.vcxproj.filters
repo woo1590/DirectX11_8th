@@ -82,6 +82,18 @@
     <Filter Include="03. Object\NavMesh Object">
       <UniqueIdentifier>{64a9dfbb-1f81-4f0d-ac9a-ba99efa02d49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\Door">
+      <UniqueIdentifier>{785033fe-e2ab-4a1c-8d4a-9bf3b0b5fde6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\Door\Door_L">
+      <UniqueIdentifier>{0b2a987a-acff-4e99-87a3-4d47e66e00fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\Door\Door_R">
+      <UniqueIdentifier>{63ec1c71-05ff-4064-a0e1-bf827ab802f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\EnemySpawner">
+      <UniqueIdentifier>{ca843912-79c3-4ab2-951c-719a33a10373}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -162,6 +174,18 @@
     <ClInclude Include="..\public\NavDataComponent.h">
       <Filter>04. Object Component\NavData Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Door.h">
+      <Filter>03. Object\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Door_L.h">
+      <Filter>03. Object\Door\Door_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Door_R.h">
+      <Filter>03. Object\Door\Door_R</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EnemySpawner.h">
+      <Filter>03. Object\EnemySpawner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -223,6 +247,18 @@
     </ClCompile>
     <ClCompile Include="..\private\NavDataComponent.cpp">
       <Filter>04. Object Component\NavData Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Door.cpp">
+      <Filter>03. Object\Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Door_L.cpp">
+      <Filter>03. Object\Door\Door_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Door_R.cpp">
+      <Filter>03. Object\Door\Door_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EnemySpawner.cpp">
+      <Filter>03. Object\EnemySpawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

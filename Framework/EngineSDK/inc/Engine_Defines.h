@@ -16,6 +16,12 @@
 #include "directxtk/WICTextureLoader.h"
 #include "directxtk/ScreenGrab.h"
 
+#include "directxtk/SpriteBatch.h"
+#include "directxtk/SpriteFont.h"
+#include "directxtk/VertexTypes.h"
+#include "directxtk/PrimitiveBatch.h"
+#include "directxtk/Effects.h"
+
 #include <d3dcompiler.h>
 using namespace DirectX;
 
@@ -66,6 +72,7 @@ using namespace DirectX;
 #include <algorithm>
 #include <functional>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 #include "Engine_Enum.h"

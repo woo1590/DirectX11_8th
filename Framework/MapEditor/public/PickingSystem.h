@@ -7,7 +7,7 @@ NS_END
 
 NS_BEGIN(MapEditor)
 
-enum class PickType { Guizmo, Model, Chunk, Count };
+enum class PickType { Guizmo, Model, Chunk, Nav, Count };
 
 typedef struct tagPickResult
 {
@@ -26,7 +26,7 @@ typedef struct tagPickResult
 	bool isUsed = false;
 
 	/*NavCell Pick*/
-	std::pair<_uint, _uint> edge;
+	_int navCellIndex = -1;
 
 }PICK_RESULT;
 

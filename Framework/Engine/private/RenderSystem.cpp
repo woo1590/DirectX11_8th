@@ -49,13 +49,16 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
 		return E_FAIL;
 
-	if (engine->IsDebugEnable())
+	if (engine->IsNavDebugEnable())
 	{
 		m_pDebugRenderer->BeginFrame();
 
 		if (FAILED(m_pDebugRenderer->RenderNavMeshDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NavMeshDebug)])))
 			return E_FAIL;
+	}
 
+	if (engine->IsColliderDebugEnable())
+	{
 		if (FAILED(m_pDebugRenderer->RenderColliderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
 			return E_FAIL;
 	}

@@ -9,6 +9,7 @@ NS_END
 
 NS_BEGIN(MapEditor)
 
+class PickingSystem;
 class NavMeshObject :
     public Object
 {
@@ -25,8 +26,8 @@ private:
     virtual ~NavMeshObject() = default;
 
 public:
-    static NavMeshObject* Create();
-    HRESULT Initialize_Prototype()override;
+    static NavMeshObject* Create(PickingSystem* picking);
+    HRESULT Initialize_Prototype(PickingSystem* picking);
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
@@ -34,11 +35,14 @@ public:
 
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
+    void ExportNavData(std::ofstream& file);
+    void ImportNavData(std::ifstream& file);
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
-
+    PickingSystem* m_pPickingSystem = nullptr;
 };
 
 NS_END

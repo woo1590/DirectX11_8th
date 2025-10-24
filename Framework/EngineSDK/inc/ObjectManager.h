@@ -23,9 +23,10 @@ public:
     void LateUpdate(_float dt);
 
     HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID,
-                      const _string& layerTag, InitDESC* arg = nullptr);
-    Layer* GetLayer(_uint layerLevel, const _string& layerTag);
+                      const _string& layerTag, InitDESC* arg = nullptr, Object** out = nullptr);
     std::unordered_map<_string, Layer*>& GetLayers(_uint levelID);
+    const std::list<Object*>& GetObjects(_uint layerLevel, const _string& layerTag);
+    Object* GetFrontObject(_uint layerLevel, const _string& layerTag);
     Object* GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag);
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 

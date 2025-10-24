@@ -30,6 +30,8 @@ public:
     void Free()override;
 
 private:
+    _uint m_iFireLightBoneIndex{};
+
     class ConcealedAmmoIdle : public State
     {
         void Enter(Engine::Object* object) override;
@@ -49,6 +51,8 @@ private:
         void Enter(Engine::Object* object) override;
         void Update(Engine::Object* object, Engine::_float dt) override;
         void TestForExit(Engine::Object* object) override;
+
+        _bool m_IsShot = false;
     };
 
     class ConcealedAmmoSkill : public State

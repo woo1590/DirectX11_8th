@@ -5,14 +5,7 @@ namespace math
 {
 	static constexpr _float PI = XM_PI;
 	static constexpr _float TWO_PI = XM_2PI;
-
-	inline _bool Elipson(_float x, _float y)
-	{
-		_float bigger = (std::max)(x, y);
-		_float lower = (std::min)(x, y);
-
-		return (bigger - lower) <= FLT_EPSILON;
-	}
+	static constexpr _float ELIPSON = 1e-8;
 
 	inline _float ToRadian(_float degree)
 	{
@@ -65,6 +58,71 @@ namespace math
 		t = std::clamp(t, 0.f, 1.f);
 
 		return 1.f - std::pow(1.f - t, 5.f);
+	}
+
+	inline _float EaseOutSline(_float t)
+	{
+		t = std::clamp(t, 0.f, 1.f);
+
+		return std::sinf(t * PI * 0.5f);
+	}
+
+	inline _float SmoothStep(_float t)
+	{
+		t = std::clamp(t, 0.f, 1.f);
+
+		return t * t * (3.f - 2.f * t);
+	}
+
+	inline _float Lerp(_float a, _float b, _float t)
+	{
+		return a + (b - a) * t;
+	}
+
+	inline _float PalabolaCurve(_float t, _float radian)
+	{
+		return -4.f * radian * t * (1.f - t);
+	}
+
+	inline _float DistancePointToLine(_float3 P, _float3 A, _float3 B)
+	{
+		_vector AB = XMLoadFloat3(&B) - XMLoadFloat3(&A);
+		_vector AP = XMLoadFloat3(&P) - XMLoadFloat3(&A);
+
+		_float lengthSqr = XMVectorGetX(XMVector3LengthSq(AB));
+		_float t = XMVectorGetX(XMVector3Dot(AB, AP)) / lengthSqr;
+		t = std::clamp(t, 0.f, 1.f);
+
+		_vector Q = XMLoadFloat3(&A) + t * AB;
+
+		return XMVectorGetX(XMVector3Length(XMLoadFloat3(&P) - Q));
+	}
+
+	inline _bool Elipson(_float a, _float b)
+	{
+		return (std::abs(a - b) <= ((std::max)(std::abs(a), std::abs(b)) * ELIPSON));
+	}
+
+	inline _float4 MakeQuaternionFromDirection(_float3 direction)
+	{
+		_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+		_vector forward = XMVector3Normalize(XMLoadFloat3(&direction));
+		_vector right = XMVector3Normalize(XMVector3Cross(worldUp, forward));
+		_vector up = XMVector3Normalize(XMVector3Cross(forward, right));
+
+		_float pitch = asin(std::clamp(-XMVectorGetY(forward), -1.f, 1.f));
+		_float yaw = atan2(XMVectorGetX(forward), XMVectorGetZ(forward));
+		_float roll = 0.f;
+
+		if (fabsf(cosf(pitch)) > 0.0001f) {
+			roll = atan2f(XMVectorGetY(right), XMVectorGetY(up));
+		}
+
+		_float4 quaternion{};
+		XMStoreFloat4(&quaternion, XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
+
+		return quaternion;
 	}
 };
 

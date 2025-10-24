@@ -19,10 +19,13 @@ public:
     HRESULT Render()override;
 
 private:
+    HRESULT LoadMapFromFile(const _string& filePath);
+
     HRESULT Initialize_LayerLights(const _string& layerTag);
     HRESULT Initialize_LayerSkybox(const _string& layerTag);
     HRESULT Intialize_LayerCamera(const _string& layerTag);
-    HRESULT Initialize_LayerGameObject(const _string& layerTag);
+    HRESULT Initialize_LayerPlayer(const _string& layerTag);
+    HRESULT Initialize_LayerEnemy(const _string& layerTag);
 };
 
 NS_END

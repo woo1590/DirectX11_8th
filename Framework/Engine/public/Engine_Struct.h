@@ -93,11 +93,14 @@ namespace Engine
 		_float localDistance;
 	}RAY_HIT_DATA;
 
-	typedef struct tagCellDesc
+	typedef struct tagNavCellData
 	{
-		_float3	points[3];
 		_uint index{};
-	}CELL_DESC;
+		_float3 points[3];  /*world position*/
+		_float3 lines[3];
+		_uint pointIndices[3];
+		_int neighbors[3]{ -1,-1,-1 };
+	}NAVCELL_DATA;
 
 	typedef struct tagCameraContext 
 	{

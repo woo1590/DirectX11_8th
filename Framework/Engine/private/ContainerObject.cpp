@@ -68,6 +68,8 @@ void ContainerObject::LateUpdate(_float dt)
 
 HRESULT ContainerObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
+	__super::ExtractRenderProxies(proxies);
+
 	for (const auto& part : m_PartObjects)
 	{
 		if (part)
@@ -106,3 +108,27 @@ HRESULT ContainerObject::AddPartObject(_uint levelID, const _string& prototypeTa
 
 	return S_OK;
 }
+
+PartObject* ContainerObject::GetPartObject(_uint index)
+{
+	if (index >= m_PartObjects.size())
+		return nullptr;
+
+	return m_PartObjects[index];
+}
+
+#ifdef USE_IMGUI
+void ContainerObject::RenderInspector()
+{
+	__super::RenderInspector();
+
+	for (const auto& part : m_PartObjects)
+	{
+		if (part)
+		{
+			ImGui::SeparatorText(part->GetInstanceTag().c_str());
+			part->RenderInspector();
+		}
+	}
+}
+#endif

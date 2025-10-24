@@ -21,7 +21,7 @@ HRESULT VIBufferCell::Initialize(const _float3* points)
 	m_iNumVertexBuffers = 1;
 
 	m_iNumVertices = 3;
-	m_iVertexStride = sizeof(VTXPOS);
+	m_iVertexStride = sizeof(VTXCELL);
 
 	m_iNumIndices = 3;
 	m_iIndexStride = 2;
@@ -38,8 +38,10 @@ HRESULT VIBufferCell::Initialize(const _float3* points)
 	vbDesc.CPUAccessFlags = 0;
 	vbDesc.StructureByteStride = 0;
 
-	std::vector<VTXPOS> vertices(m_iNumVertices);
-	memcpy_s(vertices.data(), sizeof(_float3) * m_iNumVertices, points, sizeof(_float3) * m_iNumVertices);
+	std::vector<VTXCELL> vertices(m_iNumVertices);
+	vertices[0].position = points[0];
+	vertices[1].position = points[1];
+	vertices[2].position = points[2];
 
 	D3D11_SUBRESOURCE_DATA vbInitData{};
 	vbInitData.pSysMem = vertices.data();

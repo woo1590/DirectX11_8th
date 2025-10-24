@@ -3,7 +3,9 @@
 
 NS_BEGIN(Engine)
 
-class NavMesh;
+class TransformComponent;
+class RigidBodyComponent;
+class NavigationSystem;
 class ENGINE_DLL NavigationComponent :
     public Component
 {
@@ -17,15 +19,31 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
+    void AttachTransform();
+    void AttachRigidBody();
+    void AttachSystem(NavigationSystem* system);
+
+    /*API*/
+    void SpawnInCell(_uint cellIndex);
+    void MoveTo(_float3 deltaPosition);
+    void MoveByVelocity(_float dt);
+
     Component* Clone()override { return new NavigationComponent(*this); }
     void Free()override;
 
 #ifdef USE_IMGUI
-    void RenderInspector()override {};
+    void RenderInspector()override;
 #endif
 
 private:
-    NavMesh* m_pNavMesh = nullptr;
+    _bool IsMove(_float3 position);
+    _float GetHeight(_float3 position);
+    _float3 MakeSlideVector(_float3 position, _float3 nextPosition);
+
+    _uint m_iCurrCellIndex{};
+    NavigationSystem* m_pNavigationSystem = nullptr;
+    TransformComponent* m_pTransform = nullptr;
+    RigidBodyComponent* m_pRigidBody = nullptr;
 };
 
 NS_END

@@ -97,6 +97,75 @@
     <Filter Include="02. Object\SkyBox">
       <UniqueIdentifier>{49aeb3cb-9155-4be6-835f-b357c2d16236}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Player\Weapon\PoisonousGhost">
+      <UniqueIdentifier>{21c04195-bded-4f63-8158-842217f50c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Hand\Bobbing Controller">
+      <UniqueIdentifier>{3219146e-f866-48ff-8e75-ec3fbf907937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\HorseHead">
+      <UniqueIdentifier>{97888e35-9080-4e6a-a54a-0503461fa6e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Boss">
+      <UniqueIdentifier>{fef49d7c-44b9-4289-ae37-76a9e25c1767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Foundry">
+      <UniqueIdentifier>{bba81a29-f073-44bd-885d-ce24e03b92da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Bomber">
+      <UniqueIdentifier>{2d00e73b-f171-4540-a458-68bfa5b828f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\HorseHead\Sword">
+      <UniqueIdentifier>{f527ed22-401d-44f3-a8ec-68df1269a1e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\HorseHead\Shield">
+      <UniqueIdentifier>{7fd376d9-e06f-40eb-9ece-722f01e64d7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\HorseHead\Head">
+      <UniqueIdentifier>{e3c28e47-f937-46e3-9f6b-629dbd458d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Soldier">
+      <UniqueIdentifier>{16df35b8-52e0-41d9-b311-951fdbb59341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\Status Component">
+      <UniqueIdentifier>{8cda0e54-fd5e-43c3-8218-f3873175e758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object">
+      <UniqueIdentifier>{19b54fc8-2547-4d80-b5cc-60683903a050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\BossStage">
+      <UniqueIdentifier>{6db1efeb-1e05-488b-828c-da27c169bc32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\Static Map Object">
+      <UniqueIdentifier>{7a37b63d-7822-4f89-9dba-7419143f0c4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\Stage1">
+      <UniqueIdentifier>{372fe6b1-b3d5-455e-93f8-b6037d196700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\Stage Boss">
+      <UniqueIdentifier>{e9158f42-b3bf-4f1c-a2ed-c36cca2f9fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\Door">
+      <UniqueIdentifier>{af7164e1-9aff-4a8c-8600-67a0281e925d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\Door\Door_L">
+      <UniqueIdentifier>{68ed40fc-440c-4dc6-860c-a29aebe950f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\Door\Door_R">
+      <UniqueIdentifier>{394a87d2-1e0f-4730-913b-723c600df853}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile">
+      <UniqueIdentifier>{a32bac05-7801-4997-803e-e60c2a53e42a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Soldier\Head">
+      <UniqueIdentifier>{dd0d4d21-eb2e-4f34-8f81-16641122e26b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\Default Bullet">
+      <UniqueIdentifier>{0e114837-f394-4b8f-8611-c6a8464c791c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\Enemy Spawner">
+      <UniqueIdentifier>{e144cfb2-a7da-48b3-b791-64d05358d7ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -138,7 +207,7 @@
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02. Object\UIObject\BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\FreeCam.h">
+    <ClInclude Include="..\public\ThirdCam.h">
       <Filter>02. Object\Camera\FreeCam</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Terrain.h">
@@ -174,6 +243,69 @@
     <ClInclude Include="..\public\SkyBox.h">
       <Filter>02. Object\SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BossStage.h">
+      <Filter>02. Object\Map Object\BossStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PoisonousGhost.h">
+      <Filter>02. Object\Player\Weapon\PoisonousGhost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BobbingController.h">
+      <Filter>02. Object\Player\Hand\Bobbing Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HorseHead.h">
+      <Filter>02. Object\Enemy\HorseHead</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss.h">
+      <Filter>02. Object\Enemy\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Foundry.h">
+      <Filter>02. Object\Player\Weapon\Foundry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bomber.h">
+      <Filter>02. Object\Enemy\Bomber</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HorseHead_Shield.h">
+      <Filter>02. Object\Enemy\HorseHead\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HorseHead_Sword.h">
+      <Filter>02. Object\Enemy\HorseHead\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HorseHead_Head.h">
+      <Filter>02. Object\Enemy\HorseHead\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Enemy.h">
+      <Filter>02. Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Soldier.h">
+      <Filter>02. Object\Enemy\Soldier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StatusComponent.h">
+      <Filter>03. Object Component\Status Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StaticMapObject.h">
+      <Filter>02. Object\Map Object\Static Map Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Door.h">
+      <Filter>02. Object\Map Object\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Door_L.h">
+      <Filter>02. Object\Map Object\Door\Door_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Door_R.h">
+      <Filter>02. Object\Map Object\Door\Door_R</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Soldier_Head.h">
+      <Filter>02. Object\Enemy\Soldier\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile.h">
+      <Filter>02. Object\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DefaultBullet.h">
+      <Filter>02. Object\Projectile\Default Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EnemySpawner.h">
+      <Filter>02. Object\Map Object\Enemy Spawner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -203,7 +335,7 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02. Object\UIObject\BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\FreeCam.cpp">
+    <ClCompile Include="..\private\ThirdCam.cpp">
       <Filter>02. Object\Camera\FreeCam</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
@@ -238,6 +370,69 @@
     </ClCompile>
     <ClCompile Include="..\private\SkyBox.cpp">
       <Filter>02. Object\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossStage.cpp">
+      <Filter>02. Object\Map Object\BossStage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PoisonousGhost.cpp">
+      <Filter>02. Object\Player\Weapon\PoisonousGhost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BobbingController.cpp">
+      <Filter>02. Object\Player\Hand\Bobbing Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HorseHead.cpp">
+      <Filter>02. Object\Enemy\HorseHead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss.cpp">
+      <Filter>02. Object\Enemy\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Foundry.cpp">
+      <Filter>02. Object\Player\Weapon\Foundry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bomber.cpp">
+      <Filter>02. Object\Enemy\Bomber</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HorseHead_Shield.cpp">
+      <Filter>02. Object\Enemy\HorseHead\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HorseHead_Sword.cpp">
+      <Filter>02. Object\Enemy\HorseHead\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HorseHead_Head.cpp">
+      <Filter>02. Object\Enemy\HorseHead\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Enemy.cpp">
+      <Filter>02. Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Soldier.cpp">
+      <Filter>02. Object\Enemy\Soldier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StatusComponent.cpp">
+      <Filter>03. Object Component\Status Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticMapObject.cpp">
+      <Filter>02. Object\Map Object\Static Map Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Door.cpp">
+      <Filter>02. Object\Map Object\Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Door_L.cpp">
+      <Filter>02. Object\Map Object\Door\Door_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Door_R.cpp">
+      <Filter>02. Object\Map Object\Door\Door_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Soldier_Head.cpp">
+      <Filter>02. Object\Enemy\Soldier\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile.cpp">
+      <Filter>02. Object\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DefaultBullet.cpp">
+      <Filter>02. Object\Projectile\Default Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EnemySpawner.cpp">
+      <Filter>02. Object\Map Object\Enemy Spawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

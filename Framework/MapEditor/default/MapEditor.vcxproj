@@ -192,6 +192,10 @@
     <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h" />
     <ClInclude Include="..\public\Chunk.h" />
     <ClInclude Include="..\public\ChunkPickable.h" />
+    <ClInclude Include="..\public\Door.h" />
+    <ClInclude Include="..\public\Door_L.h" />
+    <ClInclude Include="..\public\Door_R.h" />
+    <ClInclude Include="..\public\EnemySpawner.h" />
     <ClInclude Include="..\public\MakePrefabComponent.h" />
     <ClInclude Include="..\public\MapEditorCamera.h" />
     <ClInclude Include="..\public\EditorLevel.h" />
@@ -229,6 +233,10 @@
     </ClCompile>
     <ClCompile Include="..\private\Chunk.cpp" />
     <ClCompile Include="..\private\ChunkPickable.cpp" />
+    <ClCompile Include="..\private\Door.cpp" />
+    <ClCompile Include="..\private\Door_L.cpp" />
+    <ClCompile Include="..\private\Door_R.cpp" />
+    <ClCompile Include="..\private\EnemySpawner.cpp" />
     <ClCompile Include="..\private\MakePrefabComponent.cpp" />
     <ClCompile Include="..\private\MapEditorCamera.cpp" />
     <ClCompile Include="..\private\EditorLevel.cpp" />

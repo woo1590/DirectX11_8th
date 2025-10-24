@@ -30,11 +30,6 @@ void InspectorPanel::Draw(GUIState& state)
 
     const ImGuiViewport* vp = ImGui::GetMainViewport();
 
-    ImVec2 size = ImVec2(vp->WorkSize.x * 0.2f, vp->WorkSize.y);
-    ImVec2 pos = ImVec2(vp->WorkSize.x - size.x, 0);
-    ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
-
     if (ImGui::Begin("Inspector", &show, ImGuiWindowFlags_MenuBar)) {
         if (ImGui::BeginMenuBar()) {
             ImGui::TextUnformatted("Inspector");

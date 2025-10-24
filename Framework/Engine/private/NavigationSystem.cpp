@@ -1,6 +1,8 @@
 #include "EnginePCH.h"
 #include "NavigationSystem.h"
+#include "EngineCore.h"
 #include "NavigationComponent.h"
+#include "NavMesh.h"
 
 NavigationSystem::NavigationSystem()
 {
@@ -21,26 +23,66 @@ HRESULT NavigationSystem::Initialize()
 	return S_OK;
 }
 
-void NavigationSystem::RegisterNavigation(NavigationComponent* component)
+HRESULT NavigationSystem::SetNavMesh(_uint levelID, const _string& navMeshTag)
 {
-	m_NavComponents.push_back(component);
-	component->AddRef();
+	Safe_Release(m_pNavMesh);
+	
+	auto engine = EngineCore::GetInstance();
+
+	auto navMesh = engine->GetNavMesh(levelID, navMeshTag);
+	if (!navMesh)
+	{
+		MSG_BOX("Navmesh not exist");
+		return E_FAIL;
+	}
+
+	m_pNavMesh = navMesh;
+	m_pNavMesh->AddRef();
+
+	return S_OK;
 }
 
-void NavigationSystem::UnRegisterNavigation(NavigationComponent* component)
+void NavigationSystem::RegisterNavigation(NavigationComponent* component)
 {
-	_uint currSize = m_NavComponents.size();
+	component->AttachSystem(this);
+}
 
-	m_NavComponents.remove(component);
-	if (currSize != m_NavComponents.size())
-		Safe_Release(component);
+_bool NavigationSystem::IsCellExist(_uint cellIndex)
+{
+	return m_pNavMesh->IsCellExist(cellIndex);
+}
+
+_float3 NavigationSystem::GetPositionInCell(_uint cellIndex)
+{
+	return m_pNavMesh->GetPositionInCell(cellIndex);
+}
+
+_bool NavigationSystem::IsMove(_float3 position, _uint& currCellIndex)
+{
+	return m_pNavMesh->IsMove(position, currCellIndex);
+}
+
+_float NavigationSystem::GetHeight(_float3 position, _uint currCellIndex)
+{
+	return m_pNavMesh->GetHeight(position, currCellIndex);
+}
+
+_float3 NavigationSystem::MakeSlideVector(_float3 position, _float3 nextPosition, _uint& currCellIndex)
+{
+	return m_pNavMesh->MakeSlideVector(position, nextPosition, currCellIndex);
+}
+
+HRESULT NavigationSystem::ExtractDebugProxies(std::vector<RenderProxy>& proxies)
+{
+	if (!m_pNavMesh)
+		return S_OK;
+
+	return m_pNavMesh->ExtractDebugProxies(proxies);
 }
 
 void NavigationSystem::Free()
 {
 	__super::Free();
 
-	for (auto& component : m_NavComponents)
-		Safe_Release(component);
-	m_NavComponents.clear();
+	Safe_Release(m_pNavMesh);
 }

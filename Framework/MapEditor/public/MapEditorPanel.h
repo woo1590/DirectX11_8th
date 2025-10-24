@@ -9,7 +9,7 @@ class PickingSystem;
 class MapEditorPanel :
     public IPanel
 {
-    enum class EditMode { Guizmo, Placement, NavPlacement, Count };
+    enum class EditMode { Guizmo, Placement, NavPlacement, SpawnerPlacement, Count };
 private:
     MapEditorPanel(PickingSystem* picking);
     virtual ~MapEditorPanel() = default;
@@ -25,8 +25,12 @@ public:
 private:
     void ImportMapFile(const _string& filePath);
     void ExportMapFile(const _string& outFilePath);
-    void ShowPrefabs();
+
+    void ImportNavFile(const _string& filePath);
+    void ExportNavFile(const _string& filePath);
     
+    void ShowPrefabs();
+
     /*-----------Placement-----------*/
     void Placement(GUIState& state, PICK_RESULT pickRes);
     void AddObjectToLayer(PICK_RESULT pickRes);
@@ -46,7 +50,17 @@ private:
     /*-----------Nav Placement-----------*/   
     void NavPlacement(GUIState& state, PICK_RESULT pickRes);
     void AddNavData();
+    void UndoNavData();
+    _bool m_isNavAdded = false;
     std::vector<_float3> m_PickPositions;
+    _int m_iFirstPickNavIndex = -1;
+    _int m_iSecondPickNavIndex = -1;
+    /*----------------------------------*/
+
+    /*-----------Spawner Placement-----------*/   
+    void SpanwerPlacement(GUIState& state, PICK_RESULT pickRes);
+    void AddSpawner();
+
     /*----------------------------------*/
 
     PickingSystem* m_pPickingSystem = nullptr;

@@ -1,21 +1,20 @@
 #pragma once
-#include "Object.h"
+#include "Enemy.h"
 
 NS_BEGIN(Client)
 
-class FreeCam :
-    public Object
+class Boss :
+    public Enemy
 {
 private:
-    FreeCam();
-    FreeCam(const FreeCam& prototype);
-    virtual ~FreeCam() = default;
-
+    Boss();
+    Boss(const Boss& prototype);
+    virtual ~Boss()override;
+    
 public:
-    static FreeCam* Create();
+    static Boss* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
@@ -24,7 +23,7 @@ public:
     void Free()override;
 
 private:
-    _bool m_ActiveMouse = true;
+
 };
 
 NS_END

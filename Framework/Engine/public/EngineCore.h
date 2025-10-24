@@ -60,12 +60,14 @@ public:
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadNavMeshFromFile(_uint levelID, const _string& filePath, const _string& key);
 
     class VIBuffer* GetBuffer(_uint levelID, const _string& key);
     class Shader* GetShader(const _string& key);
     class Material* GetMaterial(_uint levelID, const _string& key);
     class Model* GetModel(_uint levelID, const _string& key);
     ANIMATION_SET GetAnimation(_uint levelID, const _string& key);
+    class NavMesh* GetNavMesh(_uint levelID, const _string& key);
 #pragma endregion
 
 #pragma region Prototype
@@ -74,8 +76,10 @@ public:
 #pragma endregion
 
 #pragma region Object
-    HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr);
+    HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr, class Object** out = nullptr);
     std::unordered_map<_string, class Layer*>& GetLayers(_uint levelID);
+    class Object* GetFrontObject(_uint layerLevel, const _string& layerTag);
+    const std::list<class Object*>& GetObjects(_uint layerLevel, const _string& layerTag);
 #pragma endregion
 
 #pragma region Level
@@ -107,7 +111,7 @@ public:
 
 #pragma region NavigationSystem
     void RegisterNavigation(class NavigationComponent* component);
-    void UnRegisterNavigation(class NavigationComponent* component);
+    HRESULT SetNavMesh(_uint levelID, const _string& navMeshTag);
 #pragma endregion
 
 #pragma region LightSystem
@@ -118,9 +122,13 @@ public:
     class Random* GetRandom()const { return m_pRandom; }
     
     /*Debug setting*/
-    void DebugEnable() { m_isDebugEnable = true; }
-    void DebugDisable() { m_isDebugEnable = false; }
-    _bool IsDebugEnable()const { return m_isDebugEnable; }
+    void NavDebugEnable() { m_navDebugEnable = true; }
+    void NavDebugDisable() { m_navDebugEnable = false; }
+    _bool IsNavDebugEnable()const { return m_navDebugEnable; }
+
+    void ColliderDebugEnable() { m_colliderDebugEnable = true; }
+    void ColliderDebugDisable() { m_colliderDebugEnable = false; }
+    _bool IsColliderDebugEnable()const { return m_colliderDebugEnable; }
 
     /*----Window----*/
     HWND GetWindowHandle()const { return m_hWnd; }
@@ -157,7 +165,8 @@ private:
     class LightSystem*       m_pLightManager = nullptr;
     class NavigationSystem*   m_pNavigationSystem = nullptr;
 
-    _bool m_isDebugEnable = true;
+    _bool m_navDebugEnable = true;
+    _bool m_colliderDebugEnable = true;
 };
 
 NS_END

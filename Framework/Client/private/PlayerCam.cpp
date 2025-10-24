@@ -51,7 +51,7 @@ HRESULT PlayerCam::Initialize(InitDESC* arg)
 	if (FAILED(cam->Initialize(&camDesc)))
 		return E_FAIL;
 
-	m_pTransform->SetPosition(_float3{ -0.0f,0.f,0.15f });
+	m_pTransform->SetPosition(_float3{ 0.f,13.f,0.f });
 
 	engine->AddCamera("PlayerCamera", cam);
 	engine->SetMainCamera("PlayerCamera");
@@ -67,6 +67,20 @@ void PlayerCam::PriorityUpdate(_float dt)
 void PlayerCam::Update(_float dt)
 {
 	__super::Update(dt);
+
+	auto engine = EngineCore::GetInstance();
+
+	_float2 mouseDelta = engine->GetMouseDelta();
+	_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
+
+	m_pTransform->Turn(pitch, 0.f);
+
+	_float4x4 worldMat = m_pTransform->GetWorldMatrix();
+	_vector camPosition = XMVectorSet(worldMat._41, worldMat._42, worldMat._43, 1.f);
+	_vector forward = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	forward = XMVector3Normalize(XMVector3TransformNormal(forward, XMLoadFloat4x4(&worldMat)));
+	XMStoreFloat3(&m_AimPosition, camPosition + 200.f * forward);
 }
 
 void PlayerCam::LateUpdate(_float dt)

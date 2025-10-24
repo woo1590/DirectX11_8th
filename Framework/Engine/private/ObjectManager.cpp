@@ -95,11 +95,16 @@ HRESULT ObjectManager::ExtractRenderProxies(std::vector<std::vector<RenderProxy>
 	return S_OK;
 }
 
-HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg)
+HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID, const _string& layerTag, InitDESC* arg, Object** out)
 {
 	Object* object = static_cast<Object*>(EngineCore::GetInstance()->ClonePrototype(prototypeLevelID, prototypeTag, arg));
 	if (!object)
+	{
+		if(out)
+			*out = nullptr;
+
 		return E_FAIL;
+	}
 
 	Layer* layer = FindLayer(layerLevelID, layerTag);
 	if(!layer)
@@ -110,17 +115,31 @@ HRESULT ObjectManager::AddObject(_uint prototypeLevelID, const _string& prototyp
 
 	layer->AddObject(object);
 
-	return S_OK;
-}
+	if (out)
+		*out = object;
 
-Layer* ObjectManager::GetLayer(_uint layerLevel, const _string& layerTag)
-{
-	return FindLayer(layerLevel, layerTag);
+	return S_OK;
 }
 
 std::unordered_map<_string, Layer*>& ObjectManager::GetLayers(_uint levelID)
 {
 	return m_Layers[levelID];
+}
+
+const std::list<Object*>& ObjectManager::GetObjects(_uint layerLevel, const _string& layerTag)
+{
+	Layer* layer = FindLayer(layerLevel, layerTag);
+
+	return layer->GetObjects();
+}
+
+Object* ObjectManager::GetFrontObject(_uint layerLevel, const _string& layerTag)
+{
+	Layer* layer = FindLayer(layerLevel, layerTag);
+	if (!layer)
+		return nullptr;
+
+	return layer->GetFrontObject();
 }
 
 Object* ObjectManager::GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag)

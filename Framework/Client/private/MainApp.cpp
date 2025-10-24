@@ -162,6 +162,9 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
         return false;
     }
 
+    int x = static_cast<_int>(WinSizeX / 4);
+    int y = static_cast<_int>(WinSizeY / 4);
+
     windowSize = { 0, 0, WinSizeX, WinSizeY };
 
     AdjustWindowRect(&windowSize, WS_OVERLAPPEDWINDOW, FALSE);
@@ -170,9 +173,6 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
     int windowWidth = windowSize.right - windowSize.left;
     int windowHeight = windowSize.bottom - windowSize.top;
-
-    int x = static_cast<_int>(WinSizeX/4);
-    int y = static_cast<_int>(WinSizeY/4);
 
     hWnd = CreateWindowW(
         CLASS_NAME, L"GunFire Reborn",
@@ -192,7 +192,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     UpdateWindow(hWnd);
 
     //ShowCursor(false);
-    //ClipCursor(&windowSize);
+    RECT clipRect{ x,y,windowWidth + x,windowHeight + y };
+    ClipCursor(&clipRect);
 
     return true;
 }

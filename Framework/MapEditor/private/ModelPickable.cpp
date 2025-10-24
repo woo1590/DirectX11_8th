@@ -46,7 +46,7 @@ PICK_RESULT ModelPickable::IntersectRay(RAY worldRay)
 		_float4x4 worldInv = m_pOwner->GetComponent<TransformComponent>()->GetWorldMatrixInverse();
 		_float4x4 worldMat = m_pOwner->GetComponent<TransformComponent>()->GetWorldMatrix();
 		XMStoreFloat3(&localRay.origin, XMVector3TransformCoord(XMLoadFloat3(&worldRay.origin), XMLoadFloat4x4(&worldInv)));
-		XMStoreFloat3(&localRay.direction, XMVector3TransformNormal(XMLoadFloat3(&worldRay.direction), XMLoadFloat4x4(&worldInv)));
+		XMStoreFloat3(&localRay.direction, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&worldRay.direction), XMLoadFloat4x4(&worldInv))));
 
 		hitData = m_pModel->RayCastLocal(localRay, PickingType::Triangle);
 

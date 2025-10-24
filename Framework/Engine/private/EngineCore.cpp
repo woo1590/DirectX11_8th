@@ -153,6 +153,12 @@ void EngineCore::Tick(_float dt)
 	if (FAILED(m_pLightManager->ExtractLightProxy(lights)))
 		return;
 
+	if (m_navDebugEnable)
+	{
+		if(FAILED(m_pNavigationSystem->ExtractDebugProxies(proxies[ENUM_CLASS(RenderGroup::NavMeshDebug)])))
+			return;
+	}
+
 	m_pRenderSystem->Submit(std::move(proxies), lights);
 
 	BeginRender();
@@ -262,6 +268,10 @@ HRESULT EngineCore::LoadAnimationSetFromFile(_uint levelID, const _string& fileP
 {
 	return m_pResourceManager->LoadAnimationSetFromFile(levelID, filePath, key);
 }
+HRESULT EngineCore::LoadNavMeshFromFile(_uint levelID, const _string& filePath, const _string& key)
+{
+	return m_pResourceManager->LoadNavMeshFromFile(levelID, filePath, key);
+}
 VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetBuffer(levelID, key);
@@ -283,6 +293,10 @@ ANIMATION_SET EngineCore::GetAnimation(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetAnimation(levelID, key);
 }
+NavMesh* EngineCore::GetNavMesh(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetNavMesh(levelID, key);
+}
 #pragma endregion
 
 #pragma region Prototype
@@ -299,14 +313,24 @@ Object* EngineCore::ClonePrototype(_uint level, const _string& prototypeTag, Ini
 #pragma endregion
 
 #pragma region Object
-HRESULT EngineCore::AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg)
+HRESULT EngineCore::AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg, Object** out)
 {
-	return m_pObjectManager->AddObject(prototypeLevel, prototypeTag, layerLevel, layerTag, arg);
+	return m_pObjectManager->AddObject(prototypeLevel, prototypeTag, layerLevel, layerTag, arg, out);
 }
 
 std::unordered_map<_string, Layer*>& EngineCore::GetLayers(_uint levelID)
 {
 	return m_pObjectManager->GetLayers(levelID);
+}
+
+Object* EngineCore::GetFrontObject(_uint layerLevel, const _string& layerTag)
+{
+	return m_pObjectManager->GetFrontObject(layerLevel, layerTag);
+}
+
+const std::list<class Object*>& EngineCore::GetObjects(_uint layerLevel, const _string& layerTag)
+{
+	return m_pObjectManager->GetObjects(layerLevel, layerTag);
 }
 
 #pragma endregion
@@ -394,9 +418,9 @@ void EngineCore::RegisterNavigation(NavigationComponent* component)
 {
 	m_pNavigationSystem->RegisterNavigation(component);
 }
-void EngineCore::UnRegisterNavigation(NavigationComponent* component)
+HRESULT EngineCore::SetNavMesh(_uint levelID, const _string& navMeshTag)
 {
-	m_pNavigationSystem->UnRegisterNavigation(component);
+	return m_pNavigationSystem->SetNavMesh(levelID, navMeshTag);
 }
 #pragma endregion
 

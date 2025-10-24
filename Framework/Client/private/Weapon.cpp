@@ -29,7 +29,7 @@ HRESULT Weapon::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto model = GetComponent<ModelComponent>();
-	m_iBip001_R_Hand_Index = model->GetBoneIndex("Bip001 R Hand");
+	m_iBip001_R_Hand_Index = model->GetBoneIndex("Bip001 Neck");
 
 	return S_OK;
 }
@@ -63,7 +63,7 @@ void Weapon::Update(_float dt)
 	m_pTransform->SetScale(scale);
 	
 	/*set quaternion*/
-	XMStoreFloat4(&quaternion, XMQuaternionNormalize(quaternionV));
+ 	XMStoreFloat4(&quaternion, XMQuaternionNormalize(quaternionV));
 	m_pTransform->SetQuaternion(quaternion);
 	
 }

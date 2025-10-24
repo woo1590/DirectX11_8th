@@ -18,7 +18,7 @@ public:
 
     HRESULT BeginFrame();
     HRESULT RenderNavMeshDebug(const std::vector<RenderProxy>& proxies);
-    HRESULT RenderColliderDebug(const std::vector<RenderProxy>& proxies) { return S_OK; }
+    HRESULT RenderColliderDebug(const std::vector<RenderProxy>& proxies);
 
     void Free()override;
 
@@ -31,7 +31,8 @@ private:
     ID3D11Buffer* m_pCBPerFrame = nullptr;
     ID3D11Buffer* m_pCBPerDraw = nullptr;
 
-    Shader* m_pDebugShader = nullptr;
+    Shader* m_pCellDebugShader = nullptr;
+    Shader* m_pColliderDebugShader = nullptr;
 };
 
 NS_END

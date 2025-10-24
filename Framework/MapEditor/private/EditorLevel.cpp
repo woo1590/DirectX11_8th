@@ -11,6 +11,9 @@
 #include "PreviewObject.h"
 #include "NavMeshObject.h"
 #include "Chunk.h"
+#include "Door.h"
+#include "Door_L.h"
+#include "Door_R.h"
 
 EditorLevel::EditorLevel()
 {
@@ -107,6 +110,14 @@ HRESULT EditorLevel::Initialize_DefaultResource()
 		if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Editor), "Buffer_Quad", VIBufferQuad::Create())))
 			return E_FAIL;
 
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/horse_head/horse_head.model",
+			"Model_Enemy_HorseHead")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/boss/boss_stage.model",
+			"Model_Boss_Stage")))
+			return E_FAIL;
+
+
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall0.model",
 			"Model_Stage1_Wall0")))
 			return E_FAIL;
@@ -116,34 +127,62 @@ HRESULT EditorLevel::Initialize_DefaultResource()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall2.model",
 			"Model_Stage1_Wall2")))
 			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall3.model",
-			"Model_Stage1_Wall3")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall4.model",
-			"Model_Stage1_Wall4")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall5.model",
-			"Model_Stage1_Wall5")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall6.model",
-			"Model_Stage1_Wall6")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall7.model",
-			"Model_Stage1_Wall7")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall8.model",
-			"Model_Stage1_Wall8")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stage1/stage1_wall9.model",
-			"Model_Stage1_Wall9")))
-			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/boss/boss_stage.model",
-			"Model_Boss_Stage")))
-			return E_FAIL;
+
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/floor_tile/floor_tile0.model",
 			"Model_Floor_Tile0")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/floor_tile/floor_tile1.model",
+			"Model_Floor_Tile1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/floor_tile/floor_tile2.model",
+			"Model_Floor_Tile2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/floor_tile/floor_tile3.model",
+			"Model_Floor_Tile3")))
+			return E_FAIL;
 
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/celling/celling_side.model",
+			"Model_Celling_Side")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/celling/celling_corner.model",
+			"Model_Celling_Corner")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/celling/celling0.model",
+			"Model_Celling0")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/reliefwall/reliefwall0.model",
+			"Model_ReliefWall0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/reliefwall/reliefwall1.model",
+			"Model_ReliefWall1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/reliefwall/reliefwall2.model",
+			"Model_ReliefWall2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/reliefwall/reliefwall3.model",
+			"Model_ReliefWall3")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/door/door0.model",
+			"Model_Door0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/door/door1.model",
+			"Model_Door1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/door/door2.model",
+			"Model_Door2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/door/door_l.model",
+			"Model_Door_L")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/door/door_r.model",
+			"Model_Door_R")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stair/stair0.model",
+			"Model_Stair0")))
+			return E_FAIL;
 	}
 	
 	/*Load Material*/
@@ -190,7 +229,7 @@ HRESULT EditorLevel::Initialize_LayerNavMeshObject(const _string& layerTag)
 	auto engine = EngineCore::GetInstance();
 
 	/*Add Prototype*/
-	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_NavMeshObject", NavMeshObject::Create())))
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_NavMeshObject", NavMeshObject::Create(m_pPickingSystem))))
 		return E_FAIL;
 
 	/*Add Object to layer*/
@@ -207,6 +246,11 @@ HRESULT EditorLevel::Initialize_LayerMapObject(const _string& layerTag)
 	{
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Chunk", Chunk::Create(m_pPickingSystem))))
 			return E_FAIL;	
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Door_L", Door_L::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Door_R", Door_R::Create())))
+			return E_FAIL;
 	}
 	
 	/*Add Object to layer*/
@@ -215,6 +259,7 @@ HRESULT EditorLevel::Initialize_LayerMapObject(const _string& layerTag)
 		desc.chunkPosition = _float3(0.f, 0.f, 0.f);
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Chunk", ENUM_CLASS(LevelID::Editor), layerTag, &desc)))
 			return E_FAIL;
+
 	}
 	
 	return S_OK;
