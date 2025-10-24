@@ -37,7 +37,7 @@ void Bounding_OBB::Update(_float4x4 worldMatrix)
 	m_LocalDesc.Transform(m_WorldDesc, XMLoadFloat4x4(&worldMatrix));
 }
 
-_bool Bounding_OBB::Instersect(Bounding* other)
+_bool Bounding_OBB::Intersect(Bounding* other)
 {
 	return other->IntersectToOBB(this);
 }

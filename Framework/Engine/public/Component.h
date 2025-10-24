@@ -22,6 +22,7 @@ public:
     virtual void LateUpdate(_float dt) {};
 
     void SetOwner(Object* owner) { m_pOwner = owner; }
+    Object* GetOwner()const { return m_pOwner; }
 
     virtual Component* Clone() = 0;
 

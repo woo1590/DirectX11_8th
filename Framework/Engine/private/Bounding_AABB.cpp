@@ -20,9 +20,14 @@ void Bounding_AABB::Update(_float4x4 worldMatrix)
 	m_LocalDesc.Transform(m_WorldDesc, transformMatrix);
 }
 
-_bool Bounding_AABB::Instersect(Bounding* other)
+_bool Bounding_AABB::Intersect(Bounding* other)
 {
 	return other->IntersectToAABB(this);
+}
+
+_bool Bounding_AABB::Intersect(RAY worldRay, _float& distance)
+{
+	return m_WorldDesc.Intersects(XMLoadFloat3(&worldRay.origin), XMLoadFloat3(&worldRay.direction), distance);
 }
 
 _bool Bounding_AABB::IntersectToAABB(Bounding_AABB* other)

@@ -14,6 +14,7 @@ public:
     typedef struct tagBoudingDesc : public InitDESC
     {
         ColliderType type = ColliderType::Count;
+        _uint colliderTag{};
         _float3  center{};
     }BOUNDING_DESC;
 
@@ -23,7 +24,8 @@ protected:
 
 public:
     virtual void Update(_float4x4 worldMatrix) = 0;
-    virtual _bool Instersect(Bounding* other) = 0;
+    virtual _bool Intersect(Bounding* other) = 0;
+    virtual _bool Intersect(RAY worldRay, _float& distance) = 0;
     virtual _bool IntersectToAABB(Bounding_AABB* other) = 0;
     virtual _bool IntersectToOBB(Bounding_OBB* other) = 0;
     virtual _bool IntersectToSphere(Bounding_Sphere* other) = 0;

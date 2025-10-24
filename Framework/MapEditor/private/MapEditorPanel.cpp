@@ -7,6 +7,7 @@
 //object
 #include "PreviewObject.h"
 #include "Door.h"
+#include "EnemySpawner.h"
 
 //component
 #include "MakePrefabComponent.h"
@@ -143,9 +144,7 @@ void MapEditorPanel::Draw(GUIState& state)
 	else if (m_eMode == EditMode::NavPlacement)
 		NavPlacement(state, pickRes);
 	else if (m_eMode == EditMode::SpawnerPlacement)
-	{
-
-	}
+		SpawnerPlacement(state, pickRes);
 	else
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -426,19 +425,53 @@ void MapEditorPanel::UndoNavData()
 	}
 }
 
-void MapEditorPanel::SpanwerPlacement(GUIState& state, PICK_RESULT pickRes)
+void MapEditorPanel::SpawnerPlacement(GUIState& state, PICK_RESULT pickRes)
 {
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse)
+		return;
+
 	auto engine = EngineCore::GetInstance();
 
-	if (engine->IsMousePress(MouseButton::LButton))
+	switch (pickRes.type)
 	{
-
-	}
+	case PickType::Spawner:
+	{
+		m_pEnemySpawner = pickRes.object;
+	}break;
+	case PickType::Model:
+	{
+		if (engine->IsMousePress(MouseButton::LButton))
+			AddSpawner(pickRes);
+	}break;
+	case PickType::Nav:
+	{
+		if (m_pEnemySpawner && engine->IsMousePress(MouseButton::LButton))
+			AddNavCellToSpawner(pickRes.navCellIndex);
+	}break;
+	default:
+		break;
+	}	
 }
 
-void MapEditorPanel::AddSpawner()
+void MapEditorPanel::AddSpawner(PICK_RESULT pickRes)
 {
+	if (!pickRes.isHit || !pickRes.object)
+		return;
 
+	auto engine = EngineCore::GetInstance();
+
+	Object::OBJECT_DESC desc{};
+	desc.position = pickRes.worldHitPosition;
+	engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_EnemySpawner", ENUM_CLASS(LevelID::Editor), "Layer_EnemySpawner", &desc);
+
+}
+
+void MapEditorPanel::AddNavCellToSpawner(_uint index)
+{
+	auto spawner = static_cast<EnemySpawner*>(m_pEnemySpawner);
+
+	spawner->AddNavCellIndex(index);
 }
 
 void MapEditorPanel::ImportMapFile(const _string& filePath)
@@ -485,8 +518,10 @@ void MapEditorPanel::ExportMapFile(const _string& outFilePath)
 
 	auto& layers = EngineCore::GetInstance()->GetLayers(ENUM_CLASS(LevelID::Editor));
 	auto& staticMapObjects = layers["Layer_StaticMapObject"]->GetObjects();
-	std::vector<PREFAB> staticObjectPrefabs;
+	auto& enemySpawners = layers["Layer_EnemySpawner"]->GetObjects();
 
+	std::vector<PREFAB> staticObjectPrefabs;
+	std::vector<EnemySpawner::ENEMY_SPAWNER_DESC> enemySpawnerDescs;
 	/*Static object prefabs*/
 	for (const auto& object : staticMapObjects)
 	{
@@ -494,9 +529,16 @@ void MapEditorPanel::ExportMapFile(const _string& outFilePath)
 		staticObjectPrefabs.push_back(prefab);
 	}
 
-	ordered_json map;
+	/*Spanwer desc*/
+	for(const auto& spawner : enemySpawners)
+	{
+		EnemySpawner::ENEMY_SPAWNER_DESC desc = static_cast<EnemySpawner*>(spawner)->ExportDesc();
+		enemySpawnerDescs.push_back(desc);
+	}
 
+	ordered_json map;
 	map["prefabs"] = json::array();
+	map["enemyspawners"] = json::array();
 
 	/*Static object to json*/
 	for (const auto& prefab : staticObjectPrefabs)
@@ -504,6 +546,22 @@ void MapEditorPanel::ExportMapFile(const _string& outFilePath)
 		ordered_json j;
 		map::PrefabToJson(j, prefab);
 		map["prefabs"].push_back(std::move(j));
+	}
+	/*Spawners to json*/
+	for (const auto& desc : enemySpawnerDescs)
+	{
+		ordered_json j;
+		j = ordered_json
+		{
+			{ "PrototypeTag", "Prototype_Object_EnemySpawner" },
+			{ "ModelTag",		""},
+			{ "LayerTag",		"Layer_EnemySpawner"},
+			{ "Position",		{{"x",desc.position.x},{"y",desc.position.y},{"z",desc.position.z}} },
+			{ "Scale",			{{"x",desc.scale.x},{"y",desc.scale.y},{"z",desc.scale.z}} },
+			{ "Quaternion",		{{"x",desc.quaternion.x},{"y",desc.quaternion.y},{"z",desc.quaternion.z},{"w",desc.quaternion.w}} },
+			{"NavCells",desc.navCellIndices}
+		};
+		map["enemyspawners"].push_back(std::move(j));
 	}
 
 	std::ofstream out(outFilePath);

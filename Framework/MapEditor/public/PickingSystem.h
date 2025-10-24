@@ -3,11 +3,12 @@
 
 NS_BEGIN(Engine)
 class Object;
+class ColliderComponent;
 NS_END
 
 NS_BEGIN(MapEditor)
 
-enum class PickType { Guizmo, Model, Chunk, Nav, Count };
+enum class PickType { Guizmo, Model, Chunk, Nav, Spawner, Count };
 
 typedef struct tagPickResult
 {
@@ -43,7 +44,9 @@ public:
     HRESULT Initialize();
 	void Update();
     void RegisterComponent(PickableComponent* component);
+	void RegisterComponent(ColliderComponent* component);
 	void UnRegisterComponent(PickableComponent* component);
+	void UnRegisterComponent(ColliderComponent* component);
 	PICK_RESULT GetLastPickResult()const { return m_LastPickResult; }
     void Free()override;
 
@@ -51,6 +54,7 @@ private:
 	void RayCast(RAY ray);
 
 	std::list<PickableComponent*> m_Pickables;
+	std::list<ColliderComponent*> m_Colliders;
 	PICK_RESULT m_LastPickResult{};
 };
 

@@ -3,6 +3,9 @@
 #include "EngineCore.h"
 #include "Object.h"
 
+//object
+#include "EnemySpawner.h"
+
 //component
 #include "NavigationComponent.h"
 
@@ -84,6 +87,7 @@ HRESULT GamePlayLevel::LoadMapFromFile(const _string& filePath)
 	auto engine = EngineCore::GetInstance();
 
 	std::vector<PREFAB> staticObjectPrefabs;
+	std::vector<EnemySpawner::ENEMY_SPAWNER_DESC> enemySpawnerDescs;
 	std::ifstream file(filePath);
 	if (!file.is_open())
 	{
@@ -92,7 +96,6 @@ HRESULT GamePlayLevel::LoadMapFromFile(const _string& filePath)
 	}
 
 	ordered_json map = json::parse(file);
-
 	/*Load Static obeject prefab*/
 	for (auto& j : map["prefabs"])
 	{
@@ -101,9 +104,38 @@ HRESULT GamePlayLevel::LoadMapFromFile(const _string& filePath)
 		staticObjectPrefabs.push_back(prefab);
 	}
 	/*Load Enemy Spawners*/
-	for (auto& j : map["spawners"])
+	for (auto& j : map["enemyspawners"])
 	{
+		EnemySpawner::ENEMY_SPAWNER_DESC desc{};
 
+		desc.position.x = j.at("Position").at("x").get<_float>();
+		desc.position.y = j.at("Position").at("y").get<_float>();
+		desc.position.z = j.at("Position").at("z").get<_float>();
+
+		desc.scale.x = j.at("Scale").at("x").get<_float>();
+		desc.scale.y = j.at("Scale").at("y").get<_float>();
+		desc.scale.z = j.at("Scale").at("z").get<_float>();
+
+		desc.quaternion.x = j.at("Quaternion").at("x").get<_float>();
+		desc.quaternion.y = j.at("Quaternion").at("y").get<_float>();
+		desc.quaternion.z = j.at("Quaternion").at("z").get<_float>();
+		desc.quaternion.w = j.at("Quaternion").at("w").get<_float>();
+
+		desc.availableNavCellIndices = j.value("NavCells", std::vector<_uint>{});
+
+		for (auto& w : j["Waves"])
+		{
+			EnemySpawner::Wave wave;
+			for (auto& entry : w["Entries"])
+			{
+				wave.push_back({ entry.value("PrototypeTag",""),
+								 entry.at("Count").get<_uint>()});
+			}
+
+			desc.waves.push_back(wave);
+		}
+
+		enemySpawnerDescs.push_back(desc);
 	}
 
 	for (auto& prefab : staticObjectPrefabs)
@@ -115,6 +147,8 @@ HRESULT GamePlayLevel::LoadMapFromFile(const _string& filePath)
 		desc.quaternion = prefab.quaternion;
 		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), prefab.prototypeTag, ENUM_CLASS(LevelID::GamePlay), prefab.layerTag, &desc);
 	}
+	for (auto& spawner : enemySpawnerDescs)
+		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_EnemySpawner", ENUM_CLASS(LevelID::GamePlay), "Layer_EnemySpawner", &spawner);
 
 	return S_OK;
 }

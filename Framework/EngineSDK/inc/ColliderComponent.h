@@ -20,8 +20,9 @@ public:
     void Update(_float dt)override;
 
     _bool Intersect(ColliderComponent* other);
-    _bool Intersect(RAY worldRay);
+    _bool Intersect(RAY worldRay, _float& distance);
     void SetBoneIndex(_int index) { m_iBoneIndex = index; }
+    _uint GetColliderTag()const { return m_iColliderTag; }
 
     void OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider);
     void OnCollisionStay(ColliderComponent* collider, ColliderComponent* otherCollider);
@@ -40,6 +41,7 @@ public:
 private:
     _int m_iBoneIndex = -1;
 
+    _uint m_iColliderTag{};
     Bounding* m_pBounding = nullptr;
     _bool m_IsCollision = false;
 

@@ -7,10 +7,17 @@ class EnemySpawner :
     public Object
 {
 public:
+    typedef struct tagSpawnEntry
+    {
+        _string prototypeTag;
+        _uint count{};
+    }SPAWN_ENTRY;
+    using Wave = std::vector<SPAWN_ENTRY>;
+
     typedef struct tagEnemySpawnerDesc : public Object::OBJECT_DESC
     {
         std::vector<_uint> availableNavCellIndices;
-        std::vector<_string> enemyPrototypeTags;
+        std::vector<Wave> waves;
     }ENEMY_SPAWNER_DESC;
 private:
     EnemySpawner();
@@ -33,11 +40,12 @@ public:
     void Free()override;
 
 private:
-    _bool m_IsSpawned = false;
     void Spawn();
+    
+    _bool m_IsSpawned = false;
 
     std::vector<_uint> m_AvailableNavCellIndices;
-    std::vector<_string> m_EnemyPrototypeTags;
+    std::vector<Wave> m_Waves;
 };
 
 NS_END

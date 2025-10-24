@@ -21,7 +21,8 @@ public:
     HRESULT Initialize(BOUNDING_DESC* arg);
     
     void Update(_float4x4 worldMatrix)override;
-    _bool Instersect(Bounding* other)override;
+    _bool Intersect(Bounding* other)override;
+    _bool Intersect(RAY worldRay, _float& distance)override { return false; }
     _bool IntersectToAABB(Bounding_AABB* other) override;
     _bool IntersectToOBB(Bounding_OBB* other) override;
     _bool IntersectToSphere(Bounding_Sphere* other) override;

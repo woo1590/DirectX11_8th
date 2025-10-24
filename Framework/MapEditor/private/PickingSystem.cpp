@@ -1,8 +1,11 @@
 #include "MapEditorPCH.h"
 #include "PickingSystem.h"
 #include "Object.h"
-#include "PickableComponent.h"
 #include "EngineCore.h"
+
+//component
+#include "ColliderComponent.h"
+#include "PickableComponent.h"
 
 PickingSystem::PickingSystem()
 {
@@ -67,6 +70,12 @@ void PickingSystem::RegisterComponent(PickableComponent* component)
 	component->AddRef();
 }
 
+void PickingSystem::RegisterComponent(ColliderComponent* component)
+{
+	m_Colliders.push_back(component);
+	component->AddRef();
+}
+
 void PickingSystem::UnRegisterComponent(PickableComponent* component)
 {
 	_uint currSize = m_Pickables.size();
@@ -76,11 +85,24 @@ void PickingSystem::UnRegisterComponent(PickableComponent* component)
 		Safe_Release(component);
 }
 
+void PickingSystem::UnRegisterComponent(ColliderComponent* component)
+{
+	_uint currSize = m_Colliders.size();
+
+	m_Colliders.remove(component);
+	if (currSize != m_Colliders.size())
+		Safe_Release(component);
+}
+
 void PickingSystem::Free()
 {
 	for (auto& object : m_Pickables)
 		Safe_Release(object);
 	m_Pickables.clear();
+	
+	for (auto& object : m_Colliders)
+		Safe_Release(object);
+	m_Colliders.clear();
 }
 
 void PickingSystem::RayCast(RAY ray)
@@ -98,6 +120,17 @@ void PickingSystem::RayCast(RAY ray)
 		}
 	}
 
-	if (m_LastPickResult.type == PickType::Model || m_LastPickResult.type == PickType::Nav)
-		int a = 1;
+	for (const auto& collider : m_Colliders)
+	{
+		_float distance = FLT_MAX;
+		if (collider->Intersect(ray, distance))
+		{
+			if (distance < m_LastPickResult.distance)
+			{
+				m_LastPickResult.type = PickType::Spawner;
+				m_LastPickResult.object = collider->GetOwner();
+				XMStoreFloat3(&m_LastPickResult.worldHitPosition, XMLoadFloat3(&ray.origin) + distance * XMLoadFloat3(&ray.direction));
+			}
+		}
+	}
 }

@@ -14,6 +14,7 @@
 #include "Door.h"
 #include "Door_L.h"
 #include "Door_R.h"
+#include "EnemySpawner.h"
 
 EditorLevel::EditorLevel()
 {
@@ -250,6 +251,9 @@ HRESULT EditorLevel::Initialize_LayerMapObject(const _string& layerTag)
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Door_L", Door_L::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Door_R", Door_R::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_EnemySpawner", EnemySpawner::Create(m_pPickingSystem))))
 			return E_FAIL;
 	}
 	

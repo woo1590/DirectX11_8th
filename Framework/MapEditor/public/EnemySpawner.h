@@ -7,6 +7,11 @@ class PickingSystem;
 class EnemySpawner :
     public Object
 {
+public: 
+    typedef struct tagEnemySpawnerDesc : public Object::OBJECT_DESC
+    {
+        std::vector<_uint> navCellIndices;
+    }ENEMY_SPAWNER_DESC;
 private:
     EnemySpawner();
     EnemySpawner(const EnemySpawner& prototype);
@@ -20,6 +25,9 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void AddNavCellIndex(_uint index) { m_AvailableNavCellIndices.push_back(index); }
+    ENEMY_SPAWNER_DESC ExportDesc();
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
@@ -30,6 +38,7 @@ public:
 private:
     std::vector<_uint> m_AvailableNavCellIndices;
 
+    PickingSystem* m_pPickingSystem = nullptr;
 };
 
 NS_END

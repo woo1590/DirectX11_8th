@@ -53,6 +53,7 @@ HRESULT ColliderComponent::Initialize(InitDESC* arg)
 	default:
 		break;
 	}
+	m_iColliderTag = desc->colliderTag;
 
 	if (!m_pBounding)
 	{
@@ -102,16 +103,15 @@ void ColliderComponent::Update(_float dt)
 
 _bool ColliderComponent::Intersect(ColliderComponent* other)
 {
-	m_IsCollision = m_pBounding->Instersect(other->m_pBounding);
+	m_IsCollision = m_pBounding->Intersect(other->m_pBounding);
 	other->m_IsCollision = m_IsCollision;
 
 	return m_IsCollision;
 }
 
-_bool ColliderComponent::Intersect(RAY worldRay)
+_bool ColliderComponent::Intersect(RAY worldRay, _float& distance)
 {
-	return false;
-	//m_IsCollision = m_pBounding->Instersect(worldRay);
+	return m_pBounding->Intersect(worldRay, distance);
 }
 
 void ColliderComponent::OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider)

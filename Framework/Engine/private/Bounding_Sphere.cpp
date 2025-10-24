@@ -33,7 +33,7 @@ void Bounding_Sphere::Update(_float4x4 worldMatrix)
 	m_LocalDesc.Transform(m_WorldDesc, XMLoadFloat4x4(&worldMatrix));
 }
 
-_bool Bounding_Sphere::Instersect(Bounding* other)
+_bool Bounding_Sphere::Intersect(Bounding* other)
 {
 	return other->IntersectToSphere(this);
 }

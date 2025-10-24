@@ -58,8 +58,10 @@ private:
     /*----------------------------------*/
 
     /*-----------Spawner Placement-----------*/   
-    void SpanwerPlacement(GUIState& state, PICK_RESULT pickRes);
-    void AddSpawner();
+    void SpawnerPlacement(GUIState& state, PICK_RESULT pickRes);
+    void AddSpawner(PICK_RESULT pickRes);
+    void AddNavCellToSpawner(_uint index);
+    Object* m_pEnemySpawner = nullptr;
 
     /*----------------------------------*/
 

@@ -41,7 +41,7 @@ HRESULT EnemySpawner::Initialize(InitDESC* arg)
 {
 	ENEMY_SPAWNER_DESC* desc = static_cast<ENEMY_SPAWNER_DESC*>(arg);
 	m_AvailableNavCellIndices = std::move(desc->availableNavCellIndices);
-	m_EnemyPrototypeTags = std::move(desc->enemyPrototypeTags);
+	m_Waves = std::move(desc->waves);
 
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
@@ -105,16 +105,16 @@ void EnemySpawner::Spawn()
 		return;
 
 	auto engine = EngineCore::GetInstance();
-
-	for (const auto& prototype : m_EnemyPrototypeTags)
+	for (const auto& entry : m_Waves[0])
 	{
-		Object* enemy = nullptr;
-		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), prototype, ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy", nullptr, &enemy)))
-			return;
+		for (_uint i = 0; i < entry.count; ++i)
+		{
+			_uint rand = engine->GetRandom()->get<_uint>(0, m_AvailableNavCellIndices.size() - 1);
+			Object* enemy = nullptr;
+			engine->AddObject(ENUM_CLASS(LevelID::GamePlay), entry.prototypeTag, ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy", nullptr, &enemy);
 
-		_uint rand = engine->GetRandom()->get<_uint>(0, m_AvailableNavCellIndices.size() - 1);
-		auto nav = enemy->GetComponent<NavigationComponent>();
-		nav->SpawnInCell(m_AvailableNavCellIndices[rand]);
+			enemy->GetComponent<NavigationComponent>()->SpawnInCell(m_AvailableNavCellIndices[rand]);
+		}
 	}
 
 	m_IsSpawned = true;
