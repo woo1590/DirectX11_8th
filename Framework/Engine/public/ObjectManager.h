@@ -21,6 +21,7 @@ public:
     void PriorityUpdate(_float dt);
     void Update(_float dt);
     void LateUpdate(_float dt);
+    void RemoveDeadObjects();
 
     HRESULT AddObject(_uint prototypeLevelID, const _string& prototypeTag, _uint layerLevelID,
                       const _string& layerTag, InitDESC* arg = nullptr, Object** out = nullptr);

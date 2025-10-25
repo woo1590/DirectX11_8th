@@ -64,12 +64,6 @@ void GamePlayLevel::Update(_float dt)
 	if (engine->IsKeyPressed('5'))
 		engine->SetMainCamera("PlayerCamera");
 
-	if (engine->IsKeyPressed('0'))
-		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Boss", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
-	if (engine->IsKeyPressed('9'))
-		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Bomber", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
-	if (engine->IsKeyPressed('8'))
-		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
 }
 
 HRESULT GamePlayLevel::Render()
@@ -96,7 +90,7 @@ HRESULT GamePlayLevel::LoadMapFromFile(const _string& filePath)
 	}
 
 	ordered_json map = json::parse(file);
-	/*Load Static obeject prefab*/
+	/*Load object prefab*/
 	for (auto& j : map["prefabs"])
 	{
 		PREFAB prefab{};
@@ -122,6 +116,8 @@ HRESULT GamePlayLevel::LoadMapFromFile(const _string& filePath)
 		desc.quaternion.w = j.at("Quaternion").at("w").get<_float>();
 
 		desc.availableNavCellIndices = j.value("NavCells", std::vector<_uint>{});
+
+		desc.doorID = j.at("DoorID").get<_int>();
 
 		for (auto& w : j["Waves"])
 		{

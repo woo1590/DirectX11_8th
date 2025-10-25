@@ -75,6 +75,17 @@ void ObjectManager::LateUpdate(_float dt)
 				pair.second->LateUpdate(dt);
 		}
 	}
+
+	RemoveDeadObjects();
+}
+
+void ObjectManager::RemoveDeadObjects()
+{
+	for (const auto& map : m_Layers)
+	{
+		for (const auto& pair : map)
+			pair.second->RemoveDeadObjects();
+	}
 }
 
 HRESULT ObjectManager::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
@@ -128,7 +139,11 @@ std::unordered_map<_string, Layer*>& ObjectManager::GetLayers(_uint levelID)
 
 const std::list<Object*>& ObjectManager::GetObjects(_uint layerLevel, const _string& layerTag)
 {
+	static std::list<Object*> emptyList;
 	Layer* layer = FindLayer(layerLevel, layerTag);
+
+	if (!layer)
+		return emptyList;
 
 	return layer->GetObjects();
 }

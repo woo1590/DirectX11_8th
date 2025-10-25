@@ -19,6 +19,7 @@ public:
     void PriorityUpdate(_float dt);
     void Update(_float dt);
     void LateUpdate(_float dt);
+    void RemoveDeadObjects();
 
     void AddObject(Object* object);
 

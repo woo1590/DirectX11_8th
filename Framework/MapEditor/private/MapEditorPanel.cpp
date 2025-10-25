@@ -482,6 +482,7 @@ void MapEditorPanel::ImportMapFile(const _string& filePath)
 	auto engine = EngineCore::GetInstance();
 
 	std::vector<PREFAB> staticObjectPrefabs;
+	std::vector<EnemySpawner::ENEMY_SPAWNER_DESC> spawnerDescs;
 	std::ifstream file(filePath);
 	if (!file.is_open())
 	{
@@ -498,6 +499,27 @@ void MapEditorPanel::ImportMapFile(const _string& filePath)
 		map::PrefabFromJson(j, prefab);
 		staticObjectPrefabs.push_back(prefab);
 	}
+	/*Load Spawners*/
+	for (auto& j : map["enemyspawners"])
+	{
+		EnemySpawner::ENEMY_SPAWNER_DESC desc{};
+		desc.position.x = j.at("Position").at("x").get<_float>();
+		desc.position.y = j.at("Position").at("y").get<_float>();
+		desc.position.z = j.at("Position").at("z").get<_float>();
+
+		desc.scale.x = j.at("Scale").at("x").get<_float>();
+		desc.scale.y = j.at("Scale").at("y").get<_float>();
+		desc.scale.z = j.at("Scale").at("z").get<_float>();
+
+		desc.quaternion.x = j.at("Quaternion").at("x").get<_float>();
+		desc.quaternion.y = j.at("Quaternion").at("y").get<_float>();
+		desc.quaternion.z = j.at("Quaternion").at("z").get<_float>();
+		desc.quaternion.w = j.at("Quaternion").at("w").get<_float>();
+
+		desc.navCellIndices = j.value("NavCells", std::vector<_uint>{});
+
+		spawnerDescs.push_back(desc);
+	}
 
 	for (auto& prefab : staticObjectPrefabs)
 	{
@@ -507,6 +529,8 @@ void MapEditorPanel::ImportMapFile(const _string& filePath)
 		desc.quaternion = prefab.quaternion;
 		engine->AddObject(ENUM_CLASS(LevelID::Editor), prefab.prototypeTag, ENUM_CLASS(LevelID::Editor), prefab.layerTag, &desc);
 	}
+	for (auto& desc : spawnerDescs)
+		engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_EnemySpawner", ENUM_CLASS(LevelID::Editor), "Layer_EnemySpawner", &desc);
 
 	MSG_BOX("Load success");
 }
@@ -518,17 +542,23 @@ void MapEditorPanel::ExportMapFile(const _string& outFilePath)
 
 	auto& layers = EngineCore::GetInstance()->GetLayers(ENUM_CLASS(LevelID::Editor));
 	auto& staticMapObjects = layers["Layer_StaticMapObject"]->GetObjects();
+	auto& doors = layers["Layer_Door"]->GetObjects();
 	auto& enemySpawners = layers["Layer_EnemySpawner"]->GetObjects();
 
-	std::vector<PREFAB> staticObjectPrefabs;
+	std::vector<PREFAB> objectPrefabs;
 	std::vector<EnemySpawner::ENEMY_SPAWNER_DESC> enemySpawnerDescs;
 	/*Static object prefabs*/
 	for (const auto& object : staticMapObjects)
 	{
 		PREFAB prefab = object->GetComponent<MakePrefabComponent>()->ExportPrefab();
-		staticObjectPrefabs.push_back(prefab);
+		objectPrefabs.push_back(prefab);
 	}
-
+	/*Door prefabs*/
+	for (const auto& object : doors)
+	{
+		PREFAB prefab = object->GetComponent<MakePrefabComponent>()->ExportPrefab();
+		objectPrefabs.push_back(prefab);
+	}
 	/*Spanwer desc*/
 	for(const auto& spawner : enemySpawners)
 	{
@@ -541,7 +571,7 @@ void MapEditorPanel::ExportMapFile(const _string& outFilePath)
 	map["enemyspawners"] = json::array();
 
 	/*Static object to json*/
-	for (const auto& prefab : staticObjectPrefabs)
+	for (const auto& prefab : objectPrefabs)
 	{
 		ordered_json j;
 		map::PrefabToJson(j, prefab);

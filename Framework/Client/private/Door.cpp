@@ -41,7 +41,15 @@ HRESULT Door::Initialize(InitDESC* arg)
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
 
+	ChangeState(&m_DoorClosed);
+
 	return S_OK;
+}
+
+void Door::Open()
+{
+	if (m_CurrState == &m_DoorClosed)
+		ChangeState(&m_DoorOpening);
 }
 
 Object* Door::Clone(InitDESC* arg)
@@ -81,6 +89,9 @@ HRESULT Door::CreatePartObjects()
 
 void Door::DoorOpen::Enter(Object* object)
 {
+	auto door = static_cast<Door*>(object);
+	door->m_PartObjects[ENUM_CLASS(Parts::Door_L)]->GetComponent<TransformComponent>()->Rotate(_float3{ 0.f,math::ToRadian(-70.f),0.f });
+	door->m_PartObjects[ENUM_CLASS(Parts::Door_R)]->GetComponent<TransformComponent>()->Rotate(_float3{ 0.f,math::ToRadian(70.f),0.f });
 }
 
 void Door::DoorOpen::Update(Object* object, _float t)
@@ -93,14 +104,42 @@ void Door::DoorOpen::TestForExit(Object* object)
 
 void Door::DoorOpening::Enter(Object* object)
 {
+	m_fElapsedTime = 0.f;
 }
 
-void Door::DoorOpening::Update(Object* object, _float t)
+void Door::DoorOpening::Update(Object* object, _float dt)
 {
+	m_fElapsedTime += dt;
+
+	if (m_fElapsedTime < m_fDuration)
+	{
+		_float t = m_fElapsedTime / m_fDuration;
+		t = std::clamp(t, 0.f, 1.f);
+
+		_vector startRot, doorL_EndRot, doorR_EndRot;
+		_float4 doorL_Result, doorR_Result;
+
+		startRot = XMQuaternionRotationRollPitchYaw(0.f, 0.f, 0.f);
+		doorL_EndRot = XMQuaternionRotationRollPitchYaw(0.f, math::ToRadian(-70.f), 0.f);
+		doorR_EndRot = XMQuaternionRotationRollPitchYaw(0.f, math::ToRadian(70.f), 0.f);
+
+		XMStoreFloat4(&doorL_Result, XMQuaternionSlerp(startRot, doorL_EndRot, t));
+		XMStoreFloat4(&doorR_Result, XMQuaternionSlerp(startRot, doorR_EndRot, t));
+
+		auto door = static_cast<Door*>(object);
+		door->m_PartObjects[ENUM_CLASS(Parts::Door_L)]->GetComponent<TransformComponent>()->SetQuaternion(doorL_Result);
+		door->m_PartObjects[ENUM_CLASS(Parts::Door_R)]->GetComponent<TransformComponent>()->SetQuaternion(doorR_Result);
+	}
+
 }
 
 void Door::DoorOpening::TestForExit(Object* object)
 {
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto door = static_cast<Door*>(object);
+		door->ChangeState(&door->m_DoorOpen);
+	}
 }
 
 void Door::DoorClosed::Enter(Object* object)

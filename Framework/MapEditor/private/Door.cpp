@@ -50,7 +50,7 @@ HRESULT Door::Initialize(InitDESC* arg)
 	MakePrefabComponent::MAKE_PREFAB_DESC desc{};
 	desc.prototypeTag = "Prototype_Object_Door";
 	desc.modelTag = "";
-	desc.layerTag = "Layer_StaticMapObject";
+	desc.layerTag = "Layer_Door";
 
 	auto makePrefab = GetComponent<MakePrefabComponent>();
 	if (FAILED(makePrefab->Initialize(&desc)))

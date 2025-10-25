@@ -17,6 +17,8 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
+    void Open();
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
@@ -32,8 +34,11 @@ private:
     class DoorOpening : public State
     {
         void Enter(Object* object)override;
-        void Update(Object* object, _float t)override;
+        void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 2.5f;
     };
     class DoorClosed : public State
     {

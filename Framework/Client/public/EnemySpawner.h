@@ -3,6 +3,7 @@
 
 NS_BEGIN(Client)
 
+class Door;
 class EnemySpawner :
     public Object
 {
@@ -18,6 +19,7 @@ public:
     {
         std::vector<_uint> availableNavCellIndices;
         std::vector<Wave> waves;
+        _int doorID = -1;
     }ENEMY_SPAWNER_DESC;
 private:
     EnemySpawner();
@@ -40,12 +42,41 @@ public:
     void Free()override;
 
 private:
-    void Spawn();
-    
-    _bool m_IsSpawned = false;
-
     std::vector<_uint> m_AvailableNavCellIndices;
     std::vector<Wave> m_Waves;
+    std::list<Object*> m_CurrWaveEnemies;
+    Door* m_pConnectedDoor = nullptr;
+    _uint m_iCurrWave{};
+
+    class SpanwerIdle : public State
+    {
+        void Enter(Object* object)override {};
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override {};
+    };
+    class SpanwerSpawn : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override;
+    };
+    class SpawnerWaveRunning : public State
+    {
+        void Enter(Object* object)override {};
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+    };
+    class SpawnerEnd : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override {};
+    };
+
+    SpanwerIdle m_SpawnerIdle;
+    SpanwerSpawn m_SpawnerSpawn;
+    SpawnerWaveRunning m_SpawnerWaveRunning;
+    SpawnerEnd m_SpawnerEnd;
 };
 
 NS_END

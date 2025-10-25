@@ -81,6 +81,21 @@ void DefaultBullet::LateUpdate(_float dt)
 
 	if (m_fElapsedTime > m_fDuration)
 		SetDead();
+
+	auto engine = EngineCore::GetInstance();
+
+	auto collider = GetComponent<ColliderComponent>();
+	auto& enemies = engine->GetObjects(ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
+	for (const auto& enemy : enemies)
+	{
+		auto enemyCollider = enemy->GetComponent<ColliderComponent>();
+		if (collider->Intersect(enemyCollider))
+		{
+			enemy->SetDead();
+			SetDead();
+		}
+	}
+
 }
 
 Object* DefaultBullet::Clone(InitDESC* arg)
