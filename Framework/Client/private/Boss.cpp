@@ -59,6 +59,7 @@ HRESULT Boss::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,5.f,0.f };
 	aabbDesc.halfSize = _float3{ 6.f,10.f,6.f };
@@ -110,5 +111,7 @@ Object* Boss::Clone(InitDESC* arg)
 
 void Boss::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }

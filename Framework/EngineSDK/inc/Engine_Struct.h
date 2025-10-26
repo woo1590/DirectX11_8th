@@ -14,6 +14,7 @@ namespace Engine
 		WinMode winMode;
 		_uint winSizeX, winSizeY;
 		_uint levelCnt;
+		_uint numCollisionFilter;
 	};
 
 	struct InitDESC {};
@@ -63,7 +64,6 @@ namespace Engine
 
 	}Bone;
 
-
 	typedef struct tagPrefab
 	{
 		_string prototypeTag{};
@@ -86,6 +86,13 @@ namespace Engine
 		_float3 origin{};
 		_float3 direction{};
 	}RAY;
+
+	typedef struct tagRayCastData
+	{
+		_bool isHit = false;
+		_float worldDistance = FLT_MAX;
+		class Object* hitObject = nullptr;
+	}RAYCAST_DATA;
 
 	typedef struct tagRayHitData
 	{

@@ -60,9 +60,9 @@ public:
     void SetRenderGroup(RenderGroup group) { m_eRenderGroup = group; }
 
     /*collision*/
-    virtual void OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider) {};
-    virtual void OnCollisionStay(ColliderComponent* collider, ColliderComponent* otherCollider) {};
-    virtual void OnCollisionExit(ColliderComponent* collider, ColliderComponent* otherCollider) {};
+    virtual void OnCollisionEnter(ColliderComponent* otherCollider) {};
+    virtual void OnCollisionStay(ColliderComponent* otherCollider) {};
+    virtual void OnCollisionExit(ColliderComponent* otherCollider) {};
 
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;

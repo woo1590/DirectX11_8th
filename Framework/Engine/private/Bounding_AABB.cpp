@@ -25,9 +25,14 @@ _bool Bounding_AABB::Intersect(Bounding* other)
 	return other->IntersectToAABB(this);
 }
 
-_bool Bounding_AABB::Intersect(RAY worldRay, _float& distance)
+RAYCAST_DATA Bounding_AABB::RayCast(RAY worldRay)
 {
-	return m_WorldDesc.Intersects(XMLoadFloat3(&worldRay.origin), XMLoadFloat3(&worldRay.direction), distance);
+	RAYCAST_DATA data{};
+	
+	if (m_WorldDesc.Intersects(XMLoadFloat3(&worldRay.origin), XMLoadFloat3(&worldRay.direction), data.worldDistance))
+		data.isHit = true;
+
+	return data;
 }
 
 _bool Bounding_AABB::IntersectToAABB(Bounding_AABB* other)

@@ -34,9 +34,9 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
-    void OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider)override;
-    void OnCollisionStay(ColliderComponent* collider, ColliderComponent* otherCollider)override {};
-    void OnCollisionExit(ColliderComponent* collider, ColliderComponent* otherCollider)override {};
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
+    void OnCollisionStay(ColliderComponent* otherCollider)override {};
+    void OnCollisionExit(ColliderComponent* otherCollider)override {};
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
@@ -48,13 +48,13 @@ private:
     Door* m_pConnectedDoor = nullptr;
     _uint m_iCurrWave{};
 
-    class SpanwerIdle : public State
+    class SpawnerIdle : public State
     {
         void Enter(Object* object)override {};
         void Update(Object* object, _float dt)override {};
         void TestForExit(Object* object)override {};
     };
-    class SpanwerSpawn : public State
+    class SpawnerSpawn : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override {};
@@ -73,8 +73,8 @@ private:
         void TestForExit(Object* object)override {};
     };
 
-    SpanwerIdle m_SpawnerIdle;
-    SpanwerSpawn m_SpawnerSpawn;
+    SpawnerIdle m_SpawnerIdle;
+    SpawnerSpawn m_SpawnerSpawn;
     SpawnerWaveRunning m_SpawnerWaveRunning;
     SpawnerEnd m_SpawnerEnd;
 };

@@ -78,9 +78,18 @@ void PlayerCam::Update(_float dt)
 	_float4x4 worldMat = m_pTransform->GetWorldMatrix();
 	_vector camPosition = XMVectorSet(worldMat._41, worldMat._42, worldMat._43, 1.f);
 	_vector forward = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-
 	forward = XMVector3Normalize(XMVector3TransformNormal(forward, XMLoadFloat4x4(&worldMat)));
-	XMStoreFloat3(&m_AimPosition, camPosition + 200.f * forward);
+
+	RAY worldRay{};
+	RAYCAST_DATA data{};
+	XMStoreFloat3(&worldRay.origin, camPosition);
+	XMStoreFloat3(&worldRay.direction, forward);
+	data = engine->RayCast(worldRay, ENUM_CLASS(ColliderFilter::Ray));;
+
+	if (data.isHit)
+		XMStoreFloat3(&m_AimPosition, camPosition + forward * data.worldDistance);
+	else
+		XMStoreFloat3(&m_AimPosition, camPosition + forward * 10000.f);
 }
 
 void PlayerCam::LateUpdate(_float dt)

@@ -13,5 +13,6 @@ namespace Client
 	constexpr unsigned int WinSizeY = 720;
 
 	enum class LevelID { Static, Loading, Logo, GamePlay, Test, Count };
+	enum class ColliderFilter { Player, PlayerProjectile, PlayerAttack, Enemy, EnemyAttack, EnemyShield, Spawner, StaticMapObject, Ray, Count };
 
 }

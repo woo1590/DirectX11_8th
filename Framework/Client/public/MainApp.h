@@ -23,6 +23,7 @@ public:
 
 private:
     HRESULT LoadStaticLevel();
+    void AddColliderFilterGroup();
     bool InitWindow(HINSTANCE hInst, int nCmdShow);
 
     HWND hWnd{};

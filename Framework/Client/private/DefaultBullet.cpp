@@ -46,10 +46,12 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
+	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerAttack);
 	sphereDesc.type = ColliderType::Sphere;
 	sphereDesc.radius = 0.3f;
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&sphereDesc);
+	EngineCore::GetInstance()->RegisterCollider(collider);
 
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Projectile_Default_Bullet");
@@ -70,32 +72,43 @@ void DefaultBullet::Update(_float dt)
 	_float3 forward = m_pTransform->GetForward();
 	_vector velocity = XMLoadFloat3(&forward) * speed;
 
-	m_pTransform->Translate(velocity * dt);
+	_float3 currPosition = m_pTransform->GetPosition();
+	_float3 nextPosition{};
+	XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + velocity * dt);
 
-	m_fElapsedTime += dt;
+	RAY worldRay{};
+	_float maxDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&nextPosition) - XMLoadFloat3(&currPosition)));
+	worldRay.origin = currPosition;
+	XMStoreFloat3(&worldRay.direction, XMVector3Normalize(XMLoadFloat3(&nextPosition) - XMLoadFloat3(&currPosition)));
+
+	RAYCAST_DATA result = EngineCore::GetInstance()->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::Ray));
+	if (result.isHit)
+	{
+		//currPos + result.distance 더해서 nextPos 만들고 nextPos에 데칼 생성
+		SetDead();
+	}
+	else
+		m_pTransform->SetPosition(nextPosition);
 }
 
 void DefaultBullet::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
 
-	if (m_fElapsedTime > m_fDuration)
-		SetDead();
-
-	auto engine = EngineCore::GetInstance();
-
-	auto collider = GetComponent<ColliderComponent>();
-	auto& enemies = engine->GetObjects(ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
-	for (const auto& enemy : enemies)
+void DefaultBullet::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{
-		auto enemyCollider = enemy->GetComponent<ColliderComponent>();
-		if (collider->Intersect(enemyCollider))
-		{
-			enemy->SetDead();
-			SetDead();
-		}
-	}
+	case ColliderFilter::Enemy:
+	{
+		SetDead();
+		otherCollider->GetOwner()->SetDead();
 
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* DefaultBullet::Clone(InitDESC* arg)
@@ -110,5 +123,7 @@ Object* DefaultBullet::Clone(InitDESC* arg)
 
 void DefaultBullet::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }

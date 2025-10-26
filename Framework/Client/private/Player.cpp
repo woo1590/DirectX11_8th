@@ -70,11 +70,13 @@ HRESULT Player::Initialize(InitDESC* arg)
 
 	Bounding_Sphere::SPHERE_DESC obbDesc{};
 	obbDesc.type = ColliderType::Sphere;
+	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Player);
 	obbDesc.center = _float3{ 0.f,5.f,0.f };
 	obbDesc.radius = 10.f;
 
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&obbDesc);
+	engine->RegisterCollider(collider);
 
 	auto animatorController = GetComponent<PlayerAnimController>();
 	animatorController->SetHandAnimator(m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<AnimatorComponent>());
@@ -166,10 +168,12 @@ Object* Player::Clone(InitDESC* arg)
 
 void Player::Free()
 {
-	__super::Free();
-	
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());	
+
 	for (auto& weapon : m_Weapons)
 		Safe_Release(weapon);
+
+	__super::Free();
 }
 
 HRESULT Player::CreatePartObjects()

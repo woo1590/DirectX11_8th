@@ -4,10 +4,10 @@
 NS_BEGIN(Engine)
 
 class Bounding;
-class ENGINE_DLL ColliderComponent final :
+class ENGINE_DLL ColliderComponent :
     public Component
 {
-private:
+protected:
     ColliderComponent(Object* owner);
     ColliderComponent(const ColliderComponent& prototype);
     virtual ~ColliderComponent() = default;
@@ -19,29 +19,36 @@ public:
 
     void Update(_float dt)override;
 
-    _bool Intersect(ColliderComponent* other);
-    _bool Intersect(RAY worldRay, _float& distance);
     void SetBoneIndex(_int index) { m_iBoneIndex = index; }
-    _uint GetColliderTag()const { return m_iColliderTag; }
+    virtual _bool Intersect(ColliderComponent* other);
+    virtual RAYCAST_DATA RayCast(RAY worldRay);
 
-    void OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider);
-    void OnCollisionStay(ColliderComponent* collider, ColliderComponent* otherCollider);
-    void OnCollisionExit(ColliderComponent* collider, ColliderComponent* otherCollider);
+    _uint GetFilter()const { return m_iColliderFilter; }
+    _bool IsActive()const { return m_IsActive; }
+    void SetActive(_bool active) { m_IsActive = active; }
+
+    void ResolveCollision(ColliderComponent* other);
+
+    void OnCollisionEnter(ColliderComponent* otherCollider);
+    void OnCollisionStay(ColliderComponent* otherCollider);
+    void OnCollisionExit(ColliderComponent* otherCollider);
 
     /*for debug*/
-    void Draw();
+    virtual void Draw();
 
-    Component* Clone() { return new ColliderComponent(*this); }
-    void Free()override;
+    virtual Component* Clone() { return new ColliderComponent(*this); }
+    virtual void Free()override;
 
 #ifdef USE_IMGUI
     void RenderInspector()override;
 #endif
 
-private:
+protected:
     _int m_iBoneIndex = -1;
 
-    _uint m_iColliderTag{};
+    _bool m_IsActive = true;
+    _uint m_iColliderFilter{};
+    ColliderType m_ColliderType = ColliderType::Count;
     Bounding* m_pBounding = nullptr;
     _bool m_IsCollision = false;
 

@@ -241,6 +241,7 @@
     <ClInclude Include="..\public\IPanel.h" />
     <ClInclude Include="..\public\MaterialInstance.h" />
     <ClInclude Include="..\public\Mesh.h" />
+    <ClInclude Include="..\public\MeshColliderComponent.h" />
     <ClInclude Include="..\public\NavigationComponent.h" />
     <ClInclude Include="..\public\NavigationSystem.h" />
     <ClInclude Include="..\public\NavMesh.h" />
@@ -325,6 +326,7 @@
     <ClCompile Include="..\private\IPanel.cpp" />
     <ClCompile Include="..\private\MaterialInstance.cpp" />
     <ClCompile Include="..\private\Mesh.cpp" />
+    <ClCompile Include="..\private\MeshColliderComponent.cpp" />
     <ClCompile Include="..\private\NavigationComponent.cpp" />
     <ClCompile Include="..\private\NavigationSystem.cpp" />
     <ClCompile Include="..\private\NavMesh.cpp" />

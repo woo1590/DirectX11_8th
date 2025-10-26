@@ -73,6 +73,7 @@ using namespace DirectX;
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
 #include <string>
 
 #include "Engine_Enum.h"

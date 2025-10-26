@@ -166,6 +166,7 @@ void NavigationComponent::Free()
 	Safe_Release(m_pRigidBody);
 }
 
+#ifdef USE_IMGUI
 void NavigationComponent::RenderInspector()
 {
 	ImGui::PushID(this);
@@ -181,3 +182,4 @@ void NavigationComponent::RenderInspector()
 
 	ImGui::PopID();
 }
+#endif

@@ -56,11 +56,13 @@ HRESULT Bomber::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,5.f,0.f };
 	aabbDesc.halfSize = _float3{ 6.f,10.f,6.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
+	engine->RegisterCollider(collider);
 
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_Bomber");
@@ -110,6 +112,8 @@ Object* Bomber::Clone(InitDESC* arg)
 
 void Bomber::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }
 

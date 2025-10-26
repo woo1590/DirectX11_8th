@@ -64,11 +64,13 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,10.5f,0.f };
 	aabbDesc.halfSize = _float3{ 6.f,10.5f,6.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
+	engine->RegisterCollider(collider);
 
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_HorseHead");
@@ -122,6 +124,8 @@ Object* HorseHead::Clone(InitDESC* arg)
 
 void HorseHead::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }
 

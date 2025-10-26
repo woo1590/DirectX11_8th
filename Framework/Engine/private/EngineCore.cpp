@@ -20,6 +20,7 @@
 #include "InputSystem.h"
 #include "LightSystem.h"
 #include "NavigationSystem.h"
+#include "CollisionSystem.h"
 
 //utill
 #include "GraphicDevice.h"
@@ -91,6 +92,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pNavigationSystem)
 		return E_FAIL;
 
+	m_pCollisionSystem = CollisionSystem::Create(desc.numCollisionFilter);
+	if (!m_pCollisionSystem)
+		return E_FAIL;
+
 #ifdef USE_IMGUI
 	GUIState state{};
 	state.pObjectManager = m_pObjectManager;
@@ -127,6 +132,7 @@ void EngineCore::Free()
 	Safe_Release(m_pInputSystem);
 	Safe_Release(m_pLightManager);
 	Safe_Release(m_pNavigationSystem);
+	Safe_Release(m_pCollisionSystem);
 	Safe_Release(m_pGraphicDevice);	/*GraphicDevice는 가장 먼저 생성, 가장 마지막 해제*/
 
 }
@@ -141,6 +147,8 @@ void EngineCore::Tick(_float dt)
 	m_pObjectManager->Update(dt);
 	m_pCameraManager->Update();
 	m_pObjectManager->LateUpdate(dt);
+
+	m_pCollisionSystem->Update();
 	
 	m_pLevelManager->Update(dt);
 	m_pLevelManager->Render(); /*Debug Only*/
@@ -156,6 +164,12 @@ void EngineCore::Tick(_float dt)
 	if (m_navDebugEnable)
 	{
 		if(FAILED(m_pNavigationSystem->ExtractDebugProxies(proxies[ENUM_CLASS(RenderGroup::NavMeshDebug)])))
+			return;
+	}
+
+	if (m_colliderDebugEnable)
+	{
+		if (FAILED(m_pCollisionSystem->ExtractDebugProxies(proxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
 			return;
 	}
 
@@ -424,7 +438,6 @@ HRESULT EngineCore::SetNavMesh(_uint levelID, const _string& navMeshTag)
 }
 #pragma endregion
 
-
 #pragma region LightSystem
 void EngineCore::RegisterLight(LightComponent* light)
 {
@@ -435,6 +448,30 @@ void EngineCore::UnRegisterLight(LightComponent* light)
 	m_pLightManager->UnRegisterLight(light);
 }
 #pragma endregion
+
+#pragma region CollisionSystem
+void EngineCore::RegisterCollider(ColliderComponent* component)
+{	
+	m_pCollisionSystem->RegisterCollider(component);
+}
+void EngineCore::UnRegisterCollider(ColliderComponent* component)
+{
+	m_pCollisionSystem->UnRegisterCollider(component);
+}
+void EngineCore::AddColliderFilterGroup(_uint left, _uint right)
+{
+	m_pCollisionSystem->AddColliderFilterGroup(left, right);
+}
+RAYCAST_DATA EngineCore::RayCast(RAY worldRay, _uint rayFilter)
+{
+	return m_pCollisionSystem->RayCast(worldRay, rayFilter);
+}
+RAYCAST_DATA EngineCore::RayCast(RAY worldRay, _float maxDistance, _uint rayFilter)
+{
+	return m_pCollisionSystem->RayCast(worldRay, maxDistance, rayFilter);
+}
+#pragma endregion
+
 
 LRESULT EngineCore::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

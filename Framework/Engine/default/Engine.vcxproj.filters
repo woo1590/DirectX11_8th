@@ -271,6 +271,9 @@
     <Filter Include="05. Object Component\ParticleSystem Component">
       <UniqueIdentifier>{b667864d-82d7-4856-9352-7e4175757edc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Object Component\Collider Component\MeshCollider Component">
+      <UniqueIdentifier>{e11423b1-1156-4edd-bec6-87bf92c3fa47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -576,6 +579,9 @@
     <ClInclude Include="..\public\CollisionSystem.h">
       <Filter>01. Engine Component\Collision System</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MeshColliderComponent.h">
+      <Filter>05. Object Component\Collider Component\MeshCollider Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -829,6 +835,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CollisionSystem.cpp">
       <Filter>01. Engine Component\Collision System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MeshColliderComponent.cpp">
+      <Filter>05. Object Component\Collider Component\MeshCollider Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

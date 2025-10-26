@@ -119,6 +119,14 @@ public:
     void UnRegisterLight(class LightComponent* light);
 #pragma endregion
 
+#pragma region CollisionSystem
+    void RegisterCollider(class ColliderComponent* component);
+    void UnRegisterCollider(class ColliderComponent* component);
+    void AddColliderFilterGroup(_uint left, _uint right);
+    RAYCAST_DATA RayCast(RAY worldRay, _uint rayFilter);
+    RAYCAST_DATA RayCast(RAY worldRay, _float maxDistance, _uint rayFilter);
+#pragma endregion
+
     class Random* GetRandom()const { return m_pRandom; }
     
     /*Debug setting*/
@@ -162,8 +170,9 @@ private:
     // 경인이 왔다감
     class ResourceManager*    m_pResourceManager = nullptr;
     class InputSystem*        m_pInputSystem = nullptr;
-    class LightSystem*       m_pLightManager = nullptr;
+    class LightSystem*        m_pLightManager = nullptr;
     class NavigationSystem*   m_pNavigationSystem = nullptr;
+    class CollisionSystem*    m_pCollisionSystem = nullptr;
 
     _bool m_navDebugEnable = true;
     _bool m_colliderDebugEnable = true;

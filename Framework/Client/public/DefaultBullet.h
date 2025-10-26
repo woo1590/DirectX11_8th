@@ -19,12 +19,12 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
-    _float m_fElapsedTime = 0.f;
-    _float m_fDuration = 2.f;
 };
 
 NS_END

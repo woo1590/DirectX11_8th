@@ -35,7 +35,8 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     desc.winMode = WinMode::Win;
     desc.winSizeX = WinSizeX;
     desc.winSizeY = WinSizeY;
-    desc.levelCnt = static_cast<_uint>(LevelID::Count);
+    desc.levelCnt = ENUM_CLASS(LevelID::Count);
+    desc.numCollisionFilter = ENUM_CLASS(ColliderFilter::Count);
 
     m_pEngineCore = EngineCore::GetInstance();
     if (FAILED(m_pEngineCore->Initialize(desc)))
@@ -49,6 +50,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
 
     if (FAILED(LoadStaticLevel()))
         return E_FAIL;
+    AddColliderFilterGroup();
 
     m_pEngineCore->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Logo));
 
@@ -135,6 +137,15 @@ HRESULT MainApp::LoadStaticLevel()
 
     }
     return S_OK;
+}
+
+void MainApp::AddColliderFilterGroup()
+{
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Spawner));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::StaticMapObject));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerAttack), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Ray), ENUM_CLASS(ColliderFilter::StaticMapObject));
 }
 
 bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)

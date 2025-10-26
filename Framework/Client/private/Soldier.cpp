@@ -61,11 +61,13 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,4.5f,0.f };
 	aabbDesc.halfSize = _float3{ 4.f,4.5f,4.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
+	engine->RegisterCollider(collider);
 
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_Soldier");
@@ -119,6 +121,8 @@ Object* Soldier::Clone(InitDESC* arg)
 
 void Soldier::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }
 

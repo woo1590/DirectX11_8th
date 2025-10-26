@@ -53,7 +53,8 @@ HRESULT ColliderComponent::Initialize(InitDESC* arg)
 	default:
 		break;
 	}
-	m_iColliderTag = desc->colliderTag;
+	m_ColliderType = desc->type;
+	m_iColliderFilter = desc->colliderFilter;
 
 	if (!m_pBounding)
 	{
@@ -109,24 +110,96 @@ _bool ColliderComponent::Intersect(ColliderComponent* other)
 	return m_IsCollision;
 }
 
-_bool ColliderComponent::Intersect(RAY worldRay, _float& distance)
+RAYCAST_DATA ColliderComponent::RayCast(RAY worldRay)
 {
-	return m_pBounding->Intersect(worldRay, distance);
+	RAYCAST_DATA data = m_pBounding->RayCast(worldRay);
+
+	if (data.isHit)
+		data.hitObject = m_pOwner;
+
+	return data;
 }
 
-void ColliderComponent::OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider)
+void ColliderComponent::ResolveCollision(ColliderComponent* other)
 {
-	m_pOwner->OnCollisionEnter(collider, otherCollider);
+	if (m_ColliderType == ColliderType::AABB && other->m_ColliderType == ColliderType::AABB)
+	{
+		BoundingBox boudingBox = static_cast<Bounding_AABB*>(m_pBounding)->GetWorldDesc();
+		BoundingBox otherBoundingBox = static_cast<Bounding_AABB*>(other->m_pBounding)->GetWorldDesc();
+
+		_float3 min{}, max{}, otherMin{}, otherMax{};
+		XMStoreFloat3(&min, XMLoadFloat3(&boudingBox.Center) - XMLoadFloat3(&boudingBox.Extents));
+		XMStoreFloat3(&max, XMLoadFloat3(&boudingBox.Center) + XMLoadFloat3(&boudingBox.Extents));
+		XMStoreFloat3(&otherMin, XMLoadFloat3(&otherBoundingBox.Center) - XMLoadFloat3(&otherBoundingBox.Extents));
+		XMStoreFloat3(&otherMax, XMLoadFloat3(&otherBoundingBox.Center) + XMLoadFloat3(&otherBoundingBox.Extents));
+
+		_vector normal = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+		_float overlapX = (std::min)(max.x, otherMax.x) - (std::max)(min.x, otherMin.x);
+		_float overlapY = (std::min)(max.y, otherMax.y) - (std::max)(min.y, otherMin.y);
+		_float overlapZ = (std::min)(max.z, otherMax.z) - (std::max)(min.z, otherMin.z);
+
+		if (overlapX <= overlapY && overlapX <= overlapZ)
+		{
+			if (min.x < otherMin.x)
+				normal = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
+			else
+				normal = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+
+			auto transform = m_pOwner->GetComponent<TransformComponent>();
+			auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
+
+			transform->Translate(normal * 0.5f * overlapX);
+			otherTransform->Translate(-1.f * normal * 0.f * overlapX);
+		}
+		else if (overlapY <= overlapX && overlapY <= overlapZ)
+		{
+			if (min.y < otherMin.y)
+				normal = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+			else
+				normal = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+			auto transform = m_pOwner->GetComponent<TransformComponent>();
+			auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
+
+			transform->Translate(normal * 0.5f * overlapY);
+			otherTransform->Translate(-1.f * normal * 0.f * overlapY);
+		}
+		else
+		{
+			if (min.z < otherMin.z)
+				normal = XMVectorSet(0.f, 0.f, -1.f, 0.f);
+			else
+				normal = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+			auto transform = m_pOwner->GetComponent<TransformComponent>();
+			auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
+
+			transform->Translate(normal * 0.5f * overlapZ);
+			otherTransform->Translate(-1.f * normal * 0.f * overlapZ);
+		}
+	}
+	else if (m_ColliderType == ColliderType::Sphere && other->m_ColliderType == ColliderType::Sphere)
+	{
+		BoundingSphere boundingSphere = static_cast<Bounding_Sphere*>(m_pBounding)->GetWorldDesc();
+		BoundingSphere otherBoundingSphere = static_cast<Bounding_Sphere*>(other->m_pBounding)->GetWorldDesc();
+	}
+	else
+		return;
 }
 
-void ColliderComponent::OnCollisionStay(ColliderComponent* collider, ColliderComponent* otherCollider)
+void ColliderComponent::OnCollisionEnter(ColliderComponent* otherCollider)
 {
-	m_pOwner->OnCollisionStay(collider, otherCollider);
+	m_pOwner->OnCollisionEnter(otherCollider);
 }
 
-void ColliderComponent::OnCollisionExit(ColliderComponent* collider, ColliderComponent* otherCollider)
+void ColliderComponent::OnCollisionStay(ColliderComponent* otherCollider)
 {
-	m_pOwner->OnCollisionExit(collider, otherCollider);
+	m_pOwner->OnCollisionStay(otherCollider);
+}
+
+void ColliderComponent::OnCollisionExit(ColliderComponent* otherCollider)
+{
+	m_pOwner->OnCollisionExit(otherCollider);
 }
 
 void ColliderComponent::Draw()

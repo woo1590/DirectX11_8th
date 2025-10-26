@@ -81,16 +81,6 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 {
 	auto model = GetComponent<ModelComponent>();
 	auto sprite = GetComponent<SpriteComponent>();
-	auto collider = GetComponent<ColliderComponent>();
-
-	/*for debug*/
-	if (collider)
-	{
-		RenderProxy proxy{};
-		proxy.collider = collider;
-
-		proxies[ENUM_CLASS(RenderGroup::ColliderDebug)].push_back(proxy);
-	}
 
 	if (!model && !sprite)
 		return S_OK;

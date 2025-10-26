@@ -64,11 +64,13 @@ HRESULT EnemySpawner::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Spawner);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.halfSize = _float3{ 10.f,10.f,10.f };
 
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
+	EngineCore::GetInstance()->RegisterCollider(collider);
 
 	ChangeState(&m_SpawnerIdle);
 
@@ -89,16 +91,20 @@ void EnemySpawner::Update(_float dt)
 void EnemySpawner::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
-
-	auto player = EngineCore::GetInstance()->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
-	auto collider = GetComponent<ColliderComponent>();
-
-	if (collider->Intersect(player->GetComponent<ColliderComponent>()) && m_CurrState == &m_SpawnerIdle)
-		ChangeState(&m_SpawnerSpawn);
 }
 
-void EnemySpawner::OnCollisionEnter(ColliderComponent* collider, ColliderComponent* otherCollider)
+void EnemySpawner::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case ColliderFilter::Player:
+	{
+		if (m_CurrState == &m_SpawnerIdle)
+			ChangeState(&m_SpawnerSpawn);
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* EnemySpawner::Clone(InitDESC* arg)
@@ -113,10 +119,12 @@ Object* EnemySpawner::Clone(InitDESC* arg)
 
 void EnemySpawner::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }
 
-void EnemySpawner::SpanwerSpawn::Enter(Object* object)
+void EnemySpawner::SpawnerSpawn::Enter(Object* object)
 {
 	auto spawner = static_cast<EnemySpawner*>(object);
 
@@ -135,7 +143,7 @@ void EnemySpawner::SpanwerSpawn::Enter(Object* object)
 	}
 }
 
-void EnemySpawner::SpanwerSpawn::TestForExit(Object* object)
+void EnemySpawner::SpawnerSpawn::TestForExit(Object* object)
 {
 	auto spawner = static_cast<EnemySpawner*>(object);
 	spawner->ChangeState(&spawner->m_SpawnerWaveRunning);
