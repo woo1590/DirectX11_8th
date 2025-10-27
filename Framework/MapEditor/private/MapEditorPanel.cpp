@@ -62,6 +62,9 @@ void MapEditorPanel::Draw(GUIState& state)
 			if (ImGui::Button("NavPlacement"))
 				m_eMode = EditMode::NavPlacement;
 			ImGui::SameLine();
+			if (ImGui::Button("NavLink"))
+				m_eMode = EditMode::NavLinked;
+			ImGui::SameLine();
 			if (ImGui::Button("SpawnerPlacement"))
 				m_eMode = EditMode::SpawnerPlacement;
 
@@ -143,6 +146,8 @@ void MapEditorPanel::Draw(GUIState& state)
 		Placement(state, pickRes);
 	else if (m_eMode == EditMode::NavPlacement)
 		NavPlacement(state, pickRes);
+	else if (m_eMode == EditMode::NavLinked)
+		LinkNav(state, pickRes);
 	else if (m_eMode == EditMode::SpawnerPlacement)
 		SpawnerPlacement(state, pickRes);
 	else
@@ -422,6 +427,30 @@ void MapEditorPanel::UndoNavData()
 	{
 		auto navData = navMeshObject->GetComponent<NavDataComponent>();
 		navData->ReomoveLastCell();
+	}
+}
+
+void MapEditorPanel::LinkNav(GUIState& state, PICK_RESULT pickRes)
+{
+	auto engine = EngineCore::GetInstance();
+	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
+	if (PickType::Nav == pickRes.type)
+	{
+		if (engine->IsMousePress(MouseButton::LButton))
+		{
+			if (-1 == m_iFirstPickNavIndex)
+				m_iFirstPickNavIndex = pickRes.navCellIndex;
+			else
+				m_iSecondPickNavIndex = pickRes.navCellIndex;
+		}
+
+	}
+
+	if (-1 != m_iFirstPickNavIndex && -1 != m_iSecondPickNavIndex)
+	{
+		navMeshObject->GetComponent<NavDataComponent>()->LinkCell(m_iFirstPickNavIndex, m_iSecondPickNavIndex);
+		m_iFirstPickNavIndex = -1;
+		m_iSecondPickNavIndex = -1;
 	}
 }
 

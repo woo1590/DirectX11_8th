@@ -91,32 +91,67 @@ void NavigationComponent::MoveByVelocity(_float dt)
 	_float3 nextPosition;
 	XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&velocity) * dt);
 
-	if (IsMove(nextPosition))
+	if (m_IsInLink)
 	{
-		_float y = GetHeight(nextPosition);
+		if (IsMove(nextPosition))
+		{
+			_float y = GetHeight(nextPosition);
 
-		if (m_pRigidBody->IsGround())
-		{
-			nextPosition.y = y;
-			m_pTransform->SetPosition(nextPosition);
-		}
-		else
-		{
-			if (nextPosition.y <= y)
+			if (m_pRigidBody->IsGround())
 			{
-				m_pRigidBody->SetGround(true);
 				nextPosition.y = y;
-
 				m_pTransform->SetPosition(nextPosition);
 			}
 			else
+			{
+				if (nextPosition.y <= y)
+				{
+					m_pRigidBody->SetGround(true);
+					m_IsInLink = false;
+					m_iCurrLinkedCellIndex = -1;
+					nextPosition.y = y;
+
+					m_pTransform->SetPosition(nextPosition);
+				}
+				else
+					m_pTransform->SetPosition(nextPosition);
+			}
+		}
+		else
+		{
+			if (m_iCurrCellIndex == m_iCurrLinkedCellIndex)
 				m_pTransform->SetPosition(nextPosition);
+			else
+			{
+				nextPosition = MakeSlideVector(currPosition, nextPosition);
+
+				if (IsMove(nextPosition))
+				{
+					_float y = GetHeight(nextPosition);
+
+					if (m_pRigidBody->IsGround())
+					{
+						nextPosition.y = y;
+						m_pTransform->SetPosition(nextPosition);
+					}
+					else
+					{
+						if (nextPosition.y <= y)
+						{
+							m_pRigidBody->SetGround(true);
+							nextPosition.y = y;
+
+							m_pTransform->SetPosition(nextPosition);
+						}
+						else
+							m_pTransform->SetPosition(nextPosition);
+					}
+				}
+			}
 		}
 	}
 	else
 	{
-		nextPosition = MakeSlideVector(currPosition, nextPosition);
-
 		if (IsMove(nextPosition))
 		{
 			_float y = GetHeight(nextPosition);
@@ -139,7 +174,49 @@ void NavigationComponent::MoveByVelocity(_float dt)
 					m_pTransform->SetPosition(nextPosition);
 			}
 		}
+		else
+		{
+			if (IsLinkedCell(nextPosition))
+			{
+				m_pRigidBody->SetGround(false);
+				m_pTransform->SetPosition(nextPosition);
+				m_iCurrLinkedCellIndex = m_iCurrCellIndex;
+				m_IsInLink = true;
+			}
+			else
+			{
+				nextPosition = MakeSlideVector(currPosition, nextPosition);
+
+				if (IsMove(nextPosition))
+				{
+					_float y = GetHeight(nextPosition);
+
+					if (m_pRigidBody->IsGround())
+					{
+						nextPosition.y = y;
+						m_pTransform->SetPosition(nextPosition);
+					}
+					else
+					{
+						if (nextPosition.y <= y)
+						{
+							m_pRigidBody->SetGround(true);
+							nextPosition.y = y;
+
+							m_pTransform->SetPosition(nextPosition);
+						}
+						else
+							m_pTransform->SetPosition(nextPosition);
+					}
+				}
+			}
+		}
 	}
+}
+
+_bool NavigationComponent::IsLinkedCell(_float3 position)
+{
+	return m_pNavigationSystem->IsLinkedCell(position, m_iCurrCellIndex);
 }
 
 _bool NavigationComponent::IsMove(_float3 position)

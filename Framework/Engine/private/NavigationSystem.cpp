@@ -57,6 +57,11 @@ _float3 NavigationSystem::GetPositionInCell(_uint cellIndex)
 	return m_pNavMesh->GetPositionInCell(cellIndex);
 }
 
+_bool NavigationSystem::IsLinkedCell(_float3 position, _uint& currCellIndex)
+{
+	return m_pNavMesh->IsLinkedCell(position, currCellIndex);
+}
+
 _bool NavigationSystem::IsMove(_float3 position, _uint& currCellIndex)
 {
 	return m_pNavMesh->IsMove(position, currCellIndex);

@@ -202,6 +202,7 @@
     <ClInclude Include="..\public\BossStage.h" />
     <ClInclude Include="..\public\Cameleon.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\Decal.h" />
     <ClInclude Include="..\public\DefaultBullet.h" />
     <ClInclude Include="..\public\Door.h" />
     <ClInclude Include="..\public\Door_L.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="..\public\HorseHead_Sword.h" />
     <ClInclude Include="..\public\EnemySpawner.h" />
     <ClInclude Include="..\public\Projectile.h" />
+    <ClInclude Include="..\public\Sight.h" />
     <ClInclude Include="..\public\Soldier.h" />
     <ClInclude Include="..\public\Soldier_Head.h" />
     <ClInclude Include="..\public\StaticMapObject.h" />
@@ -249,6 +251,7 @@
     <ClCompile Include="..\private\Boss.cpp" />
     <ClCompile Include="..\private\BossStage.cpp" />
     <ClCompile Include="..\private\Cameleon.cpp" />
+    <ClCompile Include="..\private\Decal.cpp" />
     <ClCompile Include="..\private\DefaultBullet.cpp" />
     <ClCompile Include="..\private\Door.cpp" />
     <ClCompile Include="..\private\Door_L.cpp" />
@@ -260,6 +263,7 @@
     <ClCompile Include="..\private\HorseHead_Sword.cpp" />
     <ClCompile Include="..\private\EnemySpawner.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
+    <ClCompile Include="..\private\Sight.cpp" />
     <ClCompile Include="..\private\Soldier.cpp" />
     <ClCompile Include="..\private\Soldier_Head.cpp" />
     <ClCompile Include="..\private\StaticMapObject.cpp" />

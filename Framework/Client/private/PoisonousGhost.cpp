@@ -199,7 +199,7 @@ void PoisonousGhost::PoisonousGhostFire1Return::TestForExit(Object* object)
 	auto animator = object->GetComponent<AnimatorComponent>();
 
 	_float progress = animator->GetProgress();
-	if (progress >= 0.9f)
+	if (progress>=0.9f)
 	{
 		ghost->ChangeState(&ghost->m_PoisonousGhostIdle);
 	}

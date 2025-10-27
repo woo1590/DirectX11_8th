@@ -23,6 +23,7 @@ HRESULT Cell::Initialize(NAVCELL_DATA data)
 	memcpy_s(m_Points, sizeof(_float3) * ENUM_CLASS(NavCellPoint::Count), data.points, sizeof(_float3) * ENUM_CLASS(NavCellPoint::Count));
 	memcpy_s(m_LineNormals, sizeof(_float3) * ENUM_CLASS(NavCellLine::Count), data.lines, sizeof(_float3) * ENUM_CLASS(NavCellLine::Count));
 	memcpy_s(m_NeighborCellIndices, sizeof(_int) * ENUM_CLASS(NavCellPoint::Count), data.neighbors, sizeof(_int) * ENUM_CLASS(NavCellPoint::Count));
+	memcpy_s(m_LinkedCellIndices, sizeof(_int) * ENUM_CLASS(NavCellPoint::Count), data.linkedCells, sizeof(_int) * ENUM_CLASS(NavCellPoint::Count));
 
 	/*for debug*/
 	m_pBuffer = VIBufferCell::Create(m_Points);
@@ -55,6 +56,27 @@ _float3 Cell::GetPositionInCell() const
 	centerPosition.z = (m_Points[0].z + m_Points[1].z + m_Points[2].z) / 3.f;
 
 	return centerPosition;
+}
+
+_bool Cell::IsLinked(_float3 position, _uint& currCellIndex)
+{
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (-1 != m_LinkedCellIndices[i])
+		{
+			_vector normal = XMLoadFloat3(&m_LineNormals[i]);
+			_vector dir = XMVector3Normalize(XMLoadFloat3(&position) - XMLoadFloat3(&m_Points[i]));
+
+			_float t = XMVectorGetX(XMVector3Dot(normal, dir));
+			if (t > 0)
+			{
+				currCellIndex = m_LinkedCellIndices[i];
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 _bool Cell::IsInCell(_float3 position, _int& neighborIndex)

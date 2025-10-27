@@ -122,14 +122,15 @@ void PickingSystem::RayCast(RAY ray)
 
 	for (const auto& collider : m_Colliders)
 	{
-		_float distance = FLT_MAX;
-		if (collider->Intersect(ray, distance))
+		RAYCAST_DATA data{};
+		data = collider->RayCast(ray);
+		if (data.isHit)
 		{
-			if (distance < m_LastPickResult.distance)
+			if (data.worldDistance < m_LastPickResult.distance)
 			{
 				m_LastPickResult.type = PickType::Spawner;
 				m_LastPickResult.object = collider->GetOwner();
-				XMStoreFloat3(&m_LastPickResult.worldHitPosition, XMLoadFloat3(&ray.origin) + distance * XMLoadFloat3(&ray.direction));
+				XMStoreFloat3(&m_LastPickResult.worldHitPosition, XMLoadFloat3(&ray.origin) + data.worldDistance * XMLoadFloat3(&ray.direction));
 			}
 		}
 	}

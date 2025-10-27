@@ -27,7 +27,7 @@ HRESULT Mesh::Initialize(ModelType eType, std::ifstream& file, _fmatrix preTrans
 											CreateSkinnedMesh(file)))
 		return E_FAIL;
 
-	ComputeBoundingBox();
+	ComputeBoundingBox(eType);
 
 	return S_OK;
 }
@@ -47,39 +47,62 @@ RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
 	RAY_HIT_DATA hitData{};
 
 	_bool isHit = false;
-	_float distance = FLT_MAX;
-	if (m_BoundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), distance))
+	_float tMesh = FLT_MAX;
+	_float tHit = FLT_MAX;
+
+	if (m_BoundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), tMesh))
 	{
 		if (type == PickingType::BoundingBox)
 		{
 			hitData.isHit = true;
-			hitData.localDistance = distance;
+			hitData.localDistance = tMesh;
 		}
 		else
 		{
-			_float minDistance = FLT_MAX;
-			for (_uint i = 0; i < m_iNumIndices / 3; ++i)
+			std::vector<std::pair<_uint, _float>> hitClusters;
+			hitClusters.reserve(m_ClusterNodes.size());
+
+			for (_uint i = 0; i < m_ClusterNodes.size(); ++i)
 			{
-				_uint index = i * 3;
-
-				_float3 p0 = m_VertexPositions[m_Indices[index]];
-				_float3 p1 = m_VertexPositions[m_Indices[index + 1]];
-				_float3 p2 = m_VertexPositions[m_Indices[index + 2]];
-
-				if (TriangleTests::Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction),
-										      XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), distance))
+				_float tBox = FLT_MAX;
+				if (m_ClusterNodes[i].boundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), tBox))
 				{
-					isHit = true;
-
-					if (distance < minDistance)
-						minDistance = distance;
+					tBox = (std::max)(tBox, 0.f);
+					hitClusters.push_back({ i,tBox });
 				}
 			}
 
-			if (isHit)
+			std::sort(hitClusters.begin(), hitClusters.end(), [&](const std::pair<_uint, _float>& a, const std::pair<_uint, _float>& b)
+				{
+					return a.second < b.second;
+				});
+			for (_uint i = 0; i < hitClusters.size(); ++i)
+			{
+				if (hitClusters[i].second > tHit)
+					break;
+
+				const auto& node = m_ClusterNodes[hitClusters[i].first];
+				for (_uint j = 0; j < node.indices.size(); j += 3)
+				{
+					_float tTri{};
+
+					_float3 p0 = m_VertexPositions[node.indices[j]];
+					_float3 p1 = m_VertexPositions[node.indices[j + 1]];
+					_float3 p2 = m_VertexPositions[node.indices[j + 2]];
+
+					if (TriangleTests::Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction),
+						XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), tTri))
+					{
+						if (tTri > 0.f && tTri < tHit)
+							tHit = tTri;
+					}
+				}
+			}
+
+			if (tHit < FLT_MAX)
 			{
 				hitData.isHit = true;
-				hitData.localDistance = minDistance;
+				hitData.localDistance = tHit;
 			}
 		}
 	}
@@ -280,7 +303,7 @@ HRESULT Mesh::CreateSkinnedMesh(std::ifstream& file)
 	return S_OK;
 }
 
-void Mesh::ComputeBoundingBox()
+void Mesh::ComputeBoundingBox(ModelType eType)
 {
 	_float3 min{ FLT_MAX,FLT_MAX,FLT_MAX };
 	_float3 max{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
@@ -296,10 +319,80 @@ void Mesh::ComputeBoundingBox()
 		if (position.x > max.x) max.x = position.x;
 		if (position.y > max.y)max.y = position.y;
 		if (position.z > max.z)max.z = position.z;
-
 	}
 	m_AABBMin = min;
 	m_AABBMax = max;
 
 	m_BoundingBox.CreateFromPoints(m_BoundingBox, XMLoadFloat3(&m_AABBMin), XMLoadFloat3(&m_AABBMax));
+	if (eType != ModelType::Static)
+		return;
+
+	/*build cluster node  ----- only static mesh*/
+	_uint numTriangle = m_iNumIndices / 3;
+	for (_uint i = 0; i < numTriangle; ++i)
+	{
+		_uint index = i * 3;
+		TRIANGLE_DESC triangle{};
+		triangle.position[0] = m_VertexPositions[m_Indices[index]];
+		triangle.position[1] = m_VertexPositions[m_Indices[index + 1]];
+		triangle.position[2] = m_VertexPositions[m_Indices[index + 2]];
+		triangle.index[0] = m_Indices[index];
+		triangle.index[1] = m_Indices[index + 1];
+		triangle.index[2] = m_Indices[index + 2];
+		XMStoreFloat3(&triangle.center, (XMLoadFloat3(&triangle.position[0]) + XMLoadFloat3(&triangle.position[1]) + XMLoadFloat3(&triangle.position[2])) / 3.f);
+
+		m_Triangles.push_back(triangle);
+	}
+
+	/*sort axis*/
+	{
+		/*if (m_BoundingBox.Extents.x > m_BoundingBox.Extents.y && m_BoundingBox.Extents.x > m_BoundingBox.Extents.z)
+		{
+			std::sort(m_Triangles.begin(), m_Triangles.end(), [&](const TRIANGLE_DESC& a, const TRIANGLE_DESC& b) 
+				{
+					return a.center.x < b.center.x;
+				});
+		}
+		else if (m_BoundingBox.Extents.y > m_BoundingBox.Extents.x && m_BoundingBox.Extents.y > m_BoundingBox.Extents.z)
+		{
+			std::sort(m_Triangles.begin(), m_Triangles.end(), [&](const TRIANGLE_DESC& a, const TRIANGLE_DESC& b)
+				{
+					return a.center.y < b.center.y;
+				});
+		}
+		else
+		{
+			std::sort(m_Triangles.begin(), m_Triangles.end(), [&](const TRIANGLE_DESC& a, const TRIANGLE_DESC& b)
+				{
+					return a.center.z < b.center.z;
+				});
+		}*/
+	}
+
+	for (_uint i = 0; i < m_Triangles.size(); i += m_iTrianglePerNode)
+	{
+		_uint count = (std::min)(m_iTrianglePerNode, numTriangle - i);
+		CLUSTER_NODE node{};
+		_float3 nodeMin{ FLT_MAX,FLT_MAX,FLT_MAX };
+		_float3 nodeMax{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
+		for (_uint j = 0; j < count; ++j)
+		{
+			_uint index = i + j;
+			for (_uint k = 0; k < 3; ++k)
+			{
+				_float3 position = m_Triangles[index].position[k];
+				if (position.x < nodeMin.x) nodeMin.x = position.x;
+				if (position.y < nodeMin.y) nodeMin.y = position.y;
+				if (position.z < nodeMin.z) nodeMin.z = position.z;
+
+				if (position.x > nodeMax.x) nodeMax.x = position.x;
+				if (position.y > nodeMax.y) nodeMax.y = position.y;
+				if (position.z > nodeMax.z) nodeMax.z = position.z;
+
+				node.indices.push_back(m_Triangles[index].index[k]);
+			}
+		}
+		node.boundingBox.CreateFromPoints(node.boundingBox, XMLoadFloat3(&nodeMin), XMLoadFloat3(&nodeMax));
+		m_ClusterNodes.push_back(node);
+	}
 }

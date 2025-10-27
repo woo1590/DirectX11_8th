@@ -107,6 +107,7 @@ namespace Engine
 		_float3 lines[3];
 		_uint pointIndices[3];
 		_int neighbors[3]{ -1,-1,-1 };
+		_int linkedCells[3]{ -1,-1,-1 };
 	}NAVCELL_DATA;
 
 	typedef struct tagCameraContext 
@@ -119,5 +120,12 @@ namespace Engine
 
 		_float3 camPosition{};
 	}CAMERA_CONTEXT;
+	
+	typedef struct tagTriangleDesc
+	{
+		_float3 position[3];
+		_uint index[3];
+		_float3 center{};
+	}TRIANGLE_DESC;
 }
 #endif // Engine_Struct_h__

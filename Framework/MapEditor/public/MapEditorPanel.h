@@ -9,7 +9,7 @@ class PickingSystem;
 class MapEditorPanel :
     public IPanel
 {
-    enum class EditMode { Guizmo, Placement, NavPlacement, SpawnerPlacement, Count };
+    enum class EditMode { Guizmo, Placement, NavPlacement, NavLinked, SpawnerPlacement, Count };
 private:
     MapEditorPanel(PickingSystem* picking);
     virtual ~MapEditorPanel() = default;
@@ -51,6 +51,7 @@ private:
     void NavPlacement(GUIState& state, PICK_RESULT pickRes);
     void AddNavData();
     void UndoNavData();
+    void LinkNav(GUIState& state, PICK_RESULT pickRes);
     _bool m_isNavAdded = false;
     std::vector<_float3> m_PickPositions;
     _int m_iFirstPickNavIndex = -1;

@@ -74,6 +74,11 @@ _float3 NavMesh::GetPositionInCell(_uint cellIndex)
 	return m_Cells[cellIndex]->GetPositionInCell();
 }
 
+_bool NavMesh::IsLinkedCell(_float3 position, _uint& currCellIndex)
+{
+	return m_Cells[currCellIndex]->IsLinked(position, currCellIndex);
+}
+
 _bool NavMesh::IsMove(_float3 position, _uint& currCellIndex)
 {
 	_int neighborIndex = -1;

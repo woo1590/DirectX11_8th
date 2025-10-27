@@ -8,11 +8,17 @@ class ENGINE_DLL Mesh :
     public VIBuffer
 {
 private:
+    typedef struct tagClusterNode
+    {
+        BoundingBox boundingBox{};
+        std::vector<_uint> indices;
+    }CLUSTER_NODE;
+private:
     Mesh();
     virtual ~Mesh() = default;
 
 public:
-    static Mesh * Create(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix);
+    static Mesh* Create(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix);
     HRESULT Initialize(ModelType eType, std::ifstream& file, _fmatrix preTransformMatrix);
 
     void ComputeBonePalette(const std::vector<_float4x4>& combinedMatices, std::vector<_float4x4>& bonePalette);
@@ -25,7 +31,7 @@ public:
 private:
     HRESULT CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix);
     HRESULT CreateSkinnedMesh(std::ifstream& file);
-    void ComputeBoundingBox();
+    void ComputeBoundingBox(ModelType eType);
 
     _string m_strName{};
 
@@ -33,6 +39,10 @@ private:
     _float3 m_AABBMin{};
     _float3 m_AABBMax{};
     BoundingBox m_BoundingBox{};
+    _uint m_iTrianglePerNode = 8;
+    std::vector<CLUSTER_NODE> m_ClusterNodes;
+    std::vector<TRIANGLE_DESC> m_Triangles;
+
     std::vector<_float3> m_VertexPositions;
     std::vector<_uint> m_Indices;
 

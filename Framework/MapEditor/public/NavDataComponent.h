@@ -31,6 +31,8 @@ public:
     void AddNavCell(const _float3 * points);     /*new cell : 3 points*/
     void AddNavCell(_uint index, _float3 point); /*new cell : 1 cell, 1 point*/
     void AddNavCell(_uint index1, _uint index2); /*new cell : 2 cells*/
+
+    void LinkCell(_uint index1, _uint index2);
     void ReomoveLastCell();
 
     /*Getter*/
@@ -48,6 +50,7 @@ private:
     void MakeClockWise(_float3* points, _uint* pointIndices);
     void MakeNeighbor(_uint index1, _uint index2);
     _float3 FindPointFromPointIndex(_uint pointIndex);
+    void ConnectCellToPoint(_uint cellIndex,_uint pointIndex0, _uint pointIndex1, _uint pointIndex2);
 
     _uint m_iPointIndex{};
     std::vector<NAVCELL_DATA> m_NavCellDatas;

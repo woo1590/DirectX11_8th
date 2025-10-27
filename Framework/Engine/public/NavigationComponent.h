@@ -36,10 +36,13 @@ public:
 #endif
 
 private:
+    _bool IsLinkedCell(_float3 position);
     _bool IsMove(_float3 position);
     _float GetHeight(_float3 position);
     _float3 MakeSlideVector(_float3 position, _float3 nextPosition);
 
+    _bool m_IsInLink = false;
+    _int m_iCurrLinkedCellIndex = -1;
     _uint m_iCurrCellIndex{};
     NavigationSystem* m_pNavigationSystem = nullptr;
     TransformComponent* m_pTransform = nullptr;

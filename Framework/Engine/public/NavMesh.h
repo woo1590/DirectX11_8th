@@ -22,6 +22,7 @@ public:
     /*API*/
     _bool IsCellExist(_uint cellIndex);
     _float3 GetPositionInCell(_uint cellIndex);
+    _bool IsLinkedCell(_float3 position, _uint& currCellIndex);
     _bool IsMove(_float3 position, _uint& currCellIndex);
     _float GetHeight(_float3 position, _uint currCellIndex);
     _float3 MakeSlideVector(_float3 position, _float3 nextPosition, _uint& currCellIndex);

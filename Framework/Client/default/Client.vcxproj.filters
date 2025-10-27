@@ -166,6 +166,12 @@
     <Filter Include="02. Object\Map Object\Enemy Spawner">
       <UniqueIdentifier>{e144cfb2-a7da-48b3-b791-64d05358d7ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Decal">
+      <UniqueIdentifier>{05b5105e-144f-42a3-a468-29200669609d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\Sight">
+      <UniqueIdentifier>{5ffb3970-6311-4715-b9ce-bce065b3bc69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -306,6 +312,12 @@
     <ClInclude Include="..\public\EnemySpawner.h">
       <Filter>02. Object\Map Object\Enemy Spawner</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Decal.h">
+      <Filter>02. Object\Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sight.h">
+      <Filter>02. Object\UIObject\Sight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -433,6 +445,12 @@
     </ClCompile>
     <ClCompile Include="..\private\EnemySpawner.cpp">
       <Filter>02. Object\Map Object\Enemy Spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp">
+      <Filter>02. Object\Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sight.cpp">
+      <Filter>02. Object\UIObject\Sight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
