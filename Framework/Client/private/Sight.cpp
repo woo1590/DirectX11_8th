@@ -2,12 +2,12 @@
 #include "Sight.h"
 
 Sight::Sight()
-	:UIObject()
+	:PartObject()
 {
 }
 
 Sight::Sight(const Sight& prototype)
-	:UIObject(prototype)
+	:PartObject(prototype)
 {
 }
 

@@ -1,11 +1,16 @@
 #pragma once
-#include "UIObject.h"
+#include "PartObject.h"
 
 NS_BEGIN(Client)
 
 class Sight :
-    public UIObject
+    public PartObject
 {
+public:
+    typedef struct tagSightDesc : public PartObject::PART_OBJECT_DESC
+    {
+
+    }SIGHT_DESC;
 private:
     Sight();
     Sight(const Sight& prototype);
