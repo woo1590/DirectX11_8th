@@ -64,6 +64,11 @@ void GamePlayLevel::Update(_float dt)
 	if (engine->IsKeyPressed('5'))
 		engine->SetMainCamera("PlayerCamera");
 
+	if (engine->IsKeyPressed('I'))
+		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
+	if (engine->IsKeyPressed('O'))
+		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
+
 }
 
 HRESULT GamePlayLevel::Render()
@@ -191,7 +196,7 @@ HRESULT GamePlayLevel::Initialize_LayerPlayer(const _string& layerTag)
 								 ENUM_CLASS(LevelID::GamePlay), layerTag, nullptr, &player)))
 		return E_FAIL;
 
-	player->GetComponent<NavigationComponent>()->SpawnInCell(0);
+	player->GetComponent<NavigationComponent>()->SpawnInCell(8);
 
 	return S_OK;
 }

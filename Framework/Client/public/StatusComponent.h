@@ -9,9 +9,10 @@ class StatusComponent :
 public:
     typedef struct tagStatusDesc : public InitDESC
     {
-        _float hp{};
+        _uint hp{};
+        _uint shield{};
+        _uint attackPower{};
         _float speed{};
-        _float attackPower{};
     }STATUS_DESC;
 private:
     StatusComponent(Object* owner);
@@ -23,7 +24,21 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
+    void BeAttacked(_uint power);
+    STATUS_DESC GetDesc()const;
+
+    Component* Clone() { return new StatusComponent(*this); }
+    void Free()override;
+
+#ifdef USE_IMGUI
+    void RenderInspector()override {};
+#endif
+
 private:
+    _uint m_iHP{};
+    _uint m_iShield{};
+    _uint m_iAttackPower{};
+    _float m_fMoveSpeed{};
 
 };
 

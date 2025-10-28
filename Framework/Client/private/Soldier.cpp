@@ -12,6 +12,7 @@
 #include "NavigationComponent.h"
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 Soldier::Soldier()
 	:Enemy()
@@ -43,6 +44,7 @@ HRESULT Soldier::Initialize_Prototype()
 	AddComponent<NavigationComponent>();
 	AddComponent<RigidBodyComponent>();
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "Soldier";
 	m_eRenderGroup = RenderGroup::NonBlend;
@@ -60,6 +62,7 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 
 	auto engine = EngineCore::GetInstance();
 
+	/*collider*/
 	Bounding_AABB::AABB_DESC aabbDesc{};
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
@@ -69,19 +72,31 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
 
+	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_Soldier");
 
+	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
 	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Enemy_Soldier");
 
 	model->ConnectAnimator();
 
+	/*navigation*/
 	auto nav = GetComponent<NavigationComponent>();
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
-	nav->SpawnInCell(0);
+	nav->SpawnInCell(90);
+
+	/*status*/
+	auto status = GetComponent<StatusComponent>();
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.hp = 500;
+	statusDesc.attackPower = 1;
+	statusDesc.shield = 100;
+	statusDesc.speed = 40.f;
+	status->Initialize(&statusDesc);
 
 	ChangeState(&m_SoldierShow);
 
@@ -103,10 +118,37 @@ void Soldier::Update(_float dt)
 	auto nav = GetComponent<NavigationComponent>();
 	nav->MoveByVelocity(dt);
 }
-
+	
 void Soldier::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case ColliderFilter::PlayerProjectile:
+	{
+		auto status = GetComponent<StatusComponent>();
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+		if (0 == status->GetDesc().hp)
+			ChangeState(&m_SoldierDead);
+
+		if (m_CurrState == &m_SoldierIdle || m_CurrState == &m_SoldierRun)
+		{
+			if (m_fElapsedTime >= m_fHitDelay)
+			{
+				ChangeState(&m_SoldierHitBody);
+				m_fElapsedTime = 0.f;
+			}
+		}
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* Soldier::Clone(InitDESC* arg)
@@ -283,4 +325,29 @@ void Soldier::SoldierAttack::TestForExit(Object* object)
 		auto soldier = static_cast<Soldier*>(object);
 		soldier->ChangeState(&soldier->m_SoldierRun);
 	}
+}
+
+void Soldier::SoldierHitBody::Enter(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+	animator->ChangeAnimation(ENUM_CLASS(AnimationState::HitBody),false, true);
+
+	auto rigidBody = object->GetComponent<RigidBodyComponent>();
+	rigidBody->SetVelocity(_float3(0.f, 0.f, 0.f));
+}
+
+void Soldier::SoldierHitBody::TestForExit(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+
+	if (animator->IsFinished())
+	{
+		auto soldier = static_cast<Soldier*>(object);
+		soldier->ChangeState(&soldier->m_SoldierIdle);
+	}
+}
+
+void Soldier::SoldierDead::Enter(Object* object)
+{
+	object->SetDead();
 }

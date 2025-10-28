@@ -184,6 +184,10 @@ HRESULT EditorLevel::Initialize_DefaultResource()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/stair/stair0.model",
 			"Model_Stair0")))
 			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/obstacle/obstacle0.model",
+			"Model_Obstacle0")))
+			return E_FAIL;
 	}
 	
 	/*Load Material*/

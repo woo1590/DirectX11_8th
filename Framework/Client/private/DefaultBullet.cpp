@@ -5,6 +5,7 @@
 //component
 #include "ModelComponent.h"
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 DefaultBullet::DefaultBullet()
 	:Projectile()
@@ -33,6 +34,7 @@ HRESULT DefaultBullet::Initialize_Prototype()
 
 	AddComponent<ModelComponent>();
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "DefaultBullet";
 	m_eRenderGroup = RenderGroup::NonBlend;
@@ -45,16 +47,24 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
+	/*collider*/
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
-	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerAttack);
+	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerProjectile);
 	sphereDesc.type = ColliderType::Sphere;
 	sphereDesc.radius = 0.3f;
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&sphereDesc);
 	EngineCore::GetInstance()->RegisterCollider(collider);
 
+	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Projectile_Default_Bullet");
+
+	/*status*/
+	auto status = GetComponent<StatusComponent>();
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.attackPower = 20;
+	status->Initialize(&statusDesc);
 
 	return S_OK;
 }
@@ -103,9 +113,11 @@ void DefaultBullet::OnCollisionEnter(ColliderComponent* otherCollider)
 	case ColliderFilter::Enemy:
 	{
 		SetDead();
-		otherCollider->GetOwner()->SetDead();
-
 	}break;
+	case ColliderFilter::EnemyShield:
+	{
+		SetDead();
+	}
 	default:
 		break;
 	}

@@ -256,6 +256,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\public\RenderTarget.h" />
+    <ClInclude Include="..\public\RenderTargetManager.h" />
     <ClInclude Include="..\public\ResourceManager.h" />
     <ClInclude Include="..\public\RigidBodyComponent.h" />
     <ClInclude Include="..\public\Skeleton.h" />
@@ -332,6 +334,8 @@
     <ClCompile Include="..\private\NavMesh.cpp" />
     <ClCompile Include="..\private\OutlinerPanel.cpp" />
     <ClCompile Include="..\private\PartObject.cpp" />
+    <ClCompile Include="..\private\RenderTarget.cpp" />
+    <ClCompile Include="..\private\RenderTargetManager.cpp" />
     <ClCompile Include="..\private\ResourceManager.cpp" />
     <ClCompile Include="..\private\RigidBodyComponent.cpp" />
     <ClCompile Include="..\private\Skeleton.cpp" />

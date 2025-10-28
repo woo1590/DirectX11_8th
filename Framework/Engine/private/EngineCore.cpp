@@ -14,6 +14,7 @@
 #include "TaskManager.h"
 #include "LevelManager.h"
 #include "CameraManager.h"
+#include "RenderTargetManager.h"
 
 //system
 #include "RenderSystem.h"
@@ -38,6 +39,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 
 	m_pGraphicDevice = GraphicDevice::Create(desc.hWnd,desc.winMode,desc.winSizeX,desc.winSizeY,&m_Viewport);
 	if (!m_pGraphicDevice)
+		return E_FAIL;
+
+	m_pRenderTargetManager = RenderTargetManager::Create();
+	if (!m_pRenderTargetManager)
 		return E_FAIL;
 
 	m_pRenderSystem = RenderSystem::Create();
@@ -115,6 +120,7 @@ void EngineCore::Free()
 	__super::Free();
 
 	Safe_Release(m_pRandom);
+	Safe_Release(m_pRenderTargetManager);
 	Safe_Release(m_pRenderSystem);
 	Safe_Release(m_pTimerManager);
 
@@ -471,6 +477,11 @@ RAYCAST_DATA EngineCore::RayCast(RAY worldRay, _float maxDistance, _uint rayFilt
 	return m_pCollisionSystem->RayCast(worldRay, maxDistance, rayFilter);
 }
 #pragma endregion
+
+#pragma region RenderTargetManager
+
+#pragma endregion
+
 
 
 LRESULT EngineCore::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)

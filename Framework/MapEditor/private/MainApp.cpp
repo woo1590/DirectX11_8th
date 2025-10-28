@@ -30,6 +30,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     desc.winSizeX = WinSizeX;
     desc.winSizeY = WinSizeY;
     desc.levelCnt = static_cast<_uint>(LevelID::Count);
+    desc.numCollisionFilter = 1; 
 
     m_pEngineCore = EngineCore::GetInstance();
     if (FAILED(m_pEngineCore->Initialize(desc)))

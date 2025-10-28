@@ -100,7 +100,12 @@ void EnemySpawner::OnCollisionEnter(ColliderComponent* otherCollider)
 	case ColliderFilter::Player:
 	{
 		if (m_CurrState == &m_SpawnerIdle)
-			ChangeState(&m_SpawnerSpawn);
+		{
+			if (m_Waves.empty())
+				ChangeState(&m_SpawnerEnd);
+			else
+				ChangeState(&m_SpawnerSpawn);
+		}
 	}break;
 	default:
 		break;

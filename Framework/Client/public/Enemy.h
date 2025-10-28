@@ -12,7 +12,14 @@ protected:
     virtual ~Enemy() = default;
 
 public:
+    virtual void Update(_float dt)override;
+
+    virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
+
+protected:
+    _float m_fElapsedTime = 0.f;
+    _float m_fHitDelay = 2.f;
 
 };
 

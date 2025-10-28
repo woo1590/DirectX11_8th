@@ -43,6 +43,8 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
@@ -79,12 +81,33 @@ private:
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
     };
+    class SoldierHitBody : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override;
+    };
+    class SoldierHitHead : public State
+    {
+        void Enter(Object* object)override {};
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override {};
+    };
+    class SoldierDead : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override {};
+        void TestForExit(Object* object)override {};
+    };
 
     SoldierShow m_SoldierShow;
     SoldierIdle m_SoldierIdle;
     SoldierPatrol m_SolderPatrol;
     SoldierRun m_SoldierRun;
     SoldierAttack m_SoldierAttack;
+    SoldierHitBody m_SoldierHitBody;
+    SoldierHitHead m_SoldierHitHead;
+    SoldierDead m_SoldierDead;
 };
 
 NS_END

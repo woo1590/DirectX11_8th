@@ -274,6 +274,12 @@
     <Filter Include="05. Object Component\Collider Component\MeshCollider Component">
       <UniqueIdentifier>{e11423b1-1156-4edd-bec6-87bf92c3fa47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\RenderTarget Manager">
+      <UniqueIdentifier>{4957ca9e-1355-46f0-97b3-c99b5003f3dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\RenderTarget Manager\RenderTarget">
+      <UniqueIdentifier>{cbee23b9-bd81-46c4-9647-cebf0b36b798}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -582,6 +588,12 @@
     <ClInclude Include="..\public\MeshColliderComponent.h">
       <Filter>05. Object Component\Collider Component\MeshCollider Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\RenderTargetManager.h">
+      <Filter>01. Engine Component\RenderTarget Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderTarget.h">
+      <Filter>01. Engine Component\RenderTarget Manager\RenderTarget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -838,6 +850,12 @@
     </ClCompile>
     <ClCompile Include="..\private\MeshColliderComponent.cpp">
       <Filter>05. Object Component\Collider Component\MeshCollider Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RenderTargetManager.cpp">
+      <Filter>01. Engine Component\RenderTarget Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RenderTarget.cpp">
+      <Filter>01. Engine Component\RenderTarget Manager\RenderTarget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

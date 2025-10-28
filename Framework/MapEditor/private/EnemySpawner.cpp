@@ -52,6 +52,7 @@ HRESULT EnemySpawner::Initialize(InitDESC* arg)
 
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
+	EngineCore::GetInstance()->RegisterCollider(collider);
 
 	m_pPickingSystem->RegisterComponent(collider);
 
@@ -97,6 +98,8 @@ Object* EnemySpawner::Clone(InitDESC* arg)
 
 void EnemySpawner::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	m_pPickingSystem->UnRegisterComponent(GetComponent<ColliderComponent>());
 	Safe_Release(m_pPickingSystem);
 

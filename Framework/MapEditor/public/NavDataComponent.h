@@ -9,9 +9,16 @@ NS_END
 
 NS_BEGIN(MapEditor)
 
+
 class NavDataComponent :
     public Component
 {
+    typedef struct tagLines
+    {
+        std::pair<_uint, _uint> lineA;
+        std::pair<_uint, _uint> lineB;
+        _float dot{};
+    }LINES;
 private:
     NavDataComponent(Object* owner);
     NavDataComponent(const NavDataComponent& prototype);
@@ -50,7 +57,8 @@ private:
     void MakeClockWise(_float3* points, _uint* pointIndices);
     void MakeNeighbor(_uint index1, _uint index2);
     _float3 FindPointFromPointIndex(_uint pointIndex);
-    void ConnectCellToPoint(_uint cellIndex,_uint pointIndex0, _uint pointIndex1, _uint pointIndex2);
+    void ConnectCellToPoint(_uint cellIndex0, _uint cellIndex1, _uint pointIndex0, _uint pointIndex1, _uint pointIndex2);
+    void RebuildNeighbor();
 
     _uint m_iPointIndex{};
     std::vector<NAVCELL_DATA> m_NavCellDatas;

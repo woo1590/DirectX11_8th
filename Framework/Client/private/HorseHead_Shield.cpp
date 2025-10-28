@@ -43,11 +43,13 @@ HRESULT HorseHead_Shield::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	Bounding_OBB::OBB_DESC obbDesc{};
+	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyShield);
 	obbDesc.type = ColliderType::OBB;
-	obbDesc.halfSize = _float3{ 1.f,0.8f,0.2f };
+	obbDesc.halfSize = _float3{ 1.f,0.8f,0.4f };
 
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&obbDesc);
+	EngineCore::GetInstance()->RegisterCollider(collider);
 
 	return S_OK;
 }
@@ -79,5 +81,7 @@ Object* HorseHead_Shield::Clone(InitDESC* arg)
 
 void HorseHead_Shield::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }

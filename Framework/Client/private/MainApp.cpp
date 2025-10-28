@@ -142,8 +142,8 @@ HRESULT MainApp::LoadStaticLevel()
 void MainApp::AddColliderFilterGroup()
 {
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Spawner));
-    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::StaticMapObject));
-    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerAttack), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::EnemyShield));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::Enemy));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Ray), ENUM_CLASS(ColliderFilter::StaticMapObject));
 }

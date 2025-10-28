@@ -127,6 +127,10 @@ public:
     RAYCAST_DATA RayCast(RAY worldRay, _float maxDistance, _uint rayFilter);
 #pragma endregion
 
+#pragma region RenderTargetManager
+
+#pragma endregion
+
     class Random* GetRandom()const { return m_pRandom; }
     
     /*Debug setting*/
@@ -162,17 +166,18 @@ private:
     ImGuiManager*       m_pImGuiManager = nullptr;
 #endif
 
-    class LevelManager*       m_pLevelManager = nullptr;
-    class PrototypeManager*   m_pPrototypeManager = nullptr;
-    class ObjectManager*      m_pObjectManager = nullptr;
-    class TaskManager*        m_pTaskManager = nullptr;
-    class CameraManager*      m_pCameraManager = nullptr;
+    class LevelManager*        m_pLevelManager = nullptr;
+    class PrototypeManager*    m_pPrototypeManager = nullptr;
+    class ObjectManager*       m_pObjectManager = nullptr;
+    class TaskManager*         m_pTaskManager = nullptr;
+    class CameraManager*       m_pCameraManager = nullptr;
     // 경인이 왔다감
-    class ResourceManager*    m_pResourceManager = nullptr;
-    class InputSystem*        m_pInputSystem = nullptr;
-    class LightSystem*        m_pLightManager = nullptr;
-    class NavigationSystem*   m_pNavigationSystem = nullptr;
-    class CollisionSystem*    m_pCollisionSystem = nullptr;
+    class ResourceManager*     m_pResourceManager = nullptr;
+    class RenderTargetManager* m_pRenderTargetManager = nullptr;
+    class InputSystem*         m_pInputSystem = nullptr;
+    class LightSystem*         m_pLightManager = nullptr;
+    class NavigationSystem*    m_pNavigationSystem = nullptr;
+    class CollisionSystem*     m_pCollisionSystem = nullptr;
 
     _bool m_navDebugEnable = true;
     _bool m_colliderDebugEnable = true;

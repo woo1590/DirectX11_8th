@@ -269,6 +269,10 @@ HRESULT Loader::LoadingForGamePlay()
 			"Model_Stair0")))
 			return E_FAIL;
 
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/obstacle/obstacle0.model",
+			"Model_Obstacle0")))
+			return E_FAIL;
+
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/boss/boss_stage.model",
 			"Model_Boss_Stage")))
 			return E_FAIL;
@@ -447,6 +451,9 @@ HRESULT Loader::LoadingForGamePlay()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stair0", StaticMapObject::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Obstacle0", StaticMapObject::Create())))
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_EnemySpawner", EnemySpawner::Create())))

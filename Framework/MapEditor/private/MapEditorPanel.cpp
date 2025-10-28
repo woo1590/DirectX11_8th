@@ -411,7 +411,10 @@ void MapEditorPanel::AddNavData()
 			}
 			else if (-1 != m_iFirstPickNavIndex && -1 != m_iSecondPickNavIndex)
 			{
-				navData->AddNavCell(m_iFirstPickNavIndex, m_iSecondPickNavIndex);
+				if (m_iFirstPickNavIndex != m_iSecondPickNavIndex)
+					navData->AddNavCell(m_iFirstPickNavIndex, m_iSecondPickNavIndex);
+				
+
 				m_iFirstPickNavIndex = -1;
 				m_iSecondPickNavIndex = -1;
 			}

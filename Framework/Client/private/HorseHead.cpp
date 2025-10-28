@@ -84,7 +84,7 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
-	nav->SpawnInCell(0);
+	nav->SpawnInCell(90);
 
 	ChangeState(&m_HorseHeadShow);
 
@@ -110,6 +110,26 @@ void HorseHead::Update(_float dt)
 void HorseHead::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case ColliderFilter::PlayerProjectile:
+	{
+		if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)
+		{
+			if (m_fElapsedTime >= m_fHitDelay)
+			{
+				ChangeState(&m_HorseHeadHitBody);
+				m_fElapsedTime = 0.f;
+			}
+		}
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* HorseHead::Clone(InitDESC* arg)
@@ -329,5 +349,25 @@ void HorseHead::HorseHeadAttack1::TestForExit(Object* object)
 	{
 		auto horse = static_cast<HorseHead*>(object);
 		horse->ChangeState(&horse->m_HorseHeadWalk_F);
+	}
+}
+
+void HorseHead::HorseHeadHitBody::Enter(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+	animator->ChangeAnimation(ENUM_CLASS(AnimationState::HitHead), false, true);
+
+	auto rigidBody = object->GetComponent<RigidBodyComponent>();
+	rigidBody->SetVelocity(_float3(0.f, 0.f, 0.f));
+}
+
+void HorseHead::HorseHeadHitBody::TestForExit(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+
+	if (animator->IsFinished())
+	{
+		auto horse = static_cast<HorseHead*>(object);
+		horse->ChangeState(&horse->m_HorseHeadIdle);
 	}
 }

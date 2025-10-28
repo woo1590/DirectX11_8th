@@ -11,6 +11,13 @@ Enemy::Enemy(const Enemy& prototype)
 {
 }
 
+void Enemy::Update(_float dt)
+{
+	__super::Update(dt);
+
+	m_fElapsedTime += dt;
+}
+
 void Enemy::Free()
 {
 	__super::Free();
