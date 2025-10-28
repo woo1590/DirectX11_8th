@@ -217,6 +217,7 @@
     <ClInclude Include="..\public\Sight.h" />
     <ClInclude Include="..\public\Soldier.h" />
     <ClInclude Include="..\public\Soldier_Head.h" />
+    <ClInclude Include="..\public\SpearMan.h" />
     <ClInclude Include="..\public\StaticMapObject.h" />
     <ClInclude Include="..\public\StatusComponent.h" />
     <ClInclude Include="..\public\ThirdCam.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="..\private\Sight.cpp" />
     <ClCompile Include="..\private\Soldier.cpp" />
     <ClCompile Include="..\private\Soldier_Head.cpp" />
+    <ClCompile Include="..\private\SpearMan.cpp" />
     <ClCompile Include="..\private\StaticMapObject.cpp" />
     <ClCompile Include="..\private\StatusComponent.cpp" />
     <ClCompile Include="..\private\ThirdCam.cpp" />

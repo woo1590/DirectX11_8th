@@ -1,30 +1,28 @@
 #pragma once
-#include "UIObject.h"
+#include "Enemy.h"
 
 NS_BEGIN(Client)
 
-class Sight :
-    public UIObject
+class SpearMan :
+    public Enemy
 {
 private:
-    Sight();
-    Sight(const Sight& prototype);
-    virtual ~Sight() = default;
-    
+    SpearMan();
+    SpearMan(const SpearMan& prototype);
+    virtual ~SpearMan() = default;
+
 public:
-    static Sight* Create();
+    static SpearMan* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
-
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void OnCollisionEnter(ColliderComponent* otherCollider)override {};
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
-
-private:
-
 };
 
 NS_END

@@ -202,8 +202,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
-    //ShowCursor(false);
-    RECT clipRect{ x,y,windowWidth + x,windowHeight + y };
+    ShowCursor(false);
+    RECT clipRect{ x + 300,y + 200, x + 600, y + 300 };
     ClipCursor(&clipRect);
 
     return true;

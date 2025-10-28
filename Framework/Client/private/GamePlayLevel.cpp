@@ -47,6 +47,9 @@ HRESULT GamePlayLevel::Initialize()
 	if (FAILED(Intialize_LayerCamera("Layer_Camera")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerUI("Layer_UI")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -63,6 +66,9 @@ void GamePlayLevel::Update(_float dt)
 		engine->SetMainCamera("ThirdCamera");
 	if (engine->IsKeyPressed('5'))
 		engine->SetMainCamera("PlayerCamera");
+
+	if (engine->IsKeyPressed('N'))
+		engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
 
 	if (engine->IsKeyPressed('I'))
 		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
@@ -204,6 +210,17 @@ HRESULT GamePlayLevel::Initialize_LayerPlayer(const _string& layerTag)
 HRESULT GamePlayLevel::Initialize_LayerEnemy(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
+
+	return S_OK;
+}
+
+HRESULT GamePlayLevel::Initialize_LayerUI(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sight",
+								 ENUM_CLASS(LevelID::GamePlay), layerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -7,10 +7,10 @@ class ENGINE_DLL UIObject abstract:
     public Object
 {
 public:
-    struct UIObjectDesc : public Object::OBJECT_DESC
+    typedef struct UIObjectDesc : public Object::OBJECT_DESC
     {
         _float x,y,sizeX,sizeY;
-    };
+    }UIOBJECT_DESC;
 
 protected:
     UIObject();

@@ -172,6 +172,9 @@
     <Filter Include="02. Object\UIObject\Sight">
       <UniqueIdentifier>{5ffb3970-6311-4715-b9ce-bce065b3bc69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Enemy\SpearMan">
+      <UniqueIdentifier>{5c0fc325-f27f-47f8-a4de-6698fdcd5477}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -318,6 +321,9 @@
     <ClInclude Include="..\public\Sight.h">
       <Filter>02. Object\UIObject\Sight</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SpearMan.h">
+      <Filter>02. Object\Enemy\SpearMan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -451,6 +457,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Sight.cpp">
       <Filter>02. Object\UIObject\Sight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SpearMan.cpp">
+      <Filter>02. Object\Enemy\SpearMan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

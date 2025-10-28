@@ -351,3 +351,4 @@ void Soldier::SoldierDead::Enter(Object* object)
 {
 	object->SetDead();
 }
+

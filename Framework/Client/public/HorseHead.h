@@ -95,6 +95,12 @@ private:
         void Update(Object* object, _float dt) override {};
         void TestForExit(Object* object) override {};
     };
+    class HorseHeadDead : public State
+    {
+        void Enter(Object* object) override;
+        void Update(Object* object, _float dt) override {};
+        void TestForExit(Object* object) override;
+    };
 
     HorseHeadShow m_HorseHeadShow;
     HorseHeadIdle m_HorseHeadIdle;
@@ -103,6 +109,7 @@ private:
     HorseHeadAttack1 m_HorseHeadAttack1;
     HorseHeadHitBody m_HorseHeadHitBody;
     HorseHeadHitHead m_HorseHeadHitHead;
+    HorseHeadDead m_HorseHeadDead;
 
 };
 

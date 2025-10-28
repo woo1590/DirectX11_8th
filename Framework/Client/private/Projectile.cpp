@@ -35,6 +35,10 @@ void Projectile::PriorityUpdate(_float dt)
 void Projectile::Update(_float dt)
 {
 	__super::Update(dt);
+
+	m_fElapsedTime += dt;
+	if (m_fElapsedTime >= m_fLifeTime)
+		SetDead();
 }
 
 void Projectile::LateUpdate(_float dt)

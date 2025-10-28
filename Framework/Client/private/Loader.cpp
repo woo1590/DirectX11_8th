@@ -13,6 +13,9 @@
 #include "PlayerCam.h"
 #include "Hand.h"
 
+//ui
+#include "Sight.h"
+
 //weapon
 #include "Cameleon.h"
 #include "ConcealedAmmo.h"
@@ -147,6 +150,12 @@ HRESULT Loader::LoadingForGamePlay()
 	/*Load Navigation*/
 	{
 		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/data/navigation/stage1_navigation.dat", "NavMesh_Test")))
+			return E_FAIL;
+	}
+
+	/*Load Texture*/
+	{
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/materials/sight.json", "Mtrl_Sight")))
 			return E_FAIL;
 	}
 
@@ -355,6 +364,10 @@ HRESULT Loader::LoadingForGamePlay()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Hand", Hand::Create())))
+			return E_FAIL;
+
+		/*UI*/
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Sight", Sight::Create())))
 			return E_FAIL;
 
 		/*Enemy*/

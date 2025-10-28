@@ -15,6 +15,7 @@
 #include "NavigationComponent.h"
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 HorseHead::HorseHead()
 	:Enemy()
@@ -46,6 +47,7 @@ HRESULT HorseHead::Initialize_Prototype()
 	AddComponent<NavigationComponent>();
 	AddComponent<RigidBodyComponent>();
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "HorseHead";
 	m_eRenderGroup = RenderGroup::NonBlend;
@@ -63,6 +65,7 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 
 	auto engine = EngineCore::GetInstance();
 
+	/*collider*/
 	Bounding_AABB::AABB_DESC aabbDesc{};
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
@@ -72,19 +75,28 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
 
+	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_HorseHead");
 
+	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
 	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Enemy_HorseHead");
 
 	model->ConnectAnimator();
 
+	/*navigation*/
 	auto nav = GetComponent<NavigationComponent>();
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
 	nav->SpawnInCell(90);
+
+	/*status*/
+	auto status = GetComponent<StatusComponent>();
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.hp = 500;
+	status->Initialize(&statusDesc);
 
 	ChangeState(&m_HorseHeadShow);
 
@@ -118,6 +130,13 @@ void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 	{
 	case ColliderFilter::PlayerProjectile:
 	{
+		auto status = GetComponent<StatusComponent>();
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+		if (0 == status->GetDesc().hp)
+			ChangeState(&m_HorseHeadDead);
+
 		if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)
 		{
 			if (m_fElapsedTime >= m_fHitDelay)
@@ -369,5 +388,21 @@ void HorseHead::HorseHeadHitBody::TestForExit(Object* object)
 	{
 		auto horse = static_cast<HorseHead*>(object);
 		horse->ChangeState(&horse->m_HorseHeadIdle);
+	}
+}
+
+void HorseHead::HorseHeadDead::Enter(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Die));
+}
+
+void HorseHead::HorseHeadDead::TestForExit(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+
+	if (animator->IsFinished())
+	{
+		object->SetDead();
 	}
 }

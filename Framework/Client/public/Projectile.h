@@ -20,6 +20,10 @@ public:
 
     Object* Clone(InitDESC* arg)override = 0;
     void Free()override;
+
+protected:
+    _float m_fLifeTime = 1.5f;
+    _float m_fElapsedTime = 0.f;
 };
 
 NS_END
