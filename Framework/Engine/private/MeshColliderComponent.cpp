@@ -66,6 +66,8 @@ RAYCAST_DATA MeshColliderComponent::RayCast(RAY worldRay)
 		_float3 worldHitPosition{};
 		XMStoreFloat3(&worldHitPosition, XMVector3TransformCoord(XMLoadFloat3(&localHitPosition), XMLoadFloat4x4(&world)));
 		XMStoreFloat(&result.worldDistance, XMVector3Length(XMLoadFloat3(&worldHitPosition) - XMLoadFloat3(&worldRay.origin)));
+
+		XMStoreFloat3(&result.hitNormal, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&data.normal), XMLoadFloat4x4(&world))));
 	}
 
 	return result;

@@ -9,6 +9,7 @@
 //component
 #include "TransformComponent.h"
 #include "ModelComponent.h"
+#include "NavigationComponent.h"
 
 ColliderComponent::ColliderComponent(Object* owner)
 	:Component(owner)
@@ -55,6 +56,7 @@ HRESULT ColliderComponent::Initialize(InitDESC* arg)
 	}
 	m_ColliderType = desc->type;
 	m_iColliderFilter = desc->colliderFilter;
+	m_UseResolve = desc->useResolve;
 
 	if (!m_pBounding)
 	{
@@ -122,6 +124,9 @@ RAYCAST_DATA ColliderComponent::RayCast(RAY worldRay)
 
 void ColliderComponent::ResolveCollision(ColliderComponent* other)
 {
+	if (!m_UseResolve && !other->m_UseResolve)
+		return;
+
 	if (m_ColliderType == ColliderType::AABB && other->m_ColliderType == ColliderType::AABB)
 	{
 		BoundingBox boudingBox = static_cast<Bounding_AABB*>(m_pBounding)->GetWorldDesc();
@@ -134,35 +139,26 @@ void ColliderComponent::ResolveCollision(ColliderComponent* other)
 		XMStoreFloat3(&otherMax, XMLoadFloat3(&otherBoundingBox.Center) + XMLoadFloat3(&otherBoundingBox.Extents));
 
 		_vector normal = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-		_float overlapX = (std::min)(max.x, otherMax.x) - (std::max)(min.x, otherMin.x);
-		_float overlapY = (std::min)(max.y, otherMax.y) - (std::max)(min.y, otherMin.y);
-		_float overlapZ = (std::min)(max.z, otherMax.z) - (std::max)(min.z, otherMin.z);
+		_float3 overlap{};
+		_float3 deltaMove{};
 
-		if (overlapX <= overlapY && overlapX <= overlapZ)
+		overlap.x = (std::min)(max.x, otherMax.x) - (std::max)(min.x, otherMin.x);
+		overlap.y = (std::min)(max.y, otherMax.y) - (std::max)(min.y, otherMin.y);
+		overlap.z = (std::min)(max.z, otherMax.z) - (std::max)(min.z, otherMin.z);
+
+		if (overlap.x <= overlap.y && overlap.x <= overlap.z)
 		{
 			if (min.x < otherMin.x)
 				normal = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
 			else
 				normal = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-
-			auto transform = m_pOwner->GetComponent<TransformComponent>();
-			auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
-
-			transform->Translate(normal * 0.5f * overlapX);
-			otherTransform->Translate(-1.f * normal * 0.f * overlapX);
 		}
-		else if (overlapY <= overlapX && overlapY <= overlapZ)
+		else if (overlap.y <= overlap.x && overlap.y <= overlap.z)
 		{
 			if (min.y < otherMin.y)
 				normal = XMVectorSet(0.f, -1.f, 0.f, 0.f);
 			else
 				normal = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-			auto transform = m_pOwner->GetComponent<TransformComponent>();
-			auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
-
-			transform->Translate(normal * 0.5f * overlapY);
-			otherTransform->Translate(-1.f * normal * 0.f * overlapY);
 		}
 		else
 		{
@@ -170,18 +166,78 @@ void ColliderComponent::ResolveCollision(ColliderComponent* other)
 				normal = XMVectorSet(0.f, 0.f, -1.f, 0.f);
 			else
 				normal = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		}
 
-			auto transform = m_pOwner->GetComponent<TransformComponent>();
-			auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
+		XMStoreFloat3(&deltaMove, XMLoadFloat3(&overlap) * normal);
 
-			transform->Translate(normal * 0.5f * overlapZ);
-			otherTransform->Translate(-1.f * normal * 0.f * overlapZ);
+		auto nav = m_pOwner->GetComponent<NavigationComponent>();
+		auto otherNav = other->m_pOwner->GetComponent<NavigationComponent>();
+		auto transform = m_pOwner->GetComponent<TransformComponent>();
+		auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
+
+
+		if (m_UseResolve && other->m_UseResolve)
+		{
+			XMStoreFloat3(&deltaMove, XMLoadFloat3(&deltaMove) * 0.5f);
+
+			if (nav)
+				nav->MoveTo(deltaMove);
+			else
+				transform->Translate(XMLoadFloat3(&deltaMove));
+
+			XMStoreFloat3(&deltaMove, XMLoadFloat3(&deltaMove) * -1.f);
+			if (otherNav)
+				otherNav->MoveTo(deltaMove);
+			else
+				otherTransform->Translate(XMLoadFloat3(&deltaMove));
+		}
+		else if (m_UseResolve)
+		{
+			if (nav)
+				nav->MoveTo(deltaMove);
+			else
+				transform->Translate(XMLoadFloat3(&deltaMove));
+		}
+		else
+		{
+			XMStoreFloat3(&deltaMove, XMLoadFloat3(&deltaMove) * -1.f);
+			if (otherNav)
+				otherNav->MoveTo(deltaMove);
+			else
+				otherTransform->Translate(XMLoadFloat3(&deltaMove));
 		}
 	}
 	else if (m_ColliderType == ColliderType::Sphere && other->m_ColliderType == ColliderType::Sphere)
 	{
 		BoundingSphere boundingSphere = static_cast<Bounding_Sphere*>(m_pBounding)->GetWorldDesc();
 		BoundingSphere otherBoundingSphere = static_cast<Bounding_Sphere*>(other->m_pBounding)->GetWorldDesc();
+
+		_float3 centerA = boundingSphere.Center;
+		_float3 centerB = otherBoundingSphere.Center;
+		
+		_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&centerB) - XMLoadFloat3(&centerA)));
+		_float maxDistance = boundingSphere.Radius + otherBoundingSphere.Radius;
+
+		_float penetration = maxDistance - distance;
+		_vector dir = XMVector3Normalize(XMLoadFloat3(&centerA) - XMLoadFloat3(&centerB));
+		_float3 deltaMove{};
+		XMStoreFloat3(&deltaMove, dir * penetration * 0.5f);
+
+		auto nav = m_pOwner->GetComponent<NavigationComponent>();
+		auto otherNav = other->m_pOwner->GetComponent<NavigationComponent>();
+		auto transform = m_pOwner->GetComponent<TransformComponent>();
+		auto otherTransform = other->m_pOwner->GetComponent<TransformComponent>();
+
+		if (nav)
+			nav->MoveTo(deltaMove);
+		else
+			transform->Translate(XMLoadFloat3(&deltaMove));
+
+		XMStoreFloat3(&deltaMove, XMLoadFloat3(&deltaMove) * -1.f);
+		if (otherNav)
+			otherNav->MoveTo(deltaMove);
+		else
+			otherTransform->Translate(XMLoadFloat3(&deltaMove));
 	}
 	else
 		return;

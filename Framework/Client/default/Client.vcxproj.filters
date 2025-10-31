@@ -175,6 +175,30 @@
     <Filter Include="02. Object\Enemy\SpearMan">
       <UniqueIdentifier>{5c0fc325-f27f-47f8-a4de-6698fdcd5477}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Enemy\Boss\Core">
+      <UniqueIdentifier>{057f2f9f-d9f6-4644-ac13-2f71038a7f35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Boss\LeftArm">
+      <UniqueIdentifier>{972b20c0-e753-4ac8-b847-4bebbbd8d797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Boss\RightArm">
+      <UniqueIdentifier>{611cedee-dea0-4281-858f-84492df116d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Boss\Head">
+      <UniqueIdentifier>{4605a40f-abcb-416f-938e-0560689238f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Fracture">
+      <UniqueIdentifier>{6464e792-49a6-4b7b-9c34-5045a5244301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\BossArmProjectile">
+      <UniqueIdentifier>{fe9846df-03a3-476f-8eb4-9bf3e14737a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Boss\BossPillar">
+      <UniqueIdentifier>{cb430ea9-2386-47a6-859d-39206317ef9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\BossStoneProjectile">
+      <UniqueIdentifier>{093eac6d-7c6e-4076-8f16-107f81613cf9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -324,6 +348,30 @@
     <ClInclude Include="..\public\SpearMan.h">
       <Filter>02. Object\Enemy\SpearMan</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Boss_Core.h">
+      <Filter>02. Object\Enemy\Boss\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_RightArm.h">
+      <Filter>02. Object\Enemy\Boss\RightArm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Head.h">
+      <Filter>02. Object\Enemy\Boss\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_LeftArm.h">
+      <Filter>02. Object\Enemy\Boss\LeftArm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fracture.h">
+      <Filter>02. Object\Fracture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossArmProjectile.h">
+      <Filter>02. Object\Projectile\BossArmProjectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossPillar.h">
+      <Filter>02. Object\Enemy\Boss\BossPillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossStoneProjectile.h">
+      <Filter>02. Object\Projectile\BossStoneProjectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -460,6 +508,30 @@
     </ClCompile>
     <ClCompile Include="..\private\SpearMan.cpp">
       <Filter>02. Object\Enemy\SpearMan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Core.cpp">
+      <Filter>02. Object\Enemy\Boss\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_RightArm.cpp">
+      <Filter>02. Object\Enemy\Boss\RightArm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Head.cpp">
+      <Filter>02. Object\Enemy\Boss\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_LeftArm.cpp">
+      <Filter>02. Object\Enemy\Boss\LeftArm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Fracture.cpp">
+      <Filter>02. Object\Fracture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossArmProjectile.cpp">
+      <Filter>02. Object\Projectile\BossArmProjectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossPillar.cpp">
+      <Filter>02. Object\Enemy\Boss\BossPillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossStoneProjectile.cpp">
+      <Filter>02. Object\Projectile\BossStoneProjectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

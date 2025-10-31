@@ -56,6 +56,7 @@ RAY_HIT_DATA Model::RayCastLocal(RAY ray, PickingType type)
 	RAY_HIT_DATA hitData{};
 
 	_float distance = FLT_MAX;
+	_float3 normal{};
 	if (m_BoundingBox.Intersects(XMLoadFloat3(&ray.origin), XMVector3Normalize(XMLoadFloat3(&ray.direction)), distance))
 	{
 		if (type == PickingType::BoundingBox)
@@ -78,10 +79,12 @@ RAY_HIT_DATA Model::RayCastLocal(RAY ray, PickingType type)
 				{
 					hitData.isHit = true;
 					minDistance = meshHitData.localDistance;
+					normal = meshHitData.normal;
 				}
 			}
 
 			hitData.localDistance = minDistance;
+			hitData.normal = normal;
 		}
 	}
 

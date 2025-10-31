@@ -73,6 +73,9 @@
     <Filter Include="02. Object\EditorGrid">
       <UniqueIdentifier>{cdb10472-6fe0-49ae-8ad3-ff2f9b4c5b64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object Component\ModelLoader Component">
+      <UniqueIdentifier>{a8cfd1b4-9553-44dc-8eb3-c36d8daed0d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -144,6 +147,9 @@
     <ClInclude Include="..\public\EditorGrid.h">
       <Filter>02. Object\EditorGrid</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ModelLoderComponent.h">
+      <Filter>03. Object Component\ModelLoader Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Importer.ico">
@@ -212,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="..\private\EditorGrid.cpp">
       <Filter>02. Object\EditorGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ModelLoderComponent.cpp">
+      <Filter>03. Object Component\ModelLoader Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

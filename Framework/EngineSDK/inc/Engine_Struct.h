@@ -91,6 +91,7 @@ namespace Engine
 	{
 		_bool isHit = false;
 		_float worldDistance = FLT_MAX;
+		_float3 hitNormal{};
 		class Object* hitObject = nullptr;
 	}RAYCAST_DATA;
 
@@ -98,6 +99,7 @@ namespace Engine
 	{
 		_bool isHit = false;
 		_float localDistance;
+		_float3 normal;
 	}RAY_HIT_DATA;
 
 	typedef struct tagNavCellData

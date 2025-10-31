@@ -15,6 +15,7 @@ public:
     {
         ColliderType type = ColliderType::Count;
         _uint colliderFilter{};
+        _bool useResolve = false;
         _float3  center{};
     }BOUNDING_DESC;
 

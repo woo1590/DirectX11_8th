@@ -52,7 +52,10 @@ void AnimationClip::UpdateTransformationMatrix(_float dt, ANIMATIONCLIP_CONTEXT&
 	if (context.trackPosition >= m_fDuration)
 	{
 		if (!context.isLoop)
+		{
 			context.isFinished = true;
+			return;
+		}
 
 		context.trackPosition = 0.f;
 	}

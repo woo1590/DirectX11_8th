@@ -68,14 +68,15 @@ HRESULT Player::Initialize(InitDESC* arg)
 
 	auto engine = EngineCore::GetInstance();
 
-	Bounding_Sphere::SPHERE_DESC obbDesc{};
-	obbDesc.type = ColliderType::Sphere;
-	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Player);
-	obbDesc.center = _float3{ 0.f,5.f,0.f };
-	obbDesc.radius = 10.f;
+	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.useResolve = true;
+	aabbDesc.type = ColliderType::AABB;
+	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Player);
+	aabbDesc.center = _float3{ 0.f,5.f,0.f };
+	aabbDesc.halfSize = _float3{ 8.f,5.f,8.f };
 
 	auto collider = GetComponent<ColliderComponent>();
-	collider->Initialize(&obbDesc);
+	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
 
 	auto animatorController = GetComponent<PlayerAnimController>();

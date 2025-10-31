@@ -111,6 +111,75 @@ HRESULT FBXMesh::Export(std::ofstream& out)
 	return S_OK;
 }
 
+HRESULT FBXMesh::ExportFracture(FBXSkeleton* skeleton, std::ofstream& out)
+{
+	MESH_FORMAT meshFormat{};
+	strncpy_s(meshFormat.name, MAX_PATH, m_strName.c_str(), sizeof(meshFormat.name) - 1);
+	meshFormat.materialIndex = m_iMaterialIndex;
+	meshFormat.numVertices = m_iNumVertices;
+	meshFormat.vertexStride = m_iVertexStride;
+	meshFormat.numIndices = m_iNumIndices;
+	meshFormat.indexStride = m_iIndexStride;
+	meshFormat.numBones = 0;
+	memcpy_s(&meshFormat.boneIndices, sizeof(_uint) * MAX_BONES, m_BoneIndices.data(), sizeof(_uint) * m_iNumBones);
+
+	out.write(reinterpret_cast<const char*>(&meshFormat), sizeof(MESH_FORMAT));
+	out.write(reinterpret_cast<const char*>(m_OffsetMatrices.data()), sizeof(_float4x4) * meshFormat.numBones);
+
+	/*Vertex Format*/
+	std::vector<VTX_FORMAT> vertices;
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
+		VTX_FORMAT vertex{};
+
+		//XMStoreFloat3(&vertex.position, XMVector3TransformCoord(XMLoadFloat3(&m_VertexFormats[i].position),invCombined));
+		//XMStoreFloat3(&vertex.normal, XMVector3TransformNormal(XMLoadFloat3(&m_VertexFormats[i].normal),invCombined));
+		
+		vertex.position = m_VertexFormats[i].position;
+		vertex.normal = m_VertexFormats[i].normal;
+		vertex.texCoord = m_VertexFormats[i].texCoord;
+		vertex.tangent = m_VertexFormats[i].tangent;
+		vertex.blendIndex = m_VertexFormats[i].blendIndex;
+		vertex.blendWeight = m_VertexFormats[i].blendWeight;
+
+		vertices.push_back(vertex);
+	}
+
+	_float3 centerPoint{};
+	_float3 aabbMin{FLT_MAX,FLT_MAX,FLT_MAX};
+	_float3 aabbMax{-FLT_MAX, -FLT_MAX, -FLT_MAX};
+	for (const auto& vertex : vertices)
+	{
+		aabbMin.x = (std::min)(vertex.position.x, aabbMin.x);
+		aabbMin.y = (std::min)(vertex.position.y, aabbMin.y);
+		aabbMin.z = (std::min)(vertex.position.z, aabbMin.z);
+
+		aabbMax.x = (std::max)(vertex.position.x, aabbMax.x);
+		aabbMax.y = (std::max)(vertex.position.y, aabbMax.y);
+		aabbMax.z = (std::max)(vertex.position.z, aabbMax.z);
+	}
+	centerPoint.x = (aabbMin.x + aabbMax.x) * 0.5f;
+	centerPoint.y = (aabbMin.y + aabbMax.y) * 0.5f;
+	centerPoint.z = (aabbMin.z + aabbMax.z) * 0.5f;
+
+	for (auto& vertex : vertices)
+	{
+		vertex.position.x -= centerPoint.x;
+		vertex.position.y -= centerPoint.y;
+		vertex.position.z -= centerPoint.z;
+	}
+	out.write(reinterpret_cast<const char*>(vertices.data()), sizeof(VTX_FORMAT) * m_iNumVertices);
+
+	/*Index Format*/
+	std::vector<_uint> indices;
+	for (_uint i = 0; i < m_iNumIndices; ++i)
+		indices.push_back(m_Indices[i]);
+
+	out.write(reinterpret_cast<const char*>(indices.data()), sizeof(_uint) * m_iNumIndices);
+
+	return S_OK;
+}
+
 void FBXMesh::Free()
 {
 	__super::Free();

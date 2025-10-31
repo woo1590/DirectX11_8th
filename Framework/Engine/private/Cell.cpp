@@ -47,6 +47,17 @@ HRESULT Cell::Initialize(NAVCELL_DATA data)
 	return S_OK;
 }
 
+_float3 Cell::GetCellNormal()
+{
+	_float3 cellNormal{};
+	_vector AB = XMVector3Normalize(XMLoadFloat3(&m_Points[1]) - XMLoadFloat3(&m_Points[0]));
+	_vector AC = XMVector3Normalize(XMLoadFloat3(&m_Points[2]) - XMLoadFloat3(&m_Points[0]));
+
+	XMStoreFloat3(&cellNormal, XMVector3Normalize(XMVector3Cross(AB, AC)));
+
+	return cellNormal;
+}
+
 _float3 Cell::GetPositionInCell() const
 {
 	_float3 centerPosition{};

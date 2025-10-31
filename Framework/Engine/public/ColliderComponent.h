@@ -47,12 +47,13 @@ protected:
     _int m_iBoneIndex = -1;
 
     _bool m_IsActive = true;
+    _bool m_UseResolve = true;
     _uint m_iColliderFilter{};
     ColliderType m_ColliderType = ColliderType::Count;
     Bounding* m_pBounding = nullptr;
-    _bool m_IsCollision = false;
 
     /*for debug*/
+    _bool m_IsCollision = false;
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pDeviceContext = nullptr;
     ID3D11InputLayout* m_pInputLayout = nullptr;

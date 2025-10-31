@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "EnemySpawner.h"
 #include "Random.h"
-#include "Bounding_AABB.h"
+#include "Bounding_Sphere.h"
 
 //object
 #include "Door.h"
@@ -63,13 +63,13 @@ HRESULT EnemySpawner::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
-	Bounding_AABB::AABB_DESC aabbDesc{};
-	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Spawner);
-	aabbDesc.type = ColliderType::AABB;
-	aabbDesc.halfSize = _float3{ 10.f,10.f,10.f };
+	Bounding_Sphere::SPHERE_DESC sphereDesc{};
+	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Spawner);
+	sphereDesc.type = ColliderType::Sphere;
+	sphereDesc.radius = 10.f;
 
 	auto collider = GetComponent<ColliderComponent>();
-	collider->Initialize(&aabbDesc);
+	collider->Initialize(&sphereDesc);
 	EngineCore::GetInstance()->RegisterCollider(collider);
 
 	ChangeState(&m_SpawnerIdle);

@@ -21,6 +21,7 @@ public:
     void RegisterNavigation(NavigationComponent* component);
 
     /*API*/
+    _float3 GetCellNormal(_uint cellIndex);
     _bool IsCellExist(_uint cellIndex);
     _float3 GetPositionInCell(_uint cellIndex);
     _bool IsLinkedCell(_float3 position, _uint& currCellIndex);

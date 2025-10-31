@@ -393,16 +393,10 @@ void HorseHead::HorseHeadHitBody::TestForExit(Object* object)
 
 void HorseHead::HorseHeadDead::Enter(Object* object)
 {
-	auto animator = object->GetComponent<AnimatorComponent>();
-	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Die));
+	object->SetDead();
 }
 
 void HorseHead::HorseHeadDead::TestForExit(Object* object)
 {
-	auto animator = object->GetComponent<AnimatorComponent>();
-
-	if (animator->IsFinished())
-	{
-		object->SetDead();
-	}
+	
 }

@@ -5,6 +5,7 @@
 
 //object
 #include "Socket.h"
+#include "Fracture.h"
 
 //component
 #include "ModelComponent.h"
@@ -64,6 +65,7 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 
 	/*collider*/
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.useResolve = true;
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,4.5f,0.f };
@@ -87,12 +89,11 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
-	nav->SpawnInCell(90);
-
+	nav->SpawnInCell(2);
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 500;
+	statusDesc.hp = 10;
 	statusDesc.attackPower = 1;
 	statusDesc.shield = 100;
 	statusDesc.speed = 40.f;
@@ -350,5 +351,47 @@ void Soldier::SoldierHitBody::TestForExit(Object* object)
 void Soldier::SoldierDead::Enter(Object* object)
 {
 	object->SetDead();
+
+	auto engine = EngineCore::GetInstance();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float3 camPosition = engine->GetCameraContext().camPosition;
+	_float3 position = transform->GetPosition();
+	_float3 hitDir{};
+	XMStoreFloat3(&hitDir, XMVector3Normalize(XMLoadFloat3(&position) - XMLoadFloat3(&camPosition)));
+
+	Fracture::FRACTURE_DESC desc{};
+	desc.scale = _float3{ 1.2f,1.2f,1.2f };
+	desc.quaternion = transform->GetQuaternion();
+
+	auto random = engine->GetRandom();
+	for (_uint i = 0; i < 17; i+=2)
+	{
+		desc.position.x = position.x + random->get<_float>(-4.f, 4.f);
+		desc.position.y = position.y + random->get<_float>(4.f, 7.f);
+		desc.position.z = position.z + random->get<_float>(-4.f, 4.f);
+
+		_float3 dir{};
+		_float dirFactor = random->get<_float>(0.4f, 0.6f);
+		XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&desc.position) - XMLoadFloat3(&position)));
+		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&hitDir) * dirFactor + XMLoadFloat3(&dir) * (1.f - dirFactor))));
+		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
+
+		_float power = random->get<_float>(70.f, 90.f);
+		_float3 force{};
+		_float3 angularForce{};
+		XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);
+		XMStoreFloat3(&angularForce, XMLoadFloat3(&dir) * power * 0.1f);
+
+		_string modelTag = "Soldier" + std::to_string(i);
+		desc.modelTag = "Model_Fracture_" + modelTag;
+
+		Object* fracture = nullptr;
+		desc.spawnNavCell = object->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Fracture", ENUM_CLASS(LevelID::GamePlay), "Layer_Fracture", &desc, &fracture);
+
+		fracture->GetComponent<RigidBodyComponent>()->AddImpulse(force);
+		fracture->GetComponent<RigidBodyComponent>()->AddAngularImpulse(angularForce);
+	}
 }
 

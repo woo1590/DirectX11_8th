@@ -46,6 +46,7 @@ RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
 {
 	RAY_HIT_DATA hitData{};
 
+	_float3 normal{};
 	_bool isHit = false;
 	_float tMesh = FLT_MAX;
 	_float tHit = FLT_MAX;
@@ -94,7 +95,12 @@ RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
 						XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), tTri))
 					{
 						if (tTri > 0.f && tTri < tHit)
+						{
 							tHit = tTri;
+							_vector ab = XMLoadFloat3(&p1) - XMLoadFloat3(&p0);
+							_vector ac = XMLoadFloat3(&p2) - XMLoadFloat3(&p0);
+							XMStoreFloat3(&normal, XMVector3Normalize(XMVector3Cross(ab, ac)));
+						}
 					}
 				}
 			}
@@ -103,6 +109,7 @@ RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
 			{
 				hitData.isHit = true;
 				hitData.localDistance = tHit;
+				hitData.normal = normal;
 			}
 		}
 	}

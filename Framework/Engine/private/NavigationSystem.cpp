@@ -47,6 +47,11 @@ void NavigationSystem::RegisterNavigation(NavigationComponent* component)
 	component->AttachSystem(this);
 }
 
+_float3 NavigationSystem::GetCellNormal(_uint cellIndex)
+{
+	return m_pNavMesh->GetCellNormal(cellIndex);
+}
+
 _bool NavigationSystem::IsCellExist(_uint cellIndex)
 {
 	return m_pNavMesh->IsCellExist(cellIndex);

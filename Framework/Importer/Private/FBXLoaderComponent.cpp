@@ -79,7 +79,6 @@ HRESULT FBXLoaderComponent::ExtractRenderProxies(TransformComponent* transform, 
 
 HRESULT FBXLoaderComponent::ImportModel(const _string& filePath)
 {
-	
 	XMStoreFloat4x4(&m_PreTransformMatrix, XMMatrixIdentity());
 	m_iCurrAnimationIndex = -1;
 
@@ -155,6 +154,59 @@ HRESULT FBXLoaderComponent::ExportModel(const _string& outFilePath)
 	/*Bone 포맷 파일 쓰기*/
 	if (FAILED(ExportSkeleton(out)))
 		return E_FAIL;
+
+	for (const auto& mtrl : m_Materials)
+		mtrl->ConvertToDDS(outFilePath);
+
+	MSG_BOX("Save Success");
+	return S_OK;
+}
+
+HRESULT FBXLoaderComponent::ExportFractureModel(const _string& outFilePath)
+{
+	namespace fs = std::filesystem;
+
+	m_PreTransformMatrix = m_pOwner->GetComponent<TransformComponent>()->GetWorldMatrix();
+
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
+	{
+		_string path = outFilePath + std::to_string(i) + ".model";
+
+		std::ofstream out(path.c_str(), std::ios::binary);
+		if (!out.is_open())
+		{
+			MSG_BOX("Failed to save");
+			return E_FAIL;
+		}
+
+		MODEL_FORMAT modelFormat{};
+		modelFormat.numMeshes = 1;
+		modelFormat.numMaterials = 1;
+		modelFormat.skinnedMesh = 0;
+		modelFormat.preTransformMatrix = m_PreTransformMatrix;
+
+		/*Model 포맷 파일 쓰기*/
+		out.write(reinterpret_cast<const char*>(&modelFormat), sizeof(MODEL_FORMAT));
+
+		/*Mesh 포맷 파일 쓰기*/
+		m_Meshes[i]->ExportFracture(m_pSkeleton, out);
+
+		/*Material 포맷 파일 쓰기*/
+		ExportMaterials(out,true);
+
+		/*Bone 포맷 파일 쓰기*/
+		SKELETON_FORMAT skeletonFormat{};
+		skeletonFormat.numBones = 1;
+		out.write(reinterpret_cast<const char*>(&skeletonFormat), sizeof(SKELETON_FORMAT));
+
+		BONE_FORMAT boneFormat{};
+		strncpy_s(boneFormat.boneTag, MAX_PATH, "0", sizeof(boneFormat.boneTag) - 1);
+		boneFormat.parentIndex = -1;
+		XMStoreFloat4x4(&boneFormat.transformationMatrix, XMMatrixIdentity());
+		XMStoreFloat4x4(&boneFormat.combinedTransformationMatrix, XMMatrixIdentity());
+
+		out.write(reinterpret_cast<const char*>(&boneFormat), sizeof(BONE_FORMAT));
+	}
 
 	for (const auto& mtrl : m_Materials)
 		mtrl->ConvertToDDS(outFilePath);
@@ -316,6 +368,20 @@ void FBXLoaderComponent::ExportInspector(_string savedFileName)
 			}
 		}
 	}
+
+	if (ImGui::Button("Export fracture"))
+	{
+		nfdchar_t* outPath = nullptr;
+		nfdresult_t res = NFD_SaveDialog(nullptr, nullptr, &outPath);
+
+		if (res == NFD_OKAY)
+		{
+			savedFileName = outPath;
+			NFDi_Free(outPath);
+
+			ExportFractureModel(savedFileName);
+		}
+	}
 }
 
 #endif
@@ -391,12 +457,19 @@ HRESULT FBXLoaderComponent::ExportMeshes(std::ofstream& out)
 	return S_OK;
 }
 
-HRESULT FBXLoaderComponent::ExportMaterials(std::ofstream& out)
+HRESULT FBXLoaderComponent::ExportMaterials(std::ofstream& out, _bool isFracture)
 {
 	std::vector<MTRL_FORMAT> mtrlFormats(m_iNumMaterials);
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
 		m_Materials[i]->Export(mtrlFormats[i]);
+
+	if (isFracture)
+	{
+		for (_uint i = 0; i < m_iNumMaterials; ++i)
+			mtrlFormats[i].shaderTag = "Shader_VtxMesh";
+	}
+
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
 	{

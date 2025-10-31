@@ -66,9 +66,13 @@ void MainApp::Run()
     while (isRunning)
     {
 
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            if (WM_QUIT == msg.message) break;
+            if (WM_QUIT == msg.message)
+            {
+                isRunning = false;
+                break;
+            }
 
             if (!TranslateAccelerator(msg.hwnd, hAccel, &msg))
             {
@@ -142,9 +146,21 @@ HRESULT MainApp::LoadStaticLevel()
 void MainApp::AddColliderFilterGroup()
 {
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Spawner));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossPillar));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
+
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::EnemyWeakness));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::EnemyShield));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossArm));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossPillar));
+
+
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Fracture), ENUM_CLASS(ColliderFilter::Fracture));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Ray), ENUM_CLASS(ColliderFilter::StaticMapObject));
 }
 
@@ -173,8 +189,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
         return false;
     }
 
-    int x = static_cast<_int>(WinSizeX / 4);
-    int y = static_cast<_int>(WinSizeY / 4);
+    int x = static_cast<_int>(300);
+    int y = static_cast<_int>(100);
 
     windowSize = { 0, 0, WinSizeX, WinSizeY };
 
@@ -202,9 +218,9 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
-    ShowCursor(false);
+    //ShowCursor(false);
     RECT clipRect{ x + 300,y + 200, x + 600, y + 300 };
-    ClipCursor(&clipRect);
+    //ClipCursor(&clipRect);
 
     return true;
 }

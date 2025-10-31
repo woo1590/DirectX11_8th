@@ -56,6 +56,7 @@ HRESULT Bomber::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	Bounding_AABB::AABB_DESC aabbDesc{};
+	aabbDesc.useResolve = true;
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,5.f,0.f };

@@ -30,6 +30,7 @@ namespace Engine
 	typedef		XMFLOAT3					_float3;
 	typedef		XMFLOAT4					_float4;
 	typedef		XMFLOAT4X4					_float4x4;
+	typedef		XMFLOAT3X3					_float3x3;
 
 	typedef		XMUINT4						_uint4;
 

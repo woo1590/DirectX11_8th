@@ -21,6 +21,7 @@ public:
     void ExtractBoneMatrices(RenderProxy& proxy, FBXSkeleton * pSkeleton);
 
     HRESULT Export(std::ofstream& out);
+    HRESULT ExportFracture(FBXSkeleton* skeleton, std::ofstream& out);
 
     void Free()override;
 

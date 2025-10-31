@@ -170,4 +170,21 @@ namespace map
 	}
 }
 
+namespace physics
+{
+	static constexpr _float RESTITUTION = 1.2f;
+
+	inline void CalculateImpulse(_float3 velocity, _float3 hitNormal, _float3& outVelocity, _float3& outAngularVelocity)
+	{
+		/*make linear velocity*/
+		_vector slideVec{};
+		_vector restitutionVec{};
+		_float t = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&velocity), XMLoadFloat3(&hitNormal)));
+
+		slideVec = XMLoadFloat3(&velocity) - t * XMLoadFloat3(&hitNormal);
+		restitutionVec = XMLoadFloat3(&hitNormal) * restitutionVec;
+
+		XMStoreFloat3(&outVelocity, slideVec + restitutionVec);
+	}
+}
 NS_END

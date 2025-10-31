@@ -35,8 +35,8 @@ public:
 #endif
 
 private:
-    _uint m_iHP{};
-    _uint m_iShield{};
+    _int m_iHP{};
+    _int m_iShield{};
     _uint m_iAttackPower{};
     _float m_fMoveSpeed{};
 

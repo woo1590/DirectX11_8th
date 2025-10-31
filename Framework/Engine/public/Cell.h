@@ -17,6 +17,7 @@ public:
     HRESULT Initialize(NAVCELL_DATA desc);
 
     /*getter*/
+    _float3 GetCellNormal();
     VIBuffer* GetBuffer()const { return m_pBuffer; }
     MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
 

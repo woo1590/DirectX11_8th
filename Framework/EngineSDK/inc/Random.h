@@ -29,6 +29,11 @@ public:
         return dist(rng);
     }
 
+    template<typename T>
+    void Shuffle(T& stl)
+    {
+        std::shuffle(stl.begin(), stl.end(), rng);
+    }
 private:
     void Free()override {}
 

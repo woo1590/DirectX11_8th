@@ -31,6 +31,7 @@ public:
     
     HRESULT ImportModel(const _string& filePath);
     HRESULT ExportModel(const _string& outFilePath);
+    HRESULT ExportFractureModel(const _string& outFilePath);
 
     Component* Clone() { return new FBXLoaderComponent(*this); }
     void Free()override;
@@ -48,7 +49,7 @@ private:
     HRESULT CreateAnimations(const aiScene* pScene);
 
     HRESULT ExportMeshes(std::ofstream& out);
-    HRESULT ExportMaterials(std::ofstream& out);
+    HRESULT ExportMaterials(std::ofstream& out, _bool isFracture = false);
     HRESULT ExportSkeleton(std::ofstream& out);
     HRESULT ExportAnimations(const _string& outFilePath);
 

@@ -67,7 +67,6 @@ void PlayerCam::PriorityUpdate(_float dt)
 void PlayerCam::Update(_float dt)
 {
 	__super::Update(dt);
-
 	auto engine = EngineCore::GetInstance();
 
 	_float2 mouseDelta = engine->GetMouseDelta();
@@ -95,6 +94,7 @@ void PlayerCam::Update(_float dt)
 void PlayerCam::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+	
 }
 
 Object* PlayerCam::Clone(InitDESC* arg)

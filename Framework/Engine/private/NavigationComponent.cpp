@@ -53,6 +53,14 @@ void NavigationComponent::AttachSystem(NavigationSystem* system)
 	m_pNavigationSystem->AddRef();
 }
 
+void NavigationComponent::SetCurrCellIndex(_uint cellIndex)
+{
+	m_iCurrCellIndex = cellIndex;
+
+	if (!m_pNavigationSystem->IsCellExist(m_iCurrCellIndex))
+		m_iCurrCellIndex = 0;
+}
+
 void NavigationComponent::SpawnInCell(_uint cellIndex)
 {
 	m_iCurrCellIndex = cellIndex;
@@ -78,7 +86,14 @@ void NavigationComponent::MoveTo(_float3 deltaPosition)
 	if (IsMove(nextPosition))
 		m_pTransform->SetPosition(nextPosition);
 	else
-		return;
+	{
+		nextPosition = MakeSlideVector(currPosition, nextPosition);
+
+		if (IsMove(nextPosition))
+		{
+			m_pTransform->SetPosition(nextPosition);
+		}
+	}
 }
 
 void NavigationComponent::MoveByVelocity(_float dt)
@@ -212,6 +227,11 @@ void NavigationComponent::MoveByVelocity(_float dt)
 			}
 		}
 	}
+}
+
+_float3 NavigationComponent::GetCurrCellNormal()
+{
+	return m_pNavigationSystem->GetCellNormal(m_iCurrCellIndex);
 }
 
 _bool NavigationComponent::IsLinkedCell(_float3 position)

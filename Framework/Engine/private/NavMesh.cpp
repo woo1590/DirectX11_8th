@@ -61,6 +61,11 @@ HRESULT NavMesh::ExtractDebugProxies(std::vector<RenderProxy>& proxies)
 	return S_OK;
 }
 
+_float3 NavMesh::GetCellNormal(_uint cellIndex)
+{
+	return m_Cells[cellIndex]->GetCellNormal();
+}
+
 _bool NavMesh::IsCellExist(_uint cellIndex)
 {
 	if (cellIndex >= m_Cells.size())

@@ -27,7 +27,7 @@ HRESULT GamePlayLevel::Initialize()
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(LoadMapFromFile("../bin/data/map/stage1_map.json")))
+	if (FAILED(LoadMapFromFile("../bin/data/map/boss_map.json")))
 		return E_FAIL;
 
 	engine->SetNavMesh(ENUM_CLASS(LevelID::GamePlay), "NavMesh_Test");
@@ -73,7 +73,7 @@ void GamePlayLevel::Update(_float dt)
 	if (engine->IsKeyPressed('I'))
 		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
 	if (engine->IsKeyPressed('O'))
-		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Boss", ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy");
 
 }
 

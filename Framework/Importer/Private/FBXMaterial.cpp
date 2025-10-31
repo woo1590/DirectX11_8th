@@ -53,7 +53,7 @@ HRESULT FBXMaterial::Initialize(Shader* pShader, const _string& shaderTag, aiMat
 		if (!tex)
 		{
 			MSG_BOX("Failed to load : Texture(FBXMaterial)");
-			return E_FAIL;
+			return S_OK;
 		}
 
 		m_TexParams["g_DiffuseTexture"].push_back(tex);
@@ -71,7 +71,7 @@ HRESULT FBXMaterial::Initialize(Shader* pShader, const _string& shaderTag, aiMat
 		if (!tex)
 		{
 			MSG_BOX("Failed to load : Texture(FBXMaterial)");
-			return E_FAIL;
+			return S_OK;
 		}
 
 		m_TexParams["g_NormalTexture"].push_back(tex);
@@ -89,7 +89,7 @@ HRESULT FBXMaterial::Initialize(Shader* pShader, const _string& shaderTag, aiMat
 		if (!tex)
 		{
 			MSG_BOX("Failed to load : Texture(FBXMaterial)");
-			return E_FAIL;
+			return S_OK;
 		}
 
 		m_TexParams["g_SpecularTexture"].push_back(tex);

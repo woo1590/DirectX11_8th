@@ -205,6 +205,7 @@
     <ClInclude Include="..\Public\Importer_Defines.h" />
     <ClInclude Include="..\public\ImportLevel.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\ModelLoderComponent.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Resource.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="..\private\FBXSkeleton.cpp" />
     <ClCompile Include="..\private\ImportLevel.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\ModelLoderComponent.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="ImporterPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

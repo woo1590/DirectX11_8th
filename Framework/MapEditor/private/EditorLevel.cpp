@@ -114,7 +114,7 @@ HRESULT EditorLevel::Initialize_DefaultResource()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/horse_head/horse_head.model",
 			"Model_Enemy_HorseHead")))
 			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/boss/boss_stage.model",
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/boss2/boss_stage.model",
 			"Model_Boss_Stage")))
 			return E_FAIL;
 

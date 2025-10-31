@@ -23,6 +23,9 @@ public:
     void AttachRigidBody();
     void AttachSystem(NavigationSystem* system);
 
+    void SetCurrCellIndex(_uint cellIndex);
+    _uint GetCurrCellIndex()const { return m_iCurrCellIndex; }
+
     /*API*/
     void SpawnInCell(_uint cellIndex);
     void MoveTo(_float3 deltaPosition);
@@ -36,6 +39,7 @@ public:
 #endif
 
 private:
+    _float3 GetCurrCellNormal();
     _bool IsLinkedCell(_float3 position);
     _bool IsMove(_float3 position);
     _float GetHeight(_float3 position);

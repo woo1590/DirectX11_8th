@@ -66,6 +66,8 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 	statusDesc.attackPower = 20;
 	status->Initialize(&statusDesc);
 
+	m_fSpeed = 1000.f;
+
 	return S_OK;
 }
 
@@ -78,9 +80,8 @@ void DefaultBullet::Update(_float dt)
 {
 	__super::Update(dt);
 
-	_float speed = 1000.f;
 	_float3 forward = m_pTransform->GetForward();
-	_vector velocity = XMLoadFloat3(&forward) * speed;
+	_vector velocity = XMLoadFloat3(&forward) * m_fSpeed;
 
 	_float3 currPosition = m_pTransform->GetPosition();
 	_float3 nextPosition{};
@@ -108,19 +109,7 @@ void DefaultBullet::LateUpdate(_float dt)
 
 void DefaultBullet::OnCollisionEnter(ColliderComponent* otherCollider)
 {
-	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
-	{
-	case ColliderFilter::Enemy:
-	{
-		SetDead();
-	}break;
-	case ColliderFilter::EnemyShield:
-	{
-		SetDead();
-	}
-	default:
-		break;
-	}
+	SetDead();
 }
 
 Object* DefaultBullet::Clone(InitDESC* arg)
