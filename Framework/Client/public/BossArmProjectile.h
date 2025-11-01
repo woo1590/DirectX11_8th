@@ -6,6 +6,11 @@ NS_BEGIN(Client)
 class BossArmProjectile :
     public Projectile
 {
+public:
+    typedef struct tagBossArmProjectileDesc : public Object::OBJECT_DESC
+    {
+        _uint armSide{};
+    }BOSS_ARM_PROJECTILE_DESC;
 private:
     BossArmProjectile();
     BossArmProjectile(const BossArmProjectile& prototype);

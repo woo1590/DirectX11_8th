@@ -27,7 +27,7 @@ class Boss :
         Fire4,
         Count
     };
-    enum class Parts { Core, Core_Socket,Head, Head_Socket, RightArm, RightArm_Socket, LeftArm, LeftArm_Socket, Count };
+    enum class Parts { Core, Core_Socket, Head, Head_Socket, RightArm, RightArm_Socket, LeftArm, LeftArm_Socket, RightArmStart_Socket, RightArmEnd_Socket, LeftArmStart_Socket, LeftArmEnd_Socket, Count };
 private:
     Boss();
     Boss(const Boss& prototype);
@@ -61,7 +61,7 @@ private:
         void TestForExit(Object* object)override;
 
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 1.5f;
+        _float m_fDuration = 1.f;
     };
     class BossAttack1Start : public State
     {
@@ -95,7 +95,7 @@ private:
         std::vector<_uint> m_IndexX;
         std::vector<_uint> m_IndexY;
         std::vector<_uint> m_IndexZ;
-        _uint m_iNumStones = 5;
+        _uint m_iNumStones = 7;
         _bool m_IsProjectileSpawned = false;
     };
     class BossFire1InProgress : public State
@@ -139,6 +139,8 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _float4 m_TargetRotation{};
     };
     class BossFire3Start : public State
     {

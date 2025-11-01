@@ -196,8 +196,14 @@ HRESULT Loader::LoadingForGamePlay()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/enemy/boss_stone_projectile/boss_stone_projectile0.model",
 			"Model_Boss_Stone_Projectile0")))
 			return E_FAIL;
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/enemy/boss_arm_projectile_l/boss_arm_projectile_l.model",
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/enemy/boss_stone_projectile/boss_stone_projectile1.model",
 			"Model_Boss_Stone_Projectile1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/enemy/boss_arm_projectile/boss_arm_projectile_l.model",
+			"Model_Boss_Arm_Projectile_L")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/enemy/boss_arm_projectile/boss_arm_projectile_r.model",
+			"Model_Boss_Arm_Projectile_R")))
 			return E_FAIL;
 
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/enemy/bomber/bomber.model",
@@ -234,61 +240,6 @@ HRESULT Loader::LoadingForGamePlay()
 				return E_FAIL;
 
 			/*Map*/
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/stage1/stage1_wall0.model",
-				"Model_Stage1_Wall0")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/stage1/stage1_wall1.model",
-				"Model_Stage1_Wall1")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/stage1/stage1_wall2.model",
-				"Model_Stage1_Wall2")))
-				return E_FAIL;
-
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/floor_tile/floor_tile0.model",
-				"Model_Floor_Tile0")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/floor_tile/floor_tile1.model",
-				"Model_Floor_Tile1")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/floor_tile/floor_tile2.model",
-				"Model_Floor_Tile2")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/floor_tile/floor_tile3.model",
-				"Model_Floor_Tile3")))
-				return E_FAIL;
-
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/celling/celling_side.model",
-				"Model_Celling_Side")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/celling/celling_corner.model",
-				"Model_Celling_Corner")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/celling/celling0.model",
-				"Model_Celling0")))
-				return E_FAIL;
-
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/reliefwall/reliefwall0.model",
-				"Model_ReliefWall0")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/reliefwall/reliefwall1.model",
-				"Model_ReliefWall1")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/reliefwall/reliefwall2.model",
-				"Model_ReliefWall2")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/reliefwall/reliefwall3.model",
-				"Model_ReliefWall3")))
-				return E_FAIL;
-
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/door/door0.model",
-				"Model_Door0")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/door/door1.model",
-				"Model_Door1")))
-				return E_FAIL;
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/door/door2.model",
-				"Model_Door2")))
-				return E_FAIL;
 			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/door/door_l.model",
 				"Model_Door_L")))
 				return E_FAIL;
@@ -296,16 +247,18 @@ HRESULT Loader::LoadingForGamePlay()
 				"Model_Door_R")))
 				return E_FAIL;
 
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/stair/stair0.model",
-				"Model_Stair0")))
-				return E_FAIL;
-
-			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/obstacle/obstacle0.model",
-				"Model_Obstacle0")))
-				return E_FAIL;
-
 			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/boss2/boss_stage.model",
 				"Model_Boss_Stage")))
+				return E_FAIL;
+
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/area/stage1_area0/stage1_area0.model",
+				"Model_Stage1_Area0")))
+				return E_FAIL;
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/area/stage1_area1/stage1_area1.model",
+				"Model_Stage1_Area1")))
+				return E_FAIL;
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/resource/models/map/area/stage1_area2/stage1_area2.model",
+				"Model_Stage1_Area2")))
 				return E_FAIL;
 	}
 
@@ -433,6 +386,8 @@ HRESULT Loader::LoadingForGamePlay()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_BossStoneProjectile", BossStoneProjectile::Create())))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_BossArmProjectile", BossArmProjectile::Create())))
+			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Bomber", Bomber::Create())))
 			return E_FAIL;
@@ -466,44 +421,6 @@ HRESULT Loader::LoadingForGamePlay()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Boss_Stage", BossStage::Create())))
 			return E_FAIL;
 
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stage1_Wall0", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stage1_Wall1", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stage1_Wall2", StaticMapObject::Create())))
-			return E_FAIL;
-
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Floor_Tile0", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Floor_Tile1", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Floor_Tile2", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Floor_Tile3", StaticMapObject::Create())))
-			return E_FAIL;
-
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Celling_Corner", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Celling_Side", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Celling0", StaticMapObject::Create())))
-			return E_FAIL;
-
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ReliefWall0", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ReliefWall1", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ReliefWall2", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ReliefWall3", StaticMapObject::Create())))
-			return E_FAIL;
-
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door0", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door1", StaticMapObject::Create())))
-			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door2", StaticMapObject::Create())))
-			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door_L", Door_L::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door_R", Door_R::Create())))
@@ -511,10 +428,11 @@ HRESULT Loader::LoadingForGamePlay()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door", Door::Create())))
 			return E_FAIL;
 
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stair0", StaticMapObject::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stage1_Area0", StaticMapObject::Create())))
 			return E_FAIL;
-
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Obstacle0", StaticMapObject::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stage1_Area1", StaticMapObject::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Stage1_Area2", StaticMapObject::Create())))
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_EnemySpawner", EnemySpawner::Create())))

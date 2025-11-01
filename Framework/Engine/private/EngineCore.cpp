@@ -167,13 +167,13 @@ void EngineCore::Tick(_float dt)
 	if (FAILED(m_pLightManager->ExtractLightProxy(lights)))
 		return;
 
-	if (m_navDebugEnable)
+	if (m_NavDebugEnable)
 	{
 		if(FAILED(m_pNavigationSystem->ExtractDebugProxies(proxies[ENUM_CLASS(RenderGroup::NavMeshDebug)])))
 			return;
 	}
 
-	if (m_colliderDebugEnable)
+	if (m_ColliderDebugEnable)
 	{
 		if (FAILED(m_pCollisionSystem->ExtractDebugProxies(proxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
 			return;
@@ -479,7 +479,26 @@ RAYCAST_DATA EngineCore::RayCast(RAY worldRay, _float maxDistance, _uint rayFilt
 #pragma endregion
 
 #pragma region RenderTargetManager
-
+HRESULT EngineCore::AddRenderTarget(const _string& targetTag, _uint width, _uint height, DXGI_FORMAT format, _float4 clearColor)
+{
+	return m_pRenderTargetManager->AddRenderTarget(targetTag, width, height, format, clearColor);
+}
+HRESULT EngineCore::AddMRT(const _string& mrtTag, const _string& targetTag)
+{
+	return m_pRenderTargetManager->AddMRT(mrtTag, targetTag);
+}
+HRESULT EngineCore::BindShaderResource(Shader* shader, const _string& targetTag, const _string& constantName)
+{
+	return m_pRenderTargetManager->BindShaderResource(shader, targetTag, constantName);
+}
+HRESULT EngineCore::BeginMRT(const _string& mrtTag)
+{
+	return m_pRenderTargetManager->BeginMRT(mrtTag);
+}
+HRESULT EngineCore::EndMRT()
+{
+	return m_pRenderTargetManager->EndMRT();
+}
 #pragma endregion
 
 

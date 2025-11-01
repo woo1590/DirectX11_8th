@@ -145,6 +145,40 @@ void TransformComponent::Rotate(_float3 euler)
 	MakeDirty();
 }
 
+_float3 TransformComponent::GetWorldPosition()
+{
+	if (m_pParent)
+	{
+		_float4x4 worldMat = GetWorldMatrix();
+		_vector position, scale, rotation;
+		_float3 worldPosition{};
+
+		XMMatrixDecompose(&scale, &rotation, &position, XMLoadFloat4x4(&worldMat));
+		XMStoreFloat3(&worldPosition, position);
+
+		return worldPosition;
+	}
+	else
+		return m_Position;
+}
+
+_float4 TransformComponent::GetWorldQuaternion()
+{
+	if (m_pParent)
+	{
+		_float4x4 worldMat = GetWorldMatrix();
+		_vector position, scale, rotation;
+		_float4 worldQuaternion{};
+
+		XMMatrixDecompose(&scale, &rotation, &position, XMLoadFloat4x4(&worldMat));
+		XMStoreFloat4(&worldQuaternion, rotation);
+
+		return worldQuaternion;
+	}
+	else
+		return m_Quaternion;
+}
+
 _float4x4 TransformComponent::GetWorldMatrix()
 {
 	ResolveDirty();

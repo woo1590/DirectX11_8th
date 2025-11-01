@@ -128,19 +128,27 @@ public:
 #pragma endregion
 
 #pragma region RenderTargetManager
-
+    HRESULT AddRenderTarget(const _string& targetTag, _uint width, _uint height, DXGI_FORMAT format, _float4 clearColor);
+    HRESULT AddMRT(const _string& mrtTag, const _string& targetTag);
+    HRESULT BindShaderResource(class Shader* shader, const _string& targetTag, const _string& constantName);
+    HRESULT BeginMRT(const _string& mrtTag);
+    HRESULT EndMRT();
 #pragma endregion
 
     class Random* GetRandom()const { return m_pRandom; }
     
     /*Debug setting*/
-    void NavDebugEnable() { m_navDebugEnable = true; }
-    void NavDebugDisable() { m_navDebugEnable = false; }
-    _bool IsNavDebugEnable()const { return m_navDebugEnable; }
+    void NavDebugEnable() { m_NavDebugEnable = true; }
+    void NavDebugDisable() { m_NavDebugEnable = false; }
+    _bool IsNavDebugEnable()const { return m_NavDebugEnable; }
 
-    void ColliderDebugEnable() { m_colliderDebugEnable = true; }
-    void ColliderDebugDisable() { m_colliderDebugEnable = false; }
-    _bool IsColliderDebugEnable()const { return m_colliderDebugEnable; }
+    void ColliderDebugEnable() { m_ColliderDebugEnable = true; }
+    void ColliderDebugDisable() { m_ColliderDebugEnable = false; }
+    _bool IsColliderDebugEnable()const { return m_ColliderDebugEnable; }
+
+    void RenderTargetDebugEnable() { m_RenderTargetDebugEnable = true; }
+    void RenderTargetDebugDisable() { m_RenderTargetDebugEnable = false; }
+    _bool IsRenderTargetDebugEnable()const { return m_RenderTargetDebugEnable; }
 
     /*----Window----*/
     HWND GetWindowHandle()const { return m_hWnd; }
@@ -179,8 +187,9 @@ private:
     class NavigationSystem*    m_pNavigationSystem = nullptr;
     class CollisionSystem*     m_pCollisionSystem = nullptr;
 
-    _bool m_navDebugEnable = true;
-    _bool m_colliderDebugEnable = true;
+    _bool m_NavDebugEnable = true;
+    _bool m_ColliderDebugEnable = true;
+    _bool m_RenderTargetDebugEnable = true;
 };
 
 NS_END

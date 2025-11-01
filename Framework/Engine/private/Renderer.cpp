@@ -1,10 +1,10 @@
 #include "EnginePCH.h"
 #include "Renderer.h"
 #include "EngineCore.h"
-#include "VIBuffer.h"
 #include "Material.h"
 #include "LightProxy.h"
 #include "Shader.h"
+#include "VIBufferQuad.h"
 
 Renderer::Renderer()
 	:m_pDevice(EngineCore::GetInstance()->GetDevice()),
@@ -38,6 +38,18 @@ HRESULT Renderer::Initialize()
 	if (FAILED(m_pDevice->CreateBuffer(&cbPerFrameDesc, nullptr, &m_pCBPerFrame)))
 		return E_FAIL;
 
+	/*----Constant Buffer Per Light----*/
+	D3D11_BUFFER_DESC cbPerLightDesc{};
+	cbPerLightDesc.ByteWidth = sizeof(CBPerLight);
+	cbPerLightDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbPerLightDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbPerLightDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbPerLightDesc.MiscFlags = 0;
+	cbPerLightDesc.StructureByteStride = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&cbPerLightDesc, nullptr, &m_pCBPerLight)))
+		return E_FAIL;
+
 	/*----Constant Buffer Per Object----*/
 	D3D11_BUFFER_DESC cbPerObjectDesc{};
 	cbPerObjectDesc.ByteWidth = sizeof(CBPerObject);
@@ -62,10 +74,26 @@ HRESULT Renderer::Initialize()
 	if (FAILED(m_pDevice->CreateBuffer(&cbBones, nullptr, &m_pCBBonePalatte)))
 		return E_FAIL;
 
+	/*----deferred rendering----*/
+	_uint numViewPort = 1;
+	D3D11_VIEWPORT viewPort{};
+	m_pDeviceContext->RSGetViewports(&numViewPort, &viewPort);
+
+	m_pBuffer = VIBufferQuad::Create();
+	m_pShader = Shader::Create("../bin/shaderfiles/Shader_Deferred.hlsl", VTXTEX::elements, VTXTEX::numElement);
+	ConnectConstantBuffer(m_pShader);
+
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(viewPort.Width, viewPort.Height, 1.f));
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(viewPort.Width, viewPort.Height, 0.f, 1.f));
+
+	if (FAILED(Initialize_DeferredTargets(viewPort)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT Renderer::BeginFrame(std::vector<LightProxy>& lights)
+HRESULT Renderer::BeginFrame()
 {
 	/* 이번 프레임을 그릴 때 사용할 카메라 view, proj   라이트 view proj 세팅*/
 
@@ -81,15 +109,6 @@ HRESULT Renderer::BeginFrame(std::vector<LightProxy>& lights)
 		perFrame.projMatrix = camContext.projMatrix;
 		_float3 campos = camContext.camPosition;
 		perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
-	
-		/*Light Data -> 이후 지연 렌더링으로 넘어가면서 구조 변경 예정*/
-		/*방향성 조명 1개만*/
-
-		if (lights.size())
-		{
-			perFrame.lightColor = lights[0].lightColor;
-			perFrame.lightDirection = lights[0].lightDirection;
-		}
 
 		m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
 		memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
@@ -109,14 +128,98 @@ HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 
 HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
 {
+	auto engine = EngineCore::GetInstance();
+	engine->BeginMRT("MRT_Objects");
+
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy,"NonBlend_Pass");
+
+	engine->EndMRT();
+
+	return S_OK;
+}
+
+HRESULT Renderer::RenderLight(const std::vector<LightProxy>& proxies)
+{
+	auto engine = EngineCore::GetInstance();
+	engine->BeginMRT("MRT_LightAcc");
+
+	engine->BindShaderResource(m_pShader, "Target_Normal", "g_NormalTexture");
+
+	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
+	CBPerFrame perFrame{};
+	perFrame.viewMatrix = m_ViewMatrix;
+	perFrame.projMatrix = m_ProjMatrix;
+
+	D3D11_MAPPED_SUBRESOURCE perObjectData{};
+	CBPerObject perObject{};
+	perObject.worldMatrix = m_WorldMatrix;
+
+	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
+	memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
+	m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
+
+	m_pDeviceContext->Map(m_pCBPerObject, 0, D3D11_MAP_WRITE_DISCARD, 0, &perObjectData);
+	memcpy_s(perObjectData.pData, sizeof(CBPerObject), &perObject, sizeof(CBPerObject));
+	m_pDeviceContext->Unmap(m_pCBPerObject, 0);
+
+	for (const auto& proxy : proxies)
+	{
+		D3D11_MAPPED_SUBRESOURCE cbPerLightData{};
+		CBPerLight perLight{};
+		perLight.lightColor = proxy.lightColor;
+		perLight.lightDirection = proxy.lightDirection;
+		perLight.lightPosition = proxy.lightPosition;
+		perLight.lightRange = proxy.lightRange;
+
+		m_pDeviceContext->Map(m_pCBPerLight, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerLightData);
+		memcpy_s(cbPerLightData.pData, sizeof(CBPerLight), &perLight, sizeof(CBPerLight));
+		m_pDeviceContext->Unmap(m_pCBPerLight, 0);
+
+		m_pBuffer->BindBuffers();
+		m_pShader->Apply("LightAcc_Pass");
+		m_pBuffer->Draw();
+	}
+
+	engine->EndMRT();
+
+	return S_OK;
+}
+
+HRESULT Renderer::RenderCombined()
+{
+	auto engine = EngineCore::GetInstance();
+
+	engine->BindShaderResource(m_pShader, "Target_Diffuse", "g_DiffuseTexture");
+	engine->BindShaderResource(m_pShader, "Target_Shade", "g_ShadeTexture");
+
+	m_pBuffer->BindBuffers();
+	m_pShader->Apply("Combined_Pass");
+	m_pBuffer->Draw();
 
 	return S_OK;
 }
 
 HRESULT Renderer::RenderBlend(const std::vector<RenderProxy>& proxies)
 {
+	auto engine = EngineCore::GetInstance();
+
+	{
+		D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
+		CBPerFrame perFrame{};
+
+		/*View, Proj Matrix*/
+		CAMERA_CONTEXT camContext = engine->GetCameraContext();
+		perFrame.viewMatrix = camContext.viewMatrix;
+		perFrame.projMatrix = camContext.projMatrix;
+		_float3 campos = camContext.camPosition;
+		perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
+
+		m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
+		memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
+		m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
+	}
+
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy, "Blend_Pass");
 
@@ -128,8 +231,8 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 	/* ui 전용 view proj생성 (임시용) */
 	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
 	CBPerFrame perFrame{};
-	XMStoreFloat4x4(&perFrame.viewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&perFrame.projMatrix, XMMatrixOrthographicLH(1280.f, 720.f, 0.f, 1.f));
+	perFrame.viewMatrix = m_ViewMatrix;
+	perFrame.projMatrix = m_ProjMatrix;
 
 	m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
 	memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
@@ -137,6 +240,36 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy,"UI_Pass");
+
+	return S_OK;
+}
+
+HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
+{
+	auto engine = EngineCore::GetInstance();
+
+	/*add render targets*/
+	{
+		if (FAILED(engine->AddRenderTarget("Target_Diffuse", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_Normal", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_Shade", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
+	}
+	
+	/*add mrt object*/
+	{
+		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Diffuse")))
+			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Normal")))
+			return E_FAIL;
+	}
+	/*add mrt light acc*/
+	{
+		if (FAILED(engine->AddMRT("MRT_LightAcc", "Target_Shade")))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -181,14 +314,20 @@ HRESULT Renderer::ConnectConstantBuffer(Shader* shader)
 	if (FAILED(shader->SetConstantBuffer("BoneMatrices", m_pCBBonePalatte)))
 		return E_FAIL;
 
+	if (FAILED(shader->SetConstantBuffer("PerLight", m_pCBPerLight)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void Renderer::Free()
 {
 	__super::Free();
+	Safe_Release(m_pBuffer);
+	Safe_Release(m_pShader);
 
 	Safe_Release(m_pCBPerFrame);
+	Safe_Release(m_pCBPerLight);
 	Safe_Release(m_pCBPerObject);
 	Safe_Release(m_pCBBonePalatte);
 

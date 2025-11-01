@@ -86,6 +86,10 @@ void BossPillar::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{
+	case ColliderFilter::BossArmProjectile:
+	{
+		SetDead();
+	}break;
 	case ColliderFilter::BossStoneProjectile:
 	{
 		--m_iResistantCount;

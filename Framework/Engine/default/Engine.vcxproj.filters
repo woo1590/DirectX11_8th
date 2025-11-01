@@ -888,5 +888,8 @@
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxCell.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_Deferred.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

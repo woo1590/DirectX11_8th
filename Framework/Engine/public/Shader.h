@@ -21,6 +21,7 @@ public:
     HRESULT BindMatrix(const _string& name, const _float4x4* value);
     HRESULT BindRawValue(const _string& name, const void* value, _uint size);
     HRESULT BindTextureValue(const _string& name, Texture* value);
+    HRESULT BindShaderResource(const _string& name, ID3D11ShaderResourceView* srv);
     HRESULT SetConstantBuffer(const _string& name, ID3D11Buffer* constantBuffer);
 
     void Free()override;

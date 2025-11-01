@@ -107,6 +107,7 @@ void BossStoneProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	SetDead();
 }
+
 Object* BossStoneProjectile::Clone(InitDESC* arg)
 {
 	BossStoneProjectile* Instance = new BossStoneProjectile(*this);
@@ -131,7 +132,7 @@ void BossStoneProjectile::BossStoneProjectileSpawn::Enter(Object* object)
 
 	m_fElapsedTime = 0.f;
 	m_fDelayTimer = 0.f;
-	m_fDelayDuration = m_fDuration + random->get<_float>(1.f, 2.f);
+	m_fDelayDuration = m_fDuration + random->get<_float>(1.f, 3.5f);
 
 	m_StartScale = _float3{ 0.1f,0.1f,0.1f };
 	m_EndScale = _float3{ 0.4f,0.4f,0.4f };

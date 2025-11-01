@@ -11,6 +11,7 @@
 #include "Boss_Head.h"
 #include "BossPillar.h"
 #include "BossStoneProjectile.h"
+#include "BossArmProjectile.h"
 
 //component	
 #include "ModelComponent.h"
@@ -222,6 +223,46 @@ HRESULT Boss::CreatePartObjects()
 		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Boss_Head", ENUM_CLASS(Parts::Head), &headDesc)))
 			return E_FAIL;
 	}
+	/*add right arm start socket*/
+	{
+		Socket::SOCKET_DESC rightArmStartSocket{};
+		rightArmStartSocket.parent = this;
+		rightArmStartSocket.parentModel = GetComponent<ModelComponent>();
+		rightArmStartSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 R Hand");
+		rightArmStartSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::RightArmStart_Socket), &rightArmStartSocket)))
+			return E_FAIL;
+	}
+	/*add right arm end socket*/
+	{
+		Socket::SOCKET_DESC rightArmEndSocket{};
+		rightArmEndSocket.parent = this;
+		rightArmEndSocket.parentModel = GetComponent<ModelComponent>();
+		rightArmEndSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 R Finger2");
+		rightArmEndSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::RightArmEnd_Socket), &rightArmEndSocket)))
+			return E_FAIL;
+	}
+	/*add left arm start socket*/
+	{
+		Socket::SOCKET_DESC leftArmStartSocket{};
+		leftArmStartSocket.parent = this;
+		leftArmStartSocket.parentModel = GetComponent<ModelComponent>();
+		leftArmStartSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 L Hand");
+		leftArmStartSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::LeftArmStart_Socket), &leftArmStartSocket)))
+			return E_FAIL;
+	}
+	/*add left arm end socket*/
+	{
+		Socket::SOCKET_DESC leftArmEndSocket{};
+		leftArmEndSocket.parent = this;
+		leftArmEndSocket.parentModel = GetComponent<ModelComponent>();
+		leftArmEndSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 L Finger2");
+		leftArmEndSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::LeftArmEnd_Socket), &leftArmEndSocket)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -248,13 +289,13 @@ void Boss::BossIdle::TestForExit(Object* object)
 
 		if (rand < 4)
 			boss->ChangeState(&boss->m_BossAttack1Start);
-		//else if (rand < 6)
-		//	boss->ChangeState(&boss->m_BossFire1Start);
-		//else if (rand < 9)
-		//	boss->ChangeState(&boss->m_BossFire2Start);
-		else
+		else if (rand < 6)
 			boss->ChangeState(&boss->m_BossFire1Start);
-			//boss->ChangeState(&boss->m_BossFire3Start);
+		else if (rand < 9)
+			boss->ChangeState(&boss->m_BossFire2Start);
+		else
+			boss->ChangeState(&boss->m_BossFire3Start);
+
 	}
 }
 
@@ -412,9 +453,9 @@ void Boss::BossFire1Start::Update(Object* object, _float dt)
 		for (_uint i = 0; i < m_iNumStones; ++i)
 		{
 			Object::OBJECT_DESC stoneDesc{};
-			stoneDesc.position.x = boss->m_StoneAreaMin.x + (spawnGap.x * m_IndexX[i]) + random->get<_float>(-5.f, 5.f);
+			stoneDesc.position.x = boss->m_StoneAreaMin.x + (spawnGap.x * m_IndexX[i]) + random->get<_float>(-10.f, 10.f);
 			stoneDesc.position.y = boss->m_StoneAreaMin.y + (spawnGap.y * m_IndexY[i]) + random->get<_float>(-2.f, 2.f);
-			stoneDesc.position.z = boss->m_StoneAreaMin.z + (spawnGap.z * m_IndexZ[i]) + random->get<_float>(-5.f, 5.f);
+			stoneDesc.position.z = boss->m_StoneAreaMin.z + (spawnGap.z * m_IndexZ[i]) + random->get<_float>(-10.f, 10.f);
 			auto engine = EngineCore::GetInstance();
 			engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_BossStoneProjectile", ENUM_CLASS(LevelID::GamePlay), "Layer_BossStoneProjectile", &stoneDesc);
 		}
@@ -483,10 +524,24 @@ void Boss::BossFire2Start::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2Start));
+	animator->SetPlaySpeedScale(0.6f);
 }
 
 void Boss::BossFire2Start::Update(Object* object, _float dt)
 {
+	auto engine = EngineCore::GetInstance();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float3 currForward = transform->GetForward();
+	_float3 targetForward{};
+	_float3 position = transform->GetPosition();
+	_float3 playerPosition = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+	XMStoreFloat3(&targetForward, XMLoadFloat3(&playerPosition) - XMLoadFloat3(&position));
+	targetForward.y = 0.f;
+	XMStoreFloat3(&targetForward, XMVector3Normalize(XMLoadFloat3(&targetForward)));
+	XMStoreFloat3(&targetForward, XMVectorLerp(XMLoadFloat3(&currForward), XMLoadFloat3(&targetForward), dt * 5.f));
+
+	transform->SetForward(targetForward);
 }
 
 void Boss::BossFire2Start::TestForExit(Object* object)
@@ -509,6 +564,19 @@ void Boss::BossFire2Ready::Enter(Object* object)
 
 void Boss::BossFire2Ready::Update(Object* object, _float dt)
 {
+	auto engine = EngineCore::GetInstance();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float3 currForward = transform->GetForward();
+	_float3 targetForward{};
+	_float3 position = transform->GetPosition();
+	_float3 playerPosition = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+	XMStoreFloat3(&targetForward, XMLoadFloat3(&playerPosition) - XMLoadFloat3(&position));
+	targetForward.y = 0.f;
+	XMStoreFloat3(&targetForward, XMVector3Normalize(XMLoadFloat3(&targetForward)));
+	XMStoreFloat3(&targetForward, XMVectorLerp(XMLoadFloat3(&currForward), XMLoadFloat3(&targetForward), dt * 5.f));
+
+	transform->SetForward(targetForward);
 }
 
 void Boss::BossFire2Ready::TestForExit(Object* object)
@@ -527,6 +595,25 @@ void Boss::BossFire2LeftArm::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2LeftArm));
+
+	auto engine = EngineCore::GetInstance();
+	auto boss = static_cast<Boss*>(object);
+
+	_float3 leftArmStartPosition = boss->m_PartObjects[ENUM_CLASS(Parts::LeftArmStart_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+	_float3 leftArmEndPosition = boss->m_PartObjects[ENUM_CLASS(Parts::LeftArmEnd_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+	_float4 rotation = boss->GetComponent<TransformComponent>()->GetQuaternion();
+	XMStoreFloat4(&rotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&rotation), XMQuaternionRotationRollPitchYaw(math::ToRadian(-8.f), 0.f, math::ToRadian(5.f)))));
+
+	Object* leftArm = nullptr;
+	BossArmProjectile::BOSS_ARM_PROJECTILE_DESC leftArmDesc{};
+	leftArmDesc.armSide = 1;
+	leftArmDesc.position = leftArmStartPosition;
+	leftArmDesc.position.x -= 10.f;
+	leftArmDesc.position.y -= 10.f;
+	leftArmDesc.position.z -= 10.f;
+	leftArmDesc.quaternion = rotation;
+	engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_BossArmProjectile", ENUM_CLASS(LevelID::GamePlay), "Layer_BossArmProjectile", &leftArmDesc, &leftArm);
+
 }
 
 
@@ -550,6 +637,24 @@ void Boss::BossFire2RightArm::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2RightArm));
+
+	auto engine = EngineCore::GetInstance();
+	auto boss = static_cast<Boss*>(object);
+
+	_float3 rightArmStartPosition = boss->m_PartObjects[ENUM_CLASS(Parts::RightArmStart_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+	_float3 rightArmEndPosition = boss->m_PartObjects[ENUM_CLASS(Parts::RightArmEnd_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+	_float4 rotation = boss->GetComponent<TransformComponent>()->GetQuaternion();
+	XMStoreFloat4(&rotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&rotation), XMQuaternionRotationRollPitchYaw(math::ToRadian(-8.f), 0.f, math::ToRadian(-5.f)))));
+
+	Object* rightArm = nullptr;
+	BossArmProjectile::BOSS_ARM_PROJECTILE_DESC rightArmDesc{};
+	rightArmDesc.armSide = 0;
+	rightArmDesc.position = rightArmStartPosition;
+	rightArmDesc.position.x += 10.f;
+	rightArmDesc.position.y -= 10.f;
+	rightArmDesc.position.z -= 10.f;
+	rightArmDesc.quaternion = rotation;
+	engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_BossArmProjectile", ENUM_CLASS(LevelID::GamePlay), "Layer_BossArmProjectile", &rightArmDesc, &rightArm);
 }
 
 void Boss::BossFire2RightArm::Update(Object* object, _float dt)
@@ -572,10 +677,19 @@ void Boss::BossFire2End::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2End));
+
+	XMStoreFloat4(&m_TargetRotation, XMQuaternionRotationRollPitchYaw(0.f, math::ToRadian(180.f), 0.f));
 }
 
 void Boss::BossFire2End::Update(Object* object, _float dt)
 {
+	auto engine = EngineCore::GetInstance();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float4 currRotation = transform->GetQuaternion();
+	XMStoreFloat4(&currRotation, XMQuaternionSlerp(XMLoadFloat4(&currRotation), XMLoadFloat4(&m_TargetRotation), dt * 5.f));
+
+	transform->SetQuaternion(currRotation);
 }
 
 void Boss::BossFire2End::TestForExit(Object* object)
@@ -587,6 +701,8 @@ void Boss::BossFire2End::TestForExit(Object* object)
 	{
 		auto boss = static_cast<Boss*>(object);
 		boss->ChangeState(&boss->m_BossIdle);
+
+		object->GetComponent<TransformComponent>()->SetQuaternion(m_TargetRotation);
 	}
 }
 

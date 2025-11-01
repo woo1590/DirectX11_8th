@@ -188,6 +188,18 @@ HRESULT EditorLevel::Initialize_DefaultResource()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/obstacle/obstacle0.model",
 			"Model_Obstacle0")))
 			return E_FAIL;
+
+
+		/*area*/
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage1_area0/stage1_area0.model",
+			"Model_Stage1_Area0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage1_area1/stage1_area1.model",
+			"Model_Stage1_Area1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage1_area2/stage1_area2.model",
+			"Model_Stage1_Area2")))
+			return E_FAIL;
 	}
 	
 	/*Load Material*/

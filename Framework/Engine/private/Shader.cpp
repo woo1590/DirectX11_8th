@@ -121,6 +121,15 @@ HRESULT Shader::BindTextureValue(const _string& name, Texture* value)
     return iter->second.srvHandle->SetResource(srv);
 }
 
+HRESULT Shader::BindShaderResource(const _string& name, ID3D11ShaderResourceView* srv)
+{
+    auto iter = m_Resources.find(name);
+    if (iter == m_Resources.end())
+        return E_FAIL;
+
+    return iter->second.srvHandle->SetResource(srv);
+}
+
 HRESULT Shader::SetConstantBuffer(const _string& name, ID3D11Buffer* constantBuffer)
 {
     auto iter = m_CBuffers.find(name);

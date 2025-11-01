@@ -39,12 +39,14 @@ public:
 
     /*Getter*/
     _float3 GetPosition()const { return m_Position; }
+    _float3 GetWorldPosition();
     _vector GetPositionV()const { return XMLoadFloat3(&m_Position); }
 
     _float3 GetScale()const { return m_Scale; }
     _vector GetScaleV()const { return XMLoadFloat3(&m_Scale); }  
 
     _float4 GetQuaternion()const { return m_Quaternion; }
+    _float4 GetWorldQuaternion();
     _vector GetQuaternionV()const { return XMLoadFloat4(&m_Quaternion); }
 
     _float3 GetForward()const { return m_Forward; }

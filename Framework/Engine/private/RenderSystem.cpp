@@ -38,7 +38,7 @@ HRESULT RenderSystem::RenderLoop()
 {
 	auto engine = EngineCore::GetInstance();
 
-	m_pRenderer->BeginFrame(m_CurrFrameLights);
+	m_pRenderer->BeginFrame();
 
 	if (FAILED(m_pRenderer->RenderPriority(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Priority)])))
 		return E_FAIL;
@@ -46,8 +46,23 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderNonBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NonBlend)])))
 		return E_FAIL;
 
+	if (FAILED(m_pRenderer->RenderLight(m_CurrFrameLights)))
+		return E_FAIL;
+
+	if (FAILED(m_pRenderer->RenderCombined()))
+		return E_FAIL;
+
 	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
 		return E_FAIL;
+
+	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
+		return E_FAIL;
+
+	if (engine->IsColliderDebugEnable())
+	{
+		if (FAILED(m_pDebugRenderer->RenderColliderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
+			return E_FAIL;
+	}
 
 	if (engine->IsNavDebugEnable())
 	{
@@ -56,15 +71,6 @@ HRESULT RenderSystem::RenderLoop()
 		if (FAILED(m_pDebugRenderer->RenderNavMeshDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NavMeshDebug)])))
 			return E_FAIL;
 	}
-
-	if (engine->IsColliderDebugEnable())
-	{
-		if (FAILED(m_pDebugRenderer->RenderColliderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
-			return E_FAIL;
-	}
-
-	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
-		return E_FAIL;
 
 	Clear();
 
