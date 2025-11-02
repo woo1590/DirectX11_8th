@@ -32,10 +32,10 @@ HRESULT VIBufferCell::Initialize(const _float3* points)
 	/*---vertex buffer---*/
 	D3D11_BUFFER_DESC vbDesc{};
 	vbDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
-	vbDesc.Usage = D3D11_USAGE_DEFAULT;
+	vbDesc.Usage = D3D11_USAGE_DYNAMIC;
 	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbDesc.MiscFlags = 0;
-	vbDesc.CPUAccessFlags = 0;
+	vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vbDesc.StructureByteStride = 0;
 
 	std::vector<VTXCELL> vertices(m_iNumVertices);
@@ -73,6 +73,21 @@ HRESULT VIBufferCell::Initialize(const _float3* points)
 	if (FAILED(m_pDevice->CreateBuffer(&ibDesc, &ibInitData, &m_pIB)))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT VIBufferCell::ChangeCellData(const _float3* points)
+{
+	D3D11_MAPPED_SUBRESOURCE mapData{};
+	std::vector<VTXCELL> vertices(m_iNumVertices);
+	vertices[0].position = points[0];
+	vertices[1].position = points[1];
+	vertices[2].position = points[2];
+
+	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapData);
+	memcpy_s(mapData.pData, sizeof(_float3) * 3, vertices.data(), sizeof(_float3) * 3);
+	m_pDeviceContext->Unmap(m_pVB, 0);
+	
 	return S_OK;
 }
 

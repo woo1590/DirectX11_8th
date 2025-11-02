@@ -4,6 +4,7 @@
 NS_BEGIN(Engine)
 
 class Shader;
+class VIBuffer;
 class RenderTarget :
     public Base
 {
@@ -17,6 +18,7 @@ public:
 
     HRESULT BindShaderResource(Shader* shader, const _string& constantName);
     ID3D11RenderTargetView* GetRTV()const { return m_pRTV; }
+    ID3D11ShaderResourceView* GetSRV()const { return m_pSRV; }
     void Clear();
 
     void Free()override;

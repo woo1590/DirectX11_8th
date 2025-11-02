@@ -28,6 +28,7 @@ typedef struct tagPickResult
 
 	/*NavCell Pick*/
 	_int navCellIndex = -1;
+	_int navCellPointIndex = -1;
 
 }PICK_RESULT;
 

@@ -33,6 +33,8 @@ HRESULT StaticMapObject::Initialize_Prototype()
 	AddComponent<ModelComponent>();
 	AddComponent<MeshColliderComponent>();
 
+	m_eRenderGroup = RenderGroup::NonBlend;
+
 	return S_OK;
 }
 

@@ -40,6 +40,8 @@ public:
     void AddNavCell(_uint index1, _uint index2); /*new cell : 2 cells*/
 
     void LinkCell(_uint index1, _uint index2);
+    _int NearPointIndex(_float3 position);
+    void EditCellPoint(_uint pointIndex, _float3 newPosition);
     void ReomoveLastCell();
 
     /*Getter*/
@@ -58,7 +60,7 @@ private:
     void MakeNeighbor(_uint index1, _uint index2);
     _float3 FindPointFromPointIndex(_uint pointIndex);
     void ConnectCellToPoint(_uint cellIndex0, _uint cellIndex1, _uint pointIndex0, _uint pointIndex1, _uint pointIndex2);
-    void RebuildNeighbor();
+    void RebuildCellData();
 
     _uint m_iPointIndex{};
     std::vector<NAVCELL_DATA> m_NavCellDatas;

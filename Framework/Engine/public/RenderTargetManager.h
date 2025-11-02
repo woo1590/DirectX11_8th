@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "RenderProxy.h"
 
 NS_BEGIN(Engine)
 
@@ -14,13 +15,15 @@ private:
 
 public:
     static RenderTargetManager* Create();
+    HRESULT Intialize();
     HRESULT AddRenderTarget(const _string& targetTag, _uint width, _uint height, DXGI_FORMAT format, _float4 clearColor);
     HRESULT AddMRT(const _string& mrtTag, const _string& targetTag);
     HRESULT BindShaderResource(Shader* shader, const _string& targetTag, const _string& constantName);
     HRESULT BeginMRT(const _string& mrtTag);
     HRESULT EndMRT();
 
-    HRESULT Intialize();
+    /*for debug*/
+    const std::unordered_map<_string, RenderTarget*>& GetRenderTargets() { return m_RenderTargets; }
 
     void Free()override;
 

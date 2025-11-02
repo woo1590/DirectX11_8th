@@ -62,6 +62,9 @@ void MapEditorPanel::Draw(GUIState& state)
 			if (ImGui::Button("NavPlacement"))
 				m_eMode = EditMode::NavPlacement;
 			ImGui::SameLine();
+			if (ImGui::Button("NavEdit"))
+				m_eMode = EditMode::NavEdit;
+			ImGui::SameLine();
 			if (ImGui::Button("NavLink"))
 				m_eMode = EditMode::NavLinked;
 			ImGui::SameLine();
@@ -138,6 +141,8 @@ void MapEditorPanel::Draw(GUIState& state)
 		ImGui::DragInt("First Nav Index : ", reinterpret_cast<int*>(&m_iFirstPickNavIndex));
 		ImGui::DragInt("Second Nav Index : ", reinterpret_cast<int*>(&m_iSecondPickNavIndex));
 
+		ImGui::DragInt("Snap Nav Point Index : ", reinterpret_cast<int*>(&m_iCurrNavCellPointIndex));
+
 		ShowPrefabs();
 	}
 	ImGui::End();
@@ -148,6 +153,8 @@ void MapEditorPanel::Draw(GUIState& state)
 		NavPlacement(state, pickRes);
 	else if (m_eMode == EditMode::NavLinked)
 		LinkNav(state, pickRes);
+	else if (m_eMode == EditMode::NavEdit)
+		NavEditMode(state, pickRes);
 	else if (m_eMode == EditMode::SpawnerPlacement)
 		SpawnerPlacement(state, pickRes);
 	else
@@ -454,6 +461,41 @@ void MapEditorPanel::LinkNav(GUIState& state, PICK_RESULT pickRes)
 		navMeshObject->GetComponent<NavDataComponent>()->LinkCell(m_iFirstPickNavIndex, m_iSecondPickNavIndex);
 		m_iFirstPickNavIndex = -1;
 		m_iSecondPickNavIndex = -1;
+	}
+}
+
+void MapEditorPanel::NavEditMode(GUIState& state, PICK_RESULT pickRes)
+{
+	if (!pickRes.isHit)
+		return;
+
+	auto engine = EngineCore::GetInstance();
+	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
+	auto navData = navMeshObject->GetComponent<NavDataComponent>();
+
+	if (!m_IsDrag)
+	{
+		m_iCurrNavCellPointIndex = navData->NearPointIndex(pickRes.worldHitPosition);
+	}
+
+	if (engine->IsMouseDown(MouseButton::LButton))
+	{
+		if (!m_IsDrag && -1 != m_iCurrNavCellPointIndex)
+			m_IsDrag = true;
+		
+		if (m_IsDrag)
+		{
+			if (pickRes.type == PickType::Model)
+				pickRes.worldHitPosition.y += 1.f;
+
+			navData->EditCellPoint(m_iCurrNavCellPointIndex, pickRes.worldHitPosition);
+		}
+	}
+
+	if (engine->IsMouseAway(MouseButton::LButton))
+	{
+		if (m_IsDrag)
+			m_IsDrag = false;
 	}
 }
 

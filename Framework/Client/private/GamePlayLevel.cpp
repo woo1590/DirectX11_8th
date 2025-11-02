@@ -27,7 +27,7 @@ HRESULT GamePlayLevel::Initialize()
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(LoadMapFromFile("../bin/data/map/boss_map.json")))
+	if (FAILED(LoadMapFromFile("../bin/data/map/stage1_map.json")))
 		return E_FAIL;
 
 	engine->SetNavMesh(ENUM_CLASS(LevelID::GamePlay), "NavMesh_Test");

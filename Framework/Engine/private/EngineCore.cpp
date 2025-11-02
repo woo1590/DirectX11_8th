@@ -106,6 +106,7 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	state.pObjectManager = m_pObjectManager;
 	state.pCameraManager = m_pCameraManager;
 	state.pLevelManager = m_pLevelManager;
+	state.pRenderTargetManager = m_pRenderTargetManager;
 
 	m_pImGuiManager = ImGuiManager::Create(m_hWnd, m_pGraphicDevice->GetDevice(),m_pGraphicDevice->GetDeviceContext(),state);
 	if (!m_pImGuiManager)

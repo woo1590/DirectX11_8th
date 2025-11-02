@@ -87,6 +87,12 @@ HRESULT ColliderComponent::Initialize(InitDESC* arg)
 		&m_pInputLayout)))
 		return E_FAIL;
 
+	D3D11_DEPTH_STENCIL_DESC dsDesc{};
+	dsDesc.DepthEnable = true;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	if (FAILED(m_pDevice->CreateDepthStencilState(&dsDesc, &m_pDSState)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -268,7 +274,8 @@ void ColliderComponent::Draw()
 	m_pEffect->SetView(XMLoadFloat4x4(&camContext.viewMatrix));
 	m_pEffect->SetProjection(XMLoadFloat4x4(&camContext.projMatrix));
 	m_pEffect->Apply(m_pDeviceContext);
-
+	
+	m_pDeviceContext->OMSetDepthStencilState(m_pDSState,0);
 	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 
 	m_pBatch->Begin();

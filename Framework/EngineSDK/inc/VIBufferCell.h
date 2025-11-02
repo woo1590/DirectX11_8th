@@ -13,6 +13,7 @@ private:
 public:
     static VIBufferCell* Create(const _float3* points);
     HRESULT Initialize(const _float3* points);
+    HRESULT ChangeCellData(const _float3* points);
 
     void Free()override;
 

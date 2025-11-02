@@ -4,6 +4,7 @@
 #include "OutlinerPanel.h"
 #include "InspectorPanel.h"
 #include "GuizmoPanel.h"
+#include "RenderTargetPanel.h"
 
 #ifdef USE_IMGUI
 
@@ -50,9 +51,14 @@ HRESULT ImGuiManager::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	if (!guizmo)
 		return E_FAIL;
 
+    auto renderTarget = RenderTargetPanel::Create();
+    if (!renderTarget)
+        return E_FAIL;
+
 	m_Panels.push_back(outliner);
 	m_Panels.push_back(inspector);
 	m_Panels.push_back(guizmo);
+    m_Panels.push_back(renderTarget);
 
 	m_GuiState = state;
 

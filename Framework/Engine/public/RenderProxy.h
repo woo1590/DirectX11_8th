@@ -22,7 +22,7 @@ struct RenderProxy
 	/*For blend object*/
 	_float viewZ = 0.f;
 
-	/*For Debug Collider*/
+	/*For Debug*/
 	ColliderComponent* collider = nullptr;
 
 	RenderGroup group{};

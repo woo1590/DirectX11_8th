@@ -58,7 +58,7 @@ HRESULT NavDataComponent::ExtractRenderProxy(std::vector<RenderProxy>& proxies)
 
 void NavDataComponent::ExportNavData(std::ostream& file)
 {
-	RebuildNeighbor();
+	RebuildCellData();
 
 	_uint numNavDatas = m_NavCellDatas.size();
 
@@ -553,7 +553,7 @@ void NavDataComponent::ConnectCellToPoint(_uint cellIndex0, _uint cellIndex1, _u
 	MakeNeighbor(lastIndex - 1, lastIndex);
 }
 
-void NavDataComponent::RebuildNeighbor()
+void NavDataComponent::RebuildCellData()
 {
 	for (_uint i = 0; i < m_NavCellDatas.size(); ++i)
 	{
@@ -561,6 +561,26 @@ void NavDataComponent::RebuildNeighbor()
 		{
 			MakeNeighbor(i, j);
 		}
+	}
+
+	for (auto& navCellData : m_NavCellDatas)
+	{
+		_float3 normalAB{ -1.f * (navCellData.points[1].z - navCellData.points[0].z),
+								  navCellData.points[1].y - navCellData.points[0].y,
+								  navCellData.points[1].x - navCellData.points[0].x };
+		XMStoreFloat3(&navCellData.lines[0], XMVector3Normalize(XMLoadFloat3(&normalAB)));
+
+		/*BC*/
+		_float3 normalBC{ -1.f * (navCellData.points[2].z - navCellData.points[1].z),
+								  navCellData.points[2].y - navCellData.points[1].y,
+								  navCellData.points[2].x - navCellData.points[1].x };
+		XMStoreFloat3(&navCellData.lines[1], XMVector3Normalize(XMLoadFloat3(&normalBC)));
+
+		/*CA*/
+		_float3 normalCA{ -1.f * (navCellData.points[0].z - navCellData.points[2].z),
+								  navCellData.points[0].y - navCellData.points[2].y,
+								  navCellData.points[0].x - navCellData.points[2].x };
+		XMStoreFloat3(&navCellData.lines[2], XMVector3Normalize(XMLoadFloat3(&normalCA)));
 	}
 }
 
@@ -597,29 +617,57 @@ void NavDataComponent::LinkCell(_uint index1, _uint index2)
 	cellDataA.linkedCells[linkLine] = index2;
 }
 
+_int NavDataComponent::NearPointIndex(_float3 position)
+{
+	_float snapDistance = 3.f;
+
+	_float minDistance = FLT_MAX;
+	_int pointIndex = -1;
+	for (const auto& cellData : m_NavCellDatas)
+	{
+		for (_uint i = 0; i < 3; ++i)
+		{
+			_float distance{};
+			_float3 point = FindPointFromPointIndex(cellData.pointIndices[i]);
+
+			distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&point) - XMLoadFloat3(&position)));
+
+			if (distance < minDistance && distance < snapDistance)
+			{
+				minDistance = distance;
+				pointIndex = cellData.pointIndices[i];
+			}
+		}
+	}
+
+	return pointIndex;
+}
+
+void NavDataComponent::EditCellPoint(_uint pointIndex, _float3 newPosition)
+{
+	for (auto& cellData : m_NavCellDatas)
+	{
+		for (_uint i = 0; i < 3; ++i)
+		{
+			if (cellData.pointIndices[i] == pointIndex)
+			{
+				cellData.points[i] = newPosition;
+
+				m_VIBuffers[cellData.index]->ChangeCellData(cellData.points);
+				m_MaterialInstances[cellData.index]->SetFloat3("g_CellPointA", cellData.points[0]);
+				m_MaterialInstances[cellData.index]->SetFloat3("g_CellPointB", cellData.points[1]);
+				m_MaterialInstances[cellData.index]->SetFloat3("g_CellPointC", cellData.points[2]);
+
+				break;
+			}
+		}
+	}
+}
+
 void NavDataComponent::ReomoveLastCell()
 {
 	if (m_NavCellDatas.empty())
 		return;
-
-	NAVCELL_DATA lastCellData = m_NavCellDatas.back();
-
-	_uint index = lastCellData.index;
-	for (_uint i = 0; i < 3; ++i)
-	{
-		if (-1 != lastCellData.neighbors[i])
-		{
-			NAVCELL_DATA& neighborData = m_NavCellDatas[lastCellData.neighbors[i]];
-			for (_uint j = 0; j < 3; ++j)
-			{
-				if (neighborData.neighbors[j] == index)
-				{
-					neighborData.neighbors[j] = -1;
-					break;
-				}
-			}
-		}
-	}
 
 	_uint maxPointIndex = 0;
 	for (_uint i = 0; i < m_NavCellDatas.size(); ++i)

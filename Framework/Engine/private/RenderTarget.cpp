@@ -2,6 +2,7 @@
 #include "RenderTarget.h"
 #include "EngineCore.h"
 #include "Shader.h"
+#include "VIBuffer.h"
 
 RenderTarget::RenderTarget()
 {

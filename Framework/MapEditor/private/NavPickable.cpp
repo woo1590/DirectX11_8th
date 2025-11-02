@@ -69,7 +69,10 @@ PICK_RESULT NavPickable::IntersectRay(RAY ray)
 	}
 
 	if (result.isHit)
+	{
 		navData->SetHoverIndex(result.navCellIndex);
+		XMStoreFloat3(&result.worldHitPosition, XMLoadFloat3(&ray.origin) + result.distance * XMLoadFloat3(&ray.direction));
+	}
 	else
 		navData->SetHoverIndex(-1);
 

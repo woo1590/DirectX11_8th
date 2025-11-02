@@ -162,7 +162,7 @@ HRESULT Loader::LoadingForGamePlay()
 
 	/*Load Navigation*/
 	{
-		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/data/navigation/boss_navigation.dat", "NavMesh_Test")))
+		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::GamePlay), "../bin/data/navigation/stage1_navigation.dat", "NavMesh_Test")))
 			return E_FAIL;
 	}
 

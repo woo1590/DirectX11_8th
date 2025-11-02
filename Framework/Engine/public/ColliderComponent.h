@@ -60,6 +60,7 @@ protected:
 
     BasicEffect* m_pEffect = nullptr;
     PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
+    ID3D11DepthStencilState* m_pDSState = nullptr;
 };
 
 NS_END
