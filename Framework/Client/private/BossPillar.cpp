@@ -60,7 +60,7 @@ HRESULT BossPillar::Initialize(InitDESC* arg)
 
 	/*model*/	
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_BossPillar");
+	model->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_BossPillar");
 
 	ChangeState(&m_BossPillarSpawn);
 

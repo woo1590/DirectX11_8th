@@ -49,7 +49,7 @@ HRESULT BackGround::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	sprite->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
-	sprite->SetMaterial(ENUM_CLASS(LevelID::Logo), "Mtrl_Background_Logo");
+	sprite->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Background_Logo");
 
 	return S_OK;
 }

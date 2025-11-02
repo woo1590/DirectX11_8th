@@ -45,20 +45,7 @@ HRESULT EnemySpawner::Initialize(InitDESC* arg)
 	ENEMY_SPAWNER_DESC* desc = static_cast<ENEMY_SPAWNER_DESC*>(arg);
 	m_AvailableNavCellIndices = std::move(desc->availableNavCellIndices);
 	m_Waves = std::move(desc->waves);
-
-	if (desc->doorID != -1)
-	{
-		auto engine = EngineCore::GetInstance();
-		auto& doors = engine->GetObjects(ENUM_CLASS(LevelID::GamePlay), "Layer_Door");
-
-		auto iter = doors.begin();
-		for (_uint i = 0; i < desc->doorID; ++i)
-			iter++;
-
-		m_pConnectedDoor = dynamic_cast<Door*>((*iter));
-		if (!m_pConnectedDoor)
-			return E_FAIL;
-	}
+	m_iDoorID = desc->doorID;
 
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
@@ -91,6 +78,25 @@ void EnemySpawner::Update(_float dt)
 void EnemySpawner::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT EnemySpawner::ConnectDoor(_uint levelID)
+{
+	if (m_iDoorID != -1)
+	{
+		auto engine = EngineCore::GetInstance();
+		auto& doors = engine->GetObjects(levelID, "Layer_Door");
+
+		auto iter = doors.begin();
+		for (_uint i = 0; i < m_iDoorID; ++i)
+			iter++;
+
+		m_pConnectedDoor = dynamic_cast<Door*>((*iter));
+		if (!m_pConnectedDoor)
+			return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 void EnemySpawner::OnCollisionEnter(ColliderComponent* otherCollider)
@@ -140,7 +146,7 @@ void EnemySpawner::SpawnerSpawn::Enter(Object* object)
 		{
 			_uint rand = engine->GetRandom()->get<_uint>(0, spawner->m_AvailableNavCellIndices.size() - 1);
 			Object* enemy = nullptr;
-			engine->AddObject(ENUM_CLASS(LevelID::GamePlay), entry.prototypeTag, ENUM_CLASS(LevelID::GamePlay), "Layer_Enemy", nullptr, &enemy);
+			engine->AddObject(ENUM_CLASS(LevelID::Static), entry.prototypeTag, engine->GetCurrLevelID(), "Layer_Enemy", nullptr, &enemy);
 
 			enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[rand]);
 			spawner->m_CurrWaveEnemies.push_back(enemy);

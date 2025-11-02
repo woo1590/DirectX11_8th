@@ -61,7 +61,7 @@ HRESULT Fracture::Initialize(InitDESC* arg)
 
 	/*model*/	
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), desc->modelTag);
+	model->SetModel(ENUM_CLASS(LevelID::Static), desc->modelTag);
 
 	/*rigid body*/
 	RigidBodyComponent::RIGID_BODY_DESC rigidBodyDesc{};

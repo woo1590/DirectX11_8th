@@ -61,9 +61,9 @@ HRESULT BossArmProjectile::Initialize(InitDESC* arg)
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	if (desc->armSide)
-		model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Boss_Arm_Projectile_L");
+		model->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_Boss_Arm_Projectile_L");
 	else
-		model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Boss_Arm_Projectile_R");
+		model->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_Boss_Arm_Projectile_R");
 
 	m_pTransform->SetScale(_float3(0.9f, 0.9f, 0.9f));
 	m_fLifeTime = 10.f;

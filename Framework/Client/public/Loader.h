@@ -25,6 +25,8 @@ private:
     HRESULT LoadingForLogo();
     HRESULT LoadingForGamePlay();
     HRESULT LoadingForTest();
+    HRESULT LoadingForStage1();
+    HRESULT LoadingForBossStage();
 
     LevelID m_eNextLevelID{};
 

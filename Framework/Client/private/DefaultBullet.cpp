@@ -58,7 +58,7 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Projectile_Default_Bullet");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Projectile_Default_Bullet");
 
 	/*status*/
 	auto status = GetComponent<StatusComponent>();

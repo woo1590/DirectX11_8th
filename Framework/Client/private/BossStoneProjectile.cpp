@@ -58,13 +58,13 @@ HRESULT BossStoneProjectile::Initialize(InitDESC* arg)
 	_uint rand = engine->GetRandom()->get<_uint>(0, 1);
 	auto model = GetComponent<ModelComponent>();
 	if(rand)
-		model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Boss_Stone_Projectile0");
+		model->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_Boss_Stone_Projectile0");
 	else
-		model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Boss_Stone_Projectile1");
+		model->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_Boss_Stone_Projectile1");
 
 	ChangeState(&m_BossStoneProjectileSpawn);
 
-	m_pTarget = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	m_pTarget = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	m_pTarget->AddRef();
 
 	m_fLifeTime = 20.f;

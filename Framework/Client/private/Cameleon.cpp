@@ -45,10 +45,10 @@ HRESULT Cameleon::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Weapon_Cameleon");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Cameleon");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_Cameleon");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_Cameleon");
 
 	model->ConnectAnimator();
 	animator->ChangeAnimation(0, true, false);

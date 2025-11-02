@@ -5,6 +5,7 @@
 #include "Struct_ConstantBuffer.h"
 #include "Struct_Vertex.h"
 #include "Struct_ShaderMetaData.h"
+#include "Struct_BVHNode.h"
 
 namespace Engine
 {
@@ -98,8 +99,8 @@ namespace Engine
 	typedef struct tagRayHitData
 	{
 		_bool isHit = false;
-		_float localDistance;
-		_float3 normal;
+		_float localDistance = FLT_MAX;
+		_float3 normal{};
 	}RAY_HIT_DATA;
 
 	typedef struct tagNavCellData
@@ -123,11 +124,5 @@ namespace Engine
 		_float3 camPosition{};
 	}CAMERA_CONTEXT;
 	
-	typedef struct tagTriangleDesc
-	{
-		_float3 position[3];
-		_uint index[3];
-		_float3 center{};
-	}TRIANGLE_DESC;
 }
 #endif // Engine_Struct_h__

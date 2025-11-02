@@ -40,8 +40,8 @@ HRESULT Terrain::Initialize(InitDESC* arg)
 	
 	auto engine = EngineCore::GetInstance();
 
-	m_pVIBuffer = engine->GetBuffer(ENUM_CLASS(LevelID::GamePlay), "Buffer_Terrain");
-	m_pMaterial = engine->GetMaterial(ENUM_CLASS(LevelID::GamePlay), "Mtrl_Terrain");
+	m_pVIBuffer = engine->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Terrain");
+	m_pMaterial = engine->GetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Terrain");
 
 	return S_OK;
 }

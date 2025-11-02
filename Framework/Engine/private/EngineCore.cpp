@@ -367,6 +367,11 @@ Level* EngineCore::GetCurrLevel() const
 	return m_pLevelManager->GetCurrLevel();
 }
 
+_uint EngineCore::GetCurrLevelID()
+{
+	return m_pLevelManager->GetCurrLevelID();
+}
+
 void EngineCore::ClearResource(_uint levelID)
 {
 	m_pPrototypeManager->Clear(levelID);

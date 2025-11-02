@@ -12,7 +12,7 @@ namespace Client
 	constexpr unsigned int WinSizeX = 1280;
 	constexpr unsigned int WinSizeY = 720;
 
-	enum class LevelID { Static, Loading, Logo, GamePlay, Test, Count };
+	enum class LevelID { Static, Loading, Logo, Stage1, StageBoss, Test, Count };
 	enum class ColliderFilter
 	{
 		Player,

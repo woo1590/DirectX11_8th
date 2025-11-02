@@ -56,7 +56,7 @@ HRESULT ThirdCam::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto engine = EngineCore::GetInstance();
-	m_pTarget = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	m_pTarget = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	if (!m_pTarget)
 		return E_FAIL;
 

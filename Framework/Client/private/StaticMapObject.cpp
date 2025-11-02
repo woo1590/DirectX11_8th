@@ -43,13 +43,13 @@ HRESULT StaticMapObject::Initialize(InitDESC* arg)
 	Object::OBJECT_DESC* desc = static_cast<OBJECT_DESC*>(arg);
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), desc->modelTag);
+	model->SetModel(ENUM_CLASS(LevelID::Static), desc->modelTag);
 
 	MeshColliderComponent::MESH_COLLIDER_DESC colliderDesc{};
 	colliderDesc.colliderFilter = ENUM_CLASS(ColliderFilter::StaticMapObject);
 	auto collider = GetComponent<MeshColliderComponent>();
 	collider->Initialize(&colliderDesc);
-	collider->SetModel(ENUM_CLASS(LevelID::GamePlay), desc->modelTag);
+	collider->SetModel(ENUM_CLASS(LevelID::Static), desc->modelTag);
 	EngineCore::GetInstance()->RegisterCollider(collider);
 
 	if (FAILED(__super::Initialize(arg)))

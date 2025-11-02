@@ -133,9 +133,6 @@
     <Filter Include="02. Object\Map Object">
       <UniqueIdentifier>{19b54fc8-2547-4d80-b5cc-60683903a050}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Map Object\BossStage">
-      <UniqueIdentifier>{6db1efeb-1e05-488b-828c-da27c169bc32}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\Map Object\Static Map Object">
       <UniqueIdentifier>{7a37b63d-7822-4f89-9dba-7419143f0c4c}</UniqueIdentifier>
     </Filter>
@@ -198,6 +195,9 @@
     </Filter>
     <Filter Include="02. Object\Projectile\BossStoneProjectile">
       <UniqueIdentifier>{093eac6d-7c6e-4076-8f16-107f81613cf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\BossMap">
+      <UniqueIdentifier>{6db1efeb-1e05-488b-828c-da27c169bc32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -277,7 +277,7 @@
       <Filter>02. Object\SkyBox</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BossStage.h">
-      <Filter>02. Object\Map Object\BossStage</Filter>
+      <Filter>02. Object\Map Object\BossMap</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PoisonousGhost.h">
       <Filter>02. Object\Player\Weapon\PoisonousGhost</Filter>
@@ -372,6 +372,12 @@
     <ClInclude Include="..\public\BossStoneProjectile.h">
       <Filter>02. Object\Projectile\BossStoneProjectile</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Stage1.h">
+      <Filter>01. Level\Stage1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StageBoss.h">
+      <Filter>01. Level\Stage Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -438,7 +444,7 @@
       <Filter>02. Object\SkyBox</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BossStage.cpp">
-      <Filter>02. Object\Map Object\BossStage</Filter>
+      <Filter>02. Object\Map Object\BossMap</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PoisonousGhost.cpp">
       <Filter>02. Object\Player\Weapon\PoisonousGhost</Filter>
@@ -532,6 +538,12 @@
     </ClCompile>
     <ClCompile Include="..\private\BossStoneProjectile.cpp">
       <Filter>02. Object\Projectile\BossStoneProjectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stage1.cpp">
+      <Filter>01. Level\Stage1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StageBoss.cpp">
+      <Filter>01. Level\Stage Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

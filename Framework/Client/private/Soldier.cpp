@@ -76,11 +76,11 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_Soldier");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_Soldier");
 
 	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Enemy_Soldier");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Enemy_Soldier");
 
 	model->ConnectAnimator();
 
@@ -220,7 +220,7 @@ void Soldier::SoldierIdle::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
 
@@ -259,7 +259,7 @@ void Soldier::SoldierRun::Update(Object* object, _float dt)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
 
@@ -283,7 +283,7 @@ void Soldier::SoldierRun::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
 
@@ -388,7 +388,7 @@ void Soldier::SoldierDead::Enter(Object* object)
 
 		Object* fracture = nullptr;
 		desc.spawnNavCell = object->GetComponent<NavigationComponent>()->GetCurrCellIndex();
-		engine->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Fracture", ENUM_CLASS(LevelID::GamePlay), "Layer_Fracture", &desc, &fracture);
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", engine->GetCurrLevelID(), "Layer_Fracture", &desc, &fracture);
 
 		fracture->GetComponent<RigidBodyComponent>()->AddImpulse(force);
 		fracture->GetComponent<RigidBodyComponent>()->AddAngularImpulse(angularForce);

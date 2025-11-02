@@ -45,13 +45,13 @@ HRESULT BossStage::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Boss_Stage");
+	model->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_Boss_Stage");
 
 	MeshColliderComponent::MESH_COLLIDER_DESC colliderDesc{};
 	colliderDesc.colliderFilter = ENUM_CLASS(ColliderFilter::StaticMapObject);
 	auto collider = GetComponent<MeshColliderComponent>();
 	collider->Initialize(&colliderDesc);
-	collider->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Boss_Stage");
+	collider->SetModel(ENUM_CLASS(LevelID::StageBoss), "Model_Boss_Stage");
 	EngineCore::GetInstance()->RegisterCollider(collider);
 	return S_OK;
 }

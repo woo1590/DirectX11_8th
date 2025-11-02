@@ -77,11 +77,11 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_HorseHead");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_HorseHead");
 
 	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Enemy_HorseHead");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Enemy_HorseHead");
 
 	model->ConnectAnimator();
 
@@ -186,7 +186,7 @@ HRESULT HorseHead::CreatePartObjects()
 		HorseHead_Shield::HORSE_HEAD_SHIELD_DESC shieldDesc{};
 		shieldDesc.parent = this;
 		shieldDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Shield_Socket)]->GetComponent<TransformComponent>();
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_HorseHead_Shield", ENUM_CLASS(Parts::Shield), &shieldDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead_Shield", ENUM_CLASS(Parts::Shield), &shieldDesc)))
 			return E_FAIL;
 	}
 
@@ -206,7 +206,7 @@ HRESULT HorseHead::CreatePartObjects()
 		HorseHead_Sword::HORSE_HEAD_SWORD_DESC swordDesc{};
 		swordDesc.parent = this;
 		swordDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Sword_Socket)]->GetComponent<TransformComponent>();
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_HorseHead_Sword", ENUM_CLASS(Parts::Sword), &swordDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead_Sword", ENUM_CLASS(Parts::Sword), &swordDesc)))
 			return E_FAIL;
 	}
 
@@ -226,7 +226,7 @@ HRESULT HorseHead::CreatePartObjects()
 		HorseHead_Head::HORSE_HEAD_HEAD_DESC headDesc{};
 		headDesc.parent = this;
 		headDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Head_Socket)]->GetComponent<TransformComponent>();
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_HorseHead_Head", ENUM_CLASS(Parts::Head), &headDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead_Head", ENUM_CLASS(Parts::Head), &headDesc)))
 			return E_FAIL;
 	}
 
@@ -272,7 +272,7 @@ void HorseHead::HorseHeadIdle::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
 
@@ -307,7 +307,7 @@ void HorseHead::HorseHeadWalk_F::Update(Object* object, _float dt)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
 
@@ -331,7 +331,7 @@ void HorseHead::HorseHeadWalk_F::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
 

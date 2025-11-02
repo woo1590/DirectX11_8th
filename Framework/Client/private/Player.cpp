@@ -95,7 +95,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 		Weapon::WEAPON_DESC cameleonDesc{};
 		cameleonDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
 		cameleonDesc.parent = this;
-		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Foundry", &cameleonDesc);
+		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", &cameleonDesc);
 
 		if (firstWeapon)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
@@ -105,7 +105,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 		Weapon::WEAPON_DESC concealedAmmoDesc{};
 		concealedAmmoDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
 		concealedAmmoDesc.parent = this;
-		secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
+		secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
 
 		if (secondWeapon)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot2)] = static_cast<Weapon*>(secondWeapon);
@@ -115,7 +115,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 		Weapon::WEAPON_DESC icySpearDesc{};
 		icySpearDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
 		icySpearDesc.parent = this;
-		thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PoisonousGhost", &icySpearDesc);
+		thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PoisonousGhost", &icySpearDesc);
 
 		if (thirdWeapon)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot3)] = static_cast<Weapon*>(thirdWeapon);
@@ -183,7 +183,7 @@ HRESULT Player::CreatePartObjects()
 	{
 		PlayerCam::PLAYER_CAM_DESC camDesc{};
 		camDesc.parent = this;
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_PlayerCam", ENUM_CLASS(Parts::PlayerCam), &camDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PlayerCam", ENUM_CLASS(Parts::PlayerCam), &camDesc)))
 			return E_FAIL;
 	}
 	/*add hand*/
@@ -191,7 +191,7 @@ HRESULT Player::CreatePartObjects()
 		Hand::HAND_DESC handDesc{};
 		handDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::PlayerCam)]->GetComponent<TransformComponent>();
 		handDesc.parent = this;
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Hand", ENUM_CLASS(Parts::Hand), &handDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Hand", ENUM_CLASS(Parts::Hand), &handDesc)))
 			return E_FAIL;
 	}
 	/*add neck socket*/

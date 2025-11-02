@@ -43,10 +43,10 @@ HRESULT IcySpear::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Weapon_IcySpear");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_IcySpear");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_IcySpear");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_IcySpear");
 
 	model->ConnectAnimator();
 

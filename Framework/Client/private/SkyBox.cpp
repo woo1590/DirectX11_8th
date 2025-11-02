@@ -43,7 +43,7 @@ HRESULT SkyBox::Initialize(InitDESC* arg)
     auto engine = EngineCore::GetInstance();
 
     m_pVIBuffer = engine->GetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube");
-    m_pMaterial = engine->GetMaterial(ENUM_CLASS(LevelID::GamePlay), "Mtrl_Skybox");
+    m_pMaterial = engine->GetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Skybox");
 
     m_pVIBuffer->AddRef();
     m_pMaterial->AddRef();

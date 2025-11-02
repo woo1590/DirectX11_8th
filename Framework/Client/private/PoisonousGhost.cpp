@@ -45,10 +45,10 @@ HRESULT PoisonousGhost::Initialize_Prototype()
 HRESULT PoisonousGhost::Initialize(InitDESC* arg)
 {
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Weapon_PoisonousGhost");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_PoisonousGhost");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_PoisonousGhost");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_PoisonousGhost");
 
 	model->ConnectAnimator();
 

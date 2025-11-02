@@ -264,6 +264,7 @@
     <ClInclude Include="..\public\Skeleton.h" />
     <ClInclude Include="..\public\Socket.h" />
     <ClInclude Include="..\public\SpriteComponent.h" />
+    <ClInclude Include="..\public\Struct_BVHNode.h" />
     <ClInclude Include="..\public\Struct_ConstantBuffer.h" />
     <ClInclude Include="..\public\Struct_ShaderMetaData.h" />
     <ClInclude Include="..\public\Struct_Vertex.h" />

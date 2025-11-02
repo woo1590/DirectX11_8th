@@ -34,6 +34,8 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    HRESULT ConnectDoor(_uint levelID);
+
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
     void OnCollisionStay(ColliderComponent* otherCollider)override {};
     void OnCollisionExit(ColliderComponent* otherCollider)override {};
@@ -47,6 +49,7 @@ private:
     std::list<Object*> m_CurrWaveEnemies;
     Door* m_pConnectedDoor = nullptr;
     _uint m_iCurrWave{};
+    _int m_iDoorID = -1;
 
     class SpawnerIdle : public State
     {

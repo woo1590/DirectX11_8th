@@ -66,10 +66,10 @@ HRESULT Bomber::Initialize(InitDESC* arg)
 	engine->RegisterCollider(collider);
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Enemy_Bomber");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_Bomber");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Enemy_Bomber");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Enemy_Bomber");
 
 	model->ConnectAnimator();
 
@@ -134,7 +134,7 @@ void Bomber::BomberIdle::Update(Object* object, _float dt)
 void Bomber::BomberIdle::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
@@ -169,7 +169,7 @@ void Bomber::BomberRun::Enter(Object* object)
 void Bomber::BomberRun::Update(Object* object, _float dt)
 {
 	auto engine = EngineCore::GetInstance();
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	auto transform = object->GetComponent<TransformComponent>();
 
 	_float3 position = transform->GetPosition();
@@ -190,7 +190,7 @@ void Bomber::BomberRun::Update(Object* object, _float dt)
 void Bomber::BomberRun::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
@@ -225,7 +225,7 @@ void Bomber::BomberAttack::Update(Object* object, _float dt)
 void Bomber::BomberAttack::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::GamePlay), "Layer_Player");
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();

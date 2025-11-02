@@ -56,7 +56,7 @@ HRESULT Sight::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	sprite->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
-	sprite->SetMaterial(ENUM_CLASS(LevelID::GamePlay), "Mtrl_Sight");
+	sprite->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Sight");
 
 	return S_OK;
 }

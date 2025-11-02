@@ -42,10 +42,10 @@ HRESULT ConcealedAmmo::Initialize_Prototype()
 HRESULT ConcealedAmmo::Initialize(InitDESC* arg)
 {
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Weapon_ConcealedAmmo");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_ConcealedAmmo");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_ConcealedAmmo");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_ConcealedAmmo");
 
 	model->ConnectAnimator();
 
@@ -150,6 +150,8 @@ void ConcealedAmmo::ConcealedAmmoReload::TestForExit(Engine::Object* object)
 
 void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 {
+	auto engine = EngineCore::GetInstance();
+
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(0, false, true);
 	animator->SetPlaySpeedScale(4.f);
@@ -176,7 +178,7 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 	Object::OBJECT_DESC desc{};
 	desc.scale = _float3{ 3.f,3.f,3.f };
 	desc.position = position;
-	EngineCore::GetInstance()->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Default_Bullet", ENUM_CLASS(LevelID::GamePlay), "Layer_Projectile", &desc, &defaultBullet);
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 }

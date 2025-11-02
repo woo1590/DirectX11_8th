@@ -51,52 +51,37 @@ RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
 	_float tMesh = FLT_MAX;
 	_float tHit = FLT_MAX;
 
-	if (m_BoundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), tMesh))
+	if (m_IsStaticMesh)
 	{
-		if (type == PickingType::BoundingBox)
+		RayCastBVHNode(0, localRay, hitData);
+	}
+	else
+	{
+		if (m_BoundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), tMesh))
 		{
-			hitData.isHit = true;
-			hitData.localDistance = tMesh;
-		}
-		else
-		{
-			std::vector<std::pair<_uint, _float>> hitClusters;
-			hitClusters.reserve(m_ClusterNodes.size());
-
-			for (_uint i = 0; i < m_ClusterNodes.size(); ++i)
+			if (type == PickingType::BoundingBox)
 			{
-				_float tBox = FLT_MAX;
-				if (m_ClusterNodes[i].boundingBox.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), tBox))
-				{
-					tBox = (std::max)(tBox, 0.f);
-					hitClusters.push_back({ i,tBox });
-				}
+				hitData.isHit = true;
+				hitData.localDistance = tMesh;
 			}
-
-			std::sort(hitClusters.begin(), hitClusters.end(), [&](const std::pair<_uint, _float>& a, const std::pair<_uint, _float>& b)
-				{
-					return a.second < b.second;
-				});
-			for (_uint i = 0; i < hitClusters.size(); ++i)
+			else
 			{
-				if (hitClusters[i].second > tHit)
-					break;
-
-				const auto& node = m_ClusterNodes[hitClusters[i].first];
-				for (_uint j = 0; j < node.indices.size(); j += 3)
+				for (_uint i = 0; i < m_iNumIndices / 3; ++i)
 				{
+					_uint index = i * 3;
+
+					_float3 p0 = m_VertexPositions[m_Indices[index]];
+					_float3 p1 = m_VertexPositions[m_Indices[index + 1]];
+					_float3 p2 = m_VertexPositions[m_Indices[index + 2]];
+
 					_float tTri{};
-
-					_float3 p0 = m_VertexPositions[node.indices[j]];
-					_float3 p1 = m_VertexPositions[node.indices[j + 1]];
-					_float3 p2 = m_VertexPositions[node.indices[j + 2]];
-
 					if (TriangleTests::Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction),
 						XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), tTri))
 					{
 						if (tTri > 0.f && tTri < tHit)
 						{
 							tHit = tTri;
+
 							_vector ab = XMLoadFloat3(&p1) - XMLoadFloat3(&p0);
 							_vector ac = XMLoadFloat3(&p2) - XMLoadFloat3(&p0);
 							XMStoreFloat3(&normal, XMVector3Normalize(XMVector3Cross(ab, ac)));
@@ -104,16 +89,15 @@ RAY_HIT_DATA Mesh::RayCast(RAY localRay, PickingType type)
 					}
 				}
 			}
-
-			if (tHit < FLT_MAX)
-			{
-				hitData.isHit = true;
-				hitData.localDistance = tHit;
-				hitData.normal = normal;
-			}
 		}
 	}
 
+	if (tHit < FLT_MAX)
+	{
+		hitData.isHit = true;
+		hitData.localDistance = tHit;
+		hitData.normal = normal;
+	}
 	return hitData;
 }
 
@@ -133,6 +117,8 @@ void Mesh::Free()
 
 HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 {
+	m_IsStaticMesh = true;
+
 	MESH_FORMAT meshFormat{};
 	file.read(reinterpret_cast<char*>(&meshFormat), sizeof(MESH_FORMAT));
 
@@ -219,6 +205,8 @@ HRESULT Mesh::CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix)
 
 HRESULT Mesh::CreateSkinnedMesh(std::ifstream& file)
 {
+	m_IsStaticMesh = false;
+
 	MESH_FORMAT meshFormat{};
 	file.read(reinterpret_cast<char*>(&meshFormat), sizeof(MESH_FORMAT));
 
@@ -331,7 +319,7 @@ void Mesh::ComputeBoundingBox(ModelType eType)
 	m_AABBMax = max;
 
 	m_BoundingBox.CreateFromPoints(m_BoundingBox, XMLoadFloat3(&m_AABBMin), XMLoadFloat3(&m_AABBMax));
-	if (eType != ModelType::Static)
+	if (!m_IsStaticMesh)
 		return;
 
 	/*build cluster node  ----- only static mesh*/
@@ -346,60 +334,186 @@ void Mesh::ComputeBoundingBox(ModelType eType)
 		triangle.index[0] = m_Indices[index];
 		triangle.index[1] = m_Indices[index + 1];
 		triangle.index[2] = m_Indices[index + 2];
-		XMStoreFloat3(&triangle.center, (XMLoadFloat3(&triangle.position[0]) + XMLoadFloat3(&triangle.position[1]) + XMLoadFloat3(&triangle.position[2])) / 3.f);
+		
+		_float3 aabbMin
+		{
+			(std::min)((std::min)(triangle.position[0].x, triangle.position[1].x),triangle.position[2].x),
+			(std::min)((std::min)(triangle.position[0].y, triangle.position[1].y),triangle.position[2].y),
+			(std::min)((std::min)(triangle.position[0].z, triangle.position[1].z),triangle.position[2].z),
+		};
+
+		_float3 aabbMax
+		{
+			(std::max)((std::max)(triangle.position[0].x, triangle.position[1].x),triangle.position[2].x),
+			(std::max)((std::max)(triangle.position[0].y, triangle.position[1].y),triangle.position[2].y),
+			(std::max)((std::max)(triangle.position[0].z, triangle.position[1].z),triangle.position[2].z),
+		};
+		triangle.triAABB.CreateFromPoints(triangle.triAABB, XMLoadFloat3(&aabbMin), XMLoadFloat3(&aabbMax));
 
 		m_Triangles.push_back(triangle);
 	}
 
-	/*sort axis*/
+	std::vector<_uint> triIndices(numTriangle);
+	for (_uint i = 0; i < numTriangle; ++i)
+		triIndices[i] = i;
+
+	BuildBVHNode(triIndices, 0, numTriangle);
+	m_BVHTriIndices = std::move(triIndices);
+}
+
+_uint Mesh::BuildBVHNode(std::vector<_uint>& triIndices, _uint startIndex, _uint endIndex)
+{
+	BVH_NODE node{};
+	_uint axis{};
+	_uint nodeIndex = m_BVHNodes.size();
+	_uint count = endIndex - startIndex;
+
+	_float3 nodeAABBMin{FLT_MAX,FLT_MAX,FLT_MAX};
+	_float3 nodeAABBMax{-FLT_MAX,-FLT_MAX,-FLT_MAX};
+	for (_uint i = startIndex; i < endIndex; ++i)
 	{
-		/*if (m_BoundingBox.Extents.x > m_BoundingBox.Extents.y && m_BoundingBox.Extents.x > m_BoundingBox.Extents.z)
+		BoundingBox triAABB = m_Triangles[triIndices[i]].triAABB;
+		nodeAABBMin.x = (std::min)(triAABB.Center.x - triAABB.Extents.x, nodeAABBMin.x);
+		nodeAABBMin.y = (std::min)(triAABB.Center.y - triAABB.Extents.y, nodeAABBMin.y);
+		nodeAABBMin.z = (std::min)(triAABB.Center.z - triAABB.Extents.z, nodeAABBMin.z);
+
+		nodeAABBMax.x = (std::max)(triAABB.Center.x + triAABB.Extents.x, nodeAABBMax.x);
+		nodeAABBMax.y = (std::max)(triAABB.Center.y + triAABB.Extents.y, nodeAABBMax.y);
+		nodeAABBMax.z = (std::max)(triAABB.Center.z + triAABB.Extents.z, nodeAABBMax.z);
+	}
+	node.nodeAABB.CreateFromPoints(node.nodeAABB, XMLoadFloat3(&nodeAABBMin), XMLoadFloat3(&nodeAABBMax));
+	m_BVHNodes.push_back(node);
+
+	/*make leaf*/
+	if (count < m_iLeafCount)
+	{
+		m_BVHNodes[nodeIndex].firstIndex = startIndex;
+		m_BVHNodes[nodeIndex].count = count;
+		m_BVHNodes[nodeIndex].left = -1;
+		m_BVHNodes[nodeIndex].right = -1;
+		return nodeIndex;
+	}
+
+	if (node.nodeAABB.Extents.x > node.nodeAABB.Extents.y && node.nodeAABB.Extents.x > node.nodeAABB.Extents.z)
+		axis = 0;
+	else if (node.nodeAABB.Extents.y > node.nodeAABB.Extents.x && node.nodeAABB.Extents.y > node.nodeAABB.Extents.z)
+		axis = 1;
+	else
+		axis = 2;	
+
+	if (node.nodeAABB.Extents.x < math::ELIPSON && node.nodeAABB.Extents.y < math::ELIPSON && node.nodeAABB.Center.z < math::ELIPSON)
+	{
+		m_BVHNodes[nodeIndex].firstIndex = startIndex;
+		m_BVHNodes[nodeIndex].count = count;
+		m_BVHNodes[nodeIndex].left = -1;
+		m_BVHNodes[nodeIndex].right = -1;
+		return nodeIndex;
+	}
+
+	_uint mid = startIndex + count / 2;
+	if (mid == startIndex || mid == endIndex)
+	{
+		m_BVHNodes[nodeIndex].firstIndex = startIndex;
+		m_BVHNodes[nodeIndex].count = count;
+		m_BVHNodes[nodeIndex].left = -1;
+		m_BVHNodes[nodeIndex].right = -1;
+		return nodeIndex;
+	}
+
+	auto iterStart = triIndices.begin() + startIndex;
+	auto iterMid = triIndices.begin() + mid;
+	auto iterEnd = triIndices.begin() + endIndex;
+
+	std::nth_element(iterStart, iterMid, iterEnd, [&](_uint a, _uint b)
 		{
-			std::sort(m_Triangles.begin(), m_Triangles.end(), [&](const TRIANGLE_DESC& a, const TRIANGLE_DESC& b) 
-				{
-					return a.center.x < b.center.x;
-				});
-		}
-		else if (m_BoundingBox.Extents.y > m_BoundingBox.Extents.x && m_BoundingBox.Extents.y > m_BoundingBox.Extents.z)
+			if (0 == axis)
+				return m_Triangles[a].triAABB.Center.x < m_Triangles[b].triAABB.Center.x;
+			else if (1 == axis)
+				return m_Triangles[a].triAABB.Center.y < m_Triangles[b].triAABB.Center.y;
+			else
+				return m_Triangles[a].triAABB.Center.z < m_Triangles[b].triAABB.Center.z;
+		});
+
+	_uint left = BuildBVHNode(triIndices, startIndex, mid);
+	_uint right = BuildBVHNode(triIndices, mid, endIndex);
+	m_BVHNodes[nodeIndex].count = 0;
+	m_BVHNodes[nodeIndex].left = left;
+	m_BVHNodes[nodeIndex].right = right;
+
+	return nodeIndex;
+}
+
+void Mesh::RayCastBVHNode(_uint nodeIndex, RAY localRay, RAY_HIT_DATA& out)
+{
+	auto& node = m_BVHNodes[nodeIndex];
+
+	RAY_HIT_DATA result{};
+
+	_float distance{};
+	_float3 normal{};
+	if (node.nodeAABB.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), distance))
+	{
+		/*is leaf*/
+		if (node.count)
 		{
-			std::sort(m_Triangles.begin(), m_Triangles.end(), [&](const TRIANGLE_DESC& a, const TRIANGLE_DESC& b)
+			_float tHit = FLT_MAX;
+			for (_uint i = 0; i < node.count; ++i)
+			{
+				_float tTri{};
+				TRIANGLE_DESC triangle = m_Triangles[m_BVHTriIndices[node.firstIndex + i]];
+
+				if (TriangleTests::Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction),
+					XMLoadFloat3(&triangle.position[0]), XMLoadFloat3(&triangle.position[1]), XMLoadFloat3(&triangle.position[2]), tTri))
 				{
-					return a.center.y < b.center.y;
-				});
+					if (tTri > 0.f && tTri < tHit)
+					{
+						tHit = tTri;
+
+						_vector ab = XMLoadFloat3(&triangle.position[1]) - XMLoadFloat3(&triangle.position[0]);
+						_vector ac = XMLoadFloat3(&triangle.position[2]) - XMLoadFloat3(&triangle.position[0]);
+						XMStoreFloat3(&normal, XMVector3Normalize(XMVector3Cross(ab, ac)));
+					}
+				}
+			}
+
+			if (tHit < out.localDistance)
+			{
+				out.isHit = true;
+				out.localDistance = tHit;
+				out.normal = normal;
+			}
 		}
 		else
 		{
-			std::sort(m_Triangles.begin(), m_Triangles.end(), [&](const TRIANGLE_DESC& a, const TRIANGLE_DESC& b)
-				{
-					return a.center.z < b.center.z;
-				});
-		}*/
-	}
+			_float leftDistance = FLT_MAX;
+			_float rightDistance = FLT_MAX;
+			_bool leftResult = false;
+			_bool rightResult = false;
 
-	for (_uint i = 0; i < m_Triangles.size(); i += m_iTrianglePerNode)
-	{
-		_uint count = (std::min)(m_iTrianglePerNode, numTriangle - i);
-		CLUSTER_NODE node{};
-		_float3 nodeMin{ FLT_MAX,FLT_MAX,FLT_MAX };
-		_float3 nodeMax{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
-		for (_uint j = 0; j < count; ++j)
-		{
-			_uint index = i + j;
-			for (_uint k = 0; k < 3; ++k)
+			leftResult = m_BVHNodes[node.left].nodeAABB.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), leftDistance);
+			rightResult = m_BVHNodes[node.right].nodeAABB.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), rightDistance);
+
+			if (leftResult && rightResult)
 			{
-				_float3 position = m_Triangles[index].position[k];
-				if (position.x < nodeMin.x) nodeMin.x = position.x;
-				if (position.y < nodeMin.y) nodeMin.y = position.y;
-				if (position.z < nodeMin.z) nodeMin.z = position.z;
-
-				if (position.x > nodeMax.x) nodeMax.x = position.x;
-				if (position.y > nodeMax.y) nodeMax.y = position.y;
-				if (position.z > nodeMax.z) nodeMax.z = position.z;
-
-				node.indices.push_back(m_Triangles[index].index[k]);
+				if (leftDistance < rightDistance)
+				{
+					RayCastBVHNode(node.left, localRay, out);
+					if (rightDistance < out.localDistance)
+						RayCastBVHNode(node.right, localRay, out);
+				}
+				else
+				{
+					RayCastBVHNode(node.right, localRay, out);
+					if (leftDistance < out.localDistance)
+						RayCastBVHNode(node.left, localRay, out);
+				}
 			}
+			else if (leftResult)
+				RayCastBVHNode(node.left, localRay, out);
+			else
+				RayCastBVHNode(node.right, localRay, out);
 		}
-		node.boundingBox.CreateFromPoints(node.boundingBox, XMLoadFloat3(&nodeMin), XMLoadFloat3(&nodeMax));
-		m_ClusterNodes.push_back(node);
 	}
+	else
+		return;
 }

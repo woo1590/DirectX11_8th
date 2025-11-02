@@ -4,6 +4,8 @@
 #include "EngineCore.h"
 #include "LogoLevel.h"
 #include "TestLevel.h"
+#include "Stage1.h"
+#include "StageBoss.h"
 #include "GamePlayLevel.h"
 
 LoadingLevel::LoadingLevel()
@@ -29,6 +31,9 @@ HRESULT LoadingLevel::Initialize(LevelID nextLevelID)
 	if (!m_pLoader)
 		return E_FAIL;
 
+	auto engine = EngineCore::GetInstance();
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround");
+
 	return S_OK;
 }
 
@@ -50,11 +55,11 @@ void LoadingLevel::Update(_float dt)
 		case Client::LevelID::Logo:
 			nextLevel = LogoLevel::Create();
 			break;
-		case Client::LevelID::GamePlay:
-			nextLevel = GamePlayLevel::Create();
+		case Client::LevelID::Stage1:
+			nextLevel = Stage1::Create();
 			break;
-		case Client::LevelID::Test:
-			nextLevel = TestLevel::Create();
+		case Client::LevelID::StageBoss:
+			nextLevel = StageBoss::Create();
 			break;
 		default:
 			break;

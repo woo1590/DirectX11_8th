@@ -74,6 +74,7 @@ public:
 protected:
     _string m_strInstanceTag{};
     static _uint m_iInstanceID;
+    _uint m_iCurrLevelID{};
     TransformComponent* m_pTransform = nullptr;
 
     std::vector<Component*> m_Components;

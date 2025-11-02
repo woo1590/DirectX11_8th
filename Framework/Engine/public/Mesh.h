@@ -31,7 +31,10 @@ public:
 private:
     HRESULT CreateStaticMesh(std::ifstream& file, _fmatrix preTransformMatrix);
     HRESULT CreateSkinnedMesh(std::ifstream& file);
+
     void ComputeBoundingBox(ModelType eType);
+    _uint BuildBVHNode(std::vector<_uint>& triIndices, _uint startIndex, _uint endIndex);
+    void RayCastBVHNode(_uint nodeIndex, RAY localRay, RAY_HIT_DATA& out);
 
     _string m_strName{};
 
@@ -39,9 +42,12 @@ private:
     _float3 m_AABBMin{};
     _float3 m_AABBMax{};
     BoundingBox m_BoundingBox{};
-    _uint m_iTrianglePerNode = 8;
-    std::vector<CLUSTER_NODE> m_ClusterNodes;
+
+    _bool m_IsStaticMesh = false;
+    _uint m_iLeafCount = 8;
+    std::vector<BVH_NODE> m_BVHNodes;
     std::vector<TRIANGLE_DESC> m_Triangles;
+    std::vector<_uint> m_BVHTriIndices;
 
     std::vector<_float3> m_VertexPositions;
     std::vector<_uint> m_Indices;

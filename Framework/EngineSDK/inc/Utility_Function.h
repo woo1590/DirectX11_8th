@@ -5,7 +5,7 @@ namespace math
 {
 	static constexpr _float PI = XM_PI;
 	static constexpr _float TWO_PI = XM_2PI;
-	static constexpr _float ELIPSON = 1e-8;
+	static constexpr _float ELIPSON = 1e-7;
 
 	inline _float ToRadian(_float degree)
 	{

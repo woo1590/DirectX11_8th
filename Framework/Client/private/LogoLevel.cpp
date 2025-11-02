@@ -34,7 +34,7 @@ void LogoLevel::Free()
 void LogoLevel::Update(_float dt)
 {
 	if (GetAsyncKeyState(VK_SPACE))
-		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::GamePlay));
+		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Stage1));
 }
 
 HRESULT LogoLevel::Render()
@@ -48,7 +48,7 @@ HRESULT LogoLevel::InitializeLayerBackground(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Logo), "Prototype_Object_BackGround",
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround",
 		ENUM_CLASS(LevelID::Logo), layerTag, nullptr)))
 		return E_FAIL;
 

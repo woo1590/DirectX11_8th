@@ -85,6 +85,7 @@ public:
 #pragma region Level
     void ChangeLevel(_uint levelID, class Level* nextLevel);
     class Level* GetCurrLevel()const;
+    _uint GetCurrLevelID();
     void ClearResource(_uint levelID);
 #pragma endregion
 

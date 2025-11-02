@@ -52,10 +52,10 @@ HRESULT Hand::Initialize(InitDESC* arg)
 	m_pTransform->SetPosition(_float3{ -0.1f,0.f,-1.2f });
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_PlayerHand");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_PlayerHand");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_PlayerHand");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_PlayerHand");
 
 	model->ConnectAnimator();
 	animator->ChangeAnimation(0);

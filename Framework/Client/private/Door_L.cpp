@@ -42,7 +42,7 @@ HRESULT Door_L::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Door_L");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Door_L");
 
 	m_pTransform->SetPosition(_float3{ -14.7f,0.f,0.f });
 

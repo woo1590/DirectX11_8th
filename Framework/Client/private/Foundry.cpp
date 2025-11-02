@@ -42,10 +42,10 @@ HRESULT Foundry::Initialize_Prototype()
 HRESULT Foundry::Initialize(InitDESC* arg)
 {
 	auto model = GetComponent<ModelComponent>();
-	model->SetModel(ENUM_CLASS(LevelID::GamePlay), "Model_Weapon_Foundry");
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Foundry");
 
 	auto animator = GetComponent<AnimatorComponent>();
-	animator->SetAnimation(ENUM_CLASS(LevelID::GamePlay), "AnimationSet_Weapon_Foundry");
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_Foundry");
 
 	model->ConnectAnimator();
 
@@ -138,6 +138,8 @@ void Foundry::FoundryReload::TestForExit(Object* object)
 
 void Foundry::FoundryFire::Enter(Object* object)
 {
+	auto engine = EngineCore::GetInstance();
+
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire), false, true);
 	animator->SetPlaySpeedScale(1.2f);
@@ -164,7 +166,7 @@ void Foundry::FoundryFire::Enter(Object* object)
 	Object::OBJECT_DESC desc{};
 	desc.scale = _float3{ 3.f,3.f,3.f };
 	desc.position = position;
-	EngineCore::GetInstance()->AddObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Default_Bullet", ENUM_CLASS(LevelID::GamePlay), "Layer_Projectile", &desc, &defaultBullet);
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 }

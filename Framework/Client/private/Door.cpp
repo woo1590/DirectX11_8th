@@ -73,14 +73,14 @@ HRESULT Door::CreatePartObjects()
 	{
 		Door_L::DOOR_L_DESC doorLDesc{};
 		doorLDesc.parent = this;
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door_L", ENUM_CLASS(Parts::Door_L), &doorLDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Door_L", ENUM_CLASS(Parts::Door_L), &doorLDesc)))
 			return E_FAIL;
 	}
 	/*add door r*/
 	{
 		Door_R::DOOR_R_DESC doorRDesc{};
 		doorRDesc.parent = this;
-		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::GamePlay), "Prototype_Object_Door_R", ENUM_CLASS(Parts::Door_R), &doorRDesc)))
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Door_R", ENUM_CLASS(Parts::Door_R), &doorRDesc)))
 			return E_FAIL;
 	}
 

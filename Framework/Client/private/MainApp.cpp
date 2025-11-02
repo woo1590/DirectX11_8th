@@ -6,6 +6,7 @@
 #include "VIBufferQuad.h"
 
 //object
+#include "BackGround.h"
 #include "Socket.h"
 
 MainApp::MainApp()
@@ -136,9 +137,18 @@ HRESULT MainApp::LoadStaticLevel()
     }
     /*Load Prototype Object*/
     {
+        if (FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", BackGround::Create())))
+            return E_FAIL;
+
         if(FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static),"Prototype_Object_Socket",Socket::Create())))
             return E_FAIL;
 
+    }
+    /*Load Material*/
+    {
+        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_logo.json",
+           "Mtrl_Background_Logo")))
+            return E_FAIL;
     }
     return S_OK;
 }
