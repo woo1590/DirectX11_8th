@@ -327,8 +327,16 @@ void Player::DropCurrSlotWeapon()
 	dropWeaponDesc.position = m_pTransform->GetPosition();
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", engine->GetCurrLevelID(), "Layer_DropWeapon", &dropWeaponDesc);
 
-	Safe_Release(m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]);
+	auto rightHandSocket = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+	auto weaponTransform = m_PartObjects[ENUM_CLASS(Parts::Weapon)]->GetComponent<TransformComponent>();
+
+	rightHandSocket->RemoveChild(weaponTransform);
+
 	Safe_Release(m_PartObjects[ENUM_CLASS(Parts::Weapon)]);
+	Safe_Release(m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]);
+
+	m_PartObjects[ENUM_CLASS(Parts::Weapon)] = nullptr;
+	m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)] = nullptr;
 }
 
 void Player::KeyInput(_float dt)

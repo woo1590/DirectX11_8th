@@ -30,6 +30,7 @@ public:
     void SetQuaternion(_float4 quaternion);
     void SetForward(_float3 direction);
     void SetParent(TransformComponent* parent);
+    void RemoveChild(TransformComponent* child);
     
     /*API*/
     void Translate(_fvector deltaMove);

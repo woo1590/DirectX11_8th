@@ -94,6 +94,20 @@ void TransformComponent::SetParent(TransformComponent* parent)
 	m_pParent->m_Childrens.push_back(this);
 }
 
+void TransformComponent::RemoveChild(TransformComponent* child)
+{
+	auto iter = std::find(m_Childrens.begin(), m_Childrens.end(), child);
+
+	if (iter != m_Childrens.end())
+	{
+		_uint index = std::distance(m_Childrens.begin(), iter);
+
+		_uint lastIndex = m_Childrens.size() - 1;
+		std::swap(m_Childrens[index], m_Childrens[lastIndex]);
+		m_Childrens.pop_back();
+	}
+}
+
 void TransformComponent::Translate(_fvector deltaMove)
 {
 	XMStoreFloat3(&m_Position, XMLoadFloat3(&m_Position) + deltaMove);
@@ -316,8 +330,11 @@ void TransformComponent::MakeChildrenDirty()
 {
 	for (const auto& child : m_Childrens)
 	{
-		child->m_isDirty = true;
-		child->MakeChildrenDirty();
+		if (child)
+		{
+			child->m_isDirty = true;
+			child->MakeChildrenDirty();
+		}
 	}
 }
 
