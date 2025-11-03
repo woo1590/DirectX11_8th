@@ -219,6 +219,7 @@
     <ClInclude Include="..\public\guizmo\ImGuizmo.h" />
     <ClInclude Include="..\public\guizmo\ImSequencer.h" />
     <ClInclude Include="..\public\guizmo\ImZoomSlider.h" />
+    <ClInclude Include="..\public\ICommand.h" />
     <ClInclude Include="..\public\ImGuiManager.h" />
     <ClInclude Include="..\public\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="..\public\imgui\backends\imgui_impl_win32.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />
+    <ClCompile Include="..\private\ICommand.cpp" />
     <ClCompile Include="..\private\ImGuiManager.cpp" />
     <ClCompile Include="..\private\InputSystem.cpp" />
     <ClCompile Include="..\private\InspectorPanel.cpp" />

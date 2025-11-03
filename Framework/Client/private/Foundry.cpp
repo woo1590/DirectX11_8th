@@ -50,12 +50,16 @@ HRESULT Foundry::Initialize(InitDESC* arg)
 	model->ConnectAnimator();
 
 	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
-	ChangeState(&m_FoundryIdle);
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
+	m_iNumMaxAmmo = 8;
+	m_iNumCurrAmmo = m_iNumMaxAmmo;
+	m_eWeaponID = WeaponID::Foundry;
+
+	ChangeState(&m_FoundryIdle);
 	return S_OK;
 }
 
@@ -83,7 +87,12 @@ void Foundry::Reload()
 void Foundry::Fire()
 {
 	if (m_CurrState == &m_FoundryIdle)
-		ChangeState(&m_FoundryFire);
+	{
+		if (m_iNumCurrAmmo > 0)
+			ChangeState(&m_FoundryFire);
+		else
+			ChangeState(&m_FoundryReload);
+	}
 }
 
 Object* Foundry::Clone(InitDESC* arg)
@@ -133,6 +142,7 @@ void Foundry::FoundryReload::TestForExit(Object* object)
 	{
 		auto foundry = static_cast<Foundry*>(object);
 		foundry->ChangeState(&foundry->m_FoundryIdle);
+		foundry->m_iNumCurrAmmo = foundry->m_iNumMaxAmmo;
 	}
 }
 
@@ -169,6 +179,7 @@ void Foundry::FoundryFire::Enter(Object* object)
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
+	--foundry->m_iNumCurrAmmo;
 }
 
 void Foundry::FoundryFire::Update(Object* object, _float dt)

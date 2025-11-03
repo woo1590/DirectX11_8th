@@ -9,7 +9,7 @@ class Player final:
 {
 public:
     enum class Parts { PlayerCam, Hand, RightHandSocket, Weapon, Count };
-    enum class WeaponSlot { None, Slot1, Slot2, Slot3, Count };
+    enum class WeaponSlot { Slot1, Slot2, Slot3, Count };
 private:
     Player();
     Player(const Player& prototype);
@@ -24,8 +24,12 @@ public:
     void LateUpdate(_float dt)override;
 
     /*API*/
+    void PickUpWeapon(WeaponID id);
     void AddRecoil(_float power);
     _float3 GetAimPosition();
+
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
+    void OnCollisionStay(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
@@ -34,10 +38,11 @@ private:
     HRESULT CreatePartObjects();
     void KeyInput(_float dt);
     void MakeHandState();
-    void Equip();
+    void EquipCurrSlot();
+    void DropCurrSlotWeapon();
 
     std::vector<Weapon*> m_Weapons;
-    WeaponSlot m_eCurrWeaponSlot = WeaponSlot::None;
+    WeaponSlot m_eCurrWeaponSlot = WeaponSlot::Slot1;
 
     _bool m_IsJump = false;
     _bool m_IsWalk = false;

@@ -28,6 +28,7 @@ public:
     std::unordered_map<_string, Layer*>& GetLayers(_uint levelID);
     const std::list<Object*>& GetObjects(_uint layerLevel, const _string& layerTag);
     Object* GetFrontObject(_uint layerLevel, const _string& layerTag);
+    Object* GetLastObject(_uint layerLevel, const _string& layerTag);
     Object* GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag);
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 

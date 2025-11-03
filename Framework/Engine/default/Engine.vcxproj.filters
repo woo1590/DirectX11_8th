@@ -283,6 +283,9 @@
     <Filter Include="01. Engine Component\ImGui Manager\Panel\RenderTarget Panel">
       <UniqueIdentifier>{f67efaba-8dc9-4d2c-b3f3-a9ac686103e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. EngineCore\Command">
+      <UniqueIdentifier>{c3eccbee-8b6d-4722-b2cd-3d1dce2f448c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -603,6 +606,9 @@
     <ClInclude Include="..\public\Struct_BVHNode.h">
       <Filter>98. Etc\Defines\Engine_Struct</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ICommand.h">
+      <Filter>00. EngineCore\Command</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -868,6 +874,9 @@
     </ClCompile>
     <ClCompile Include="..\private\RenderTargetPanel.cpp">
       <Filter>01. Engine Component\ImGui Manager\Panel\RenderTarget Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ICommand.cpp">
+      <Filter>00. EngineCore\Command</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

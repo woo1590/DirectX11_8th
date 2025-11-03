@@ -3,6 +3,9 @@
 #include "LogoLevel.h"
 #include "LoadingLevel.h"
 
+//object
+#include "BackGround.h"
+
 LogoLevel::LogoLevel()
 {
 }
@@ -33,7 +36,7 @@ void LogoLevel::Free()
 
 void LogoLevel::Update(_float dt)
 {
-	if (GetAsyncKeyState(VK_SPACE))
+	if (GetAsyncKeyState(VK_RETURN))
 		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Stage1));
 }
 
@@ -48,8 +51,16 @@ HRESULT LogoLevel::InitializeLayerBackground(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
+	BackGround::BACKGROUND_DESC backGroundDesc{};
+	backGroundDesc.mtrlTag = "Mtrl_Background_Logo";
+
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround",
-		ENUM_CLASS(LevelID::Logo), layerTag, nullptr)))
+		ENUM_CLASS(LevelID::Logo), layerTag, &backGroundDesc)))
+		return E_FAIL;
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoFire", ENUM_CLASS(LevelID::Logo), "Layer_UI")))
+		return E_FAIL;
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoText", ENUM_CLASS(LevelID::Logo), "Layer_UI")))
 		return E_FAIL;
 
 	return S_OK;

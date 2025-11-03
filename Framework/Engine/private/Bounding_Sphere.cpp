@@ -38,6 +38,16 @@ _bool Bounding_Sphere::Intersect(Bounding* other)
 	return other->IntersectToSphere(this);
 }
 
+RAYCAST_DATA Bounding_Sphere::RayCast(RAY worldRay)
+{
+	RAYCAST_DATA data{};
+
+	if (m_WorldDesc.Intersects(XMLoadFloat3(&worldRay.origin), XMLoadFloat3(&worldRay.direction), data.worldDistance))
+		data.isHit = true;
+
+	return data;
+}
+
 _bool Bounding_Sphere::IntersectToAABB(Bounding_AABB* other)
 {
 	return m_WorldDesc.Intersects(other->GetWorldDesc());

@@ -24,6 +24,8 @@ private:
     Loader* m_pLoader = nullptr;
     LevelID m_eNextLevelID{};
 
+    HRESULT Initialize_LoadingUI();
+
 };
 
 NS_END

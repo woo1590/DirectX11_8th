@@ -26,6 +26,7 @@
 //utill
 #include "GraphicDevice.h"
 #include "Random.h"
+#include "ICommand.h"
 
 IMPLEMENT_SINGLETON(EngineCore);
 
@@ -187,8 +188,21 @@ void EngineCore::Tick(_float dt)
 	EndRender();
 
 	m_pInputSystem->EndFrame();
+
+	ExecuteCommands();
 }
 
+void EngineCore::ExecuteCommands()
+{
+	_uint numCommands = m_Commands.size();
+
+	for (_uint i = 0; i < numCommands; ++i)
+	{
+		m_Commands.front()->Execute();
+		Safe_Release(m_Commands.front());
+		m_Commands.pop();
+	}
+}
 
 #ifdef USE_IMGUI
 #pragma region ImGui
@@ -347,6 +361,11 @@ std::unordered_map<_string, Layer*>& EngineCore::GetLayers(_uint levelID)
 Object* EngineCore::GetFrontObject(_uint layerLevel, const _string& layerTag)
 {
 	return m_pObjectManager->GetFrontObject(layerLevel, layerTag);
+}
+
+Object* EngineCore::GetLastObject(_uint layerLevel, const _string& layerTag)
+{
+	return m_pObjectManager->GetLastObject(layerLevel, layerTag);
 }
 
 const std::list<class Object*>& EngineCore::GetObjects(_uint layerLevel, const _string& layerTag)

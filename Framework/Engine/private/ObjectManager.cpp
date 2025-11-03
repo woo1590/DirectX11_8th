@@ -157,6 +157,15 @@ Object* ObjectManager::GetFrontObject(_uint layerLevel, const _string& layerTag)
 	return layer->GetFrontObject();
 }
 
+Object* ObjectManager::GetLastObject(_uint layerLevel, const _string& layerTag)
+{
+	Layer* layer = FindLayer(layerLevel, layerTag);
+	if (!layer)
+		return nullptr;
+
+	return layer->GetLastObject();
+}
+
 Object* ObjectManager::GetObjectByInstanceTag(_uint layerLevel, const _string& layerTag, const _string& instanceTag)
 {
 	Layer* layer = FindLayer(layerLevel, layerTag);

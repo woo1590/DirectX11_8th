@@ -5,7 +5,7 @@ namespace Engine
 {
 	enum class WinMode { Full, Win, Count };
 	enum class Prototype { Object, Component, Count };
-	enum class RenderGroup { Priority, Shadow, NonBlend, Blend, NavMeshDebug, ColliderDebug, UI, Count };
+	enum class RenderGroup { Priority, Shadow, NonBlend, Blend, NavMeshDebug, ColliderDebug, UI, None, Count };
 	enum class MouseButton{LButton, RButton, Count};
 	enum class LightType{Directional, Point, Spot, Count};
 	enum class ModelType{Static, Skinned, Count};

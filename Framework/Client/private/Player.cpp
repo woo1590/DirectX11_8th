@@ -13,6 +13,9 @@
 #include "PlayerCam.h"
 #include "Cameleon.h"
 
+#include "Item.h"
+#include "DropWeapon.h"
+
 //component
 #include "ModelComponent.h"
 #include "PlayerAnimController.h"
@@ -20,6 +23,7 @@
 #include "NavigationComponent.h"
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
+#include "PlayerInteractionComponent.h"
 
 Player::Player()
 	:ContainerObject()
@@ -47,10 +51,12 @@ HRESULT Player::Initialize_Prototype()
 		return E_FAIL;
 
 	m_strInstanceTag = "Player";
+
 	AddComponent<PlayerAnimController>();
 	AddComponent<NavigationComponent>();
 	AddComponent<RigidBodyComponent>();
 	AddComponent<ColliderComponent>();
+	AddComponent<PlayerInteractionComponent>();
 
 	return S_OK;
 }
@@ -68,24 +74,31 @@ HRESULT Player::Initialize(InitDESC* arg)
 
 	auto engine = EngineCore::GetInstance();
 
+	/*collider*/
 	Bounding_AABB::AABB_DESC aabbDesc{};
 	aabbDesc.useResolve = true;
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Player);
 	aabbDesc.center = _float3{ 0.f,5.f,0.f };
 	aabbDesc.halfSize = _float3{ 8.f,5.f,8.f };
-
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
 
+	/*player anim controller*/
 	auto animatorController = GetComponent<PlayerAnimController>();
 	animatorController->SetHandAnimator(m_PartObjects[ENUM_CLASS(Parts::Hand)]->GetComponent<AnimatorComponent>());
 
+	/*navigation*/
 	auto nav = GetComponent<NavigationComponent>();
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
+
+	/*player interaction*/
+	auto interaction = GetComponent<PlayerInteractionComponent>();
+	interaction->SetPlayer(this);
+
 	{
 		/*equip first weapon*/
 		m_Weapons.resize(ENUM_CLASS(WeaponSlot::Count));
@@ -100,28 +113,8 @@ HRESULT Player::Initialize(InitDESC* arg)
 		if (firstWeapon)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
 
-		/*add second weapon*/
-		Object* secondWeapon = nullptr;
-		Weapon::WEAPON_DESC concealedAmmoDesc{};
-		concealedAmmoDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
-		concealedAmmoDesc.parent = this;
-		secondWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
-
-		if (secondWeapon)
-			m_Weapons[ENUM_CLASS(WeaponSlot::Slot2)] = static_cast<Weapon*>(secondWeapon);
-
-		/*add third weapon*/
-		Object* thirdWeapon = nullptr;
-		Weapon::WEAPON_DESC icySpearDesc{};
-		icySpearDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
-		icySpearDesc.parent = this;
-		thirdWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PoisonousGhost", &icySpearDesc);
-
-		if (thirdWeapon)
-			m_Weapons[ENUM_CLASS(WeaponSlot::Slot3)] = static_cast<Weapon*>(thirdWeapon);
-
 		m_eCurrWeaponSlot = WeaponSlot::Slot1;
-		Equip();
+		EquipCurrSlot();
 	}
 	
 	ChangeState(&m_PlayerIdle);
@@ -147,6 +140,73 @@ void Player::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+void Player::PickUpWeapon(WeaponID id)
+{
+	auto engine = EngineCore::GetInstance();
+	Object* weapon = nullptr;
+
+	switch (id)
+	{
+	case Client::WeaponID::Foundry:
+	{
+
+	}break;
+	case Client::WeaponID::ConcealedAmmo:
+	{
+		weapon = nullptr;
+		Weapon::WEAPON_DESC concealedAmmoDesc{};
+		concealedAmmoDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		concealedAmmoDesc.parent = this;
+		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ConcealedAmmo", &concealedAmmoDesc);
+
+	}break;
+	case Client::WeaponID::PoisionousGhost:
+	{
+		weapon = nullptr;
+		Weapon::WEAPON_DESC poisonousDesc{};
+		poisonousDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		poisonousDesc.parent = this;
+		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PoisonousGhost", &poisonousDesc);
+	}break;
+	case Client::WeaponID::Cameleon:
+		break;
+	case Client::WeaponID::IcySpear:
+		break;
+	case Client::WeaponID::Prism:
+	{
+		weapon = nullptr;
+		Weapon::WEAPON_DESC prismDesc{};
+		prismDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		prismDesc.parent = this;
+		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Prism", &prismDesc);
+	}break;
+	default:
+		break;
+	}
+
+	_uint numWeapons{};
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (!m_Weapons[i])
+		{
+			m_Weapons[i] = static_cast<Weapon*>(weapon);
+			m_eCurrWeaponSlot = static_cast<WeaponSlot>(i);
+			ChangeState(&m_PlayerStartEquip);
+
+			break;
+		}
+		++numWeapons;
+	}
+
+	/*drop curr slot weapon*/
+	if (numWeapons >= 3)
+	{
+		DropCurrSlotWeapon();
+		m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)] = static_cast<Weapon*>(weapon);
+		ChangeState(&m_PlayerStartEquip);
+	}
+}
+
 void Player::AddRecoil(_float power)
 {
 	static_cast<Hand*>(m_PartObjects[ENUM_CLASS(Parts::Hand)])->AddRecoil(power);
@@ -155,6 +215,38 @@ void Player::AddRecoil(_float power)
 _float3 Player::GetAimPosition()
 {
 	return static_cast<PlayerCam*>(m_PartObjects[ENUM_CLASS(Parts::PlayerCam)])->GetAimPosition();
+}
+
+void Player::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+}
+
+void Player::OnCollisionStay(ColliderComponent* otherCollider)
+{
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case Client::ColliderFilter::Enemy:
+		break;
+	case Client::ColliderFilter::EnemyAttack:
+		break;
+	case Client::ColliderFilter::BossArm:
+		break;
+	case Client::ColliderFilter::BossStoneProjectile:
+		break;
+	case Client::ColliderFilter::BossPillar:
+		break;
+	case Client::ColliderFilter::BossArmProjectile:
+		break;
+	case Client::ColliderFilter::Spawner:
+		break;
+	case Client::ColliderFilter::Item:
+	{
+		auto item = static_cast<Item*>(otherCollider->GetOwner());
+		item->Interaction(GetComponent<PlayerInteractionComponent>());
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* Player::Clone(InitDESC* arg)
@@ -209,7 +301,7 @@ HRESULT Player::CreatePartObjects()
 	return S_OK;
 }
 
-void Player::Equip()
+void Player::EquipCurrSlot()
 {
 	/*check first*/
 	Safe_Release(m_PartObjects[ENUM_CLASS(Parts::Weapon)]);
@@ -222,6 +314,21 @@ void Player::Equip()
 
 	auto animatorController = GetComponent<PlayerAnimController>();
 	animatorController->SetWeaponAnimator(equipWeapon->GetComponent<AnimatorComponent>());
+}
+
+void Player::DropCurrSlotWeapon()
+{
+	auto engine = EngineCore::GetInstance();
+
+	WeaponID currWeaponID = m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]->GetWeaponID();
+
+	DropWeapon::DROP_WEAPON_DESC dropWeaponDesc{};
+	dropWeaponDesc.weaponID = currWeaponID;
+	dropWeaponDesc.position = m_pTransform->GetPosition();
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", engine->GetCurrLevelID(), "Layer_DropWeapon", &dropWeaponDesc);
+
+	Safe_Release(m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)]);
+	Safe_Release(m_PartObjects[ENUM_CLASS(Parts::Weapon)]);
 }
 
 void Player::KeyInput(_float dt)
@@ -246,20 +353,29 @@ void Player::KeyInput(_float dt)
 	{
 		if (engine->IsKeyPressed('1'))
 		{
-			m_eCurrWeaponSlot = WeaponSlot::Slot1;
-			ChangeState(&m_PlayerStartEquip);
+			if (m_Weapons[0])
+			{
+				m_eCurrWeaponSlot = WeaponSlot::Slot1;
+				ChangeState(&m_PlayerStartEquip);
+			}
 		}
 
 		if (engine->IsKeyPressed('2'))
 		{
-			m_eCurrWeaponSlot = WeaponSlot::Slot2;
-			ChangeState(&m_PlayerStartEquip);
+			if (m_Weapons[1])
+			{
+				m_eCurrWeaponSlot = WeaponSlot::Slot2;
+				ChangeState(&m_PlayerStartEquip);
+			}
 		}
 
 		if (engine->IsKeyPressed('3'))
 		{
-			m_eCurrWeaponSlot = WeaponSlot::Slot3;
-			ChangeState(&m_PlayerStartEquip);
+			if (m_Weapons[2])
+			{
+				m_eCurrWeaponSlot = WeaponSlot::Slot3;
+				ChangeState(&m_PlayerStartEquip);
+			}
 		}
 
 		if (engine->IsKeyPressed('R'))
@@ -475,7 +591,7 @@ void Player::PlayerEndEquip::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 
 	auto player = static_cast<Player*>(object);
-	player->Equip();
+	player->EquipCurrSlot();
 }
 
 void Player::PlayerEndEquip::Update(Object* object, _float dt)

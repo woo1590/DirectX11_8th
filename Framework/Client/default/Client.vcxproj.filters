@@ -64,32 +64,8 @@
     <Filter Include="02. Object\Light\Sun">
       <UniqueIdentifier>{b085c115-2a92-4c03-ab0c-0d5bf9e3bbd7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Player">
-      <UniqueIdentifier>{250ef2b7-4328-4502-868e-33a41aac750c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Weapon">
-      <UniqueIdentifier>{78e9e4ef-6ee6-4e8e-89df-3d7ad0a0c7f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Hand">
-      <UniqueIdentifier>{a6dcfacb-c174-4d30-a979-d80548f2408e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\PlayerCam">
-      <UniqueIdentifier>{9e69e801-b7e5-4cee-b1c0-6e162a7788fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Weapon\Cameleon">
-      <UniqueIdentifier>{8b429c1d-86ef-4425-b6fa-a46a682b47ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Object Component">
       <UniqueIdentifier>{8444149c-a8cf-4f6d-a3d8-bcde65b6c68c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Object Component\PlayerAnim Controller">
-      <UniqueIdentifier>{d73f6de8-cb0f-4685-a773-f01d788afb69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Weapon\ConcealedAmmo">
-      <UniqueIdentifier>{7b024412-3d22-41ff-bee6-2e6edd4c17bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Weapon\IcySpear">
-      <UniqueIdentifier>{37fb6ffb-7fb8-4030-ad2d-bc912f5001f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Object\Enemy">
       <UniqueIdentifier>{4d50c74a-5fd5-4de6-b751-06b1ca29f0b9}</UniqueIdentifier>
@@ -97,20 +73,11 @@
     <Filter Include="02. Object\SkyBox">
       <UniqueIdentifier>{49aeb3cb-9155-4be6-835f-b357c2d16236}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Player\Weapon\PoisonousGhost">
-      <UniqueIdentifier>{21c04195-bded-4f63-8158-842217f50c6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Hand\Bobbing Controller">
-      <UniqueIdentifier>{3219146e-f866-48ff-8e75-ec3fbf907937}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\Enemy\HorseHead">
       <UniqueIdentifier>{97888e35-9080-4e6a-a54a-0503461fa6e9}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Object\Enemy\Boss">
       <UniqueIdentifier>{fef49d7c-44b9-4289-ae37-76a9e25c1767}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Object\Player\Weapon\Foundry">
-      <UniqueIdentifier>{bba81a29-f073-44bd-885d-ce24e03b92da}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Object\Enemy\Bomber">
       <UniqueIdentifier>{2d00e73b-f171-4540-a458-68bfa5b828f4}</UniqueIdentifier>
@@ -199,6 +166,69 @@
     <Filter Include="02. Object\Map Object\BossMap">
       <UniqueIdentifier>{6db1efeb-1e05-488b-828c-da27c169bc32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\UIObject\LogoText">
+      <UniqueIdentifier>{7c074b92-717f-4044-a37d-eb58aae9ea3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\LogoFire">
+      <UniqueIdentifier>{3ffdc814-b194-4647-a12a-897ef5ea4fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player">
+      <UniqueIdentifier>{250ef2b7-4328-4502-868e-33a41aac750c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon">
+      <UniqueIdentifier>{78e9e4ef-6ee6-4e8e-89df-3d7ad0a0c7f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Cameleon">
+      <UniqueIdentifier>{8b429c1d-86ef-4425-b6fa-a46a682b47ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\ConcealedAmmo">
+      <UniqueIdentifier>{7b024412-3d22-41ff-bee6-2e6edd4c17bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\IcySpear">
+      <UniqueIdentifier>{37fb6ffb-7fb8-4030-ad2d-bc912f5001f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\PoisonousGhost">
+      <UniqueIdentifier>{21c04195-bded-4f63-8158-842217f50c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Foundry">
+      <UniqueIdentifier>{bba81a29-f073-44bd-885d-ce24e03b92da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Hand">
+      <UniqueIdentifier>{a6dcfacb-c174-4d30-a979-d80548f2408e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Hand\Bobbing Controller">
+      <UniqueIdentifier>{3219146e-f866-48ff-8e75-ec3fbf907937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\PlayerCam">
+      <UniqueIdentifier>{9e69e801-b7e5-4cee-b1c0-6e162a7788fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\Dynamite">
+      <UniqueIdentifier>{eefbd6fc-7716-4493-94b9-4129657a5374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Item">
+      <UniqueIdentifier>{2cba7e45-61cb-4f36-8d65-61ea430395fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Item\DropWeapon">
+      <UniqueIdentifier>{c3d23177-416c-44cf-b3fc-4cee96092d08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\PlayerInteraction Component">
+      <UniqueIdentifier>{9e466a7c-a0e9-40cc-a12b-2dc86bfd9236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object Component\PlayerAnim Controller Component">
+      <UniqueIdentifier>{d73f6de8-cb0f-4685-a773-f01d788afb69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\Command">
+      <UniqueIdentifier>{69edbe89-7621-4e54-b62b-f41fe7219054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\Command\ChangeLevel">
+      <UniqueIdentifier>{566a1978-088a-4ef8-882b-39eb5d5b650d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Prism">
+      <UniqueIdentifier>{f9ed9aef-6fc4-4c92-90bb-ad475eba3bf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\PrismProjectile">
+      <UniqueIdentifier>{1f5c7a2b-bf14-40a3-8071-9ee706e8d520}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -265,7 +295,7 @@
       <Filter>02. Object\Player\Weapon\Cameleon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PlayerAnimController.h">
-      <Filter>03. Object Component\PlayerAnim Controller</Filter>
+      <Filter>03. Object Component\PlayerAnim Controller Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ConcealedAmmo.h">
       <Filter>02. Object\Player\Weapon\ConcealedAmmo</Filter>
@@ -378,6 +408,33 @@
     <ClInclude Include="..\public\StageBoss.h">
       <Filter>01. Level\Stage Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\LogoText.h">
+      <Filter>02. Object\UIObject\LogoText</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoFire.h">
+      <Filter>02. Object\UIObject\LogoFire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DropWeapon.h">
+      <Filter>02. Object\Item\DropWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Dynamite.h">
+      <Filter>02. Object\Projectile\Dynamite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Item.h">
+      <Filter>02. Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerInteractionComponent.h">
+      <Filter>03. Object Component\PlayerInteraction Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Command_ChangeLevel.h">
+      <Filter>98. Etc\Command\ChangeLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Prism.h">
+      <Filter>02. Object\Player\Weapon\Prism</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PrismProjectile.h">
+      <Filter>02. Object\Projectile\PrismProjectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -432,7 +489,7 @@
       <Filter>02. Object\Player\Weapon\Cameleon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerAnimController.cpp">
-      <Filter>03. Object Component\PlayerAnim Controller</Filter>
+      <Filter>03. Object Component\PlayerAnim Controller Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ConcealedAmmo.cpp">
       <Filter>02. Object\Player\Weapon\ConcealedAmmo</Filter>
@@ -544,6 +601,33 @@
     </ClCompile>
     <ClCompile Include="..\private\StageBoss.cpp">
       <Filter>01. Level\Stage Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoText.cpp">
+      <Filter>02. Object\UIObject\LogoText</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoFire.cpp">
+      <Filter>02. Object\UIObject\LogoFire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DropWeapon.cpp">
+      <Filter>02. Object\Item\DropWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dynamite.cpp">
+      <Filter>02. Object\Projectile\Dynamite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Item.cpp">
+      <Filter>02. Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerInteractionComponent.cpp">
+      <Filter>03. Object Component\PlayerInteraction Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Command_ChangeLevel.cpp">
+      <Filter>98. Etc\Command\ChangeLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Prism.cpp">
+      <Filter>02. Object\Player\Weapon\Prism</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PrismProjectile.cpp">
+      <Filter>02. Object\Projectile\PrismProjectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

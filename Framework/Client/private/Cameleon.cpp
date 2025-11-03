@@ -58,6 +58,9 @@ HRESULT Cameleon::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	ChangeState(&m_CameleonIdle);
+	m_iNumMaxAmmo = 30;
+	m_iNumCurrAmmo = m_iNumMaxAmmo;
+	m_eWeaponID = WeaponID::Cameleon;
 
 	return S_OK;
 }

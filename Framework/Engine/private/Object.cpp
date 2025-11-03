@@ -79,6 +79,9 @@ void Object::LateUpdate(_float dt)
 
 HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
 {
+	if (RenderGroup::None == m_eRenderGroup)
+		return S_OK;
+
 	auto model = GetComponent<ModelComponent>();
 	auto sprite = GetComponent<SpriteComponent>();
 

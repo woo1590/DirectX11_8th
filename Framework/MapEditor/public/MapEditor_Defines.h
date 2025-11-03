@@ -17,5 +17,5 @@ namespace MapEditor
 	constexpr unsigned int CHUNK_SIZE = 256;
 	constexpr unsigned int CELL_SIZE = 40;
 
-	enum class LevelID { Editor, Count };
+	enum class LevelID { Static,Editor, Count };
 }

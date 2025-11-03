@@ -22,7 +22,14 @@
 #include "IcySpear.h"
 #include "PoisonousGhost.h"
 #include "Foundry.h"
-#include "DefaultBullet.h"	
+#include "Prism.h"
+
+#include "DefaultBullet.h"
+#include "PrismProjectile.h"
+#include "Dynamite.h"
+
+//item
+#include "DropWeapon.h"
 
 //enemy
 #include "Fracture.h"
@@ -175,25 +182,42 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/cameleon/cameleon.model",
 			"Model_Weapon_Cameleon")))
 			return E_FAIL;
-
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/concealed_ammo/concealed_ammo.model",
 			"Model_Weapon_ConcealedAmmo")))
 			return E_FAIL;
-
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/icy_spear/icy_spear.model",
 			"Model_Weapon_IcySpear")))
 			return E_FAIL;
-
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/poisonous_ghost/poisonous_ghost.model",
 			"Model_Weapon_PoisonousGhost")))
 			return E_FAIL;
-
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/foundry/foundry.model",
 			"Model_Weapon_Foundry")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/prism/prism.model",
+			"Model_Weapon_Prism")))
+			return E_FAIL;
 
+		/*Drop weapon*/
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/foundry/drop_foundry.model",
+			"Model_DropWeapon_Foundry")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/concealed_ammo/drop_concealed_ammo.model",
+			"Model_DropWeapon_ConcealedAmmo")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/poisonous_ghost/drop_poisonous_ghost.model",
+			"Model_DropWeapon_PoisonousGhost")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/prism/drop_prism.model",
+			"Model_DropWeapon_Prism")))
+			return E_FAIL;
+
+		/*Projectile*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/projectile/default_bullet/default_bullet.model",
 			"Model_Projectile_Default_Bullet")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/projectile/dynamite/dynamite.model",
+			"Model_Projectile_Dynamite")))
 			return E_FAIL;
 
 		/*Map*/
@@ -213,6 +237,7 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage1_area2/stage1_area2.model",
 			"Model_Stage1_Area2")))
 			return E_FAIL;
+
 		/*Map*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/boss2/boss_stage.model",
 			"Model_Boss_Stage")))
@@ -230,6 +255,14 @@ HRESULT Loader::LoadingForLogo()
 				return E_FAIL;
 		}
 
+		for (_uint i = 0; i < 16; ++i)
+		{
+			_string filePath = "horse_head" + std::to_string(i) + ".model";
+			_string modelTag = "HorseHead" + std::to_string(i);
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/fracture/horse_head/" + filePath,
+				"Model_Fracture_" + modelTag)))
+				return E_FAIL;
+		}
 	}
 
 	/*Load Animation Set*/
@@ -274,6 +307,10 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/foundry.animationset",
 			"AnimationSet_Weapon_Foundry")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/prism.animationset",
+			"AnimationSet_Weapon_Prism")))
 			return E_FAIL;
 
 	}
@@ -352,7 +389,14 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", Foundry::Create())))
 			return E_FAIL;
 
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Prism", Prism::Create())))
+			return E_FAIL;
+
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet", DefaultBullet::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismProjectile", PrismProjectile::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Dynamite", Dynamite::Create())))
 			return E_FAIL;
 
 		/*Map*/
@@ -376,7 +420,12 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemySpawner", EnemySpawner::Create())))
 			return E_FAIL;
 
+		/*Fracture*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", Fracture::Create())))
+			return E_FAIL;
+
+		/*Item*/
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", DropWeapon::Create())))
 			return E_FAIL;
 	}
 	m_strDebugText = L"로딩완료";

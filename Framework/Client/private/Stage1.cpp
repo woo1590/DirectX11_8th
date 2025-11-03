@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "Stage1.h"
 #include "EngineCore.h"
-#include "EnemySpawner.h"
 #include "LoadingLevel.h"
+
+//object
+#include "Door.h"
+#include "EnemySpawner.h"
+#include "DropWeapon.h"
 
 //component
 #include "NavigationComponent.h"
@@ -50,8 +54,28 @@ void Stage1::Free()
 
 void Stage1::Update(_float dt)
 {
-	if (EngineCore::GetInstance()->IsKeyPressed('N'))
-		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::StageBoss));
+	auto engine = EngineCore::GetInstance();
+
+	if (engine->IsKeyPressed('N'))
+		engine->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::StageBoss));
+
+	if (engine->IsKeyPressed('I'))
+	{
+		DropWeapon::DROP_WEAPON_DESC concealedAmmo{};
+		concealedAmmo.position = _float3{ 150.f, 5.f, 170.f };
+		concealedAmmo.weaponID = WeaponID::ConcealedAmmo;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", ENUM_CLASS(LevelID::Stage1), "Layer_DropWeapon", &concealedAmmo);
+
+		DropWeapon::DROP_WEAPON_DESC poison{};
+		poison.position = _float3{ 150.f, 5.f, 180.f };
+		poison.weaponID = WeaponID::PoisionousGhost;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", ENUM_CLASS(LevelID::Stage1), "Layer_DropWeapon", &poison);
+
+		DropWeapon::DROP_WEAPON_DESC prism{};
+		prism.position = _float3{ 150.f, 5.f, 190.f };
+		prism.weaponID = WeaponID::Prism;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", ENUM_CLASS(LevelID::Stage1), "Layer_DropWeapon", &prism);
+	}
 }
 
 HRESULT Stage1::Render()
@@ -136,6 +160,10 @@ HRESULT Stage1::LoadMapFromFile(const _string& filePath)
 
 		static_cast<EnemySpawner*>(spawner)->ConnectDoor(ENUM_CLASS(LevelID::Stage1));
 	}
+
+	/*connect door to next stage*/	
+	auto lastDoor = engine->GetLastObject(ENUM_CLASS(LevelID::Stage1), "Layer_Door");
+	static_cast<Door*>(lastDoor)->ConnectNextStage(LevelID::StageBoss);
 
 	return S_OK;
 }

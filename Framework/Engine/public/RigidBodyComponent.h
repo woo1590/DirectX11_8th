@@ -56,7 +56,7 @@ private:
 
     _bool m_IsGround = true;
     _float3 m_Velocity{};
-    _float3 m_AngularVelocity{ math::ToRadian(180.f),0.f,0.f};
+    _float3 m_AngularVelocity{ 0.f,0.f,0.f };
 
     _bool m_UseIntegrate = false;
     _float3 m_LastFrameAcceleration{};

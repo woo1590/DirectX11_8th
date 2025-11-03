@@ -2,12 +2,14 @@
 #include "HorseHead.h"
 #include "Bounding_AABB.h"
 #include "Layer.h"
+#include "Random.h"
 
 //object
 #include "Socket.h"
 #include "HorseHead_Head.h"
 #include "HorseHead_Shield.h"
 #include "HorseHead_Sword.h"
+#include "Fracture.h"
 
 //component
 #include "ModelComponent.h"
@@ -394,6 +396,48 @@ void HorseHead::HorseHeadHitBody::TestForExit(Object* object)
 void HorseHead::HorseHeadDead::Enter(Object* object)
 {
 	object->SetDead();
+
+	auto engine = EngineCore::GetInstance();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float3 camPosition = engine->GetCameraContext().camPosition;
+	_float3 position = transform->GetPosition();
+	_float3 hitDir{};
+	XMStoreFloat3(&hitDir, XMVector3Normalize(XMLoadFloat3(&position) - XMLoadFloat3(&camPosition)));
+
+	Fracture::FRACTURE_DESC desc{};
+	desc.scale = _float3{ 1.2f,1.2f,1.2f };
+	desc.quaternion = transform->GetQuaternion();
+
+	auto random = engine->GetRandom();
+	for (_uint i = 0; i < 16; i += 3)
+	{
+		desc.position.x = position.x + random->get<_float>(-4.f, 4.f);
+		desc.position.y = position.y + random->get<_float>(4.f, 7.f);
+		desc.position.z = position.z + random->get<_float>(-4.f, 4.f);
+
+		_float3 dir{};
+		_float dirFactor = random->get<_float>(0.4f, 0.6f);
+		XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&desc.position) - XMLoadFloat3(&position)));
+		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&hitDir) * dirFactor + XMLoadFloat3(&dir) * (1.f - dirFactor))));
+		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
+
+		_float power = random->get<_float>(90.f, 120.f);
+		_float3 force{};
+		_float3 angularForce{};
+		XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);
+		XMStoreFloat3(&angularForce, XMLoadFloat3(&dir) * power * 0.1f);
+
+		_string modelTag = "HorseHead" + std::to_string(i);
+		desc.modelTag = "Model_Fracture_" + modelTag;
+
+		Object* fracture = nullptr;
+		desc.spawnNavCell = object->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", engine->GetCurrLevelID(), "Layer_Fracture", &desc, &fracture);
+
+		fracture->GetComponent<RigidBodyComponent>()->AddImpulse(force);
+		fracture->GetComponent<RigidBodyComponent>()->AddAngularImpulse(angularForce);
+	}
 }
 
 void HorseHead::HorseHeadDead::TestForExit(Object* object)

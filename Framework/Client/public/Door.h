@@ -17,12 +17,18 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
+    void ConnectNextStage(LevelID nextLevelID);
     void Open();
+
+    void OnCollisionStay(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
+    _bool m_IsConnectStage = false;
+    LevelID m_eConnectStageID = LevelID::Count;
+
     HRESULT CreatePartObjects();
 
     class DoorOpen : public State
@@ -42,21 +48,21 @@ private:
     };
     class DoorClosed : public State
     {
-        void Enter(Object* object)override;
-        void Update(Object* object, _float t)override;
-        void TestForExit(Object* object)override;
+        void Enter(Object* object)override {};
+        void Update(Object* object, _float t)override {};
+        void TestForExit(Object* object)override {};
     };
-    class DoorClosing : public State
+    class DoorConnectNextStage : public State
     {
         void Enter(Object* object)override;
-        void Update(Object* object, _float t)override;
+        void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
     };
 
     DoorOpen m_DoorOpen;
     DoorOpening m_DoorOpening;
     DoorClosed m_DoorClosed;
-    DoorClosing m_DoorClosing;
+    DoorConnectNextStage m_DoorConnectNextStage;
 };
 
 NS_END

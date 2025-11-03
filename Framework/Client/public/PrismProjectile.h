@@ -1,0 +1,32 @@
+#pragma once
+#include "Projectile.h"
+
+NS_BEGIN(Client)
+
+class PrismProjectile :
+    public Projectile
+{
+private:
+    PrismProjectile();
+    PrismProjectile(const PrismProjectile& prototype);
+    virtual ~PrismProjectile() = default;
+
+public:
+    static PrismProjectile* Create();
+    HRESULT Initialize_Prototype()override;
+    HRESULT Initialize(InitDESC* arg)override;
+    void PriorityUpdate(_float dt)override;
+    void Update(_float dt)override;
+    void LateUpdate(_float dt)override;
+
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
+
+    Object* Clone(InitDESC* arg)override;
+    void Free()override;
+
+private:
+    _uint m_iNumCurrReflect{};
+    _uint m_iNumMaxReflect{};
+};
+
+NS_END

@@ -92,7 +92,7 @@ void DefaultBullet::Update(_float dt)
 	worldRay.origin = currPosition;
 	XMStoreFloat3(&worldRay.direction, XMVector3Normalize(XMLoadFloat3(&nextPosition) - XMLoadFloat3(&currPosition)));
 
-	RAYCAST_DATA result = EngineCore::GetInstance()->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::Ray));
+	RAYCAST_DATA result = EngineCore::GetInstance()->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::StaticMapObject));
 	if (result.isHit)
 	{
 		//currPos + result.distance 더해서 nextPos 만들고 nextPos에 데칼 생성

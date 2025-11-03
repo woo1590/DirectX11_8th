@@ -83,7 +83,7 @@ void PlayerCam::Update(_float dt)
 	RAYCAST_DATA data{};
 	XMStoreFloat3(&worldRay.origin, camPosition);
 	XMStoreFloat3(&worldRay.direction, forward);
-	data = engine->RayCast(worldRay, ENUM_CLASS(ColliderFilter::Ray));;
+	data = engine->RayCast(worldRay, ENUM_CLASS(ColliderFilter::StaticMapObject));;
 
 	if (data.isHit)
 		XMStoreFloat3(&m_AimPosition, camPosition + forward * data.worldDistance);

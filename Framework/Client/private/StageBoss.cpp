@@ -38,6 +38,9 @@ HRESULT StageBoss::Initialize()
 	if (FAILED(Initialize_LayerPlayer("Layer_Player")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerUI("Layer_UI")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -47,6 +50,18 @@ void StageBoss::Free()
 
 void StageBoss::Update(_float dt)
 {
+	if (!m_IsBossSpawned)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		_float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+
+		if (playerPos.z > 297.f)
+		{
+			engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_Boss", ENUM_CLASS(LevelID::StageBoss), "Layer_Boss");
+			m_IsBossSpawned = true;
+		}
+	}
 }
 
 HRESULT StageBoss::Render()
@@ -161,6 +176,16 @@ HRESULT StageBoss::Initialize_LayerPlayer(const _string& layerTag)
 
 	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	player->GetComponent<NavigationComponent>()->SpawnInCell(0);
+
+	return S_OK;
+}
+
+HRESULT StageBoss::Initialize_LayerUI(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sight", ENUM_CLASS(LevelID::StageBoss), layerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

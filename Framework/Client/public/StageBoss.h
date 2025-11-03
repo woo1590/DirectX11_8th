@@ -19,6 +19,8 @@ public:
     HRESULT Render()override;
 
 private:
+    _bool m_IsBossSpawned = false;
+
     HRESULT LoadMapFromFile(const _string& filePath);
 
     HRESULT Initialize_LayerLights(const _string& layerTag);

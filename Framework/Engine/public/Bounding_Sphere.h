@@ -22,7 +22,7 @@ public:
 
     void Update(_float4x4 worldMatrix) override;
     _bool Intersect(Bounding* other)override;
-    RAYCAST_DATA RayCast(RAY worldRay)override { return RAYCAST_DATA{}; }
+    RAYCAST_DATA RayCast(RAY worldRay)override;
     _bool IntersectToAABB(Bounding_AABB* other) override;
     _bool IntersectToOBB(Bounding_OBB* other) override;
     _bool IntersectToSphere(Bounding_Sphere* other) override;

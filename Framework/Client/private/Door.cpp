@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Door.h"
+#include "Bounding_OBB.h"
+#include "LoadingLevel.h"
+#include "Command_ChangeLevel.h"
 
+#include "ColliderComponent.h"
 #include "Door_L.h"
 #include "Door_R.h"
 
@@ -29,12 +33,26 @@ HRESULT Door::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	AddComponent<ColliderComponent>();
+
 	return S_OK;
 }
 HRESULT Door::Initialize(InitDESC* arg)
 {
 	if (FAILED(Object::Initialize(arg)))
 		return E_FAIL;
+
+	auto engine = EngineCore::GetInstance();
+
+	/*collider*/
+	Bounding_OBB::OBB_DESC obbDesc{};
+	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Door);
+	obbDesc.type = ColliderType::OBB;
+	obbDesc.center = _float3{ 0.f,-20.f,0.f };
+	obbDesc.halfSize = _float3{ 10.f,20.f,10.f };
+	auto collider = GetComponent<ColliderComponent>();
+	collider->Initialize(&obbDesc);
+	engine->RegisterCollider(collider);
 
 	m_iNumPartObjects = ENUM_CLASS(Parts::Count);
 	m_PartObjects.resize(m_iNumPartObjects);
@@ -46,10 +64,37 @@ HRESULT Door::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+void Door::ConnectNextStage(LevelID nextLevelID)
+{
+	m_IsConnectStage = true;
+	m_eConnectStageID = nextLevelID;
+}
+
 void Door::Open()
 {
 	if (m_CurrState == &m_DoorClosed)
-		ChangeState(&m_DoorOpening);
+	{
+		if (!m_IsConnectStage)
+			ChangeState(&m_DoorOpening);
+		else
+			ChangeState(&m_DoorConnectNextStage);
+	}
+}
+
+void Door::OnCollisionStay(ColliderComponent* otherCollider)
+{
+ 	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Player))
+	{
+		if (&m_DoorConnectNextStage == m_CurrState)
+		{
+			auto engine = EngineCore::GetInstance();
+			if (engine->IsKeyPressed('F'))
+			{
+				auto command = Command_ChangeLevel::Create(m_eConnectStageID);
+				engine->RegisterCommand(command);  
+			}
+		}
+	}
 }
 
 Object* Door::Clone(InitDESC* arg)
@@ -64,6 +109,8 @@ Object* Door::Clone(InitDESC* arg)
 
 void Door::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }
 
@@ -142,26 +189,15 @@ void Door::DoorOpening::TestForExit(Object* object)
 	}
 }
 
-void Door::DoorClosed::Enter(Object* object)
+void Door::DoorConnectNextStage::Enter(Object* object)
+{
+	/*ui 추가 등등*/
+}
+
+void Door::DoorConnectNextStage::Update(Object* object, _float dt)
 {
 }
 
-void Door::DoorClosed::Update(Object* object, _float t)
-{
-}
-
-void Door::DoorClosed::TestForExit(Object* object)
-{
-}
-
-void Door::DoorClosing::Enter(Object* object)
-{
-}
-
-void Door::DoorClosing::Update(Object* object, _float t)
-{
-}
-
-void Door::DoorClosing::TestForExit(Object* object)
+void Door::DoorConnectNextStage::TestForExit(Object* object)
 {
 }

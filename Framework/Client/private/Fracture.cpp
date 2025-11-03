@@ -35,7 +35,6 @@ HRESULT Fracture::Initialize_Prototype()
 
 	AddComponent<ModelComponent>();
 	AddComponent<RigidBodyComponent>();
-	AddComponent<NavigationComponent>();
 	AddComponent<ColliderComponent>();
 
 	return S_OK;
@@ -75,13 +74,6 @@ HRESULT Fracture::Initialize(InitDESC* arg)
 	rigidBody->UseIntegrate();
 	rigidBody->SetInertiaTensor(1.5f);
 
-	/*navigation*/
-	auto nav = GetComponent<NavigationComponent>();
-	engine->RegisterNavigation(nav);
-	nav->AttachRigidBody();
-	nav->AttachTransform();
-	nav->SetCurrCellIndex(desc->spawnNavCell);
-
 	return S_OK;
 }
 
@@ -114,7 +106,7 @@ void Fracture::Update(_float dt)
 	worldRay.origin = currPosition;
 	worldRay.direction = dir;
 
-	RAYCAST_DATA data = engine->RayCast(worldRay, 2.f, ENUM_CLASS(ColliderFilter::Ray));
+	RAYCAST_DATA data = engine->RayCast(worldRay, 2.f, ENUM_CLASS(ColliderFilter::StaticMapObject));
 
 	if (data.isHit)
 	{
@@ -152,8 +144,6 @@ void Fracture::Update(_float dt)
 void Fracture::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
-
-	
 }
 
 Object* Fracture::Clone(InitDESC* arg)

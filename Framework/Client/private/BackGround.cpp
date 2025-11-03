@@ -29,6 +29,8 @@ HRESULT BackGround::Initialize_Prototype()
 
 HRESULT BackGround::Initialize(InitDESC* arg)
 {
+	BACKGROUND_DESC* desc = static_cast<BACKGROUND_DESC*>(arg);
+
 	UIObjectDesc uiDesc{};
 	uiDesc.x = 640.f;
 	uiDesc.y = 360.f;
@@ -49,7 +51,7 @@ HRESULT BackGround::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	sprite->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
-	sprite->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Background_Logo");
+	sprite->SetMaterial(ENUM_CLASS(LevelID::Static), desc->mtrlTag);
 
 	return S_OK;
 }

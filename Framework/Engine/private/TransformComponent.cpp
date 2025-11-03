@@ -217,7 +217,6 @@ Component* TransformComponent::Clone()
 void TransformComponent::Free()
 {
 	__super::Free();
-
 }
 
 #ifdef USE_IMGUI

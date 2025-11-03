@@ -93,7 +93,7 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 10;
+	statusDesc.hp = 100;
 	statusDesc.attackPower = 1;
 	statusDesc.shield = 100;
 	statusDesc.speed = 40.f;
@@ -129,6 +129,24 @@ void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{
+	case ColliderFilter::PlayerAttack:
+	{
+		auto status = GetComponent<StatusComponent>();
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+		if (0 == status->GetDesc().hp)
+			ChangeState(&m_SoldierDead);
+
+		if (m_CurrState == &m_SoldierIdle || m_CurrState == &m_SoldierRun)
+		{
+			if (m_fElapsedTime >= m_fHitDelay)
+			{
+				ChangeState(&m_SoldierHitBody);
+				m_fElapsedTime = 0.f;
+			}
+		}
+	}break;
 	case ColliderFilter::PlayerProjectile:
 	{
 		auto status = GetComponent<StatusComponent>();

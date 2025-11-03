@@ -8,6 +8,9 @@
 #include "StageBoss.h"
 #include "GamePlayLevel.h"
 
+//object
+#include "BackGround.h"
+
 LoadingLevel::LoadingLevel()
 	:Level()
 {
@@ -31,8 +34,8 @@ HRESULT LoadingLevel::Initialize(LevelID nextLevelID)
 	if (!m_pLoader)
 		return E_FAIL;
 
-	auto engine = EngineCore::GetInstance();
-	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround");
+	if(FAILED(Initialize_LoadingUI()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -74,4 +77,44 @@ HRESULT LoadingLevel::Render()
 	m_pLoader->DebugPrint();
 
 	return S_OK;
+}
+
+HRESULT LoadingLevel::Initialize_LoadingUI()
+{
+	auto engine = EngineCore::GetInstance();
+	switch (m_eNextLevelID)
+	{
+	case Client::LevelID::Logo:
+	{
+		BackGround::BACKGROUND_DESC backGroundDesc{};
+		backGroundDesc.mtrlTag = "Mtrl_Background_Logo";
+
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoFire", ENUM_CLASS(LevelID::Loading), "Layer_UI")))
+			return E_FAIL;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoText", ENUM_CLASS(LevelID::Loading), "Layer_UI")))
+			return E_FAIL;
+
+	}break;
+	case Client::LevelID::Stage1:
+	{
+		BackGround::BACKGROUND_DESC backGroundDesc{};
+		backGroundDesc.mtrlTag = "Mtrl_Background_Logo";
+
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+	}break;
+	case Client::LevelID::StageBoss:
+	{
+		BackGround::BACKGROUND_DESC backGroundDesc{};
+		backGroundDesc.mtrlTag = "Mtrl_Background_Boss";
+
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+	}break;
+	default:
+		break;
+	}
 }

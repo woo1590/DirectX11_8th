@@ -6,8 +6,10 @@
 #include "VIBufferQuad.h"
 
 //object
-#include "BackGround.h"
 #include "Socket.h"
+#include "BackGround.h"
+#include "LogoText.h"
+#include "LogoFire.h"
 
 MainApp::MainApp()
 {
@@ -135,6 +137,23 @@ HRESULT MainApp::LoadStaticLevel()
         if (FAILED(m_pEngineCore->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
             return E_FAIL;
     }
+    /*Load Material*/
+    {
+        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_logo.json",
+           "Mtrl_Background_Logo")))
+            return E_FAIL;
+        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/logo_fire.json",
+           "Mtrl_Logo_Fire")))
+            return E_FAIL;
+        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/logo_text.json",
+           "Mtrl_Logo_Text")))
+            return E_FAIL;
+
+        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_boss.json",
+           "Mtrl_Background_Boss")))
+            return E_FAIL;
+
+    }
     /*Load Prototype Object*/
     {
         if (FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", BackGround::Create())))
@@ -143,12 +162,12 @@ HRESULT MainApp::LoadStaticLevel()
         if(FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static),"Prototype_Object_Socket",Socket::Create())))
             return E_FAIL;
 
-    }
-    /*Load Material*/
-    {
-        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_logo.json",
-           "Mtrl_Background_Logo")))
+        if (FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoText", LogoText::Create())))
             return E_FAIL;
+
+        if (FAILED(m_pEngineCore->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoFire", LogoFire::Create())))
+            return E_FAIL;
+
     }
     return S_OK;
 }
@@ -159,6 +178,8 @@ void MainApp::AddColliderFilterGroup()
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Enemy));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossPillar));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Item));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Door));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossArmProjectile));
 
@@ -169,10 +190,10 @@ void MainApp::AddColliderFilterGroup()
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossPillar));
 
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerAttack), ENUM_CLASS(ColliderFilter::Enemy));
 
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::Enemy));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Fracture), ENUM_CLASS(ColliderFilter::Fracture));
-    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Ray), ENUM_CLASS(ColliderFilter::StaticMapObject));
 }
 
 bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)

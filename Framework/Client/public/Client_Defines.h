@@ -29,7 +29,18 @@ namespace Client
 		BossArmProjectile,
 		Spawner,
 		StaticMapObject,
-		Ray,
+		Item,
+		Door,
+		Count
+	};
+	enum class WeaponID
+	{
+		Foundry,
+		ConcealedAmmo,
+		PoisionousGhost,
+		Cameleon,
+		IcySpear,
+		Prism,
 		Count
 	};
 

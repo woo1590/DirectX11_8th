@@ -56,6 +56,8 @@ HRESULT IcySpear::Initialize(InitDESC* arg)
 
 	ChangeState(&m_IcySpearIdle);
 
+	m_eWeaponID = WeaponID::IcySpear;
+
 	return S_OK;
 }
 

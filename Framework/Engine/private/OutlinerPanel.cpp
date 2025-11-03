@@ -53,7 +53,40 @@ void OutlinerPanel::Draw(GUIState& state)
 
         _uint levelID = state.pLevelManager->GetCurrLevelID();
         const auto& layers = state.pObjectManager->GetLayers(levelID);
+        const auto& staticlayers = state.pObjectManager->GetLayers(0);
 
+        for (const auto& layer : staticlayers) {
+            if (!filter.IsActive() || filter.PassFilter(layer.first.c_str())) {
+                ImGui::PushID(layer.second);
+
+                ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+                _bool open = ImGui::TreeNodeEx("Layer", flags, "Layer: %s", layer.first.c_str());
+
+                if (ImGui::IsItemClicked()) {
+                    state.pLayer = layer.second;
+                    state.pObject = nullptr;
+                }
+
+                if (open) {
+                    for (auto* object : layer.second->GetObjects()) {
+                        if (!object) continue;
+                        if (filter.IsActive() && !filter.PassFilter(object->GetInstanceTag().c_str()))
+                            continue;
+
+                        ImGui::PushID(object);
+                        _bool selected = (state.pObject == object);
+                        if (ImGui::Selectable(object->GetInstanceTag().c_str(), selected)) {
+                            state.pObject = object;
+                            state.pLayer = layer.second;
+                        }
+                        ImGui::PopID();
+                    }
+                    ImGui::TreePop();
+                }
+
+                ImGui::PopID();
+            }
+        }
         for (const auto& layer : layers) {
             if (!filter.IsActive() || filter.PassFilter(layer.first.c_str())) {
                 ImGui::PushID(layer.second);

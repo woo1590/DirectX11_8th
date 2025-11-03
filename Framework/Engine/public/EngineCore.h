@@ -19,6 +19,7 @@ public:
     HRESULT Initialize(const EngineDESC& desc);
     void Free()override;
     void Tick(_float dt);
+    void ExecuteCommands();
 
 #ifdef USE_IMGUI
 
@@ -79,6 +80,7 @@ public:
     HRESULT AddObject(_uint prototypeLevel, const _string& prototypeTag, _uint layerLevel, const _string& layerTag, InitDESC* arg = nullptr, class Object** out = nullptr);
     std::unordered_map<_string, class Layer*>& GetLayers(_uint levelID);
     class Object* GetFrontObject(_uint layerLevel, const _string& layerTag);
+    class Object* GetLastObject(_uint layerLevel, const _string& layerTag);
     const std::list<class Object*>& GetObjects(_uint layerLevel, const _string& layerTag);
 #pragma endregion
 
@@ -137,6 +139,7 @@ public:
 #pragma endregion
 
     class Random* GetRandom()const { return m_pRandom; }
+    void RegisterCommand(class ICommand* command) { m_Commands.push(command); }
     
     /*Debug setting*/
     void NavDebugEnable() { m_NavDebugEnable = true; }
@@ -164,6 +167,7 @@ private:
 
     HWND m_hWnd{};
     D3D11_VIEWPORT m_Viewport{};
+    std::queue<class ICommand*> m_Commands;
 
     class Random*             m_pRandom = nullptr;
     class RenderSystem*       m_pRenderSystem = nullptr;

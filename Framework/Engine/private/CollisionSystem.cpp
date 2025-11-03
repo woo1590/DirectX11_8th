@@ -57,18 +57,15 @@ RAYCAST_DATA CollisionSystem::RayCast(RAY worldRay, _uint rayFilter)
 {
     RAYCAST_DATA result{};
 
-    for (_uint i = 0; i < m_Colliders.size(); ++i)
+    if (rayFilter >= m_Colliders.size())
+        return result;
+
+    for (_uint i = 0; i < m_Colliders[rayFilter].size(); ++i)
     {
-        if (!CheckFilterGroup(i, rayFilter))
-            continue;
+        RAYCAST_DATA data = m_Colliders[rayFilter][i]->RayCast(worldRay);
 
-        for (_uint j = 0; j < m_Colliders[i].size(); ++j)
-        {
-            RAYCAST_DATA data = m_Colliders[i][j]->RayCast(worldRay);
-
-            if (data.isHit && data.worldDistance < result.worldDistance)
-                result = data;
-        }
+        if (data.isHit && data.worldDistance < result.worldDistance)
+            result = data;
     }
 
     return result;
@@ -79,18 +76,12 @@ RAYCAST_DATA CollisionSystem::RayCast(RAY worldRay, _float maxDistance, _uint ra
     RAYCAST_DATA result{};
     result.worldDistance = maxDistance;
 
-    for (_uint i = 0; i < m_Colliders.size(); ++i)
+    for (_uint i = 0; i < m_Colliders[rayFilter].size(); ++i)
     {
-        if (!CheckFilterGroup(i, rayFilter))
-            continue;
+        RAYCAST_DATA data = m_Colliders[rayFilter][i]->RayCast(worldRay);
 
-        for (_uint j = 0; j < m_Colliders[i].size(); ++j)
-        {
-            RAYCAST_DATA data = m_Colliders[i][j]->RayCast(worldRay);
-
-            if (data.isHit && data.worldDistance <= result.worldDistance)
-                result = data;
-        }
+        if (data.isHit && data.worldDistance < result.worldDistance)
+            result = data;
     }
 
     return result;

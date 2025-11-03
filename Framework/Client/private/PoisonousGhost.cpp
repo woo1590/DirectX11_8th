@@ -6,6 +6,7 @@
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 PoisonousGhost::PoisonousGhost()
 	:Weapon()
@@ -35,6 +36,7 @@ HRESULT PoisonousGhost::Initialize_Prototype()
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "PoisonousGhost";
 	m_eRenderGroup = RenderGroup::NonBlend;
@@ -44,28 +46,46 @@ HRESULT PoisonousGhost::Initialize_Prototype()
 
 HRESULT PoisonousGhost::Initialize(InitDESC* arg)
 {
+	auto engine = EngineCore::GetInstance();
+
+	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_PoisonousGhost");
 
+	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
 	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_PoisonousGhost");
 
 	model->ConnectAnimator();
 
+	/*collider*/
 	Bounding_OBB::OBB_DESC obbDesc{};
+	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerAttack);
 	obbDesc.type = ColliderType::OBB;
 	obbDesc.center = _float3{ 1.6f,0.f,0.f };
 	obbDesc.halfSize = _float3{ 2.f,0.1f,0.1f };
 	auto collider = GetComponent<ColliderComponent>();
-
 	collider->Initialize(&obbDesc);
 	collider->SetBoneIndex(model->GetBoneIndex("Bone012"));
+	collider->SetActive(false);
+	engine->RegisterCollider(collider);
 
-	ChangeState(&m_PoisonousGhostIdle);
+
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.attackPower = 100.f;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	m_iNumMaxAmmo = 15;
+	m_iNumCurrAmmo = m_iNumMaxAmmo;
+	m_eWeaponID = WeaponID::PoisionousGhost;
+
+	ChangeState(&m_PoisonousGhostIdle);
 
 	return S_OK;
 }
@@ -83,8 +103,6 @@ void PoisonousGhost::Update(_float dt)
 void PoisonousGhost::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
-
-
 }
 
 void PoisonousGhost::Reload()
@@ -123,6 +141,8 @@ Object* PoisonousGhost::Clone(InitDESC* arg)
 
 void PoisonousGhost::Free()
 {
+	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+
 	__super::Free();
 }
 
@@ -130,6 +150,9 @@ void PoisonousGhost::PoisonousGhostIdle::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Idle), true, false);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(false);
 }
 
 void PoisonousGhost::PoisonousGhostIdle::Update(Object* object, _float dt)
@@ -165,6 +188,10 @@ void PoisonousGhost::PoisonousGhostFire1::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire1), false, false);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(true);
+
 }
 
 void PoisonousGhost::PoisonousGhostFire1::Update(Object* object, _float dt)
@@ -187,6 +214,9 @@ void PoisonousGhost::PoisonousGhostFire1Return::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire1Return), false, true);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(false);
 }
 
 void PoisonousGhost::PoisonousGhostFire1Return::Update(Object* object, _float dt)
@@ -209,6 +239,9 @@ void PoisonousGhost::PoisonousGhostFire2::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2), false, false);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(true);
 }
 
 void PoisonousGhost::PoisonousGhostFire2::Update(Object* object, _float dt)
@@ -231,6 +264,9 @@ void PoisonousGhost::PoisonousGhostFire2Return::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2Return), false, true);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(false);
 }
 
 
@@ -254,6 +290,9 @@ void PoisonousGhost::PoisonousGhostFire3::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire3), false, false);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(true);
 }
 
 void PoisonousGhost::PoisonousGhostFire3::Update(Object* object, _float dt)
@@ -276,6 +315,9 @@ void PoisonousGhost::PoisonousGhostFire3Return::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire3Return), false, true);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(false);
 }
 
 void PoisonousGhost::PoisonousGhostFire3Return::Update(Object* object, _float dt)
@@ -298,6 +340,9 @@ void PoisonousGhost::PoisonousGhostSkill::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Skill), false, true);
+
+	auto collider = object->GetComponent<ColliderComponent>();
+	collider->SetActive(true);
 }
 
 void PoisonousGhost::PoisonousGhostSkill::Update(Object* object, _float dt)
@@ -313,5 +358,8 @@ void PoisonousGhost::PoisonousGhostSkill::TestForExit(Object* object)
 	if (progress >= 0.9f)
 	{
 		ghost->ChangeState(&ghost->m_PoisonousGhostIdle);
+
+		auto collider = object->GetComponent<ColliderComponent>();
+		collider->SetActive(false);
 	}
 }

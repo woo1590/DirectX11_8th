@@ -2,9 +2,13 @@
 #include "ConcealedAmmo.h"
 #include "Player.h"
 
+//object
+#include "Dynamite.h"
+
 //component
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
+#include "RigidBodyComponent.h"
 
 ConcealedAmmo::ConcealedAmmo()
 	:Weapon()
@@ -51,11 +55,15 @@ HRESULT ConcealedAmmo::Initialize(InitDESC* arg)
 
 	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
 
-	ChangeState(&m_ConcealedAmmoIdle);
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	m_iNumMaxAmmo = 30;
+	m_iNumCurrAmmo = m_iNumMaxAmmo;
+	m_eWeaponID = WeaponID::ConcealedAmmo;
+	ChangeState(&m_ConcealedAmmoIdle);
 
 	return S_OK;
 }
@@ -78,7 +86,7 @@ void ConcealedAmmo::LateUpdate(_float dt)
 
 void ConcealedAmmo::Idle()
 {
-	ChangeState(&m_ConcealedAmmoIdle);
+	//ChangeState(&m_ConcealedAmmoIdle);
 }
 
 void ConcealedAmmo::Reload()
@@ -90,7 +98,12 @@ void ConcealedAmmo::Reload()
 void ConcealedAmmo::Fire()
 {
 	if (&m_ConcealedAmmoIdle == m_CurrState)
-		ChangeState(&m_ConcealedAmmoFire);
+	{
+		if (m_iNumCurrAmmo > 0)
+			ChangeState(&m_ConcealedAmmoFire);
+		else
+			ChangeState(&m_ConcealedAmmoReload);
+	}
 }
 
 void ConcealedAmmo::Skill()
@@ -145,7 +158,10 @@ void ConcealedAmmo::ConcealedAmmoReload::TestForExit(Engine::Object* object)
 	auto ammo = static_cast<ConcealedAmmo*>(object);
 
 	if (animator->IsFinished())
+	{
 		ammo->ChangeState(&ammo->m_ConcealedAmmoIdle);
+		ammo->m_iNumCurrAmmo = ammo->m_iNumMaxAmmo;
+	}
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
@@ -181,6 +197,7 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
+	--ammo->m_iNumCurrAmmo;
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::Update(Engine::Object* object, Engine::_float dt)
@@ -200,18 +217,61 @@ void ConcealedAmmo::ConcealedAmmoFire::TestForExit(Engine::Object* object)
 void ConcealedAmmo::ConcealedAmmoSkill::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	animator->ChangeAnimation(4, false, true);
+	animator->ChangeAnimation(4, false, true);	
+
+	m_IsShot = false;
 }
 
 void ConcealedAmmo::ConcealedAmmoSkill::Update(Object* object, _float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsShot && progress >= 0.3f)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		auto ammo = static_cast<ConcealedAmmo*>(object);
+		auto player = static_cast<Player*>(ammo->m_pParent);
+
+		/*for test*/
+		_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[ammo->m_iFireLightBoneIndex];
+		_float4x4 worldMat = object->GetComponent<TransformComponent>()->GetWorldMatrix();
+		XMStoreFloat4x4(&worldMat, XMLoadFloat4x4(&boneMat) * XMLoadFloat4x4(&worldMat));
+
+		_float3 aimPosition = player->GetAimPosition();
+		_float3 position{};
+		_vector positionV, scale, rot;
+		XMMatrixDecompose(&scale, &rot, &positionV, XMLoadFloat4x4(&worldMat));
+		XMStoreFloat3(&position, positionV);
+
+		_float3 forward{};
+		_float3 velocity{};
+		XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&aimPosition) - XMLoadFloat3(&position)));
+		XMStoreFloat3(&velocity, XMLoadFloat3(&forward) * 900.f);
+
+		Object* dynamite = nullptr;
+		Dynamite::DYNAMITE_DESC desc{};
+		desc.scale = _float3{ 3.f,3.f,3.f };
+		desc.position = position;
+		desc.velocity = velocity;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Dynamite", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &dynamite);
+
+		dynamite->GetComponent<TransformComponent>()->SetForward(forward);
+		ammo->m_iNumCurrAmmo = 0;
+
+		m_IsShot = true;
+	}
 }
 
 void ConcealedAmmo::ConcealedAmmoSkill::TestForExit(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
-	auto blast = static_cast<ConcealedAmmo*>(object);
+	auto ammo = static_cast<ConcealedAmmo*>(object);
 
 	if (animator->IsFinished())
-		blast->ChangeState(&blast->m_ConcealedAmmoIdle);
+	{
+		ammo->ChangeState(&ammo->m_ConcealedAmmoIdle);
+		ammo->m_iNumCurrAmmo = ammo->m_iNumMaxAmmo;
+	}
 }

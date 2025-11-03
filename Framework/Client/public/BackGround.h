@@ -6,6 +6,11 @@ NS_BEGIN(Client)
 class BackGround final:
     public UIObject
 {
+public:
+    typedef struct tagBackGroundDesc : public UIObject::UIOBJECT_DESC
+    {
+        _string mtrlTag{};
+    }BACKGROUND_DESC;
 private:
     BackGround();
     virtual ~BackGround() = default;

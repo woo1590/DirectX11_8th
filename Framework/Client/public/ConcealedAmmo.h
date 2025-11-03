@@ -60,6 +60,8 @@ private:
         void Enter(Object* object) override;
         void Update(Object* object, _float dt) override;
         void TestForExit(Object* object) override;
+
+        _bool m_IsShot = false;
     };
 
     ConcealedAmmoIdle m_ConcealedAmmoIdle;
