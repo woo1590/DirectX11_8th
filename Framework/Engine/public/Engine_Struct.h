@@ -6,6 +6,7 @@
 #include "Struct_Vertex.h"
 #include "Struct_ShaderMetaData.h"
 #include "Struct_BVHNode.h"
+#include "Struct_NavMesh.h"
 
 namespace Engine
 {
@@ -102,16 +103,6 @@ namespace Engine
 		_float localDistance = FLT_MAX;
 		_float3 normal{};
 	}RAY_HIT_DATA;
-
-	typedef struct tagNavCellData
-	{
-		_uint index{};
-		_float3 points[3];  /*world position*/
-		_float3 lines[3];
-		_uint pointIndices[3];
-		_int neighbors[3]{ -1,-1,-1 };
-		_int linkedCells[3]{ -1,-1,-1 };
-	}NAVCELL_DATA;
 
 	typedef struct tagCameraContext 
 	{

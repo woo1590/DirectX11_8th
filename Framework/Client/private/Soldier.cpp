@@ -5,6 +5,8 @@
 
 //object
 #include "Socket.h"
+#include "Soldier_Head.h"
+#include "Soldier_Sword.h"
 #include "Fracture.h"
 
 //component
@@ -90,6 +92,7 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	nav->AttachTransform();
 	nav->AttachRigidBody();
 	nav->SpawnInCell(2);
+
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
@@ -191,6 +194,37 @@ HRESULT Soldier::CreatePartObjects()
 {
 	/*add head socket*/
 	{
+		Socket::SOCKET_DESC headSocketDesc{};
+		headSocketDesc.parent = this;
+		headSocketDesc.parentModel = GetComponent<ModelComponent>();
+		headSocketDesc.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 Head");
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Head_Socket), &headSocketDesc)))
+			return E_FAIL;
+	}
+	/*add head*/
+	{
+		Soldier_Head::SOLDIER_HEAD_DESC headDesc{};
+		headDesc.parent = this;
+		headDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Head_Socket)]->GetComponent<TransformComponent>();
+		if(FAILED(AddPartObject(ENUM_CLASS(LevelID::Static),"Prototype_Object_Soldier_Head",ENUM_CLASS(Parts::Head),&headDesc)))
+			return E_FAIL;
+	}
+	/*add sword socket*/
+	{
+		Socket::SOCKET_DESC swordSocketDesc{};
+		swordSocketDesc.parent = this;
+		swordSocketDesc.parentModel = GetComponent<ModelComponent>();
+		swordSocketDesc.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 Prop1");
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Sword_Socket), &swordSocketDesc)))
+			return E_FAIL;
+	}
+	/*add sword*/
+	{
+		Soldier_Sword::SOLDIER_SWORD_DESC swordDesc{};
+		swordDesc.parent = this;
+		swordDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Sword_Socket)]->GetComponent<TransformComponent>();
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier_Sword", ENUM_CLASS(Parts::Sword), &swordDesc)))
+			return E_FAIL;
 	}
 
 	return S_OK;
@@ -284,6 +318,7 @@ void Soldier::SoldierRun::Update(Object* object, _float dt)
 	position.y = 0.f;
 	playerPos.y = 0.f;
 
+	_float3 originVelocity = object->GetComponent<RigidBodyComponent>()->GetVelocity();
 	_float3 velocity{};
 	_float3 targetDir{};
 	_float3 currDir = object->GetComponent<TransformComponent>()->GetForward();
@@ -292,6 +327,7 @@ void Soldier::SoldierRun::Update(Object* object, _float dt)
 	XMStoreFloat3(&currDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 10.f));
 
 	XMStoreFloat3(&velocity, XMLoadFloat3(&currDir) * 50.f);
+	velocity.y = originVelocity.y;
 
 	object->GetComponent<TransformComponent>()->SetForward(currDir);
 	object->GetComponent<RigidBodyComponent>()->SetVelocity(velocity);
@@ -342,7 +378,7 @@ void Soldier::SoldierAttack::TestForExit(Object* object)
 	if (animator->IsFinished())
 	{
 		auto soldier = static_cast<Soldier*>(object);
-		soldier->ChangeState(&soldier->m_SoldierRun);
+		soldier->ChangeState(&soldier->m_SoldierIdle);
 	}
 }
 
@@ -395,7 +431,7 @@ void Soldier::SoldierDead::Enter(Object* object)
 		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&hitDir) * dirFactor + XMLoadFloat3(&dir) * (1.f - dirFactor))));
 		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
 
-		_float power = random->get<_float>(70.f, 90.f);
+		_float power = random->get<_float>(90.f, 150.f);
 		_float3 force{};
 		_float3 angularForce{};
 		XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);

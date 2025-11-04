@@ -177,7 +177,12 @@ HRESULT Renderer::RenderLight(const std::vector<LightProxy>& proxies)
 		m_pDeviceContext->Unmap(m_pCBPerLight, 0);
 
 		m_pBuffer->BindBuffers();
-		m_pShader->Apply("LightAcc_Pass");
+
+		if (proxy.type == LightType::Directional)
+			m_pShader->Apply("Directional_Light");
+		else
+			m_pShader->Apply("Point_Light");
+
 		m_pBuffer->Draw();
 	}
 
@@ -254,6 +259,10 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Normal", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_Specular", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_Depth", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Shade", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 	}
@@ -263,6 +272,10 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Diffuse")))
 			return E_FAIL;
 		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Normal")))
+			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Specular")))
+			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Depth")))
 			return E_FAIL;
 	}
 	/*add mrt light acc*/
@@ -297,6 +310,8 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
 	
+
+
 	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex, proxy.materialInstance)))
 		return E_FAIL;
 

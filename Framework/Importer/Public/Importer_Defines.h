@@ -13,8 +13,8 @@
 
 namespace Importer
 {
-	constexpr unsigned int WinSizeX = 1280;
-	constexpr unsigned int WinSizeY = 720;
+	constexpr unsigned int WinSizeX = 1600;
+	constexpr unsigned int WinSizeY = 900;
 
 	constexpr unsigned int CHUNK_SIZE = 256;
 	constexpr unsigned int CELL_SIZE = 40;

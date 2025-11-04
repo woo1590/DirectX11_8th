@@ -121,8 +121,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     int windowWidth = windowSize.right - windowSize.left;
     int windowHeight = windowSize.bottom - windowSize.top;
 
-    int x = static_cast<_int>(WinSizeX / 4);
-    int y = static_cast<_int>(WinSizeY / 4);
+    int x = 180;// static_cast<_int>(WinSizeX / 4);
+    int y = 30;// static_cast<_int>(WinSizeY / 4);
 
     hWnd = CreateWindowW(
         CLASS_NAME, L"My Game Window",

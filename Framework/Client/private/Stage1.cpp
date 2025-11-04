@@ -57,7 +57,13 @@ void Stage1::Update(_float dt)
 	auto engine = EngineCore::GetInstance();
 
 	if (engine->IsKeyPressed('N'))
-		engine->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::StageBoss));
+	{
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+
+	}
+
+
 
 	if (engine->IsKeyPressed('I'))
 	{

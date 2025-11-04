@@ -221,8 +221,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
         return false;
     }
 
-    int x = static_cast<_int>(300);
-    int y = static_cast<_int>(100);
+    int x = 180;// static_cast<_int>(300);
+    int y = 0;// static_cast<_int>(100);
 
     windowSize = { 0, 0, WinSizeX, WinSizeY };
 
@@ -251,8 +251,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     UpdateWindow(hWnd);
 
     //ShowCursor(false);
-    RECT clipRect{ x + 300,y + 200, x + 600, y + 300 };
-    //ClipCursor(&clipRect);
+    RECT clipRect{ x,y, x + WinSizeX, y + WinSizeY };
+    ClipCursor(&clipRect);
 
     return true;
 }

@@ -105,6 +105,25 @@ void RigidBodyComponent::Free()
 	__super::Free();
 }
 
+#ifdef USE_IMGUI
+void RigidBodyComponent::RenderInspector()
+{
+	ImGui::PushID(this);
+
+	if (!ImGui::CollapsingHeader("RigidBody",
+		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
+		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding))
+	{
+		ImGui::Separator();
+
+		m_IsGround ? ImGui::Text("On Ground : True") : ImGui::Text("On Ground : False");
+		ImGui::DragFloat3("Velocity : ", &m_Velocity.x);
+	}
+
+	ImGui::PopID();
+}
+#endif
+
 void RigidBodyComponent::Integrate(_float dt)
 {
 	auto transform = m_pOwner->GetComponent<TransformComponent>();

@@ -325,6 +325,7 @@ void Player::DropCurrSlotWeapon()
 	DropWeapon::DROP_WEAPON_DESC dropWeaponDesc{};
 	dropWeaponDesc.weaponID = currWeaponID;
 	dropWeaponDesc.position = m_pTransform->GetPosition();
+	dropWeaponDesc.position.y += 5.f;
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", engine->GetCurrLevelID(), "Layer_DropWeapon", &dropWeaponDesc);
 
 	auto rightHandSocket = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();

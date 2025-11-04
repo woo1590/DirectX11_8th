@@ -159,7 +159,7 @@ HRESULT FBXMesh::ExportFracture(FBXSkeleton* skeleton, std::ofstream& out)
 		aabbMax.z = (std::max)(vertex.position.z, aabbMax.z);
 	}
 	centerPoint.x = (aabbMin.x + aabbMax.x) * 0.5f;
-	centerPoint.y = (aabbMin.y + aabbMax.y) * 0.5f;
+	centerPoint.y = aabbMin.y;
 	centerPoint.z = (aabbMin.z + aabbMax.z) * 0.5f;
 
 	for (auto& vertex : vertices)

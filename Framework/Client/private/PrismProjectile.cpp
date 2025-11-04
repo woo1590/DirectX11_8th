@@ -5,6 +5,7 @@
 //component
 #include "ModelComponent.h"
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 PrismProjectile::PrismProjectile()
 	:Projectile()
@@ -33,6 +34,7 @@ HRESULT PrismProjectile::Initialize_Prototype()
 
 	AddComponent<ModelComponent>();
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	return S_OK;
 }
@@ -56,6 +58,12 @@ HRESULT PrismProjectile::Initialize(InitDESC* arg)
 	/*model*/	
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_DropWeapon_Prism");
+
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.attackPower = 10;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
 
 	m_iNumCurrReflect = 0;
 	m_iNumMaxReflect = 6;

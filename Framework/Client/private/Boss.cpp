@@ -602,7 +602,7 @@ void Boss::BossFire2LeftArm::Enter(Object* object)
 	_float3 leftArmStartPosition = boss->m_PartObjects[ENUM_CLASS(Parts::LeftArmStart_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
 	_float3 leftArmEndPosition = boss->m_PartObjects[ENUM_CLASS(Parts::LeftArmEnd_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
 	_float4 rotation = boss->GetComponent<TransformComponent>()->GetQuaternion();
-	XMStoreFloat4(&rotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&rotation), XMQuaternionRotationRollPitchYaw(math::ToRadian(-8.f), 0.f, math::ToRadian(5.f)))));
+	XMStoreFloat4(&rotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&rotation), XMQuaternionRotationRollPitchYaw(math::ToRadian(-6.f), 0.f, math::ToRadian(5.f)))));
 
 	Object* leftArm = nullptr;
 	BossArmProjectile::BOSS_ARM_PROJECTILE_DESC leftArmDesc{};
@@ -644,7 +644,7 @@ void Boss::BossFire2RightArm::Enter(Object* object)
 	_float3 rightArmStartPosition = boss->m_PartObjects[ENUM_CLASS(Parts::RightArmStart_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
 	_float3 rightArmEndPosition = boss->m_PartObjects[ENUM_CLASS(Parts::RightArmEnd_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
 	_float4 rotation = boss->GetComponent<TransformComponent>()->GetQuaternion();
-	XMStoreFloat4(&rotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&rotation), XMQuaternionRotationRollPitchYaw(math::ToRadian(-8.f), 0.f, math::ToRadian(-5.f)))));
+	XMStoreFloat4(&rotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&rotation), XMQuaternionRotationRollPitchYaw(math::ToRadian(-6.f), 0.f, math::ToRadian(-5.f)))));
 
 	Object* rightArm = nullptr;
 	BossArmProjectile::BOSS_ARM_PROJECTILE_DESC rightArmDesc{};

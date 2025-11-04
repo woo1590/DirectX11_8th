@@ -18,8 +18,12 @@ public:
 
     /*getter*/
     _float3 GetCellNormal();
+    _int GetNeighborIndex(_uint index)const { return m_NeighborCellIndices[index]; }
     VIBuffer* GetBuffer()const { return m_pBuffer; }
     MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
+
+    /*setter*/
+    void SetPortalIndex(_uint neighborIndex, _uint portalIndex);
 
     /*API*/
     _float3 GetPositionInCell()const;
@@ -33,6 +37,7 @@ private:
     _uint m_iIndex{};
     _float3 m_Points[ENUM_CLASS(NavCellPoint::Count)]{};
     _float3 m_LineNormals[ENUM_CLASS(NavCellLine::Count)]{};
+    _int m_PortalIndices[3] = { -1,-1,-1 };
     _int m_NeighborCellIndices[3] = { -1,-1,-1 };
     _int m_LinkedCellIndices[3] = { -1,-1,-1, };
 

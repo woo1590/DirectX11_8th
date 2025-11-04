@@ -32,10 +32,10 @@ HRESULT BackGround::Initialize(InitDESC* arg)
 	BACKGROUND_DESC* desc = static_cast<BACKGROUND_DESC*>(arg);
 
 	UIObjectDesc uiDesc{};
-	uiDesc.x = 640.f;
-	uiDesc.y = 360.f;
-	uiDesc.sizeX = 1280.f;
-	uiDesc.sizeY = 720.f;
+	uiDesc.x = WinSizeX / 2.f;
+	uiDesc.y = WinSizeY * 0.5f;
+	uiDesc.sizeX = WinSizeX;
+	uiDesc.sizeY = WinSizeY;
 
 	if (FAILED(__super::Initialize(&uiDesc)))
 		return E_FAIL;

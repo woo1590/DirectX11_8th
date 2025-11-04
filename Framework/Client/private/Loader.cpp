@@ -51,6 +51,10 @@
 #include "HorseHead_Head.h"
 
 #include "Soldier.h"
+#include "Soldier_Head.h"
+#include "Soldier_Sword.h"
+
+#include "SpearMan.h"
 
 //map
 #include "SkyBox.h"
@@ -178,6 +182,10 @@ HRESULT Loader::LoadingForLogo()
 			"Model_Enemy_Soldier")))
 			return E_FAIL;
 
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/spear_man/spear_man.model",
+			"Model_Enemy_SpearMan")))
+			return E_FAIL;
+
 		/*Weapon*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/cameleon/cameleon.model",
 			"Model_Weapon_Cameleon")))
@@ -239,6 +247,7 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		/*Map*/
+
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/boss2/boss_stage.model",
 			"Model_Boss_Stage")))
 			return E_FAIL;
@@ -260,6 +269,15 @@ HRESULT Loader::LoadingForLogo()
 			_string filePath = "horse_head" + std::to_string(i) + ".model";
 			_string modelTag = "HorseHead" + std::to_string(i);
 			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/fracture/horse_head/" + filePath,
+				"Model_Fracture_" + modelTag)))
+				return E_FAIL;
+		}
+
+		for (_uint i = 0; i < 17; ++i)
+		{
+			_string filePath = "spear_man" + std::to_string(i) + ".model";
+			_string modelTag = "SpearMan" + std::to_string(i);
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/fracture/spear_man/" + filePath,
 				"Model_Fracture_" + modelTag)))
 				return E_FAIL;
 		}
@@ -286,6 +304,10 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/soldier.animationset",
 			"AnimationSet_Enemy_Soldier")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/spear_man.animationset",
+			"AnimationSet_Enemy_SpearMan")))
 			return E_FAIL;
 
 		/*Weapon*/
@@ -357,13 +379,10 @@ HRESULT Loader::LoadingForLogo()
 		/*Enemy*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", HorseHead::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead_Shield", HorseHead_Shield::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead_Sword", HorseHead_Sword::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead_Head", HorseHead_Head::Create())))
 			return E_FAIL;
 
@@ -372,23 +391,25 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", Soldier::Create())))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier_Head", Soldier_Head::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier_Sword", Soldier_Sword::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", SpearMan::Create())))
+			return E_FAIL;
 
 		/*Weapon*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cameleon", Cameleon::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ConcealedAmmo", ConcealedAmmo::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_IcySpear", IcySpear::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PoisonousGhost", PoisonousGhost::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", Foundry::Create())))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Prism", Prism::Create())))
 			return E_FAIL;
 

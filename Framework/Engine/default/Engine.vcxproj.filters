@@ -609,6 +609,9 @@
     <ClInclude Include="..\public\ICommand.h">
       <Filter>00. EngineCore\Command</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Struct_NavMesh.h">
+      <Filter>98. Etc\Defines\Engine_Struct</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">

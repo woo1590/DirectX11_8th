@@ -58,6 +58,15 @@ _float3 Cell::GetCellNormal()
 	return cellNormal;
 }
 
+void Cell::SetPortalIndex(_uint neighborIndex, _uint portalIndex)
+{
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (neighborIndex == m_NeighborCellIndices[i])
+			m_PortalIndices[i] = portalIndex;
+	}
+}
+
 _float3 Cell::GetPositionInCell() const
 {
 	_float3 centerPosition{};

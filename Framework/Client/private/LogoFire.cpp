@@ -39,8 +39,8 @@ HRESULT LogoFire::Initialize(InitDESC* arg)
 	UIObjectDesc uiDesc{};
 	uiDesc.x = WinSizeX * 0.92f;
 	uiDesc.y = WinSizeY * 0.7f;
-	uiDesc.sizeX = 163.f;
-	uiDesc.sizeY = 172.f;
+	uiDesc.sizeX = 163.f * 1.4f;
+	uiDesc.sizeY = 172.f * 1.4f;
 
 	if (FAILED(__super::Initialize(&uiDesc)))
 		return E_FAIL;

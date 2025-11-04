@@ -234,6 +234,7 @@
     <ClInclude Include="..\public\Sight.h" />
     <ClInclude Include="..\public\Soldier.h" />
     <ClInclude Include="..\public\Soldier_Head.h" />
+    <ClInclude Include="..\public\Soldier_Sword.h" />
     <ClInclude Include="..\public\SpearMan.h" />
     <ClInclude Include="..\public\Stage1.h" />
     <ClInclude Include="..\public\StageBoss.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="..\private\Sight.cpp" />
     <ClCompile Include="..\private\Soldier.cpp" />
     <ClCompile Include="..\private\Soldier_Head.cpp" />
+    <ClCompile Include="..\private\Soldier_Sword.cpp" />
     <ClCompile Include="..\private\SpearMan.cpp" />
     <ClCompile Include="..\private\Stage1.cpp" />
     <ClCompile Include="..\private\StageBoss.cpp" />

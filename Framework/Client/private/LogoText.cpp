@@ -39,8 +39,8 @@ HRESULT LogoText::Initialize(InitDESC* arg)
 	UIObjectDesc uiDesc{};
 	uiDesc.x = WinSizeX * 0.85f;
 	uiDesc.y = WinSizeY * 0.8f;
-	uiDesc.sizeX = 235.f;
-	uiDesc.sizeY = 95.f;
+	uiDesc.sizeX = 235.f * 1.4f;
+	uiDesc.sizeY = 95.f * 1.4f;
 
 	if (FAILED(__super::Initialize(&uiDesc)))
 		return E_FAIL;

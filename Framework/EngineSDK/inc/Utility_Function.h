@@ -187,4 +187,5 @@ namespace physics
 		XMStoreFloat3(&outVelocity, slideVec + restitutionVec);
 	}
 }
+
 NS_END
