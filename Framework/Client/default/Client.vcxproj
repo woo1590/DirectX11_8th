@@ -210,6 +210,8 @@
     <ClInclude Include="..\public\Cameleon.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\Command_ChangeLevel.h" />
+    <ClInclude Include="..\public\CrossbowMan.h" />
+    <ClInclude Include="..\public\CrossbowMan_Head.h" />
     <ClInclude Include="..\public\Decal.h" />
     <ClInclude Include="..\public\DefaultBullet.h" />
     <ClInclude Include="..\public\Door.h" />
@@ -236,6 +238,8 @@
     <ClInclude Include="..\public\Soldier_Head.h" />
     <ClInclude Include="..\public\Soldier_Sword.h" />
     <ClInclude Include="..\public\SpearMan.h" />
+    <ClInclude Include="..\public\SpearMan_Head.h" />
+    <ClInclude Include="..\public\SpearMan_Spear.h" />
     <ClInclude Include="..\public\Stage1.h" />
     <ClInclude Include="..\public\StageBoss.h" />
     <ClInclude Include="..\public\StaticMapObject.h" />
@@ -257,7 +261,6 @@
     <ClInclude Include="..\public\SkyBox.h" />
     <ClInclude Include="..\public\Sun.h" />
     <ClInclude Include="..\public\Terrain.h" />
-    <ClInclude Include="..\public\TestLevel.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -280,6 +283,8 @@
     <ClCompile Include="..\private\Boss_RightArm.cpp" />
     <ClCompile Include="..\private\Cameleon.cpp" />
     <ClCompile Include="..\private\Command_ChangeLevel.cpp" />
+    <ClCompile Include="..\private\CrossbowMan.cpp" />
+    <ClCompile Include="..\private\CrossbowMan_Head.cpp" />
     <ClCompile Include="..\private\Decal.cpp" />
     <ClCompile Include="..\private\DefaultBullet.cpp" />
     <ClCompile Include="..\private\Door.cpp" />
@@ -306,6 +311,8 @@
     <ClCompile Include="..\private\Soldier_Head.cpp" />
     <ClCompile Include="..\private\Soldier_Sword.cpp" />
     <ClCompile Include="..\private\SpearMan.cpp" />
+    <ClCompile Include="..\private\SpearMan_Head.cpp" />
+    <ClCompile Include="..\private\SpearMan_Spear.cpp" />
     <ClCompile Include="..\private\Stage1.cpp" />
     <ClCompile Include="..\private\StageBoss.cpp" />
     <ClCompile Include="..\private\StaticMapObject.cpp" />
@@ -327,7 +334,6 @@
     <ClCompile Include="..\private\SkyBox.cpp" />
     <ClCompile Include="..\private\Sun.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
-    <ClCompile Include="..\private\TestLevel.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

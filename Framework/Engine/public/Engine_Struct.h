@@ -113,6 +113,9 @@ namespace Engine
 		_float4x4 projMatrixInverse{};
 
 		_float3 camPosition{};
+
+		_float farZ{};
+		_float nearZ{};
 	}CAMERA_CONTEXT;
 	
 }

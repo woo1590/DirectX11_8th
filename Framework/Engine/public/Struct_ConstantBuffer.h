@@ -9,6 +9,9 @@ namespace Engine
 		_float4x4 projMatrix;
 		_float4x4 projMatrixInverse;
 		_float4 camPosition;
+		_float farZ;
+		_float nearZ;
+		_float2 pad;
 	}CBPerFrame;
 
 	typedef struct tagConstantBufferPerLight

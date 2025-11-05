@@ -29,7 +29,7 @@ class SpearMan :
         LightHit,
         Count
     };
-    enum class Parts { Head, Head_Socket, Spear, SpearSocket, Count };
+    enum class Parts { Head, Head_Socket, Spear, Spear_Socket, Count };
 private:
     SpearMan();
     SpearMan(const SpearMan& prototype);
@@ -74,6 +74,9 @@ private:
         void Enter(Object* object) override;
         void Update(Object* object, _float dt) override;
         void TestForExit(Object* object) override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 0.3f;
     };
     class SpearManAttack : public State
     {

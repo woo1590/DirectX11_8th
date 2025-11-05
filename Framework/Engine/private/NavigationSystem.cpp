@@ -47,6 +47,11 @@ void NavigationSystem::RegisterNavigation(NavigationComponent* component)
 	component->AttachSystem(this);
 }
 
+ASTAR_RESULT NavigationSystem::FindPath(_float3 startPosition, _uint startCellIndex, _float3 targetPosition, _uint targetCellIndex)
+{
+	return m_pNavMesh->FindPath(startPosition, startCellIndex, targetPosition, targetCellIndex);
+}
+
 _float3 NavigationSystem::GetCellNormal(_uint cellIndex)
 {
 	return m_pNavMesh->GetCellNormal(cellIndex);

@@ -619,6 +619,7 @@ void Boss::BossFire2LeftArm::Enter(Object* object)
 
 void Boss::BossFire2LeftArm::Update(Object* object, _float dt)
 {
+
 }
 
 void Boss::BossFire2LeftArm::TestForExit(Object* object)

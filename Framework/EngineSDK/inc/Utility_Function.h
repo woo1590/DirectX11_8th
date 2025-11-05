@@ -124,6 +124,17 @@ namespace math
 
 		return quaternion;
 	}
+
+	inline _float CalculateTriangleArea(const _float3& p1, const _float3& p2, const _float3& p3)
+	{
+		_vector v1 = XMVectorSet(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z, 0.0f);
+		_vector v2 = XMVectorSet(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z, 0.0f);
+		_vector crossProduct = XMVector3Cross(v1, v2);
+
+		_float length = XMVectorGetX(XMVector3Length(crossProduct));
+
+		return length / 2.0f;
+	}
 };
 
 namespace DXWrap

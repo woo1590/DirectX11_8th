@@ -23,13 +23,17 @@ public:
     void AttachRigidBody();
     void AttachSystem(NavigationSystem* system);
 
+    void SetMoveSpeed(_float speed) { m_fMoveSpeed = speed; }
+    void SetArriveRange(_float range) { m_fArriveRange = range; }
     void SetCurrCellIndex(_uint cellIndex);
     _uint GetCurrCellIndex()const { return m_iCurrCellIndex; }
 
     /*API*/
+    void FindPath(_float3 startPosition, _uint startCellIndex, _float3 targetPosition, _uint targetCellIndex);
     void SpawnInCell(_uint cellIndex);
     void MoveTo(_float3 deltaPosition);
     void MoveByVelocity(_float dt);
+    void MoveByPath(_float dt);
 
     Component* Clone()override { return new NavigationComponent(*this); }
     void Free()override;
@@ -48,6 +52,13 @@ private:
     _bool m_IsInLink = false;
     _int m_iCurrLinkedCellIndex = -1;
     _uint m_iCurrCellIndex{};
+
+    /*astar*/
+    ASTAR_RESULT m_CurrPath{};
+    _uint m_iCurrPathCursor;
+    _float m_fMoveSpeed{};
+    _float m_fArriveRange{};
+
     NavigationSystem* m_pNavigationSystem = nullptr;
     TransformComponent* m_pTransform = nullptr;
     RigidBodyComponent* m_pRigidBody = nullptr;

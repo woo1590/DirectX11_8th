@@ -109,6 +109,8 @@ HRESULT Renderer::BeginFrame()
 		perFrame.projMatrix = camContext.projMatrix;
 		_float3 campos = camContext.camPosition;
 		perFrame.camPosition = _float4(campos.x, campos.y, campos.z, 1.f);
+		perFrame.farZ = camContext.farZ;
+		perFrame.nearZ = camContext.nearZ;
 
 		m_pDeviceContext->Map(m_pCBPerFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &cbPerFrameData);
 		memcpy_s(cbPerFrameData.pData, sizeof(CBPerFrame), &perFrame, sizeof(CBPerFrame));
@@ -145,11 +147,18 @@ HRESULT Renderer::RenderLight(const std::vector<LightProxy>& proxies)
 	engine->BeginMRT("MRT_LightAcc");
 
 	engine->BindShaderResource(m_pShader, "Target_Normal", "g_NormalTexture");
+	engine->BindShaderResource(m_pShader, "Target_Depth", "g_DepthTexture");
 
+	CAMERA_CONTEXT context = engine->GetCameraContext();
 	D3D11_MAPPED_SUBRESOURCE cbPerFrameData{};
 	CBPerFrame perFrame{};
 	perFrame.viewMatrix = m_ViewMatrix;
 	perFrame.projMatrix = m_ProjMatrix;
+	perFrame.viewMatrixInverse = context.viewMatrixInverse;
+	perFrame.projMatrixInverse = context.projMatrixInverse;
+	perFrame.camPosition = _float4{ context.camPosition.x,context.camPosition.y,context.camPosition.z,1.f };
+	perFrame.nearZ = context.nearZ;
+	perFrame.farZ = context.farZ;
 
 	D3D11_MAPPED_SUBRESOURCE perObjectData{};
 	CBPerObject perObject{};
@@ -197,6 +206,7 @@ HRESULT Renderer::RenderCombined()
 
 	engine->BindShaderResource(m_pShader, "Target_Diffuse", "g_DiffuseTexture");
 	engine->BindShaderResource(m_pShader, "Target_Shade", "g_ShadeTexture");
+	engine->BindShaderResource(m_pShader, "Target_LightSpecular", "g_LightSpecularTexture");
 
 	m_pBuffer->BindBuffers();
 	m_pShader->Apply("Combined_Pass");
@@ -261,9 +271,11 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Specular", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
-		if (FAILED(engine->AddRenderTarget("Target_Depth", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		if (FAILED(engine->AddRenderTarget("Target_Depth", viewPort.Width, viewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Shade", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_LightSpecular", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 	}
 	
@@ -281,6 +293,8 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 	/*add mrt light acc*/
 	{
 		if (FAILED(engine->AddMRT("MRT_LightAcc", "Target_Shade")))
+			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_LightAcc", "Target_LightSpecular")))
 			return E_FAIL;
 	}
 

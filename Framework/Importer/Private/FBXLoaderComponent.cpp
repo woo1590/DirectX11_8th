@@ -181,7 +181,7 @@ HRESULT FBXLoaderComponent::ExportFractureModel(const _string& outFilePath)
 
 		MODEL_FORMAT modelFormat{};
 		modelFormat.numMeshes = 1;
-		modelFormat.numMaterials = 1;
+		modelFormat.numMaterials = m_iNumMaterials;
 		modelFormat.skinnedMesh = 0;
 		modelFormat.preTransformMatrix = m_PreTransformMatrix;
 

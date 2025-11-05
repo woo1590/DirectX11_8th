@@ -117,23 +117,18 @@ void Fracture::Update(_float dt)
 		_float t = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&velocity) * -1.f, XMLoadFloat3(&data.hitNormal)));
 		
 		/*make linear velocity*/
-		_vector slideVec{};
-		_vector restitutionVec{};
+		_vector reflectVec = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 		_vector angularVec{};
 
-		slideVec = XMLoadFloat3(&velocity) + t * XMLoadFloat3(&data.hitNormal);
-		restitutionVec = XMLoadFloat3(&data.hitNormal) * 0.5f * t;
+		reflectVec = XMLoadFloat3(&velocity) + 2.f * t * XMLoadFloat3(&data.hitNormal) * 0.8f;
 
-		if (XMVectorGetX(XMVector3Length(slideVec)) < 1.f)
-			slideVec = XMVectorZero();
+		if (XMVectorGetX(XMVector3Length(reflectVec)) < 0.3f)
+			reflectVec = XMVectorZero();
 
-		if (XMVectorGetX(XMVector3Length(restitutionVec)) < 0.1f)
-			restitutionVec = XMVectorZero();
-
-		angularVec = XMVector3TransformNormal(slideVec * 0.3f, XMLoadFloat3x3(&invInertiaTensor));
+		angularVec = XMVector3TransformNormal(reflectVec * 0.3f, XMLoadFloat3x3(&invInertiaTensor));
 		XMStoreFloat3(&angularVelocity, angularVec);
 
-		XMStoreFloat3(&velocity, slideVec + restitutionVec);
+		XMStoreFloat3(&velocity, reflectVec);
 	}
 	
 	rigidBody->SetVelocity(velocity);

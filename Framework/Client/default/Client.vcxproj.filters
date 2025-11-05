@@ -37,9 +37,6 @@
     <Filter Include="01. Level\GamePlayLevel">
       <UniqueIdentifier>{1f7c0960-1f1e-45aa-9149-6b187fd43e50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Level\TestLevel">
-      <UniqueIdentifier>{1c01809e-98ac-42d2-95bb-ba4d0c3421f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Etc\ShaderFiles">
       <UniqueIdentifier>{d0c05a6d-5eb3-42ff-a197-e9f9326f8d81}</UniqueIdentifier>
     </Filter>
@@ -232,6 +229,24 @@
     <Filter Include="02. Object\Enemy\Soldier\Sword">
       <UniqueIdentifier>{b0460a09-0d2b-419e-a827-bf117c0a49c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Enemy\CrossbowMan">
+      <UniqueIdentifier>{516d53d4-58aa-46fa-a62d-08623148b5ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\SpearMan\Head">
+      <UniqueIdentifier>{6e9dd8db-53c5-46e5-92bc-37410e54f55e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\CrossbowMan\Head">
+      <UniqueIdentifier>{42a9b1a6-23a5-4a3c-89bf-2eb0ce335d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\SpearMan\Spear">
+      <UniqueIdentifier>{fd9b0d0b-f5c3-4d45-a2ae-eb4194397114}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\Stage2">
+      <UniqueIdentifier>{e74ef61a-a013-4dc8-9206-0f2fc58f86a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\Stage3">
+      <UniqueIdentifier>{4ffd524a-6901-4704-a1f1-0ac6c0025d7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -266,9 +281,6 @@
     </ClInclude>
     <ClInclude Include="..\public\GamePlayLevel.h">
       <Filter>01. Level\GamePlayLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\TestLevel.h">
-      <Filter>01. Level\TestLevel</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02. Object\UIObject\BackGround</Filter>
@@ -441,6 +453,18 @@
     <ClInclude Include="..\public\Soldier_Sword.h">
       <Filter>02. Object\Enemy\Soldier\Sword</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CrossbowMan.h">
+      <Filter>02. Object\Enemy\CrossbowMan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SpearMan_Head.h">
+      <Filter>02. Object\Enemy\SpearMan\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CrossbowMan_Head.h">
+      <Filter>02. Object\Enemy\CrossbowMan\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SpearMan_Spear.h">
+      <Filter>02. Object\Enemy\SpearMan\Spear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -463,9 +487,6 @@
     </ClCompile>
     <ClCompile Include="..\private\GamePlayLevel.cpp">
       <Filter>01. Level\GamePlayLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\TestLevel.cpp">
-      <Filter>01. Level\TestLevel</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02. Object\UIObject\BackGround</Filter>
@@ -637,6 +658,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Soldier_Sword.cpp">
       <Filter>02. Object\Enemy\Soldier\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CrossbowMan.cpp">
+      <Filter>02. Object\Enemy\CrossbowMan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SpearMan_Head.cpp">
+      <Filter>02. Object\Enemy\SpearMan\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CrossbowMan_Head.cpp">
+      <Filter>02. Object\Enemy\CrossbowMan\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SpearMan_Spear.cpp">
+      <Filter>02. Object\Enemy\SpearMan\Spear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

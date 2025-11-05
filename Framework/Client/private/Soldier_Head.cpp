@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Soldier_Head.h"
 #include "Bounding_Sphere.h"
+#include "Soldier.h"
 
 //component
 #include "ColliderComponent.h"
@@ -46,6 +47,7 @@ HRESULT Soldier_Head::Initialize(InitDESC* arg)
 
 	/*collider*/
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
+	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyWeakness);
 	sphereDesc.type = ColliderType::Sphere;
 	sphereDesc.center = _float3{ 2.8f,0.f,0.f };
 	sphereDesc.radius = 3.f;
@@ -68,6 +70,11 @@ void Soldier_Head::Update(_float dt)
 void Soldier_Head::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+void Soldier_Head::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	static_cast<Soldier*>(m_pParent)->HitHead();
 }
 
 Object* Soldier_Head::Clone(InitDESC* arg)

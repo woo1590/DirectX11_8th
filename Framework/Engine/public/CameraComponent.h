@@ -29,6 +29,9 @@ public:
     _float4x4 GetViewMatrix()const;
     _float4x4 GetProjMatrix();
 
+    _float GetFarZ()const { return m_fFarZ; }
+    _float GetNearZ()const { return m_fNearZ; }
+
     Component* Clone()override { return new CameraComponent(*this); }
     void Free()override;
 

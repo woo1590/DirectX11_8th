@@ -61,6 +61,12 @@ void NavigationComponent::SetCurrCellIndex(_uint cellIndex)
 		m_iCurrCellIndex = 0;
 }
 
+void NavigationComponent::FindPath(_float3 startPosition, _uint startCellIndex, _float3 targetPosition, _uint targetCellIndex)
+{
+	m_CurrPath = m_pNavigationSystem->FindPath(startPosition, startCellIndex, targetPosition, targetCellIndex);
+	m_iCurrPathCursor = 0;
+}
+
 void NavigationComponent::SpawnInCell(_uint cellIndex)
 {
 	m_iCurrCellIndex = cellIndex;
@@ -100,7 +106,7 @@ void NavigationComponent::MoveByVelocity(_float dt)
 {
 	if (!m_pTransform || !m_pRigidBody)
 		return;
-
+	
 	_float3 currPosition = m_pTransform->GetPosition();
 	_float3 velocity = m_pRigidBody->GetVelocity();
 	_float3 nextPosition;
@@ -225,6 +231,171 @@ void NavigationComponent::MoveByVelocity(_float dt)
 					}
 				}
 			}
+		}
+	}
+}
+
+void NavigationComponent::MoveByPath(_float dt)
+{
+	if (m_CurrPath.isAvailable)
+	{
+		if (m_iCurrCellIndex == m_CurrPath.cellIndices.back())
+		{
+			_float3 currPosition = m_pTransform->GetPosition();
+			_float3 targetPosition = m_CurrPath.targetPosition;
+			currPosition.y = 0.f;
+			targetPosition.y = 0.f;
+
+			_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&targetPosition) - XMLoadFloat3(&currPosition)));
+
+			if (distance < m_fArriveRange)
+				m_CurrPath.isAvailable = false;
+			else
+			{
+				_float3 currDir = m_pTransform->GetForward();
+				_float3 targetDir{};
+				_float3 velocity{};
+				_float3 nextPosition{};
+
+				XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&targetPosition) - XMLoadFloat3(&currPosition)));
+				XMStoreFloat3(&targetDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 8.f));
+				XMStoreFloat3(&velocity, m_fMoveSpeed * XMLoadFloat3(&targetDir));
+				XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&velocity) * dt);
+
+				if (IsMove(nextPosition))
+				{
+					_float y = GetHeight(nextPosition);
+					nextPosition.y = y;
+
+					m_pTransform->SetPosition(nextPosition);
+				}
+				else
+				{
+					nextPosition = MakeSlideVector(currPosition, nextPosition);
+
+					if (IsMove(nextPosition))
+					{
+						_float y = GetHeight(nextPosition);
+						nextPosition.y = y;
+						m_pTransform->SetPosition(nextPosition);
+					}
+				}
+
+				m_pTransform->SetForward(targetDir);
+			}
+
+			return;
+		}
+
+		if (m_iCurrPathCursor >= m_CurrPath.cellIndices.size() - 1)
+		{
+			_float3 currPosition = m_pTransform->GetPosition();
+			_float3 targetPosition{};
+			_float3 nextPosition{};
+
+			targetPosition = m_CurrPath.targetPosition;
+			currPosition.y = 0.f;
+			targetPosition.y = 0.f;
+
+			_float3 currDir = m_pTransform->GetForward();
+			_float3 targetDir{};
+			_float3 velocity{};
+			XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&targetPosition) - XMLoadFloat3(&currPosition)));
+			XMStoreFloat3(&targetDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 8.f));
+			XMStoreFloat3(&velocity, m_fMoveSpeed * XMLoadFloat3(&targetDir));
+			XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&velocity) * dt);
+
+			if (IsMove(nextPosition))
+			{
+				_float y = GetHeight(nextPosition);
+				nextPosition.y = y;
+				m_pTransform->SetPosition(nextPosition);
+			}
+			else
+			{
+				nextPosition = MakeSlideVector(currPosition, nextPosition);
+
+				if (IsMove(nextPosition))
+				{
+					_float y = GetHeight(nextPosition);
+					nextPosition.y = y;
+
+					m_pTransform->SetPosition(nextPosition);
+					m_pTransform->SetPosition(nextPosition);
+				}
+			}
+
+			m_pTransform->SetForward(targetDir);
+
+			return;
+		}
+
+		if (m_iCurrCellIndex != m_CurrPath.cellIndices[m_iCurrPathCursor])
+		{
+			_float3 currPosition = m_pTransform->GetPosition();
+			currPosition.y = 0.f;
+
+			_float3 targetPosition{};
+			_float3 nextPosition{};
+
+			_float3 portalLeftPoint = m_CurrPath.portals[m_iCurrPathCursor].leftPoint;
+			_float3 portalRightPoint = m_CurrPath.portals[m_iCurrPathCursor].rightPoint;
+			portalLeftPoint.y = 0.f;
+			portalRightPoint.y = 0.f;
+
+			_vector portalDir = XMVector3Normalize(XMLoadFloat3(&portalRightPoint) - XMLoadFloat3(&portalLeftPoint));
+			_float3 A{}, B{};
+
+			XMStoreFloat3(&A, XMLoadFloat3(&portalLeftPoint) + portalDir * 15.f);
+			XMStoreFloat3(&B, XMLoadFloat3(&portalRightPoint) - portalDir * 15.f);
+
+			_vector AB = XMLoadFloat3(&A) - XMLoadFloat3(&B);
+			_vector AQ = XMLoadFloat3(&currPosition) - XMLoadFloat3(&A);
+			_float lengthSqr = XMVectorGetX(XMVector3Dot(AB, AB));
+			if (lengthSqr < math::ELIPSON)
+			{
+				++m_iCurrPathCursor;
+				return;
+			}
+
+			_float t = XMVectorGetX(XMVector3Dot(AQ, AB)) / lengthSqr;
+			t = std::clamp(t, 0.f, 1.f);
+			XMStoreFloat3(&targetPosition, XMLoadFloat3(&A) + t * AB);
+			targetPosition.y = 0.f;
+
+			_float3 currDir = m_pTransform->GetForward();
+			_float3 targetDir{};
+			_float3 velocity{};
+			XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&targetPosition) - XMLoadFloat3(&currPosition)));
+			XMStoreFloat3(&targetDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 8.f));
+			XMStoreFloat3(&velocity, m_fMoveSpeed * XMLoadFloat3(&targetDir));
+			XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&velocity) * dt);
+
+			if (IsMove(nextPosition))
+			{
+				_float y = GetHeight(nextPosition);
+				nextPosition.y = y;
+
+				m_pTransform->SetPosition(nextPosition);
+			}
+			else
+			{
+				nextPosition = MakeSlideVector(currPosition, nextPosition);
+
+				if (IsMove(nextPosition))
+				{
+					_float y = GetHeight(nextPosition);
+					nextPosition.y = y;
+
+					m_pTransform->SetPosition(nextPosition);
+					m_pTransform->SetPosition(nextPosition);
+				}
+			}
+
+			m_pTransform->SetForward(targetDir);
+
+			if (m_iCurrPathCursor + 1 < m_CurrPath.cellIndices.size() && m_iCurrCellIndex == m_CurrPath.cellIndices[m_iCurrPathCursor + 1])
+				++m_iCurrPathCursor;
 		}
 	}
 }

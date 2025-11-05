@@ -21,6 +21,7 @@ public:
     void RegisterNavigation(NavigationComponent* component);
 
     /*API*/
+    ASTAR_RESULT FindPath(_float3 startPosition, _uint startCellIndex, _float3 targetPosition, _uint targetCellIndex);
     _float3 GetCellNormal(_uint cellIndex);
     _bool IsCellExist(_uint cellIndex);
     _float3 GetPositionInCell(_uint cellIndex);

@@ -28,13 +28,15 @@ namespace Engine
 	typedef struct tagAStarResult
 	{
 		_bool isAvailable = false;
+		_float3 targetPosition;
 		std::vector<_uint> cellIndices;
-		std::vector<_uint> portalIndices;
+		std::vector<_float3> centerPoints;
+		std::vector<NAV_PORTAL> portals;
 	}ASTAR_RESULT;
 
 	typedef struct tagAstarHistory
 	{
-		_uint cellIndex;
+		_uint parent;
 		_uint portalIndex;
 		_float gCost = FLT_MAX;
 		_float fCost = FLT_MAX;

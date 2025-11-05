@@ -4,6 +4,9 @@
 #include "Bounding_AABB.h"
 
 //object
+#include "Socket.h"
+#include "SpearMan_Head.h"
+#include "SpearMan_Spear.h"
 #include "Fracture.h"
 
 //component
@@ -65,8 +68,8 @@ HRESULT SpearMan::Initialize(InitDESC* arg)
 	aabbDesc.useResolve = true;
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
-	aabbDesc.center = _float3{ 0.f,4.5f,0.f };
-	aabbDesc.halfSize = _float3{ 4.f,4.5f,4.f };
+	aabbDesc.center = _float3{ 0.f,3.5f,0.f };
+	aabbDesc.halfSize = _float3{ 3.f,3.5f,3.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
@@ -86,7 +89,9 @@ HRESULT SpearMan::Initialize(InitDESC* arg)
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
-	nav->SpawnInCell(2);
+	nav->SpawnInCell(7);
+	nav->SetMoveSpeed(50.f);
+	nav->SetArriveRange(15.f);
 
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
@@ -116,9 +121,6 @@ void SpearMan::PriorityUpdate(_float dt)
 void SpearMan::Update(_float dt)
 {
 	__super::Update(dt);
-
-	auto nav = GetComponent<NavigationComponent>();
-	nav->MoveByVelocity(dt);
 }
 
 void SpearMan::LateUpdate(_float dt)
@@ -190,6 +192,46 @@ void SpearMan::Free()
 
 HRESULT SpearMan::CreatePartObjects()
 {
+	/*add head socket*/
+	{
+		Socket::SOCKET_DESC headSocketDesc{};
+		headSocketDesc.parent = this;
+		headSocketDesc.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 Head");
+		headSocketDesc.parentModel = GetComponent<ModelComponent>();
+		
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Head_Socket), &headSocketDesc)))
+			return E_FAIL;
+	}
+	/*add head*/
+	{
+		SpearMan_Head::SPEAR_MAN_HEAD_DESC headDesc{};
+		headDesc.parent = this;
+		headDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Head_Socket)]->GetComponent<TransformComponent>();
+		
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan_Head",ENUM_CLASS(Parts::Head), &headDesc)))
+			return E_FAIL;
+	}
+
+	/*add spear socket*/
+	{
+		Socket::SOCKET_DESC spearSocketDesc{};
+		spearSocketDesc.parent = this;
+		spearSocketDesc.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bone001");
+		spearSocketDesc.parentModel = GetComponent<ModelComponent>();
+
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Spear_Socket), &spearSocketDesc)))
+			return E_FAIL;
+	}
+	/*add spear*/
+	{
+		SpearMan_Spear::SPEAR_MAN_SPEAR_DESC spearDesc{};
+		spearDesc.parent = this;
+		spearDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Spear_Socket)]->GetComponent<TransformComponent>();
+
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan_Spear", ENUM_CLASS(Parts::Spear), &spearDesc)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -209,7 +251,7 @@ void SpearMan::SpearManShow::TestForExit(Object* object)
 	if (animator->IsFinished())
 	{
 		auto spearMan = static_cast<SpearMan*>(object);
-		spearMan->ChangeState(&spearMan->m_SpearManIdle);
+		spearMan->ChangeState(&spearMan->m_SpearManRun);
 	}
 }
 
@@ -236,7 +278,7 @@ void SpearMan::SpearManIdle::TestForExit(Object* object)
 
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
-	if (distance < 100.f)
+	if (distance < 1000.f)
 	{
 		auto spearMan = static_cast<SpearMan*>(object);
 		spearMan->ChangeState(&spearMan->m_SpearManRun);
@@ -270,27 +312,24 @@ void SpearMan::SpearManRun::Update(Object* object, _float dt)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
-	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
-	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+	m_fElapsedTime += dt;
 
-	position.y = 0.f;
-	playerPos.y = 0.f;
+	if (m_fElapsedTime >= 0.2f)
+	{
+		auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+		auto transform = object->GetComponent<TransformComponent>();
+		auto nav = object->GetComponent<NavigationComponent>();
 
-	_float3 originVelocity = object->GetComponent<RigidBodyComponent>()->GetVelocity();
-	_float3 velocity{};
-	_float3 targetDir{};
-	_float3 currDir = object->GetComponent<TransformComponent>()->GetForward();
+		_uint currCellIndex = nav->GetCurrCellIndex();
+		_uint targetCellIndex = player->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+		_float3 position = transform->GetPosition();
+		_float3 targetPosition = player->GetComponent<TransformComponent>()->GetPosition();
 
-	XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
-	XMStoreFloat3(&currDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 10.f));
+		nav->FindPath(position, currCellIndex, targetPosition, targetCellIndex);
+	}
 
-	XMStoreFloat3(&velocity, XMLoadFloat3(&currDir) * 50.f);
-	velocity.y = originVelocity.y;
-
-	object->GetComponent<TransformComponent>()->SetForward(currDir);
-	object->GetComponent<RigidBodyComponent>()->SetVelocity(velocity);
-
+	auto nav = object->GetComponent<NavigationComponent>();
+	nav->MoveByPath(dt);
 }
 
 void SpearMan::SpearManRun::TestForExit(Object* object)
@@ -304,7 +343,7 @@ void SpearMan::SpearManRun::TestForExit(Object* object)
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
 	auto spearMan = static_cast<SpearMan*>(object);
-	if (distance >= 100.f)
+	if (distance >= 1000.f)
 	{
 		spearMan->ChangeState(&spearMan->m_SpearManIdle);
 	}
@@ -323,9 +362,6 @@ void SpearMan::SpearManAttack::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack));
-
-	auto rigidBody = object->GetComponent<RigidBodyComponent>();
-	rigidBody->SetVelocity(_float3{ 0.f,0.f,0.f });
 }
 
 void SpearMan::SpearManAttack::Update(Object* object, _float dt)
@@ -399,6 +435,9 @@ void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
 
 		m_IsEndAttacked = true;
 	}
+
+	auto nav = object->GetComponent<NavigationComponent>();
+	nav->MoveByVelocity(dt);
 }
 
 void SpearMan::SpearManChargeAttack::TestForExit(Object* object)

@@ -17,8 +17,10 @@ public:
     HRESULT Initialize(NAVCELL_DATA desc);
 
     /*getter*/
+    _float3 GetPoint(_uint index)const { return m_Points[index]; }
     _float3 GetCellNormal();
     _int GetNeighborIndex(_uint index)const { return m_NeighborCellIndices[index]; }
+    _int GetPortalIndex(_uint index)const { return m_PortalIndices[index]; }
     VIBuffer* GetBuffer()const { return m_pBuffer; }
     MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
 

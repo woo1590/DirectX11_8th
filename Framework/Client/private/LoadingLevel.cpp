@@ -3,7 +3,6 @@
 #include "Loader.h"
 #include "EngineCore.h"
 #include "LogoLevel.h"
-#include "TestLevel.h"
 #include "Stage1.h"
 #include "StageBoss.h"
 #include "GamePlayLevel.h"
@@ -117,4 +116,6 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 	default:
 		break;
 	}
+
+	return S_OK;
 }

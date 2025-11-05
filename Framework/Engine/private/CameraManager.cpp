@@ -39,6 +39,9 @@ void CameraManager::Update()
 
 	_float4x4 viewMatrixInverse = m_MainCameraContext.viewMatrixInverse;
 	m_MainCameraContext.camPosition = _float3{ viewMatrixInverse._41,viewMatrixInverse._42,viewMatrixInverse._43 };
+
+	m_MainCameraContext.farZ = m_MainCamera->GetFarZ();
+	m_MainCameraContext.nearZ = m_MainCamera->GetNearZ();
 }
 
 void CameraManager::SetMainCamera(const _string& cameraTag)

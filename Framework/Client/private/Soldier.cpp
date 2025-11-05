@@ -91,12 +91,14 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
-	nav->SpawnInCell(2);
+	nav->SpawnInCell(8);
+	nav->SetMoveSpeed(50.f);
+	nav->SetArriveRange(15.f);
 
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 100;
+	statusDesc.hp = 200;
 	statusDesc.attackPower = 1;
 	statusDesc.shield = 100;
 	statusDesc.speed = 40.f;
@@ -118,14 +120,28 @@ void Soldier::PriorityUpdate(_float dt)
 void Soldier::Update(_float dt)
 {
 	__super::Update(dt);
-
-	auto nav = GetComponent<NavigationComponent>();
-	nav->MoveByVelocity(dt);
 }
 	
 void Soldier::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+void Soldier::HitHead()
+{
+	auto status = GetComponent<StatusComponent>();
+
+	if (0 == status->GetDesc().hp)
+		ChangeState(&m_SoldierDead);
+
+	if (m_CurrState == &m_SoldierIdle || m_CurrState == &m_SoldierRun)
+	{
+		if (m_fElapsedTime >= m_fHitDelay)
+		{
+			ChangeState(&m_SoldierHitHead);
+			m_fElapsedTime = 0.f;
+		}
+	}
 }
 
 void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
@@ -278,7 +294,7 @@ void Soldier::SoldierIdle::TestForExit(Object* object)
 
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
-	if (distance < 100.f)
+	if (distance < 500.f)
 	{
 		auto soldier = static_cast<Soldier*>(object);
 		soldier->ChangeState(&soldier->m_SoldierRun);
@@ -299,38 +315,40 @@ void Soldier::SoldierPatrol::TestForExit(Object* object)
 
 void Soldier::SoldierRun::Enter(Object* object)
 {
-	_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 1);
+	auto engine = EngineCore::GetInstance();
+
+	_uint rand = engine->GetRandom()->get<_uint>(0, 1);
 	auto animator = object->GetComponent<AnimatorComponent>();
 	if (0 == rand)
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::Run1), true);
 	else
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::Run2), true);
+
+	m_fElapsedTime = 0.f;
 }
 
 void Soldier::SoldierRun::Update(Object* object, _float dt)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
-	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
-	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+	m_fElapsedTime += dt;
 
-	position.y = 0.f;
-	playerPos.y = 0.f;
+	if (m_fElapsedTime >= 0.2f)
+	{
+		auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+		auto transform = object->GetComponent<TransformComponent>();
+		auto nav = object->GetComponent<NavigationComponent>();
 
-	_float3 originVelocity = object->GetComponent<RigidBodyComponent>()->GetVelocity();
-	_float3 velocity{};
-	_float3 targetDir{};
-	_float3 currDir = object->GetComponent<TransformComponent>()->GetForward();
+		_uint currCellIndex = nav->GetCurrCellIndex();
+		_uint targetCellIndex = player->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+		_float3 position = transform->GetPosition();
+		_float3 targetPosition = player->GetComponent<TransformComponent>()->GetPosition();
 
-	XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
-	XMStoreFloat3(&currDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 10.f));
+		nav->FindPath(position, currCellIndex, targetPosition, targetCellIndex);
+	}
 
-	XMStoreFloat3(&velocity, XMLoadFloat3(&currDir) * 50.f);
-	velocity.y = originVelocity.y;
-
-	object->GetComponent<TransformComponent>()->SetForward(currDir);
-	object->GetComponent<RigidBodyComponent>()->SetVelocity(velocity);
+	auto nav = object->GetComponent<NavigationComponent>();
+	nav->MoveByPath(dt);
 }
 
 void Soldier::SoldierRun::TestForExit(Object* object)
@@ -344,7 +362,7 @@ void Soldier::SoldierRun::TestForExit(Object* object)
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
 	auto soldier = static_cast<Soldier*>(object);
-	if (distance >= 100.f)
+	if (distance >= 500.f)
 	{
 		soldier->ChangeState(&soldier->m_SoldierIdle);
 	}
@@ -449,3 +467,19 @@ void Soldier::SoldierDead::Enter(Object* object)
 	}
 }
 
+void Soldier::SoldierHitHead::Enter(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+	animator->ChangeAnimation(ENUM_CLASS(AnimationState::HitHead), false, true);
+}
+
+void Soldier::SoldierHitHead::TestForExit(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+
+	if (animator->IsFinished())
+	{
+		auto soldier = static_cast<Soldier*>(object);
+		soldier->ChangeState(&soldier->m_SoldierIdle);
+	}
+}

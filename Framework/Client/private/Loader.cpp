@@ -55,6 +55,11 @@
 #include "Soldier_Sword.h"
 
 #include "SpearMan.h"
+#include "SpearMan_Head.h"
+#include "SpearMan_Spear.h"
+
+#include "CrossbowMan.h"
+#include "CrossbowMan_Head.h"
 
 //map
 #include "SkyBox.h"
@@ -186,6 +191,10 @@ HRESULT Loader::LoadingForLogo()
 			"Model_Enemy_SpearMan")))
 			return E_FAIL;
 
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/crossbow_man/crossbow_man.model",
+			"Model_Enemy_CrossbowMan")))
+			return E_FAIL;
+
 		/*Weapon*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/cameleon/cameleon.model",
 			"Model_Weapon_Cameleon")))
@@ -281,6 +290,15 @@ HRESULT Loader::LoadingForLogo()
 				"Model_Fracture_" + modelTag)))
 				return E_FAIL;
 		}
+		
+		for (_uint i = 0; i < 12; ++i)
+		{
+			_string filePath = "crossbow_man" + std::to_string(i) + ".model";
+			_string modelTag = "CrossbowMan" + std::to_string(i);
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/fracture/crossbow_man/" + filePath,
+				"Model_Fracture_" + modelTag)))
+				return E_FAIL;
+		}
 	}
 
 	/*Load Animation Set*/
@@ -308,6 +326,10 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/spear_man.animationset",
 			"AnimationSet_Enemy_SpearMan")))
+			return E_FAIL;
+		
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/crossbow_man.animationset",
+			"AnimationSet_Enemy_CrossbowMan")))
 			return E_FAIL;
 
 		/*Weapon*/
@@ -397,6 +419,13 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", SpearMan::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan_Head", SpearMan_Head::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan_Spear", SpearMan_Spear::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", CrossbowMan::Create())))
 			return E_FAIL;
 
 		/*Weapon*/

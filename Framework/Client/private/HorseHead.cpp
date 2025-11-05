@@ -92,7 +92,9 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	engine->RegisterNavigation(nav);
 	nav->AttachTransform();
 	nav->AttachRigidBody();
-	nav->SpawnInCell(90);
+	nav->SpawnInCell(12);
+	nav->SetMoveSpeed(15.f);
+	nav->SetArriveRange(20.f);
 
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
@@ -116,9 +118,6 @@ void HorseHead::PriorityUpdate(_float dt)
 void HorseHead::Update(_float dt)
 {
 	__super::Update(dt);
-	
-	auto nav = GetComponent<NavigationComponent>();
-	nav->MoveByVelocity(dt);
 }
 
 void HorseHead::LateUpdate(_float dt)
@@ -126,11 +125,46 @@ void HorseHead::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+void HorseHead::HitHead()
+{
+	auto status = GetComponent<StatusComponent>();
+
+	if (0 == status->GetDesc().hp)
+		ChangeState(&m_HorseHeadDead);
+
+	if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)
+	{
+		if (m_fElapsedTime >= m_fHitDelay)
+		{
+			ChangeState(&m_HorseHeadHitHead);
+			m_fElapsedTime = 0.f;
+		}
+	}
+}
+
 void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{
 	case ColliderFilter::PlayerProjectile:
+	{
+		auto status = GetComponent<StatusComponent>();
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+		if (0 == status->GetDesc().hp)
+			ChangeState(&m_HorseHeadDead);
+
+		if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)
+		{
+			if (m_fElapsedTime >= m_fHitDelay)
+			{
+				ChangeState(&m_HorseHeadHitBody);
+				m_fElapsedTime = 0.f;
+			}
+		}
+	}break;
+	case ColliderFilter::PlayerAttack:
 	{
 		auto status = GetComponent<StatusComponent>();
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
@@ -280,7 +314,7 @@ void HorseHead::HorseHeadIdle::TestForExit(Object* object)
 
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
-	if (distance < 100.f)
+	if (distance < 1000.f)
 	{
 		auto horse = static_cast<HorseHead*>(object);
 		horse->ChangeState(&horse->m_HorseHeadWalk_F);
@@ -309,24 +343,24 @@ void HorseHead::HorseHeadWalk_F::Update(Object* object, _float dt)
 {
 	auto engine = EngineCore::GetInstance();
 
-	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
-	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
-	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+	m_fElapsedTime += dt;
 
-	position.y = 0.f;
-	playerPos.y = 0.f;
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+		auto transform = object->GetComponent<TransformComponent>();
+		auto nav = object->GetComponent<NavigationComponent>();
 
-	_float3 velocity{};
-	_float3 targetDir{};
-	_float3 currDir = object->GetComponent<TransformComponent>()->GetForward();
+		_uint currCellIndex = nav->GetCurrCellIndex();
+		_uint targetCellIndex = player->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+		_float3 position = transform->GetPosition();
+		_float3 targetPosition = player->GetComponent<TransformComponent>()->GetPosition();
 
-	XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
-	XMStoreFloat3(&currDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 5.f));
+		nav->FindPath(position, currCellIndex, targetPosition, targetCellIndex);
+	}
 
-	XMStoreFloat3(&velocity, XMLoadFloat3(&currDir) * 10.f);
-
-	object->GetComponent<TransformComponent>()->SetForward(currDir);
-	object->GetComponent<RigidBodyComponent>()->SetVelocity(velocity);
+	auto nav = object->GetComponent<NavigationComponent>();
+	nav->MoveByPath(dt);
 }
 
 void HorseHead::HorseHeadWalk_F::TestForExit(Object* object)
@@ -340,11 +374,11 @@ void HorseHead::HorseHeadWalk_F::TestForExit(Object* object)
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
 	auto horse = static_cast<HorseHead*>(object);
-	if (distance >= 100.f)
+	if (distance >= 1000.f)
 	{
 		horse->ChangeState(&horse->m_HorseHeadIdle);
 	}
-	else if (distance < 40.f)
+	else if (distance < 30.f)
 	{
 		horse->ChangeState(&horse->m_HorseHeadAttack1);
 	}
@@ -443,4 +477,21 @@ void HorseHead::HorseHeadDead::Enter(Object* object)
 void HorseHead::HorseHeadDead::TestForExit(Object* object)
 {
 	
+}
+
+void HorseHead::HorseHeadHitHead::Enter(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+	animator->ChangeAnimation(ENUM_CLASS(AnimationState::HitHead), false, true);
+}
+
+void HorseHead::HorseHeadHitHead::TestForExit(Object* object)
+{
+	auto animator = object->GetComponent<AnimatorComponent>();
+
+	if (animator->IsFinished())
+	{
+		auto horse = static_cast<HorseHead*>(object);
+		horse->ChangeState(&horse->m_HorseHeadIdle);
+	}
 }

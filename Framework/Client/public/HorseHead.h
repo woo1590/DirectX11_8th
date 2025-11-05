@@ -45,6 +45,7 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void HitHead();
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
@@ -76,6 +77,9 @@ private:
         void Enter(Object* object) override;
         void Update(Object* object, _float dt) override;
         void TestForExit(Object* object) override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 0.2f;
     };
     class HorseHeadAttack1 : public State
     {
@@ -91,9 +95,9 @@ private:
     };
     class HorseHeadHitHead : public State
     {
-        void Enter(Object* object) override {};
+        void Enter(Object* object) override;
         void Update(Object* object, _float dt) override {};
-        void TestForExit(Object* object) override {};
+        void TestForExit(Object* object) override;
     };
     class HorseHeadDead : public State
     {

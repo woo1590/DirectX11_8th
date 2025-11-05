@@ -67,6 +67,8 @@ ASTAR_RESULT NavMesh::FindPath(_float3 startPosition, _uint startCellIndex, _flo
 {
 	ASTAR_RESULT result{};
 
+	result = AStar(startPosition, startCellIndex, targetPosition, targetCellIndex);
+
 	return result;
 }
 
@@ -195,7 +197,7 @@ void NavMesh::BuildNavPortals(std::vector<NAVCELL_DATA>& datas)
 	}
 }
 
-ASTAR_RESULT NavMesh::AStar(_uint startCellIndex, _uint targetCellIndex)
+ASTAR_RESULT NavMesh::AStar(_float3 startPosition, _uint startCellIndex, _float3 targetPosition, _uint targetCellIndex)
 {
 	ASTAR_RESULT result{};
 
@@ -207,6 +209,8 @@ ASTAR_RESULT NavMesh::AStar(_uint startCellIndex, _uint targetCellIndex)
 	{
 		result.isAvailable = true;
 		result.cellIndices.push_back(startCellIndex);
+		result.centerPoints.push_back(m_Cells[startCellIndex]->GetPositionInCell());
+		result.targetPosition = targetPosition;
 
 		return result;
 	}
@@ -215,46 +219,127 @@ ASTAR_RESULT NavMesh::AStar(_uint startCellIndex, _uint targetCellIndex)
 	std::priority_queue<ASTAR_NODE, std::vector<ASTAR_NODE>, ASTAR_COMPARE> open;
 
 	/*init open*/
-	histories[startCellIndex].cellIndex = startCellIndex;
+	histories[startCellIndex].parent = startCellIndex;
 	histories[startCellIndex].gCost = 0;
 	histories[startCellIndex].fCost = Heuristic(startCellIndex, targetCellIndex);
 	open.push({ startCellIndex,histories[startCellIndex].fCost });
 
 	while (!open.empty())
 	{
-		_uint currCell = open.top().cellIndex;
+		_uint currCellIndex = open.top().cellIndex;
 		_float currFCost = open.top().fCost;
+		open.pop();
 
-		if (histories[currCell].closed)
+		if (histories[currCellIndex].closed)
 			continue; //확정된 셀
-		if (histories[currCell].fCost != currFCost)
-			continue;//더 좋은 셀로 갱신됨
+		if (histories[currCellIndex].fCost != currFCost)
+			continue;//이미 더 좋은 비용으로 갱신됨
 
-		histories[currCell].closed = true;	//방문 완료
-		if (currCell == targetCellIndex)
+		histories[currCellIndex].closed = true;	//방문 완료
+
+		if (currCellIndex == targetCellIndex)
 			break;//목표 도착
 		
 		for (_uint i = 0; i < 3; ++i)
 		{
-			_int nextCellIndex = m_Cells[currCell]->GetNeighborIndex(i);
+			_int nextCellIndex = m_Cells[currCellIndex]->GetNeighborIndex(i);
 			if (-1 == nextCellIndex)
 				continue;
 			if (histories[nextCellIndex].closed == true)
 				continue;
 
+			_float3 currCellPosition = m_Cells[currCellIndex]->GetPositionInCell();
+			_float3 nextCellPosition = m_Cells[nextCellIndex]->GetPositionInCell();
 
+			_float gCost = histories[currCellIndex].gCost + XMVectorGetX(XMVector3Length(XMLoadFloat3(&nextCellPosition)-XMLoadFloat3(&currCellPosition)));
+			if (gCost < histories[nextCellIndex].gCost)
+			{
+				histories[nextCellIndex].gCost = gCost;
+				histories[nextCellIndex].fCost = gCost + Heuristic(nextCellIndex, targetCellIndex);
+				histories[nextCellIndex].parent = currCellIndex;
+				open.push({ static_cast<_uint>(nextCellIndex),histories[nextCellIndex].fCost });
+			}
+		}
+	}
+
+	std::vector<_uint> pathIndices;
+	BuildPathCellIndices(histories, pathIndices, startCellIndex, targetCellIndex);
+	result.isAvailable = true;
+	result.cellIndices = std::move(pathIndices);
+	result.targetPosition = targetPosition;
+
+	for (_uint i = 0; i < result.cellIndices.size(); ++i)
+		result.centerPoints.push_back(m_Cells[result.cellIndices[i]]->GetPositionInCell());
+
+	for (_uint i = 0; i < result.cellIndices.size(); ++i)
+	{
+		if (i < result.cellIndices.size() - 1)
+		{
+			_uint currCellIndex = result.cellIndices[i];
+			_uint nextCellIndex = result.cellIndices[i + 1];
+
+			_int neighborIndex{};
+			for (_uint j = 0; j < 3; ++j)
+			{
+				neighborIndex = m_Cells[currCellIndex]->GetNeighborIndex(j);
+				if (nextCellIndex == neighborIndex)
+				{
+					_int portalIndex = m_Cells[currCellIndex]->GetPortalIndex(j);
+					NAV_PORTAL portal = m_NavPortals[portalIndex];
+					portal.leftPoint.y = 0.f;
+					portal.rightPoint.y = 0.f;
+
+					if (portal.cellA == currCellIndex)
+					{
+						result.portals.push_back(portal);
+						break;
+					}
+					else
+					{
+						std::swap(portal.cellA, portal.cellB);
+						std::swap(portal.leftPoint, portal.rightPoint);
+
+						result.portals.push_back(portal);
+						break;
+					}
+				}
+			}
 		}
 	}
 
 	return result;
 }
 
+void NavMesh::BuildPathCellIndices(std::vector<ASTAR_HISTORY>& histories, std::vector<_uint>& pathIndices, _uint startCellIndex, _uint targetCellIndex)
+{
+	_uint cellIndex = targetCellIndex;
+	while (true)
+	{
+		pathIndices.push_back(cellIndex);
+		cellIndex = histories[cellIndex].parent;
+
+		/*경로 복원 끝*/
+		if (cellIndex == histories[cellIndex].parent)
+			break;
+	}
+
+	std::reverse(pathIndices.begin(), pathIndices.end());
+}
+
 _float NavMesh::Heuristic(_uint cellIndexA, _uint cellIndexB)
 {
-	_float3 centerA = m_Cells[cellIndexA]->GetPositionInCell();
-	_float3 centerB = m_Cells[cellIndexB]->GetPositionInCell();
+	auto cellA = m_Cells[cellIndexA];
+	auto cellB = m_Cells[cellIndexB];
+
+	_float3 centerA = cellA->GetPositionInCell();
+	_float3 centerB = cellB->GetPositionInCell();
+
+	_float3 p0 = cellB->GetPoint(0);
+	_float3 p1 = cellB->GetPoint(1);
+	_float3 p2 = cellB->GetPoint(2);
 
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&centerA) - XMLoadFloat3(&centerB)));
+	_float size = math::CalculateTriangleArea(p0, p1, p2);
 
-	return distance;
+	return distance * size;
 }

@@ -34,7 +34,8 @@ public:
 
 private:
     void BuildNavPortals(std::vector<NAVCELL_DATA>& datas);
-    ASTAR_RESULT AStar(_uint startCellIndex, _uint targetCellIndex);
+    ASTAR_RESULT AStar(_float3 startPosition, _uint startCellIndex, _float3 targetPosition, _uint targetCellIndex);
+    void BuildPathCellIndices(std::vector<ASTAR_HISTORY>& histories, std::vector<_uint>& pathIndices, _uint startCellIndex, _uint targetCellIndex);
     _float Heuristic(_uint cellIndexA, _uint cellIndexB);
 
     _uint m_iNumCells{};
