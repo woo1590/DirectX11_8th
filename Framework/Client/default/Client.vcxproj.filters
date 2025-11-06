@@ -130,9 +130,6 @@
     <Filter Include="02. Object\Decal">
       <UniqueIdentifier>{05b5105e-144f-42a3-a468-29200669609d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\UIObject\Sight">
-      <UniqueIdentifier>{5ffb3970-6311-4715-b9ce-bce065b3bc69}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\Enemy\SpearMan">
       <UniqueIdentifier>{5c0fc325-f27f-47f8-a4de-6698fdcd5477}</UniqueIdentifier>
     </Filter>
@@ -246,6 +243,21 @@
     </Filter>
     <Filter Include="01. Level\Stage3">
       <UniqueIdentifier>{4ffd524a-6901-4704-a1f1-0ac6c0025d7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Map Object\Chest">
+      <UniqueIdentifier>{49ac6526-cabb-4400-9d8e-f795bbe13773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Item\Coin">
+      <UniqueIdentifier>{61e03a7a-6499-46d2-9d44-10c2705dd0c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Item\Dumpling">
+      <UniqueIdentifier>{fccb73df-83f5-432e-b2f4-a190b6441ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Item\Ammo">
+      <UniqueIdentifier>{8004599b-52b3-432f-b953-ab5adcd4d8ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\Crosshair">
+      <UniqueIdentifier>{5ffb3970-6311-4715-b9ce-bce065b3bc69}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -387,8 +399,8 @@
     <ClInclude Include="..\public\Decal.h">
       <Filter>02. Object\Decal</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Sight.h">
-      <Filter>02. Object\UIObject\Sight</Filter>
+    <ClInclude Include="..\public\Crosshair.h">
+      <Filter>02. Object\UIObject\Crosshair</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SpearMan.h">
       <Filter>02. Object\Enemy\SpearMan</Filter>
@@ -464,6 +476,18 @@
     </ClInclude>
     <ClInclude Include="..\public\SpearMan_Spear.h">
       <Filter>02. Object\Enemy\SpearMan\Spear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Chest.h">
+      <Filter>02. Object\Map Object\Chest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Ammo.h">
+      <Filter>02. Object\Item\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Coin.h">
+      <Filter>02. Object\Item\Coin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Dumpling.h">
+      <Filter>02. Object\Item\Dumpling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -593,8 +617,8 @@
     <ClCompile Include="..\private\Decal.cpp">
       <Filter>02. Object\Decal</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Sight.cpp">
-      <Filter>02. Object\UIObject\Sight</Filter>
+    <ClCompile Include="..\private\Crosshair.cpp">
+      <Filter>02. Object\UIObject\Crosshair</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SpearMan.cpp">
       <Filter>02. Object\Enemy\SpearMan</Filter>
@@ -670,6 +694,18 @@
     </ClCompile>
     <ClCompile Include="..\private\SpearMan_Spear.cpp">
       <Filter>02. Object\Enemy\SpearMan\Spear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Chest.cpp">
+      <Filter>02. Object\Map Object\Chest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Ammo.cpp">
+      <Filter>02. Object\Item\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Coin.cpp">
+      <Filter>02. Object\Item\Coin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dumpling.cpp">
+      <Filter>02. Object\Item\Dumpling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

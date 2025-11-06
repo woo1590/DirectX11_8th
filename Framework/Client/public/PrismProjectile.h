@@ -23,10 +23,6 @@ public:
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
-
-private:
-    _uint m_iNumCurrReflect{};
-    _uint m_iNumMaxReflect{};
 };
 
 NS_END

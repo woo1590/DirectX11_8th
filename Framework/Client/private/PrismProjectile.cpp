@@ -65,10 +65,8 @@ HRESULT PrismProjectile::Initialize(InitDESC* arg)
 	auto status = GetComponent<StatusComponent>();
 	status->Initialize(&statusDesc);
 
-	m_iNumCurrReflect = 0;
-	m_iNumMaxReflect = 6;
-	m_fLifeTime = 7.f;
-	m_fSpeed = 900.f;
+	m_fLifeTime = 2.5f;
+	m_fSpeed = 800.f;
 
 	return S_OK;
 }
@@ -80,12 +78,6 @@ void PrismProjectile::PriorityUpdate(_float dt)
 
 void PrismProjectile::Update(_float dt)
 {
-	if (m_iNumCurrReflect >= m_iNumMaxReflect)
-	{
-		SetDead();
-		return;
-	}
-
 	__super::Update(dt);
 
 	auto engine = EngineCore::GetInstance();
@@ -108,7 +100,6 @@ void PrismProjectile::Update(_float dt)
 		XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&forward) * m_fSpeed * dt);
 
 		m_pTransform->SetForward(forward);
-		++m_iNumCurrReflect;
 	}
 
 	m_pTransform->SetPosition(nextPosition);

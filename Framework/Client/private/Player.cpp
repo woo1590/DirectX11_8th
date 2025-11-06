@@ -149,7 +149,11 @@ void Player::PickUpWeapon(WeaponID id)
 	{
 	case Client::WeaponID::Foundry:
 	{
-
+		weapon = nullptr;
+		Weapon::WEAPON_DESC foundryDesc{};
+		foundryDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		foundryDesc.parent = this;
+		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", &foundryDesc);
 	}break;
 	case Client::WeaponID::ConcealedAmmo:
 	{
@@ -169,7 +173,13 @@ void Player::PickUpWeapon(WeaponID id)
 		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PoisonousGhost", &poisonousDesc);
 	}break;
 	case Client::WeaponID::Cameleon:
-		break;
+	{
+		weapon = nullptr;
+		Weapon::WEAPON_DESC cameleonDesc{};
+		cameleonDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		cameleonDesc.parent = this;
+		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cameleon", &cameleonDesc);
+	}break;
 	case Client::WeaponID::IcySpear:
 		break;
 	case Client::WeaponID::Prism:

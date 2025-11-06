@@ -14,7 +14,7 @@
 #include "Hand.h"
 
 //ui
-#include "Sight.h"
+#include "Crosshair.h"
 
 //weapon
 #include "Cameleon.h"
@@ -30,6 +30,10 @@
 
 //item
 #include "DropWeapon.h"
+#include "Ammo.h"
+#include "Dumpling.h"
+#include "Coin.h"
+#include "Chest.h"
 
 //enemy
 #include "Fracture.h"
@@ -215,7 +219,7 @@ HRESULT Loader::LoadingForLogo()
 			"Model_Weapon_Prism")))
 			return E_FAIL;
 
-		/*Drop weapon*/
+		/*Drop Weapon*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/foundry/drop_foundry.model",
 			"Model_DropWeapon_Foundry")))
 			return E_FAIL;
@@ -228,6 +232,21 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/prism/drop_prism.model",
 			"Model_DropWeapon_Prism")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/cameleon/drop_cameleon.model",
+			"Model_DropWeapon_Cameleon")))
+			return E_FAIL;
+
+		/*Item*/
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/item/coin/coin.model",
+			"Model_Item_Coin")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/item/ammo/ammo.model",
+			"Model_Item_Ammo")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/item/dumpling/dumpling.model",
+			"Model_Item_Dumpling")))
+			return E_FAIL;
+
 
 		/*Projectile*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/projectile/default_bullet/default_bullet.model",
@@ -259,6 +278,9 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/boss2/boss_stage.model",
 			"Model_Boss_Stage")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/chest/chest.model",
+			"Model_Chest")))
 			return E_FAIL;
 	}
 
@@ -357,6 +379,10 @@ HRESULT Loader::LoadingForLogo()
 			"AnimationSet_Weapon_Prism")))
 			return E_FAIL;
 
+		/*Map*/
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/chest.animationset",
+			"AnimationSet_Chest")))
+			return E_FAIL;
 	}
 
 	/*Load Material*/
@@ -395,7 +421,7 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		/*UI*/
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sight", Sight::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", Crosshair::Create())))
 			return E_FAIL;
 
 		/*Enemy*/
@@ -469,6 +495,8 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemySpawner", EnemySpawner::Create())))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", Chest::Create())))
+			return E_FAIL;
 
 		/*Fracture*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", Fracture::Create())))
@@ -476,6 +504,12 @@ HRESULT Loader::LoadingForLogo()
 
 		/*Item*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", DropWeapon::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Ammo", Ammo::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Coin", Coin::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Dumpling", Dumpling::Create())))
 			return E_FAIL;
 	}
 	m_strDebugText = L"로딩완료";

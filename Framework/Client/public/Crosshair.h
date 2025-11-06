@@ -3,16 +3,21 @@
 
 NS_BEGIN(Client)
 
-class Sight :
+class Crosshair :
     public UIObject
 {
+    public:
+    typedef struct tagSightDesc : public UIObject::UIOBJECT_DESC
+    {
+
+    }SIGHT_DESC;
 private:
-    Sight();
-    Sight(const Sight& prototype);
-    virtual ~Sight() = default;
+    Crosshair();
+    Crosshair(const Crosshair& prototype);
+    virtual ~Crosshair() = default;
     
 public:
-    static Sight* Create();
+    static Crosshair* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 

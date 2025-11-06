@@ -58,6 +58,8 @@ public:
 private:
     HRESULT CreatePartObjects();
 
+    _uint m_iMuzzleBoneIndex{};
+
     class CrossbowManShow : public State
     {
         void Enter(Object* object)override;
@@ -71,7 +73,16 @@ private:
         void TestForExit(Object* object)override;
 
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 2.f;
+        _float m_fDuration = 1.f;
+    };
+    class CrossbowManRun : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 0.2f;
     };
     class CrossbowManWalk_F : public State
     {
@@ -122,6 +133,18 @@ private:
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
     };
+    class CrossbowManHitBody : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+    };
+    class CrossbowManHitHead : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+    };
     class CrossbowManDead : public State
     {
         void Enter(Object* object)override;
@@ -131,6 +154,7 @@ private:
 
     CrossbowManShow m_CrossbowManShow;
     CrossbowManIdle m_CrossbowManIdle;
+    CrossbowManRun m_CrossbowManRun;
     CrossbowManWalk_F m_CrossbowManWalk_F;
     CrossbowManWalk_R m_CrossbowManWalk_R;
     CrossbowManWalk_L m_CrossbowManWalk_L;
@@ -138,6 +162,8 @@ private:
     CrossbowManHide_L m_CrossbowManHide_L;
     CrossbowManFire m_CrossbowManFire;
     CrossbowManReload m_CrossbowManReload;
+    CrossbowManHitBody m_CrossbowManHitBody;
+    CrossbowManHitHead m_CrossbowManHitHead;
     CrossbowManDead m_CrossbowManDead;
 };
 

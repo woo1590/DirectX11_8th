@@ -3,21 +3,16 @@
 
 NS_BEGIN(Client)
 
-class DropWeapon :
+class Dumpling :
     public Item
 {
-public:
-    typedef struct tagDropWeaponDesc : public Object::OBJECT_DESC
-    {
-        WeaponID weaponID = WeaponID::Count;
-    }DROP_WEAPON_DESC;
 private:
-    DropWeapon();
-    DropWeapon(const DropWeapon& prototype);
-    virtual ~DropWeapon() = default;
+    Dumpling();
+    Dumpling(const Dumpling& prototype);
+    virtual ~Dumpling() = default;
 
 public:
-    static DropWeapon* Create();
+    static Dumpling* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
@@ -30,31 +25,38 @@ public:
     void Free()override;
 
 private:
-    WeaponID m_eWeaponID = WeaponID::Count;
-
-    class DropWeaponSpawn : public State
+    class DumplingSpawn : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
-        _float3 m_StartPosition{};
-        _float3 m_TargetPosition{};
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 0.5f;
+        _float m_fDuration = 1.5f;
     };
-    class DropWeaponIdel : public State
+    class DumplingIdle : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
-        _float3 m_StartPosition{};
+        _float m_fMagneticDistance = 30.f;
         _float m_fElapsedTime = 0.f;
+        _float3 m_CurrPosition{};
+    };
+    class DumplingMagnetic : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+
+        _float m_fMagneticDistance = 30.f;
+        _float m_fSpeed = 4.f;
     };
 
-    DropWeaponSpawn m_DropWeaponSpawn;
-    DropWeaponIdel m_DropWeaponIdle;
+    DumplingSpawn m_DumplingSpawn;
+    DumplingIdle m_DumplingIdle;
+    DumplingMagnetic m_DumplingMagnetic;
 };
 
 NS_END

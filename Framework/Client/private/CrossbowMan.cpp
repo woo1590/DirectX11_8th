@@ -91,9 +91,11 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     nav->AttachTransform();
     nav->AttachRigidBody();
     nav->SpawnInCell(7);
-    nav->SetMoveSpeed(15.f);
+    nav->SetMoveSpeed(35.f);
     nav->SetArriveRange(60.f);
 
+    m_iMuzzleBoneIndex = model->GetBoneIndex("muzzle");
+    m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
     ChangeState(&m_CrossbowManShow);
 
     return S_OK;
@@ -119,7 +121,47 @@ void CrossbowMan::LateUpdate(_float dt)
 
 void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+    switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+    {
+    case ColliderFilter::PlayerAttack:
+    {
+        auto status = GetComponent<StatusComponent>();
+        auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
+        status->BeAttacked(otherStatus->GetDesc().attackPower);
+        if (0 == status->GetDesc().hp)
+            ChangeState(&m_CrossbowManDead);
+
+        if (m_CurrState == &m_CrossbowManIdle || m_CurrState == &m_CrossbowManRun || m_CurrState == &m_CrossbowManWalk_F)
+        {
+            if (m_fElapsedTime >= m_fHitDelay)
+            {
+                ChangeState(&m_CrossbowManHitBody);
+                m_fElapsedTime = 0.f;
+            }
+        }
+    }break;
+    case ColliderFilter::PlayerProjectile:
+    {
+        auto status = GetComponent<StatusComponent>();
+        auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+        status->BeAttacked(otherStatus->GetDesc().attackPower);
+        if (0 == status->GetDesc().hp)
+            ChangeState(&m_CrossbowManDead);
+
+        if (m_CurrState == &m_CrossbowManIdle || m_CurrState == &m_CrossbowManRun || m_CurrState == &m_CrossbowManWalk_F)
+        {
+            if (m_fElapsedTime >= m_fHitDelay)
+            {
+                ChangeState(&m_CrossbowManHitBody);
+                m_fElapsedTime = 0.f;
+            }
+        }
+    }break;
+    default:
+        break;
+    }
 }
 
 Object* CrossbowMan::Clone(InitDESC* arg)
@@ -176,6 +218,19 @@ void CrossbowMan::CrossbowManIdle::Enter(Object* object)
 void CrossbowMan::CrossbowManIdle::Update(Object* object, _float dt)
 {
     m_fElapsedTime += dt;
+
+    auto engine = EngineCore::GetInstance();
+    auto transform = object->GetComponent<TransformComponent>();
+    auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+
+    _float3 position = transform->GetPosition();
+    _float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+
+    _float3 currDir = transform->GetForward();
+    _float3 targetDir{};
+    XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+    XMStoreFloat3(&targetDir, XMVectorLerp(XMLoadFloat3(&currDir), XMLoadFloat3(&targetDir), dt * 5.f));
+    transform->SetForward(targetDir);
 }
 
 void CrossbowMan::CrossbowManIdle::TestForExit(Object* object)
@@ -188,7 +243,72 @@ void CrossbowMan::CrossbowManIdle::TestForExit(Object* object)
 
     _float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
-    if (distance < 1000.f)
+    if (m_fElapsedTime >= m_fDuration)
+    {
+        if (distance >= 100.f)
+        {
+            auto crossbow = static_cast<CrossbowMan*>(object);
+            crossbow->ChangeState(&crossbow->m_CrossbowManRun);
+        }
+        else
+        {
+            _uint randNum = engine->GetRandom()->get<_uint>(0, 5);
+            auto crossbow = static_cast<CrossbowMan*>(object);
+
+            if (randNum < 3)
+                crossbow->ChangeState(&crossbow->m_CrossbowManFire);
+            else if (randNum < 4)
+                crossbow->ChangeState(&crossbow->m_CrossbowManHide_L);
+            else
+                crossbow->ChangeState(&crossbow->m_CrossbowManHide_R);
+        }
+    }
+}
+
+void CrossbowMan::CrossbowManRun::Enter(Object* object)
+{
+    auto animator = object->GetComponent<AnimatorComponent>();
+    animator->ChangeAnimation(ENUM_CLASS(AnimationState::Run), true);
+
+    auto nav = object->GetComponent<NavigationComponent>();
+    nav->SetMoveSpeed(35.f);
+}
+
+void CrossbowMan::CrossbowManRun::Update(Object* object, _float dt)
+{
+    auto engine = EngineCore::GetInstance();
+
+    m_fElapsedTime += dt;
+
+    if (m_fElapsedTime >= m_fDuration)
+    {
+        auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+        auto transform = object->GetComponent<TransformComponent>();
+        auto nav = object->GetComponent<NavigationComponent>();
+
+        _uint currCellIndex = nav->GetCurrCellIndex();
+        _uint targetCellIndex = player->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+        _float3 position = transform->GetPosition();
+        _float3 targetPosition = player->GetComponent<TransformComponent>()->GetPosition();
+
+        nav->FindPath(position, currCellIndex, targetPosition, targetCellIndex);
+    }
+
+    auto nav = object->GetComponent<NavigationComponent>();
+    nav->MoveByPath(dt);
+}
+
+void CrossbowMan::CrossbowManRun::TestForExit(Object* object)
+{
+    auto engine = EngineCore::GetInstance();
+
+    auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+    _float3 position = object->GetComponent<TransformComponent>()->GetPosition();
+    _float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+
+    _float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+
+    if (distance < 70.f)
     {
         auto crossbow = static_cast<CrossbowMan*>(object);
         crossbow->ChangeState(&crossbow->m_CrossbowManWalk_F);
@@ -199,6 +319,9 @@ void CrossbowMan::CrossbowManWalk_F::Enter(Object* object)
 {
     auto animator = object->GetComponent<AnimatorComponent>();
     animator->ChangeAnimation(ENUM_CLASS(AnimationState::Walk_F), true);
+
+    auto nav = object->GetComponent<NavigationComponent>();
+    nav->SetMoveSpeed(15.f);
 }
 
 void CrossbowMan::CrossbowManWalk_F::Update(Object* object, _float dt)
@@ -235,10 +358,10 @@ void CrossbowMan::CrossbowManWalk_F::TestForExit(Object* object)
 
     _float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
-    if (distance < 65.f)
+    if (distance < 50.f)
     {
         auto crossbow = static_cast<CrossbowMan*>(object);
-        crossbow->ChangeState(&crossbow->m_CrossbowManFire);
+        crossbow->ChangeState(&crossbow->m_CrossbowManIdle);
     }
 }
 
@@ -338,8 +461,30 @@ void CrossbowMan::CrossbowManHide_L::TestForExit(Object* object)
 
 void CrossbowMan::CrossbowManFire::Enter(Object* object)
 {
+    auto engine = EngineCore::GetInstance();
+
+    auto crossbow = static_cast<CrossbowMan*>(object);
     auto animator = object->GetComponent<AnimatorComponent>();
     animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire1));
+
+    auto transform = object->GetComponent<TransformComponent>();
+    _float4x4 boneMat = animator->GetCombinedMatrices()[crossbow->m_iMuzzleBoneIndex];
+    _float4x4 worldMat = transform->GetWorldMatrix();
+    XMStoreFloat4x4(&worldMat, XMLoadFloat4x4(&boneMat) * XMLoadFloat4x4(&worldMat));
+
+    _vector scaleV, positionV, rotationV;
+    _float3 position{};
+    _float3 dir = transform->GetForward();
+    XMMatrixDecompose(&scaleV, &rotationV, &positionV, XMLoadFloat4x4(&worldMat));
+    XMStoreFloat3(&position, positionV);
+
+    Object* defaultBullet = nullptr;
+    Object::OBJECT_DESC desc{};
+    desc.scale = _float3{ 3.f,3.f,3.f };
+    desc.position = position;
+    engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
+    
+    defaultBullet->GetComponent<TransformComponent>()->SetForward(dir);
 }
 
 void CrossbowMan::CrossbowManFire::Update(Object* object, _float dt)
@@ -378,50 +523,96 @@ void CrossbowMan::CrossbowManReload::TestForExit(Object* object)
     }
 }
 
+void CrossbowMan::CrossbowManHitBody::Enter(Object* object)
+{
+    auto animator = object->GetComponent<AnimatorComponent>();
+    animator->ChangeAnimation(ENUM_CLASS(AnimationState::HitBody),false,true);
+}
+
+void CrossbowMan::CrossbowManHitBody::Update(Object* object, _float dt)
+{
+}
+
+void CrossbowMan::CrossbowManHitBody::TestForExit(Object* object)
+{
+    auto animator = object->GetComponent<AnimatorComponent>();
+
+    if (animator->IsFinished())
+    {
+        auto crossbow = static_cast<CrossbowMan*>(object);
+        crossbow->ChangeState(&crossbow->m_CrossbowManIdle);
+    }
+}
+
+void CrossbowMan::CrossbowManHitHead::Enter(Object* object)
+{
+    auto animator = object->GetComponent<AnimatorComponent>();
+    animator->ChangeAnimation(ENUM_CLASS(AnimationState::HitHead), false, true);
+}
+
+void CrossbowMan::CrossbowManHitHead::Update(Object* object, _float dt)
+{
+}
+
+void CrossbowMan::CrossbowManHitHead::TestForExit(Object* object)
+{
+    auto animator = object->GetComponent<AnimatorComponent>();
+
+    if (animator->IsFinished())
+    {
+        auto crossbow = static_cast<CrossbowMan*>(object);
+        crossbow->ChangeState(&crossbow->m_CrossbowManIdle);
+    }
+}
+
+
 void CrossbowMan::CrossbowManDead::Enter(Object* object)
 {
     object->SetDead();
 
     auto engine = EngineCore::GetInstance();
+    auto random = engine->GetRandom();
     auto transform = object->GetComponent<TransformComponent>();
 
-    _float3 camPosition = engine->GetCameraContext().camPosition;
-    _float3 position = transform->GetPosition();
-    _float3 hitDir{};
-    XMStoreFloat3(&hitDir, XMVector3Normalize(XMLoadFloat3(&position) - XMLoadFloat3(&camPosition)));
-
-    Fracture::FRACTURE_DESC desc{};
-    desc.scale = _float3{ 1.f,1.f,1.f };
-    desc.quaternion = transform->GetQuaternion();
-
-    auto random = engine->GetRandom();
-    for (_uint i = 0; i < 12; i += 2)
+    /*spawn fracture*/
     {
-        desc.position.x = position.x + random->get<_float>(-4.f, 4.f);
-        desc.position.y = position.y + random->get<_float>(4.f, 7.f);
-        desc.position.z = position.z + random->get<_float>(-4.f, 4.f);
+        _float3 camPosition = engine->GetCameraContext().camPosition;
+        _float3 position = transform->GetPosition();
+        _float3 hitDir{};
+        XMStoreFloat3(&hitDir, XMVector3Normalize(XMLoadFloat3(&position) - XMLoadFloat3(&camPosition)));
 
-        _float3 dir{};
-        _float dirFactor = random->get<_float>(0.4f, 0.6f);
-        XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&desc.position) - XMLoadFloat3(&position)));
-        XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&hitDir) * dirFactor + XMLoadFloat3(&dir) * (1.f - dirFactor))));
-        XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
+        Fracture::FRACTURE_DESC desc{};
+        desc.scale = _float3{ 1.f,1.f,1.f };
+        desc.quaternion = transform->GetQuaternion();
 
-        _float power = random->get<_float>(90.f, 150.f);
-        _float3 force{};
-        _float3 angularForce{};
-        XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);
-        XMStoreFloat3(&angularForce, XMLoadFloat3(&dir) * power * 0.1f);
+        for (_uint i = 0; i < 12; i += 2)
+        {
+            desc.position.x = position.x + random->get<_float>(-4.f, 4.f);
+            desc.position.y = position.y + random->get<_float>(4.f, 7.f);
+            desc.position.z = position.z + random->get<_float>(-4.f, 4.f);
 
-        _string modelTag = "CrossbowMan" + std::to_string(i);
-        desc.modelTag = "Model_Fracture_" + modelTag;
+            _float3 dir{};
+            _float dirFactor = random->get<_float>(0.4f, 0.6f);
+            XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&desc.position) - XMLoadFloat3(&position)));
+            XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&hitDir) * dirFactor + XMLoadFloat3(&dir) * (1.f - dirFactor))));
+            XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
 
-        Object* fracture = nullptr;
-        desc.spawnNavCell = object->GetComponent<NavigationComponent>()->GetCurrCellIndex();
-        engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", engine->GetCurrLevelID(), "Layer_Fracture", &desc, &fracture);
+            _float power = random->get<_float>(90.f, 150.f);
+            _float3 force{};
+            _float3 angularForce{};
+            XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);
+            XMStoreFloat3(&angularForce, XMLoadFloat3(&dir) * power * 0.1f);
 
-        fracture->GetComponent<RigidBodyComponent>()->AddImpulse(force);
-        fracture->GetComponent<RigidBodyComponent>()->AddAngularImpulse(angularForce);
+            _string modelTag = "CrossbowMan" + std::to_string(i);
+            desc.modelTag = "Model_Fracture_" + modelTag;
+
+            Object* fracture = nullptr;
+            desc.spawnNavCell = object->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+            engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", engine->GetCurrLevelID(), "Layer_Fracture", &desc, &fracture);
+
+            fracture->GetComponent<RigidBodyComponent>()->AddImpulse(force);
+            fracture->GetComponent<RigidBodyComponent>()->AddAngularImpulse(angularForce);
+        }
     }
 }
 
@@ -432,3 +623,4 @@ void CrossbowMan::CrossbowManDead::Update(Object* object, _float dt)
 void CrossbowMan::CrossbowManDead::TestForExit(Object* object)
 {
 }
+

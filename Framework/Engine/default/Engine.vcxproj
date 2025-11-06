@@ -202,6 +202,7 @@
     <ClInclude Include="..\public\ContainerObject.h" />
     <ClInclude Include="..\public\DebugDraw.h" />
     <ClInclude Include="..\public\DebugRenderer.h" />
+    <ClInclude Include="..\public\Delegate.h" />
     <ClInclude Include="..\public\EngineCore.h" />
     <ClInclude Include="..\public\Engine_AssetFormat.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\private\ContainerObject.cpp" />
     <ClCompile Include="..\private\DebugDraw.cpp" />
     <ClCompile Include="..\private\DebugRenderer.cpp" />
+    <ClCompile Include="..\private\Delegate.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />

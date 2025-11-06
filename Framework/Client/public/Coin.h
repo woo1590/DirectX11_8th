@@ -1,23 +1,15 @@
 #pragma once
 #include "Item.h"
-
-NS_BEGIN(Client)
-
-class DropWeapon :
+class Coin :
     public Item
 {
-public:
-    typedef struct tagDropWeaponDesc : public Object::OBJECT_DESC
-    {
-        WeaponID weaponID = WeaponID::Count;
-    }DROP_WEAPON_DESC;
 private:
-    DropWeapon();
-    DropWeapon(const DropWeapon& prototype);
-    virtual ~DropWeapon() = default;
+    Coin();
+    Coin(const Coin& prototype);
+    virtual ~Coin() = default;
 
 public:
-    static DropWeapon* Create();
+    static Coin* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
@@ -30,31 +22,37 @@ public:
     void Free()override;
 
 private:
-    WeaponID m_eWeaponID = WeaponID::Count;
-
-    class DropWeaponSpawn : public State
+    class CoinSpawn : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
-        _float3 m_StartPosition{};
-        _float3 m_TargetPosition{};
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 0.5f;
+        _float m_fDuration = 1.5f;
     };
-    class DropWeaponIdel : public State
+    class CoinIdle : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
-        _float3 m_StartPosition{};
+        _float m_fMagneticDistance = 30.f;
         _float m_fElapsedTime = 0.f;
+        _float3 m_CurrPosition{};
+    };
+    class CoinMagnetic : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+
+        _float m_fMagneticDistance = 30.f;
+        _float m_fSpeed = 4.f;
     };
 
-    DropWeaponSpawn m_DropWeaponSpawn;
-    DropWeaponIdel m_DropWeaponIdle;
+    CoinSpawn m_CoinSpawn;
+    CoinIdle m_CoinIdle;
+    CoinMagnetic m_CoinMagnetic;
 };
 
-NS_END

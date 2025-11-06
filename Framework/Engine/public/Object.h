@@ -55,7 +55,7 @@ public:
     virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
     _string GetInstanceTag()const { return m_strInstanceTag; }
 
-    void SetDead() { m_isDead = true; }
+    virtual void SetDead() { m_isDead = true; }
     _bool IsDead()const { return m_isDead; }
     void SetRenderGroup(RenderGroup group) { m_eRenderGroup = group; }
 

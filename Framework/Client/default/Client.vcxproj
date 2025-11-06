@@ -195,6 +195,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Ammo.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\BobbingController.h" />
     <ClInclude Include="..\public\Bomber.h" />
@@ -208,7 +209,9 @@
     <ClInclude Include="..\public\Boss_LeftArm.h" />
     <ClInclude Include="..\public\Boss_RightArm.h" />
     <ClInclude Include="..\public\Cameleon.h" />
+    <ClInclude Include="..\public\Chest.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\Coin.h" />
     <ClInclude Include="..\public\Command_ChangeLevel.h" />
     <ClInclude Include="..\public\CrossbowMan.h" />
     <ClInclude Include="..\public\CrossbowMan_Head.h" />
@@ -218,6 +221,7 @@
     <ClInclude Include="..\public\Door_L.h" />
     <ClInclude Include="..\public\Door_R.h" />
     <ClInclude Include="..\public\DropWeapon.h" />
+    <ClInclude Include="..\public\Dumpling.h" />
     <ClInclude Include="..\public\Dynamite.h" />
     <ClInclude Include="..\public\Enemy.h" />
     <ClInclude Include="..\public\Foundry.h" />
@@ -233,7 +237,7 @@
     <ClInclude Include="..\public\Prism.h" />
     <ClInclude Include="..\public\PrismProjectile.h" />
     <ClInclude Include="..\public\Projectile.h" />
-    <ClInclude Include="..\public\Sight.h" />
+    <ClInclude Include="..\public\Crosshair.h" />
     <ClInclude Include="..\public\Soldier.h" />
     <ClInclude Include="..\public\Soldier_Head.h" />
     <ClInclude Include="..\public\Soldier_Sword.h" />
@@ -269,6 +273,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Ammo.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\BobbingController.cpp" />
     <ClCompile Include="..\private\Bomber.cpp" />
@@ -282,6 +287,8 @@
     <ClCompile Include="..\private\Boss_LeftArm.cpp" />
     <ClCompile Include="..\private\Boss_RightArm.cpp" />
     <ClCompile Include="..\private\Cameleon.cpp" />
+    <ClCompile Include="..\private\Chest.cpp" />
+    <ClCompile Include="..\private\Coin.cpp" />
     <ClCompile Include="..\private\Command_ChangeLevel.cpp" />
     <ClCompile Include="..\private\CrossbowMan.cpp" />
     <ClCompile Include="..\private\CrossbowMan_Head.cpp" />
@@ -291,6 +298,7 @@
     <ClCompile Include="..\private\Door_L.cpp" />
     <ClCompile Include="..\private\Door_R.cpp" />
     <ClCompile Include="..\private\DropWeapon.cpp" />
+    <ClCompile Include="..\private\Dumpling.cpp" />
     <ClCompile Include="..\private\Dynamite.cpp" />
     <ClCompile Include="..\private\Enemy.cpp" />
     <ClCompile Include="..\private\Foundry.cpp" />
@@ -306,7 +314,7 @@
     <ClCompile Include="..\private\Prism.cpp" />
     <ClCompile Include="..\private\PrismProjectile.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
-    <ClCompile Include="..\private\Sight.cpp" />
+    <ClCompile Include="..\private\Crosshair.cpp" />
     <ClCompile Include="..\private\Soldier.cpp" />
     <ClCompile Include="..\private\Soldier_Head.cpp" />
     <ClCompile Include="..\private\Soldier_Sword.cpp" />

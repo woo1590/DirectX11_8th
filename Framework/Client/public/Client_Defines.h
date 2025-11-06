@@ -31,6 +31,7 @@ namespace Client
 		StaticMapObject,
 		Item,
 		Door,
+		Chest,
 		Count
 	};
 	enum class WeaponID

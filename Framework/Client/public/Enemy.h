@@ -16,6 +16,7 @@ public:
 
     virtual Object* Clone(InitDESC* arg) = 0;
     virtual void Free()override;
+    virtual void SetDead()override;
 
 protected:
     _float m_fElapsedTime = 0.f;

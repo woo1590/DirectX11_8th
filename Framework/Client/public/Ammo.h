@@ -3,21 +3,16 @@
 
 NS_BEGIN(Client)
 
-class DropWeapon :
+class Ammo :
     public Item
 {
-public:
-    typedef struct tagDropWeaponDesc : public Object::OBJECT_DESC
-    {
-        WeaponID weaponID = WeaponID::Count;
-    }DROP_WEAPON_DESC;
 private:
-    DropWeapon();
-    DropWeapon(const DropWeapon& prototype);
-    virtual ~DropWeapon() = default;
+    Ammo();
+    Ammo(const Ammo& prototype);
+    virtual ~Ammo() = default;
 
 public:
-    static DropWeapon* Create();
+    static Ammo* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
@@ -30,31 +25,38 @@ public:
     void Free()override;
 
 private:
-    WeaponID m_eWeaponID = WeaponID::Count;
-
-    class DropWeaponSpawn : public State
+    class AmmoSpawn : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
-        _float3 m_StartPosition{};
-        _float3 m_TargetPosition{};
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 0.5f;
+        _float m_fDuration = 1.5f;
     };
-    class DropWeaponIdel : public State
+    class AmmoIdle : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
-        _float3 m_StartPosition{};
+        _float m_fMagneticDistance = 30.f;
         _float m_fElapsedTime = 0.f;
+        _float3 m_CurrPosition{};
+    };
+    class AmmoMagnetic : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+        
+        _float m_fMagneticDistance = 30.f;
+        _float m_fSpeed = 4.f;
     };
 
-    DropWeaponSpawn m_DropWeaponSpawn;
-    DropWeaponIdel m_DropWeaponIdle;
+    AmmoSpawn m_AmmoSpawn;
+    AmmoIdle m_AmmoIdle;
+    AmmoMagnetic m_AmmoMagnetic;
 };
 
 NS_END

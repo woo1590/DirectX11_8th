@@ -7,6 +7,7 @@
 #include "Door.h"
 #include "EnemySpawner.h"
 #include "DropWeapon.h"
+#include "Chest.h"
 
 //component
 #include "NavigationComponent.h"
@@ -58,9 +59,9 @@ void Stage1::Update(_float dt)
 
 	if (engine->IsKeyPressed('N'))
 	{
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 
 	}
@@ -191,8 +192,26 @@ HRESULT Stage1::Initialize_LayerPlayer(const _string& layerTag)
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Player", ENUM_CLASS(LevelID::Static), layerTag)))
 		return E_FAIL;
-
 	engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<NavigationComponent>()->SpawnInCell(0);
+
+	Chest::CHEST_DESC chest1Desc{};
+	chest1Desc.weaponID = WeaponID::Prism;
+	chest1Desc.position = _float3{ 30.f,0.f,200.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Static), layerTag, &chest1Desc)))
+		return E_FAIL;
+	
+	Chest::CHEST_DESC chest2Desc{};
+	chest2Desc.weaponID = WeaponID::Cameleon;
+	chest2Desc.position = _float3{ 30.f,0.f,250.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Static), layerTag, &chest2Desc)))
+		return E_FAIL;
+	
+	Chest::CHEST_DESC chest3Desc{};
+	chest3Desc.weaponID = WeaponID::ConcealedAmmo;
+	chest3Desc.position = _float3{ 10.f,0.f,200.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Static), layerTag, &chest3Desc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -201,8 +220,35 @@ HRESULT Stage1::Initialize_LayerUI(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sight", ENUM_CLASS(LevelID::Stage1), layerTag)))
-		return E_FAIL;
+	/*add cross hair*/
+	{
+		Object* crossHairUp = nullptr;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairUp)))
+			return E_FAIL;
+		Object* crossHairDown = nullptr;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairDown)))
+			return E_FAIL;
+		Object* crossHairRight = nullptr;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairRight)))
+			return E_FAIL;
+		Object* crossHairLeft = nullptr;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairLeft)))
+			return E_FAIL;
+
+		auto upTransform = crossHairUp->GetComponent<TransformComponent>();
+		auto downTransform = crossHairDown->GetComponent<TransformComponent>();
+		auto rightTransform = crossHairRight->GetComponent<TransformComponent>();
+		auto leftTransform = crossHairLeft->GetComponent<TransformComponent>();
+
+		upTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(-45.f) });
+		upTransform->SetPosition(_float3{ 0.f,20.f,0.f });
+		downTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(135.f) });
+		downTransform->SetPosition(_float3{ 0.f,-20.f,0.f });
+		rightTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(-135.f) });
+		rightTransform->SetPosition(_float3{ 20.f,0.f,0.f });
+		leftTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(45.f) });
+		leftTransform->SetPosition(_float3{ -20.f,0.f,0.f });
+	}
 
 	return S_OK;
 }
