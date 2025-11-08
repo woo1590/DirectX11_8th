@@ -55,9 +55,6 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
 		return E_FAIL;
 
-	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
-		return E_FAIL;
-
 	if (engine->IsColliderDebugEnable())
 	{
 		if (FAILED(m_pDebugRenderer->ColliderDebug(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::ColliderDebug)])))
@@ -72,6 +69,8 @@ HRESULT RenderSystem::RenderLoop()
 			return E_FAIL;
 	}
 
+	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
+		return E_FAIL;
 	Clear();
 
 	return S_OK;

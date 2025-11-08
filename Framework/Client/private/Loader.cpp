@@ -15,6 +15,16 @@
 
 //ui
 #include "Crosshair.h"
+#include "PlayerPanel.h"
+#include "PlayerIcon.h"
+#include "WeaponPanel.h"
+#include "WeaponIcon.h"
+#include "WeaponSlot.h"
+#include "SlotNum.h"
+#include "SkillPanel.h"
+#include "DashIcon.h"
+#include "Bar.h"
+#include "EffectBackground.h"
 
 //weapon
 #include "Cameleon.h"
@@ -174,7 +184,7 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Terrain", VIBufferTerrain::Create("../bin/resource/textures/terrain/Height.bmp"))))
 			return E_FAIL;
 
-		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/playerhand/playerhand.model",
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/playerhand/playerhand2.model",
 			"Model_PlayerHand")))
 			return E_FAIL;
 
@@ -329,7 +339,7 @@ HRESULT Loader::LoadingForLogo()
 			"AnimationSet_Test")))
 			return E_FAIL;
 
-		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/playerhand.animationset",
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/playerhand2.animationset",
 			"AnimationSet_PlayerHand")))
 			return E_FAIL;
 
@@ -396,6 +406,52 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/skybox.json", "Mtrl_Skybox")))
 			return E_FAIL;
+
+		/*player panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/player_panel.json", "Mtrl_PlayerPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/player_icon.json", "Mtrl_PlayerIcon")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/bar_background.json", "Mtrl_Bar_Background")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/bar_background2.json", "Mtrl_Bar_Background2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/bar_shield.json", "Mtrl_Bar_Shield")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/bar_hurt.json", "Mtrl_Bar_Hurt")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/bar_hp.json", "Mtrl_Bar_HP")))
+			return E_FAIL;
+
+		/*weapon panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_panel.json", "Mtrl_WeaponPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_slot_num1.json", "Mtrl_WeaponSlot_Num1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_slot_num2.json", "Mtrl_WeaponSlot_Num2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_slot_num3.json", "Mtrl_WeaponSlot_Num3")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_foundry.json", "Mtrl_WeaponIcon_Foundry")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_concealed_ammo.json", "Mtrl_WeaponIcon_ConcealedAmmo")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_cameleon.json", "Mtrl_WeaponIcon_Cameleon")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_prism.json", "Mtrl_WeaponIcon_Prism")))
+			return E_FAIL;
+
+		/*skill panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/skill_panel.json", "Mtrl_SkillPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/dash0.json", "Mtrl_Dash0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/dash1.json", "Mtrl_Dash1")))
+			return E_FAIL;
+
+		/*effect background*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_effect.json", "Mtrl_EffectBackground")))
+			return E_FAIL;
 	}
 
 	/*Load Prototype Object*/
@@ -422,6 +478,29 @@ HRESULT Loader::LoadingForLogo()
 
 		/*UI*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", Crosshair::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PlayerPanel", PlayerPanel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PlayerIcon", PlayerIcon::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Bar", Bar::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponPanel", WeaponPanel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponIcon", WeaponIcon::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponSlot", WeaponSlot::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SlotNum", SlotNum::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SkillPanel", SkillPanel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DashIcon", DashIcon::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", EffectBackground::Create())))
 			return E_FAIL;
 
 		/*Enemy*/

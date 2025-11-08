@@ -225,6 +225,8 @@ void CrossbowMan::CrossbowManIdle::Update(Object* object, _float dt)
 
     _float3 position = transform->GetPosition();
     _float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+    position.y = 0.f;
+    playerPos.y = 0.f;
 
     _float3 currDir = transform->GetForward();
     _float3 targetDir{};

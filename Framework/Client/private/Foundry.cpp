@@ -112,8 +112,13 @@ void Foundry::Free()
 
 void Foundry::FoundryIdle::Enter(Object* object)
 {
+	auto foundry = static_cast<Foundry*>(object);
+
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Idle), true);
+
+	auto player = static_cast<Player*>(foundry->m_pParent);
+	player->SetShotState(false);
 }
 
 void Foundry::FoundryIdle::Update(Object* object, _float dt)
@@ -156,6 +161,7 @@ void Foundry::FoundryFire::Enter(Object* object)
 	
 	auto foundry = static_cast<Foundry*>(object);
 	auto player = static_cast<Player*>(foundry->m_pParent);
+	player->SetShotState(true);
 	player->AddRecoil(4.f);
 
 	/*for test*/

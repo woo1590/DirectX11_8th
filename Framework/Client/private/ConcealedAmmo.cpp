@@ -131,6 +131,10 @@ void ConcealedAmmo::ConcealedAmmoIdle::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(1, true, false);
+
+	auto ammo = static_cast<ConcealedAmmo*>(object);
+	auto player = static_cast<Player*>(ammo->m_pParent);
+	player->SetShotState(false);
 }
 
 void ConcealedAmmo::ConcealedAmmoIdle::Update(Engine::Object* object, Engine::_float dt)
@@ -174,6 +178,7 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 
 	auto ammo = static_cast<ConcealedAmmo*>(object);
 	auto player = static_cast<Player*>(ammo->m_pParent);
+	player->SetShotState(true);
 	player->AddRecoil(3.f);
 
 	/*for test*/

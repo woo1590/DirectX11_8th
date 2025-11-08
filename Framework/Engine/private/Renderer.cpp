@@ -123,7 +123,7 @@ HRESULT Renderer::BeginFrame()
 HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 {
 	for (const auto& proxy : proxies)
-		DrawProxy(proxy, "Priority_Pass");
+		DrawProxy(proxy);
 
 	return S_OK;
 }
@@ -134,7 +134,7 @@ HRESULT Renderer::RenderNonBlend(const std::vector<RenderProxy>& proxies)
 	engine->BeginMRT("MRT_Objects");
 
 	for (const auto& proxy : proxies)
-		DrawProxy(proxy,"NonBlend_Pass");
+		DrawProxy(proxy);
 
 	engine->EndMRT();
 
@@ -236,7 +236,7 @@ HRESULT Renderer::RenderBlend(const std::vector<RenderProxy>& proxies)
 	}
 
 	for (const auto& proxy : proxies)
-		DrawProxy(proxy, "Blend_Pass");
+		DrawProxy(proxy);
 
 	return S_OK;
 }
@@ -254,7 +254,7 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 	m_pDeviceContext->Unmap(m_pCBPerFrame, 0);
 
 	for (const auto& proxy : proxies)
-		DrawProxy(proxy,"UI_Pass");
+		DrawProxy(proxy);
 
 	return S_OK;
 }
@@ -301,7 +301,7 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 	return S_OK;
 }
 
-HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
+HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 {
 	{
 		D3D11_MAPPED_SUBRESOURCE perObjectData{};
@@ -323,10 +323,8 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy,const _string& passTag)
 
 	if (FAILED(proxy.buffer->BindBuffers()))
 		return E_FAIL;
-	
 
-
-	if (FAILED(proxy.material->BindMaterial(passTag, proxy.frameIndex, proxy.materialInstance)))
+	if (FAILED(proxy.material->BindMaterial(proxy.frameIndex, proxy.materialInstance)))
 		return E_FAIL;
 
 	return proxy.buffer->Draw();

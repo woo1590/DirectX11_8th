@@ -22,6 +22,7 @@
 #include "LightSystem.h"
 #include "NavigationSystem.h"
 #include "CollisionSystem.h"
+#include "EventSystem.h"
 
 //utill
 #include "GraphicDevice.h"
@@ -102,6 +103,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pCollisionSystem)
 		return E_FAIL;
 
+	m_pEventSystem = EventSystem::Create(desc.numEvent);
+	if (!m_pEventSystem)
+		return E_FAIL;
+
 #ifdef USE_IMGUI
 	GUIState state{};
 	state.pObjectManager = m_pObjectManager;
@@ -135,6 +140,7 @@ void EngineCore::Free()
 	Safe_Release(m_pPrototypeManager);
 	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pObjectManager);
+	Safe_Release(m_pEventSystem);
 	Safe_Release(m_pSoundManager);
 	Safe_Release(m_pCameraManager);
 	Safe_Release(m_pInputSystem);
@@ -153,8 +159,11 @@ void EngineCore::Tick(_float dt)
 
 	m_pObjectManager->PriorityUpdate(dt);
 	m_pObjectManager->Update(dt);
+
 	m_pCollisionSystem->Update();
 	m_pCameraManager->Update();
+	m_pEventSystem->Update(dt);
+
 	m_pObjectManager->LateUpdate(dt);
 
 	
@@ -523,6 +532,21 @@ HRESULT EngineCore::BeginMRT(const _string& mrtTag)
 HRESULT EngineCore::EndMRT()
 {
 	return m_pRenderTargetManager->EndMRT();
+}
+#pragma endregion
+
+#pragma region EventSystem
+void EngineCore::PublishEvent(_uint eventID, std::any param)
+{
+	m_pEventSystem->PublishEvent(eventID, param);
+}
+_int EngineCore::Subscribe(_uint eventID, const LISTENER& listener)
+{
+	return m_pEventSystem->Subscribe(eventID, listener);
+}
+void EngineCore::UnSubscribe(_uint eventID, const EventHandler* listener)
+{
+	m_pEventSystem->UnSubscribe(eventID, listener);
 }
 #pragma endregion
 

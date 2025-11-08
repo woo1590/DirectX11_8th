@@ -44,5 +44,22 @@ namespace Client
 		Prism,
 		Count
 	};
+	enum class EventID
+	{
+		ChangeWeapon,
+		PlayerJump,
+		PlayerLand,
+		PlayerDash,
+		PlayerHealthDecrease,
+		PlayerHealthIncrease,
+		PlayerShieldDecrease,
+		PlayerShieldIncrease,
+		Count
+	};
+	enum class SkillID
+	{
+		Dash,
+		Count
+	};
 
 }

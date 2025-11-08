@@ -9,6 +9,11 @@
 #include "DropWeapon.h"
 #include "Chest.h"
 
+#include "Player.h"
+#include "WeaponPanel.h"
+#include "PlayerPanel.h"
+#include "SkillPanel.h"
+
 //component
 #include "NavigationComponent.h"
 
@@ -42,6 +47,9 @@ HRESULT Stage1::Initialize()
 	if (FAILED(Initialize_LayerPlayer("Layer_Player")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerChest("Layer_Chest")))
+		return E_FAIL;
+
 	if (FAILED(Initialize_LayerUI("Layer_UI")))
 		return E_FAIL;
 
@@ -66,23 +74,10 @@ void Stage1::Update(_float dt)
 
 	}
 
-	if (engine->IsKeyPressed('I'))
-	{
-		DropWeapon::DROP_WEAPON_DESC concealedAmmo{};
-		concealedAmmo.position = _float3{ 150.f, 5.f, 170.f };
-		concealedAmmo.weaponID = WeaponID::ConcealedAmmo;
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", ENUM_CLASS(LevelID::Stage1), "Layer_DropWeapon", &concealedAmmo);
-
-		DropWeapon::DROP_WEAPON_DESC poison{};
-		poison.position = _float3{ 150.f, 5.f, 180.f };
-		poison.weaponID = WeaponID::PoisionousGhost;
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", ENUM_CLASS(LevelID::Stage1), "Layer_DropWeapon", &poison);
-
-		DropWeapon::DROP_WEAPON_DESC prism{};
-		prism.position = _float3{ 150.f, 5.f, 190.f };
-		prism.weaponID = WeaponID::Prism;
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DropWeapon", ENUM_CLASS(LevelID::Stage1), "Layer_DropWeapon", &prism);
-	}
+	if (engine->IsKeyPressed('H'))
+		engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), 0.5f);
+	if (engine->IsKeyPressed('G'))
+		engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthIncrease), 1.f);
 }
 
 HRESULT Stage1::Render()
@@ -192,26 +187,9 @@ HRESULT Stage1::Initialize_LayerPlayer(const _string& layerTag)
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Player", ENUM_CLASS(LevelID::Static), layerTag)))
 		return E_FAIL;
-	engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<NavigationComponent>()->SpawnInCell(0);
 
-	Chest::CHEST_DESC chest1Desc{};
-	chest1Desc.weaponID = WeaponID::Prism;
-	chest1Desc.position = _float3{ 30.f,0.f,200.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Static), layerTag, &chest1Desc)))
-		return E_FAIL;
-	
-	Chest::CHEST_DESC chest2Desc{};
-	chest2Desc.weaponID = WeaponID::Cameleon;
-	chest2Desc.position = _float3{ 30.f,0.f,250.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Static), layerTag, &chest2Desc)))
-		return E_FAIL;
-	
-	Chest::CHEST_DESC chest3Desc{};
-	chest3Desc.weaponID = WeaponID::ConcealedAmmo;
-	chest3Desc.position = _float3{ 10.f,0.f,200.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Static), layerTag, &chest3Desc)))
-		return E_FAIL;
-
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+	static_cast<Player*>(player)->GetComponent<NavigationComponent>()->SpawnInCell(0);
 
 	return S_OK;
 }
@@ -220,35 +198,48 @@ HRESULT Stage1::Initialize_LayerUI(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	/*add cross hair*/
-	{
-		Object* crossHairUp = nullptr;
-		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairUp)))
-			return E_FAIL;
-		Object* crossHairDown = nullptr;
-		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairDown)))
-			return E_FAIL;
-		Object* crossHairRight = nullptr;
-		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairRight)))
-			return E_FAIL;
-		Object* crossHairLeft = nullptr;
-		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &crossHairLeft)))
-			return E_FAIL;
+	Object* playerPanel = nullptr;
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PlayerPanel", ENUM_CLASS(LevelID::Static), layerTag, nullptr, &playerPanel)))
+		return E_FAIL;
+	
+	Object* weaponPanel = nullptr;
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponPanel", ENUM_CLASS(LevelID::Static), layerTag, nullptr, &weaponPanel)))
+		return E_FAIL;
 
-		auto upTransform = crossHairUp->GetComponent<TransformComponent>();
-		auto downTransform = crossHairDown->GetComponent<TransformComponent>();
-		auto rightTransform = crossHairRight->GetComponent<TransformComponent>();
-		auto leftTransform = crossHairLeft->GetComponent<TransformComponent>();
+	Object* skillPanel = nullptr;
+	SkillPanel::SKILL_PANEL_DESC skillPanelDesc{};
+	skillPanelDesc.numPanel = 0;
+	skillPanelDesc.skillID = SkillID::Dash;
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SkillPanel", ENUM_CLASS(LevelID::Static), layerTag, &skillPanelDesc, &weaponPanel)))
+		return E_FAIL;
 
-		upTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(-45.f) });
-		upTransform->SetPosition(_float3{ 0.f,20.f,0.f });
-		downTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(135.f) });
-		downTransform->SetPosition(_float3{ 0.f,-20.f,0.f });
-		rightTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(-135.f) });
-		rightTransform->SetPosition(_float3{ 20.f,0.f,0.f });
-		leftTransform->Rotate(_float3{ 0.f,0.f,math::ToRadian(45.f) });
-		leftTransform->SetPosition(_float3{ -20.f,0.f,0.f });
-	}
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", ENUM_CLASS(LevelID::Static), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT Stage1::Initialize_LayerChest(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	Chest::CHEST_DESC chest1Desc{};
+	chest1Desc.weaponID = WeaponID::Prism;
+	chest1Desc.position = _float3{ 30.f,0.f,200.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest1Desc)))
+		return E_FAIL;
+
+	Chest::CHEST_DESC chest2Desc{};
+	chest2Desc.weaponID = WeaponID::Cameleon;
+	chest2Desc.position = _float3{ 30.f,0.f,250.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest2Desc)))
+		return E_FAIL;
+
+	Chest::CHEST_DESC chest3Desc{};
+	chest3Desc.weaponID = WeaponID::ConcealedAmmo;
+	chest3Desc.position = _float3{ 10.f,0.f,200.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest3Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

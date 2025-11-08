@@ -3,6 +3,7 @@
 
 NS_BEGIN(Client)
 
+class Player;
 class Stage1 :
     public Level
 {
@@ -24,6 +25,7 @@ private:
     HRESULT Initialize_LayerLights(const _string& layerTag);
     HRESULT Initialize_LayerPlayer(const _string& layerTag);
     HRESULT Initialize_LayerUI(const _string& layerTag);
+    HRESULT Initialize_LayerChest(const _string& layerTag);
 };
 
 NS_END

@@ -3,6 +3,7 @@
 #include "Bounding_OBB.h"
 
 //component
+#include "StatusComponent.h"
 #include "ColliderComponent.h"
 
 HorseHead_Sword::HorseHead_Sword()
@@ -31,6 +32,7 @@ HRESULT HorseHead_Sword::Initialize_Prototype()
 		return E_FAIL;
 
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "HorseHead_Sword";
 
@@ -43,12 +45,19 @@ HRESULT HorseHead_Sword::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	Bounding_OBB::OBB_DESC obbDesc{};
+	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyAttack);
 	obbDesc.type = ColliderType::OBB;
 	obbDesc.center = _float3{ 0.f,0.f,-1.5f };
 	obbDesc.halfSize = _float3{ 0.2f,0.2f,1.1f };
 
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&obbDesc);
+
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.attackPower = 10.f;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
 
 	return S_OK;
 }

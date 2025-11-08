@@ -84,6 +84,11 @@ namespace math
 		return -4.f * radian * t * (1.f - t);
 	}
 
+	inline _float PalabolaCurve(_float t)
+	{
+		return -4.f * t * (1.f - t);
+	}
+
 	inline _float DistancePointToLine(_float3 P, _float3 A, _float3 B)
 	{
 		_vector AB = XMLoadFloat3(&B) - XMLoadFloat3(&A);

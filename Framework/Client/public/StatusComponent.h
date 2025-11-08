@@ -24,6 +24,9 @@ public:
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
+    _float GetShieldRatio();
+    _float GetHpRatio();
+    void HealthUp(_uint health);
     void BeAttacked(_uint power);
     STATUS_DESC GetDesc()const;
 
@@ -35,7 +38,9 @@ public:
 #endif
 
 private:
+    _int m_iMaxHP{};
     _int m_iHP{};
+    _int m_iMaxShield{};
     _int m_iShield{};
     _uint m_iAttackPower{};
     _float m_fMoveSpeed{};

@@ -78,8 +78,7 @@ HRESULT MaterialInstance::BindMaterialInstance(Shader* shader)
 		}
 	}
 
-
-	return S_OK;
+	return shader->Apply(m_strPassTag);
 }
 
 void MaterialInstance::SetInt(_string name, _int param)

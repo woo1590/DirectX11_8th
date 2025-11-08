@@ -57,6 +57,7 @@ using namespace DirectX;
 #include <filesystem>
 #include <fstream>
 #include <hidusage.h>
+#include <any>
 
 //thread
 #include <thread>

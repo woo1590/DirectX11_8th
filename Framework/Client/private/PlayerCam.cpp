@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PlayerCam.h"
+#include "Random.h"
 #include "CameraComponent.h"
 
 PlayerCam::PlayerCam()
@@ -68,6 +69,11 @@ void PlayerCam::Update(_float dt)
 {
 	__super::Update(dt);
 	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+	_float3 aimGap{};
+	aimGap.x = random->get<_float>(-3.f, 3.f);
+	aimGap.y = random->get<_float>(-3.f, 3.f);
+	aimGap.z = random->get<_float>(-3.f, 3.f);
 
 	_float2 mouseDelta = engine->GetMouseDelta();
 	_float pitch = math::ToRadian(mouseDelta.y * 0.1f);
@@ -89,6 +95,8 @@ void PlayerCam::Update(_float dt)
 		XMStoreFloat3(&m_AimPosition, camPosition + forward * data.worldDistance);
 	else
 		XMStoreFloat3(&m_AimPosition, camPosition + forward * 10000.f);
+
+	XMStoreFloat3(&m_AimPosition, XMLoadFloat3(&m_AimPosition) + XMLoadFloat3(&aimGap));
 }
 
 void PlayerCam::LateUpdate(_float dt)

@@ -138,6 +138,12 @@ public:
     HRESULT EndMRT();
 #pragma endregion
 
+#pragma region EventSystem
+    void PublishEvent(_uint eventID, std::any param = {});
+    _int Subscribe(_uint eventID, const LISTENER& listener);
+    void UnSubscribe(_uint eventID, const EventHandler* listener);
+#pragma endregion
+
     class Random* GetRandom()const { return m_pRandom; }
     void RegisterCommand(class ICommand* command) { m_Commands.push(command); }
     
@@ -191,6 +197,7 @@ private:
     class LightSystem*         m_pLightManager = nullptr;
     class NavigationSystem*    m_pNavigationSystem = nullptr;
     class CollisionSystem*     m_pCollisionSystem = nullptr;
+    class EventSystem*         m_pEventSystem = nullptr;
 
     _bool m_NavDebugEnable = true;
     _bool m_ColliderDebugEnable = true;

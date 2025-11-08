@@ -259,6 +259,39 @@
     <Filter Include="02. Object\UIObject\Crosshair">
       <UniqueIdentifier>{5ffb3970-6311-4715-b9ce-bce065b3bc69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Player\Crosshair Controller">
+      <UniqueIdentifier>{e5d28a9a-eefe-415c-9b64-835a2795f6ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\WeaponPanel">
+      <UniqueIdentifier>{5348eb3a-4b9d-4d28-865b-11bc0ee9a330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\WeaponPanel\WeaponIcon">
+      <UniqueIdentifier>{b00dc3a7-4671-41cb-8b62-4159b379015b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\PlayerPanel">
+      <UniqueIdentifier>{8747ca61-b39e-47f5-ab30-d79124a954b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\PlayerPanel\PlayerIcon">
+      <UniqueIdentifier>{4a5cbde1-8fd1-4791-be75-36ce94e3c469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\Bar">
+      <UniqueIdentifier>{1d883fc8-1612-4767-b97c-2a23dddde55e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\WeaponPanel\SlotNum">
+      <UniqueIdentifier>{fe8e5f58-fc4a-466c-81b9-8552d8cb70a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\WeaponPanel\WeaponSlot">
+      <UniqueIdentifier>{fb2e3d96-7a50-4896-9588-d9dc64bbef9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\SkillPanel">
+      <UniqueIdentifier>{1e51ac7b-f58c-48bc-933c-1507304e411f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\SkillPanel\DashIcon">
+      <UniqueIdentifier>{9fc551f8-4a48-406b-bf60-886c5c159664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\EffectBackground">
+      <UniqueIdentifier>{1f3dfd28-4242-4579-b76d-15164b1d7a6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -489,6 +522,39 @@
     <ClInclude Include="..\public\Dumpling.h">
       <Filter>02. Object\Item\Dumpling</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CrosshairController.h">
+      <Filter>02. Object\Player\Crosshair Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerPanel.h">
+      <Filter>02. Object\UIObject\PlayerPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerIcon.h">
+      <Filter>02. Object\UIObject\PlayerPanel\PlayerIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WeaponPanel.h">
+      <Filter>02. Object\UIObject\WeaponPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WeaponIcon.h">
+      <Filter>02. Object\UIObject\WeaponPanel\WeaponIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bar.h">
+      <Filter>02. Object\UIObject\Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WeaponSlot.h">
+      <Filter>02. Object\UIObject\WeaponPanel\WeaponSlot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SlotNum.h">
+      <Filter>02. Object\UIObject\WeaponPanel\SlotNum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillPanel.h">
+      <Filter>02. Object\UIObject\SkillPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DashIcon.h">
+      <Filter>02. Object\UIObject\SkillPanel\DashIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectBackground.h">
+      <Filter>02. Object\UIObject\EffectBackground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -706,6 +772,39 @@
     </ClCompile>
     <ClCompile Include="..\private\Dumpling.cpp">
       <Filter>02. Object\Item\Dumpling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CrosshairController.cpp">
+      <Filter>02. Object\Player\Crosshair Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerPanel.cpp">
+      <Filter>02. Object\UIObject\PlayerPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerIcon.cpp">
+      <Filter>02. Object\UIObject\PlayerPanel\PlayerIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WeaponPanel.cpp">
+      <Filter>02. Object\UIObject\WeaponPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WeaponIcon.cpp">
+      <Filter>02. Object\UIObject\WeaponPanel\WeaponIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bar.cpp">
+      <Filter>02. Object\UIObject\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WeaponSlot.cpp">
+      <Filter>02. Object\UIObject\WeaponPanel\WeaponSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SlotNum.cpp">
+      <Filter>02. Object\UIObject\WeaponPanel\SlotNum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillPanel.cpp">
+      <Filter>02. Object\UIObject\SkillPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DashIcon.cpp">
+      <Filter>02. Object\UIObject\SkillPanel\DashIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectBackground.cpp">
+      <Filter>02. Object\UIObject\EffectBackground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

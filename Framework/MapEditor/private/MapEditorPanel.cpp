@@ -3,6 +3,7 @@
 #include "PickingSystem.h"
 #include "EngineCore.h"
 #include "Layer.h"
+#include "MaterialInstance.h"
 
 //object
 #include "PreviewObject.h"
@@ -14,6 +15,7 @@
 #include "ModelPickable.h"
 #include "NavDataComponent.h"
 #include "NavPickable.h"
+#include "ModelComponent.h"
 
 MapEditorPanel::MapEditorPanel(PickingSystem* picking)
 	:IPanel(),
@@ -307,6 +309,7 @@ void MapEditorPanel::ShowPreviewObject(PICK_RESULT pickRes)
 			m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetFrontObject();
 			m_pPreviewObject->GetComponent<ModelPickable>()->SetActive(false);
 			m_pPreviewObject->SetRenderGroup(RenderGroup::Blend);
+			m_pPreviewObject->GetComponent<ModelComponent>()->GetMaterialInstance()->SetPass("Blend_Pass");
 			m_pPreviewObject->AddRef();
 			m_iPreviewObjectIndex = m_iSelectedIndex;
 		}
@@ -345,6 +348,7 @@ void MapEditorPanel::ShowPreviewObject(PICK_RESULT pickRes)
 				m_pPreviewObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_ShowPreview"]->GetLastObject();
 				m_pPreviewObject->GetComponent<ModelPickable>()->SetActive(false);
 				m_pPreviewObject->SetRenderGroup(RenderGroup::Blend);
+				m_pPreviewObject->GetComponent<ModelComponent>()->GetMaterialInstance()->SetPass("Blend_Pass");
 				m_pPreviewObject->AddRef();
 				m_iPreviewObjectIndex = m_iSelectedIndex;
 			}

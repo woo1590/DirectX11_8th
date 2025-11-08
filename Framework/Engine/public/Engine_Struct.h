@@ -17,6 +17,7 @@ namespace Engine
 		_uint winSizeX, winSizeY;
 		_uint levelCnt;
 		_uint numCollisionFilter;
+		_uint numEvent;
 	};
 
 	struct InitDESC {};
@@ -117,6 +118,28 @@ namespace Engine
 		_float farZ{};
 		_float nearZ{};
 	}CAMERA_CONTEXT;
+
+	typedef struct tagEvent
+	{
+		_uint eventID{};
+		std::any param{};
+
+		tagEvent(_uint id, std::any param)
+			:eventID(id), param(param) {
+		}
+
+	}EVENT;
+
+	typedef struct tagListener
+	{
+		const class EventHandler* handler = nullptr;
+		std::function<void(std::any)> eventFunction;
+
+		tagListener(const EventHandler* handler,const std::function<void(std::any)>& function)
+			:handler(handler), eventFunction(function) {
+		}
+
+	}LISTENER;
 	
 }
 #endif // Engine_Struct_h__

@@ -211,6 +211,8 @@
     <ClInclude Include="..\public\Engine_Macro.h" />
     <ClInclude Include="..\public\Engine_Struct.h" />
     <ClInclude Include="..\public\Engine_Typedef.h" />
+    <ClInclude Include="..\public\EventHandler.h" />
+    <ClInclude Include="..\public\EventSystem.h" />
     <ClInclude Include="..\public\FreecamComponent.h" />
     <ClInclude Include="..\public\GraphicDevice.h" />
     <ClInclude Include="..\public\GUIState.h" />
@@ -268,6 +270,7 @@
     <ClInclude Include="..\public\SpriteComponent.h" />
     <ClInclude Include="..\public\Struct_BVHNode.h" />
     <ClInclude Include="..\public\Struct_ConstantBuffer.h" />
+    <ClInclude Include="..\public\Struct_Event.h" />
     <ClInclude Include="..\public\Struct_NavMesh.h" />
     <ClInclude Include="..\public\Struct_ShaderMetaData.h" />
     <ClInclude Include="..\public\Struct_Vertex.h" />
@@ -320,6 +323,8 @@
     <ClCompile Include="..\private\DebugRenderer.cpp" />
     <ClCompile Include="..\private\Delegate.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
+    <ClCompile Include="..\private\EventHandler.cpp" />
+    <ClCompile Include="..\private\EventSystem.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />
     <ClCompile Include="..\private\ICommand.cpp" />

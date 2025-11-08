@@ -23,7 +23,7 @@ public:
     void Free()override;
 
 private:
-    HRESULT DrawDebugProxy(const RenderProxy& proxy, const _string& passTag);
+    HRESULT DrawDebugProxy(const RenderProxy& proxy);
 
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pDeviceContext = nullptr;

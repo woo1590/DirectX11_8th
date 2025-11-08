@@ -5,6 +5,7 @@
 //component
 #include "ColliderComponent.h"
 
+
 SpearMan_Head::SpearMan_Head()
 	:PartObject()
 {
@@ -46,7 +47,8 @@ HRESULT SpearMan_Head::Initialize(InitDESC* arg)
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
 	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyWeakness);
 	sphereDesc.type = ColliderType::Sphere;
-	sphereDesc.radius = 1.f;
+	sphereDesc.center = _float3{ 1.5f,0.f,0.f };
+	sphereDesc.radius = 3.5f;
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&sphereDesc);
 	engine->RegisterCollider(collider);

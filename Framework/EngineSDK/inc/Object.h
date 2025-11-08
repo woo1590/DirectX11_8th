@@ -3,6 +3,7 @@
 #include "EngineCore.h"
 #include "RenderProxy.h"
 #include "TransformComponent.h"
+#include "EventHandler.h"
 
 NS_BEGIN(Engine)
 
@@ -10,7 +11,8 @@ class Component;
 class ColliderComponent;
 class TransformComponent;
 class ENGINE_DLL Object abstract:
-    public Base
+    public Base,
+    public EventHandler
 {
 public:
     typedef struct ObjectDesc : public TransformComponent::TRANSFORM_DESC

@@ -93,7 +93,7 @@ HRESULT DebugRenderer::BeginFrame()
 HRESULT DebugRenderer::NavMeshDebug(const std::vector<RenderProxy>& proxies)
 {
 	for (const auto& proxy : proxies) 
-		DrawDebugProxy(proxy, "CellDebug_Pass");
+		DrawDebugProxy(proxy);
 
 	return S_OK;
 }
@@ -118,7 +118,7 @@ void DebugRenderer::Free()
 	Safe_Release(m_pCellDebugShader);
 }
 
-HRESULT DebugRenderer::DrawDebugProxy(const RenderProxy& proxy, const _string& passTag)
+HRESULT DebugRenderer::DrawDebugProxy(const RenderProxy& proxy)
 {
 	D3D11_MAPPED_SUBRESOURCE mapData{};
 	DEBUG_CBPerDraw cbPerDraw{};
@@ -133,9 +133,8 @@ HRESULT DebugRenderer::DrawDebugProxy(const RenderProxy& proxy, const _string& p
 
 	if (proxy.materialInstance)
 		proxy.materialInstance->BindMaterialInstance(m_pCellDebugShader);
-
-	if (FAILED(m_pCellDebugShader->Apply(passTag)))
-		return E_FAIL;
+	else
+		m_pCellDebugShader->Apply("Default");
 
 	return proxy.buffer->Draw();
 }

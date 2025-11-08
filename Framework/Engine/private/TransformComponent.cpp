@@ -301,6 +301,29 @@ void TransformComponent::ResolveDirty()
 		if (m_pParent)
 		{
 			_float4x4 parentMat = m_pParent->GetWorldMatrix();
+			if (!m_UseParentScale)
+			{
+				_float3 right{ parentMat._11,parentMat._12,parentMat._13 };
+				_float3 up{ parentMat._21,parentMat._22,parentMat._23 };
+				_float3 look{ parentMat._31,parentMat._32,parentMat._33 };
+
+				XMStoreFloat3(&right, XMVector3Normalize(XMLoadFloat3(&right)));
+				XMStoreFloat3(&up, XMVector3Normalize(XMLoadFloat3(&up)));
+				XMStoreFloat3(&look, XMVector3Normalize(XMLoadFloat3(&look)));
+				
+				parentMat._11 = right.x; 
+				parentMat._12 = right.y; 
+				parentMat._13 = right.z; 
+
+				parentMat._21 = up.x; 
+				parentMat._22 = up.y; 
+				parentMat._23 = up.z; 
+
+				parentMat._31 = look.x; 
+				parentMat._32 = look.y; 
+				parentMat._33 = look.z; 
+			}
+
 			XMStoreFloat4x4(&m_WorldMatrix, scaleMat * rotMat * transMat * XMLoadFloat4x4(&parentMat));
 		}
 		else

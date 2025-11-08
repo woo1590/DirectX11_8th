@@ -65,6 +65,7 @@ public:
     _float4x4 GetWorldMatrixInverse();
     _float4x4 GetLocalMatrix();
 
+    void SetUseParentScale(_bool useScale) { m_UseParentScale = useScale; }
     _bool IsDirty()const { return m_isDirty; }
 
     Component* Clone()override;
@@ -95,6 +96,7 @@ private:
     _float4x4 m_WorldMatrixInverse{};
 
     _bool m_isDirty = true;
+    _bool m_UseParentScale = true;
     TransformComponent* m_pParent = nullptr;
     std::vector<TransformComponent*> m_Childrens;
 };

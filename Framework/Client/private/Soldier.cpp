@@ -383,6 +383,9 @@ void Soldier::SoldierAttack::Enter(Object* object)
 
 	auto rigidBody = object->GetComponent<RigidBodyComponent>();
 	rigidBody->SetVelocity(_float3{ 0.f,0.f,0.f });
+
+	auto soldier = static_cast<Soldier*>(object);
+	soldier->m_PartObjects[ENUM_CLASS(Parts::Sword)]->GetComponent<ColliderComponent>()->SetActive(true);
 }
 
 void Soldier::SoldierAttack::Update(Object* object, _float dt)
@@ -397,6 +400,7 @@ void Soldier::SoldierAttack::TestForExit(Object* object)
 	{
 		auto soldier = static_cast<Soldier*>(object);
 		soldier->ChangeState(&soldier->m_SoldierIdle);
+		soldier->m_PartObjects[ENUM_CLASS(Parts::Sword)]->GetComponent<ColliderComponent>()->SetActive(false);
 	}
 }
 

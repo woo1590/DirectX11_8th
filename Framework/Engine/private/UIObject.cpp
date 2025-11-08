@@ -38,13 +38,21 @@ HRESULT UIObject::Initialize(InitDESC* arg)
 		UIObjectDesc* desc = static_cast<UIObjectDesc*>(arg);
 		m_fX = desc->x;
 		m_fY = desc->y;
- 		m_fSizeX = desc->sizeX;
- 		m_fSizeY = desc->sizeY;
+		m_fSizeX = desc->sizeX;
+		m_fSizeY = desc->sizeY;
+		m_pParent = desc->parent;
+		m_iPriority = desc->priority;
 
 		if (FAILED(__super::Initialize(arg)))
 			return E_FAIL;
 
-		UpdateTransform();
+		if (!m_pParent)
+			UpdateTransform();
+		else
+		{
+			m_pTransform->SetParent(m_pParent->GetComponent<TransformComponent>());
+			m_pTransform->SetUseParentScale(false);
+		}
 	}
 
 	return S_OK;
@@ -53,18 +61,36 @@ HRESULT UIObject::Initialize(InitDESC* arg)
 void UIObject::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
+
+	for (const auto& child : m_Childrens)
+	{
+		if (child)
+			child->PriorityUpdate(dt);
+	}
 }
 
 void UIObject::Update(_float dt)
 {
 	__super::Update(dt);
+
+	for (const auto& child : m_Childrens)
+	{
+		if (child)
+			child->Update(dt);
+	}
 }
 
 void UIObject::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
 
-	if (m_isDirty)
+	for (const auto& child : m_Childrens)
+	{
+		if (child)
+			child->LateUpdate(dt);
+	}
+
+	if (m_isDirty && !m_pParent)
 		UpdateTransform();
 }
 
@@ -77,12 +103,20 @@ HRESULT UIObject::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& pr
 
 	sprite->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::UI)]);
 
+	for (const auto& child : m_Childrens)
+		if(child)
+			child->ExtractRenderProxies(proxies);
+
 	return S_OK;
 }
 
 void UIObject::Free()
 {
 	__super::Free();
+
+	for (auto& child : m_Childrens)
+		Safe_Release(child);
+	m_Childrens.clear();
 }
 
 void UIObject::UpdateTransform()

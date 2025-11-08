@@ -6,6 +6,7 @@
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
 #include "Bounding_Sphere.h"
+#include "CrosshairController.h"
 
 //object
 #include "Hand.h"
@@ -16,6 +17,9 @@
 #include "Item.h"
 #include "DropWeapon.h"
 
+#include "WeaponPanel.h"
+#include "PlayerPanel.h"
+
 //component
 #include "ModelComponent.h"
 #include "PlayerAnimController.h"
@@ -23,6 +27,7 @@
 #include "NavigationComponent.h"
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 #include "PlayerInteractionComponent.h"
 
 Player::Player()
@@ -57,6 +62,7 @@ HRESULT Player::Initialize_Prototype()
 	AddComponent<RigidBodyComponent>();
 	AddComponent<ColliderComponent>();
 	AddComponent<PlayerInteractionComponent>();
+	AddComponent<StatusComponent>();
 
 	return S_OK;
 }
@@ -99,6 +105,13 @@ HRESULT Player::Initialize(InitDESC* arg)
 	auto interaction = GetComponent<PlayerInteractionComponent>();
 	interaction->SetPlayer(this);
 
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.hp = 100.f;
+	statusDesc.shield = 100.f;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
+
 	{
 		/*equip first weapon*/
 		m_Weapons.resize(ENUM_CLASS(WeaponSlot::Count));
@@ -117,6 +130,13 @@ HRESULT Player::Initialize(InitDESC* arg)
 		EquipCurrSlot();
 	}
 	
+	m_pCrosshairController = CrosshairController::Create();
+	if (!m_pCrosshairController)
+		return E_FAIL;
+
+	m_iLastShield = status->GetDesc().shield;
+	m_iLastHp = status->GetDesc().hp;
+
 	ChangeState(&m_PlayerIdle);
 
 	return S_OK;
@@ -130,6 +150,8 @@ void Player::PriorityUpdate(_float dt)
 void Player::Update(_float dt)
 {
 	KeyInput(dt);
+	m_pCrosshairController->Update(dt);
+
 	__super::Update(dt);
 
 	MakeHandState();
@@ -138,6 +160,15 @@ void Player::Update(_float dt)
 void Player::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT Player::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	m_pCrosshairController->ExtractRenderProxies(proxies);
+
+	return S_OK;
 }
 
 void Player::PickUpWeapon(WeaponID id)
@@ -229,6 +260,45 @@ _float3 Player::GetAimPosition()
 
 void Player::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	auto engine = EngineCore::GetInstance();
+
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case Client::ColliderFilter::Enemy:
+		break;
+	case Client::ColliderFilter::EnemyAttack:
+	{
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+		auto status = GetComponent<StatusComponent>();
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+
+		_float shieldRatio = status->GetShieldRatio();
+		_float hpRatio = status->GetHpRatio();
+
+		if (m_iLastHp != status->GetDesc().hp)
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), hpRatio);
+		if (m_iLastShield != status->GetDesc().shield)
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), shieldRatio);
+
+		m_iLastShield = status->GetDesc().shield;
+		m_iLastHp = status->GetDesc().hp;
+
+	}break;
+	case Client::ColliderFilter::BossArm:
+		break;
+	case Client::ColliderFilter::BossStoneProjectile:
+		break;
+	case Client::ColliderFilter::BossPillar:
+		break;
+	case Client::ColliderFilter::BossArmProjectile:
+		break;
+	case Client::ColliderFilter::Spawner:
+		break;
+	case Client::ColliderFilter::Item:
+		break;
+	default:
+		break;
+	}
 }
 
 void Player::OnCollisionStay(ColliderComponent* otherCollider)
@@ -275,6 +345,8 @@ void Player::Free()
 
 	for (auto& weapon : m_Weapons)
 		Safe_Release(weapon);
+
+	Safe_Release(m_pCrosshairController);
 
 	__super::Free();
 }
@@ -324,6 +396,11 @@ void Player::EquipCurrSlot()
 
 	auto animatorController = GetComponent<PlayerAnimController>();
 	animatorController->SetWeaponAnimator(equipWeapon->GetComponent<AnimatorComponent>());
+
+	CHANGE_WEAPON_EVENT_PARAM param{};
+	param.slotNum = ENUM_CLASS(m_eCurrWeaponSlot);
+	param.weaponID = equipWeapon->GetWeaponID();
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::ChangeWeapon), param);
 }
 
 void Player::DropCurrSlotWeapon()
@@ -352,13 +429,11 @@ void Player::DropCurrSlotWeapon()
 
 void Player::KeyInput(_float dt)
 {
-	/*마우스 보간 넣어야함*/
 	auto engine = EngineCore::GetInstance();
 	auto hand = static_cast<Hand*>(m_PartObjects[ENUM_CLASS(Parts::Hand)]);
 
 	/*direction controll*/
 	{
-
 		_float2 mouseDelta = engine->GetMouseDelta();
 		_float yaw = math::ToRadian(mouseDelta.x * 0.1f);
 		if (std::abs(yaw) > 0.f)
@@ -451,8 +526,17 @@ void Player::KeyInput(_float dt)
 				m_IsWalk = true;
 			}
 
+			m_fDashElapsedTime += dt;
 			if (engine->IsKeyPressed(VK_SHIFT))
-				ChangeState(&m_PlayerDash);
+			{
+				if (m_fDashElapsedTime >= m_fDashCoolDown)
+				{
+					ChangeState(&m_PlayerDash);
+					m_fDashElapsedTime = 0.f;
+
+					engine->PublishEvent(ENUM_CLASS(EventID::PlayerDash), m_fDashCoolDown);
+				}
+			}
 
 			XMStoreFloat3(&velocity, XMVector3Normalize(dir) * speed);
 			velocity.y = originVelocity.y;
@@ -467,6 +551,8 @@ void Player::KeyInput(_float dt)
 					m_IsJump = true;
 
 					hand->StartJump();
+
+					engine->PublishEvent(ENUM_CLASS(EventID::PlayerJump));
 				}
 			}
 			else
@@ -476,6 +562,7 @@ void Player::KeyInput(_float dt)
 					m_IsJump = false;
 
 					hand->EndJump();
+					engine->PublishEvent(ENUM_CLASS(EventID::PlayerLand));
 				}
 				else
 				{
@@ -484,6 +571,12 @@ void Player::KeyInput(_float dt)
 			}
 
 		}
+
+		if (m_IsWalk || m_IsJump || m_IsShot)
+			m_pCrosshairController->Spread(true);
+		
+		if (!m_IsWalk && !m_IsJump && !m_IsShot)
+			m_pCrosshairController->Spread(false);
 
 		nav->MoveByVelocity(dt);
 	}
@@ -608,6 +701,8 @@ void Player::PlayerStartEquip::TestForExit(Object* object)
 void Player::PlayerEndEquip::Enter(Object* object)
 {
 	m_fElapsedTime = 0.f;
+
+	auto engine = EngineCore::GetInstance();
 
 	auto player = static_cast<Player*>(object);
 	player->EquipCurrSlot();

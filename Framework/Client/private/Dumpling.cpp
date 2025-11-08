@@ -3,6 +3,7 @@
 #include "Bounding_Sphere.h"
 
 //component
+#include "PlayerInteractionComponent.h"
 #include "RigidBodyComponent.h"
 #include "ModelComponent.h"
 #include "ColliderComponent.h"
@@ -94,6 +95,7 @@ void Dumpling::LateUpdate(_float dt)
 
 void Dumpling::Interaction(PlayerInteractionComponent* interaction)
 {
+	interaction->HealthUp(30);
 	SetDead();
 }
 

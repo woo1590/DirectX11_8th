@@ -32,7 +32,7 @@ public:
 
 private:
     HRESULT Initialize_DeferredTargets(D3D11_VIEWPORT viewPort);
-    HRESULT DrawProxy(const RenderProxy& proxy,const _string& passTag);
+    HRESULT DrawProxy(const RenderProxy& proxy);
 
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pDeviceContext = nullptr;

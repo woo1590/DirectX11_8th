@@ -10,6 +10,8 @@ public:
     typedef struct UIObjectDesc : public Object::OBJECT_DESC
     {
         _float x,y,sizeX,sizeY;
+        _uint priority{};
+        UIObject* parent = nullptr;
     }UIOBJECT_DESC;
 
 protected:
@@ -38,7 +40,10 @@ protected:
     _float m_fViewportWidth{};
     _float m_fViewportHeight{};
 
+    _uint m_iPriority{};
     _bool m_isDirty = true;
+    UIObject* m_pParent = nullptr;
+    std::vector<UIObject*> m_Childrens;
 };
 
 NS_END

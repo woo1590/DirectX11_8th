@@ -40,6 +40,7 @@ HRESULT MainApp::Initialize(HINSTANCE hInstance, int nCmdShow)
     desc.winSizeY = WinSizeY;
     desc.levelCnt = ENUM_CLASS(LevelID::Count);
     desc.numCollisionFilter = ENUM_CLASS(ColliderFilter::Count);
+    desc.numEvent = ENUM_CLASS(EventID::Count);
 
     m_pEngineCore = EngineCore::GetInstance();
     if (FAILED(m_pEngineCore->Initialize(desc)))
@@ -142,6 +143,9 @@ HRESULT MainApp::LoadStaticLevel()
         if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_logo.json",
            "Mtrl_Background_Logo")))
             return E_FAIL;
+        if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_stage.json",
+           "Mtrl_Background_Stage")))
+            return E_FAIL;
         if (FAILED(m_pEngineCore->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/logo_fire.json",
            "Mtrl_Logo_Fire")))
             return E_FAIL;
@@ -178,6 +182,7 @@ void MainApp::AddColliderFilterGroup()
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Enemy));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossPillar));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::EnemyAttack));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Item));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Door));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Chest));

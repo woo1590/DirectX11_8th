@@ -49,7 +49,7 @@ HRESULT Crosshair::Initialize(InitDESC* arg)
 	if (FAILED(sprite->Initialize(&spriteDesc)))
 		return E_FAIL;
 
-	m_pTransform->SetScale(_float3{ 22.f,22.f,22.f });
+	m_pTransform->SetScale(_float3{ 22.f ,22.f,1.f });
 	m_isDirty = false;
 	sprite->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
 	sprite->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Sight");

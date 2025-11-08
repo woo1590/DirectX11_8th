@@ -2,6 +2,7 @@
 #include "PlayerInteractionComponent.h"
 
 //object
+#include "StatusComponent.h"
 #include "Player.h"
 
 PlayerInteractionComponent::PlayerInteractionComponent(Object* owner)
@@ -43,6 +44,14 @@ void PlayerInteractionComponent::SetPlayer(Player* player)
 void PlayerInteractionComponent::EquipWeapon(WeaponID id)
 {
 	m_pPlayer->PickUpWeapon(id);
+}
+
+void PlayerInteractionComponent::HealthUp(_uint health)
+{
+	auto status = m_pPlayer->GetComponent<StatusComponent>();
+	status->HealthUp(health);
+
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::PlayerHealthIncrease), status->GetHpRatio());
 }
 
 void PlayerInteractionComponent::Free()

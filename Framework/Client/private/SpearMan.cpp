@@ -336,10 +336,11 @@ void SpearMan::SpearManRun::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
 
+	
+
 	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
-
 	_float distance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
 
 	auto spearMan = static_cast<SpearMan*>(object);
@@ -347,14 +348,16 @@ void SpearMan::SpearManRun::TestForExit(Object* object)
 	{
 		spearMan->ChangeState(&spearMan->m_SpearManIdle);
 	}
+	else if (distance<60.f)
+	{
+		_uint rand = engine->GetRandom()->get<_uint>(0, 10);
+
+		if(rand<2)
+			spearMan->ChangeState(&spearMan->m_SpearManChargeAttack);
+	}
 	else if (distance < 20.f)
 	{
-		_uint rand = engine->GetRandom()->get<_uint>(0, 1);
-
-		if (0 == rand)
-			spearMan->ChangeState(&spearMan->m_SpearManAttack);
-		else
-			spearMan->ChangeState(&spearMan->m_SpearManChargeAttack);
+		spearMan->ChangeState(&spearMan->m_SpearManAttack);
 	}
 }
 
@@ -362,6 +365,9 @@ void SpearMan::SpearManAttack::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack));
+
+	auto spearMan = static_cast<SpearMan*>(object);
+	spearMan->m_PartObjects[ENUM_CLASS(Parts::Spear)]->GetComponent<ColliderComponent>()->SetActive(true);
 }
 
 void SpearMan::SpearManAttack::Update(Object* object, _float dt)
@@ -376,6 +382,7 @@ void SpearMan::SpearManAttack::TestForExit(Object* object)
 	{
 		auto spearMan = static_cast<SpearMan*>(object);
 		spearMan->ChangeState(&spearMan->m_SpearManIdle);
+		spearMan->m_PartObjects[ENUM_CLASS(Parts::Spear)]->GetComponent<ColliderComponent>()->SetActive(false);
 	}
 }
 
@@ -389,6 +396,9 @@ void SpearMan::SpearManChargeAttack::Enter(Object* object)
 
 	m_IsStartAttacked = false;
 	m_IsEndAttacked = false;
+
+	auto spearMan = static_cast<SpearMan*>(object);
+	spearMan->m_PartObjects[ENUM_CLASS(Parts::Spear)]->GetComponent<ColliderComponent>()->SetActive(true);
 }
 
 void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
@@ -448,6 +458,7 @@ void SpearMan::SpearManChargeAttack::TestForExit(Object* object)
 	{
 		auto spearMan = static_cast<SpearMan*>(object);
 		spearMan->ChangeState(&spearMan->m_SpearManIdle);
+		spearMan->m_PartObjects[ENUM_CLASS(Parts::Spear)]->GetComponent<ColliderComponent>()->SetActive(false);
 	}
 }
 

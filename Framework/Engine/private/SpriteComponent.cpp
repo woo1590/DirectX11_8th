@@ -83,6 +83,8 @@ void SpriteComponent::SetBuffer(_uint levelID, const _string& key)
 
 void SpriteComponent::SetMaterial(_uint levelID, const _string& key)
 {
+	Safe_Release(m_pMaterial);
+
 	m_pMaterial = EngineCore::GetInstance()->GetMaterial(levelID, key);
 	m_pMaterial->AddRef();
 }

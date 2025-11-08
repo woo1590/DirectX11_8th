@@ -48,11 +48,18 @@ HRESULT SpearMan_Spear::Initialize(InitDESC* arg)
 	Bounding_OBB::OBB_DESC obbDesc{};
 	obbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyAttack);
 	obbDesc.type = ColliderType::OBB;
-	obbDesc.center = _float3{ 0.f,0.f,-1.5f };
-	obbDesc.halfSize = _float3{ 0.2f,0.2f,1.1f };
+	obbDesc.center = _float3{ 8.f,0.f,0.f };
+	obbDesc.halfSize = _float3{ 3.f,2.f,1.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&obbDesc);
+	collider->SetActive(false);
 	engine->RegisterCollider(collider);
+
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.attackPower = 15.f;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
 
 	return S_OK;
 }

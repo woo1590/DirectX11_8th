@@ -16,6 +16,7 @@ public:
     HRESULT Initialize();
     HRESULT BindMaterialInstance(Shader* shader);
 
+    void SetPass(_string passTag) { m_strPassTag = passTag; }
     void SetInt(_string name, _int param);
     void SetFloat(_string name, _float param);
     void SetFloat2(_string name, _float2 param);
@@ -25,6 +26,7 @@ public:
     void Free()override;
 
 private:
+    _string m_strPassTag = "Default_Pass";
     std::unordered_map<_string, _int> m_IntParams;
     std::unordered_map<_string, _float> m_FloatParams;
     std::unordered_map<_string, _float2> m_Float2Params;

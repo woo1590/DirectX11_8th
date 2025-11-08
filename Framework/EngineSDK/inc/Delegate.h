@@ -47,7 +47,7 @@ private:
 			return;
 
 		m_Functions.erase(std::remove_if(m_Functions.begin(), m_Functions.end(),
-			[this](std::pair<_uint,const std::function<void(Args...)>>& slot) {
+			[this](std::pair<_uint, std::function<void(Args...)>>& slot) {
 				return std::find(m_RemoveIDs.begin(), m_RemoveIDs.end(), slot.first)
 					!= m_RemoveIDs.end();
 			}), m_Functions.end());

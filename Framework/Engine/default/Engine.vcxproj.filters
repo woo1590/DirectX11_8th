@@ -289,6 +289,12 @@
     <Filter Include="99. Utility\Delegate">
       <UniqueIdentifier>{13512627-9385-4dc0-a6f3-4ce301b9ac28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Event System">
+      <UniqueIdentifier>{21c08992-6373-492b-96dd-32926c598d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Event System\EventHandler">
+      <UniqueIdentifier>{7e75089d-e9a2-45c3-b9b1-1a1c3cc65b16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -618,6 +624,15 @@
     <ClInclude Include="..\public\Delegate.h">
       <Filter>99. Utility\Delegate</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\EventSystem.h">
+      <Filter>01. Engine Component\Event System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EventHandler.h">
+      <Filter>01. Engine Component\Event System\EventHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Struct_Event.h">
+      <Filter>98. Etc\Defines\Engine_Struct</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -889,6 +904,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Delegate.cpp">
       <Filter>99. Utility\Delegate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EventSystem.cpp">
+      <Filter>01. Engine Component\Event System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EventHandler.cpp">
+      <Filter>01. Engine Component\Event System\EventHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

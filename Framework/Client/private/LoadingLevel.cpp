@@ -100,7 +100,7 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 	case Client::LevelID::Stage1:
 	{
 		BackGround::BACKGROUND_DESC backGroundDesc{};
-		backGroundDesc.mtrlTag = "Mtrl_Background_Logo";
+		backGroundDesc.mtrlTag = "Mtrl_Background_Stage";
 
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
 			return E_FAIL;

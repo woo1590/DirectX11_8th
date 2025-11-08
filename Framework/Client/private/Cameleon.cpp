@@ -175,6 +175,7 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 		auto engine = EngineCore::GetInstance();
 		auto cameleon = static_cast<Cameleon*>(object);
 		auto player = static_cast<Player*>(cameleon->m_pParent);
+		player->SetShotState(true);
 
 		/*for test*/
 		_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[cameleon->m_iMuzzleBoneIndex];
@@ -203,7 +204,12 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 	}
 
 	if (m_IsShot && progress >= 0.9f)
+	{
+		auto cameleon = static_cast<Cameleon*>(object);
+		auto player = static_cast<Player*>(cameleon->m_pParent);
 		m_IsShot = false;	
+		player->SetShotState(false);
+	}
 }
 
 void Cameleon::CameleonFire::TestForExit(Engine::Object* object)

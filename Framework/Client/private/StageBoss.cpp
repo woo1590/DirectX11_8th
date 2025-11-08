@@ -184,8 +184,5 @@ HRESULT StageBoss::Initialize_LayerUI(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Crosshair", ENUM_CLASS(LevelID::StageBoss), layerTag)))
-		return E_FAIL;
-
 	return S_OK;
 }

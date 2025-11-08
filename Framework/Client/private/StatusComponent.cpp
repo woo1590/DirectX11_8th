@@ -33,7 +33,9 @@ HRESULT StatusComponent::Initialize(InitDESC* arg)
 {
     STATUS_DESC* desc = static_cast<STATUS_DESC*>(arg);
     m_iHP = desc->hp;
+    m_iMaxHP = desc->hp;
     m_iShield = desc->shield;
+    m_iMaxShield = desc->shield;
     m_iAttackPower = desc->attackPower;
     m_fMoveSpeed = desc->speed;
 
@@ -43,9 +45,36 @@ HRESULT StatusComponent::Initialize(InitDESC* arg)
     return S_OK;
 }
 
+_float StatusComponent::GetShieldRatio()
+{
+    return static_cast<_float>(m_iShield) / m_iMaxShield;
+}
+
+_float StatusComponent::GetHpRatio()
+{
+    return static_cast<_float>(m_iHP) / m_iMaxHP;
+}
+
+void StatusComponent::HealthUp(_uint health)
+{
+    m_iHP += health;
+    m_iHP = (std::min)(m_iHP, m_iMaxHP);
+}
+
 void StatusComponent::BeAttacked(_uint power)
 {
-    m_iHP -= power;
+    if (m_iShield > 0)
+    {
+        m_iShield -= power;
+        if (m_iShield < 0)
+        {
+            _int reducePower = power - m_iShield;
+            m_iHP -= reducePower;
+        }
+    }
+    else
+        m_iHP -= power;
+
 
     if (m_iHP < 0)
         m_iHP = 0;

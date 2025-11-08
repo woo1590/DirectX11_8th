@@ -4,6 +4,7 @@
 
 //component
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 Soldier_Sword::Soldier_Sword()
 	:PartObject()
@@ -31,6 +32,7 @@ HRESULT Soldier_Sword::Initialize_Prototype()
 		return E_FAIL;
 
 	AddComponent<ColliderComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "Soldier_Sword";
 
@@ -52,7 +54,14 @@ HRESULT Soldier_Sword::Initialize(InitDESC* arg)
 	obbDesc.halfSize = _float3{ 1.f,1.f,5.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&obbDesc);
+	collider->SetActive(false);
 	engine->RegisterCollider(collider);
+
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.attackPower = 10.f;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
 
 	return S_OK;
 }

@@ -80,7 +80,7 @@ HRESULT Material::Initialize(MTRL_FORMAT mtrlFormat, const _string& modelFilePat
 	return S_OK;
 }
 
-HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex, MaterialInstance* mtrlInstance)
+HRESULT Material::BindMaterial(_int frameIndex, MaterialInstance* mtrlInstance)
 {
 	/*Bind Parameter*/
 
@@ -99,9 +99,12 @@ HRESULT Material::BindMaterial(const _string& passTag, _int frameIndex, Material
 
 	/*Bind material instance*/
 	if (mtrlInstance)
-		mtrlInstance->BindMaterialInstance(m_pShader);
+	{
+		return mtrlInstance->BindMaterialInstance(m_pShader);
+	}
+	else
+		return m_pShader->Apply("Default_Pass");
 
-	return m_pShader->Apply(passTag);
 }
 
 void Material::SetTexture(const _string& key, Texture* value)

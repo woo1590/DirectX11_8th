@@ -3,6 +3,9 @@
 
 NS_BEGIN(Client)
 
+class WeaponPanel;
+class PlayerPanel;
+class CrosshairController;
 class Weapon;
 class Player final:
     public ContainerObject
@@ -10,6 +13,12 @@ class Player final:
 public:
     enum class Parts { PlayerCam, Hand, RightHandSocket, Weapon, Count };
     enum class WeaponSlot { Slot1, Slot2, Slot3, Count };
+    typedef struct tagChangeWeaponEventParam
+    {
+        _uint slotNum{};
+        WeaponID weaponID{};
+    }CHANGE_WEAPON_EVENT_PARAM;
+
 private:
     Player();
     Player(const Player& prototype);
@@ -22,11 +31,13 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     /*API*/
     void PickUpWeapon(WeaponID id);
     void AddRecoil(_float power);
     _float3 GetAimPosition();
+    void SetShotState(_bool shot) { m_IsShot = shot; }
 
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
     void OnCollisionStay(ColliderComponent* otherCollider)override;
@@ -41,12 +52,20 @@ private:
     void EquipCurrSlot();
     void DropCurrSlotWeapon();
 
+    CrosshairController* m_pCrosshairController = nullptr;
     std::vector<Weapon*> m_Weapons;
     WeaponSlot m_eCurrWeaponSlot = WeaponSlot::Slot1;
 
     _bool m_IsJump = false;
     _bool m_IsWalk = false;
     _bool m_IsDash = false;
+    _bool m_IsShot = false;
+
+    _float m_fDashElapsedTime = 0.f;
+    _float m_fDashCoolDown = 2.5f;
+
+    _uint m_iLastShield{};
+    _uint m_iLastHp{};
 
 private:
     class PlayerIdle : public State
