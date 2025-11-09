@@ -47,6 +47,8 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _bool m_IsReload = false;
     };
 
     PrismIdle m_PrismIdle;

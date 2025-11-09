@@ -19,6 +19,7 @@ void Command_ChangeLevel::Execute()
 {
 	auto engine = EngineCore::GetInstance();
 	engine->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(m_eNextLevelID));
+	engine->PublishEvent(ENUM_CLASS(EventID::ChangeLevel));
 }
 
 void Command_ChangeLevel::Free()

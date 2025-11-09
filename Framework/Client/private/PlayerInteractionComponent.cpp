@@ -2,6 +2,7 @@
 #include "PlayerInteractionComponent.h"
 
 //object
+#include "PlayerPanel.h"
 #include "StatusComponent.h"
 #include "Player.h"
 
@@ -51,7 +52,16 @@ void PlayerInteractionComponent::HealthUp(_uint health)
 	auto status = m_pPlayer->GetComponent<StatusComponent>();
 	status->HealthUp(health);
 
-	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::PlayerHealthIncrease), status->GetHpRatio());
+	PlayerPanel::PLAYER_HEALTH_PARAM param{};
+	param.ratio = status->GetHpRatio();
+	param.currHealth = status->GetDesc().hp;
+
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::PlayerHealthIncrease), param);
+}
+
+void PlayerInteractionComponent::AddAmmo(_uint ammo)
+{
+	m_pPlayer->AddAmmo(ammo);
 }
 
 void PlayerInteractionComponent::Free()

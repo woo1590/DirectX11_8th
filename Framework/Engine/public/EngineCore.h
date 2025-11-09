@@ -141,7 +141,7 @@ public:
 #pragma region EventSystem
     void PublishEvent(_uint eventID, std::any param = {});
     _int Subscribe(_uint eventID, const LISTENER& listener);
-    void UnSubscribe(_uint eventID, const EventHandler* listener);
+    void UnSubscribe(const EventHandler* listener);
 #pragma endregion
 
     class Random* GetRandom()const { return m_pRandom; }

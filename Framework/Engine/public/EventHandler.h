@@ -6,7 +6,7 @@ class ENGINE_DLL EventHandler
 {
 protected:
 	EventHandler() {};
-	virtual ~EventHandler() = default;
+	virtual ~EventHandler();
 
 public:
 	template <typename T>

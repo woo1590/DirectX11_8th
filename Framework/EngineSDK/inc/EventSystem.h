@@ -20,9 +20,10 @@ public:
 
     void PublishEvent(_uint eventID, std::any param = {});
     _int Subscribe(_uint eventID, const LISTENER& listener);
-    void UnSubscribe(_uint eventID, const EventHandler* listener);
+    void UnSubscribe(const EventHandler* listener);
     void UnSubscribeById(_uint id);
 
+    void ClearListener();
     void Free()override;
     
 private:

@@ -46,6 +46,7 @@ namespace Client
 	};
 	enum class EventID
 	{
+		ChangeLevel,
 		ChangeWeapon,
 		PlayerJump,
 		PlayerLand,
@@ -54,6 +55,9 @@ namespace Client
 		PlayerHealthIncrease,
 		PlayerShieldDecrease,
 		PlayerShieldIncrease,
+		MaxAmmoChange,
+		CurrAmmoChange,
+		WeaponReload,
 		Count
 	};
 	enum class SkillID

@@ -6,7 +6,7 @@ NS_BEGIN(Client)
 class WeaponPanel :
     public UIObject
 {
-    enum class Parts { Slot1, Slot2, Slot3, WeaponIcon, Count };
+    enum class Parts { Slot1, Slot2, Slot3, WeaponIcon, Number_CurrAmmo, Number_Cross, Number_MaxAmmo, Count };
 private:
     WeaponPanel();
     WeaponPanel(const WeaponPanel& prototype);
@@ -19,10 +19,12 @@ public:
 
     /*Event*/
     void ChangeWeapon(std::any weaponID);
-    void ChangeCurrSlot(std::any slotNum);
     void OnJump(std::any param);
     void OnLand(std::any param);
-    
+    void OnDash(std::any param);
+    void ChangeCurrAmmo(std::any param);
+    void ChangeMaxAmmo(std::any param);
+
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
@@ -61,10 +63,22 @@ private:
         _float3 m_StartPosition{};
         _float3 m_TargetPosition{};
     };
+    class WeaponPanelOnDash : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+
+        _float m_fDuration = 0.5f;
+        _float m_fElapsedTime = 0.f;
+        _float3 m_StartPosition{};
+        _float3 m_TargetPosition{};
+    };
 
     WeaponPanelIdle m_WeaponPanelIdle;
     WeaponPanelOnJump m_WeaponPanelOnJump;
     WeaponPanelOnLand m_WeaponPanelOnLand;
+    WeaponPanelOnDash m_WeaponPanelOnDash;
 };
 
 NS_END

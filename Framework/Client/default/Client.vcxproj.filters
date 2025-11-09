@@ -292,6 +292,15 @@
     <Filter Include="02. Object\UIObject\EffectBackground">
       <UniqueIdentifier>{1f3dfd28-4242-4579-b76d-15164b1d7a6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\UIObject\CountNumber">
+      <UniqueIdentifier>{d0eb3bad-6bf6-4651-9132-e6d6cb515a83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\DamageFont">
+      <UniqueIdentifier>{1944c7b1-864b-41d1-998b-9fb5b370cfd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\Cross">
+      <UniqueIdentifier>{0cb017ec-a1b6-42f7-a140-15fc44484d2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -555,6 +564,15 @@
     <ClInclude Include="..\public\EffectBackground.h">
       <Filter>02. Object\UIObject\EffectBackground</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CountNumber.h">
+      <Filter>02. Object\UIObject\CountNumber</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DamageFont.h">
+      <Filter>02. Object\DamageFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cross.h">
+      <Filter>02. Object\UIObject\Cross</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -805,6 +823,15 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectBackground.cpp">
       <Filter>02. Object\UIObject\EffectBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CountNumber.cpp">
+      <Filter>02. Object\UIObject\CountNumber</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DamageFont.cpp">
+      <Filter>02. Object\DamageFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cross.cpp">
+      <Filter>02. Object\UIObject\Cross</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

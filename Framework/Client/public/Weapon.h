@@ -31,6 +31,7 @@ public:
     virtual void Reload() = 0;
     virtual void Fire() = 0;
     virtual void Skill() = 0;
+    _uint GetCurrAmmo()const { return m_iNumCurrAmmo; }
     WeaponID GetWeaponID()const { return m_eWeaponID; }
 
     virtual Object* Clone(InitDESC* arg) = 0;

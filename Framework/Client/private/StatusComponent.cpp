@@ -55,6 +55,18 @@ _float StatusComponent::GetHpRatio()
     return static_cast<_float>(m_iHP) / m_iMaxHP;
 }
 
+void StatusComponent::RegenShield(_float dt)
+{
+    m_fRegenElapsedTime += dt;
+
+    if (m_fRegenElapsedTime >= m_fRegenDuration)
+    {
+        m_iShield++;
+        m_iShield = (std::min)(m_iShield, m_iMaxShield);
+        m_fRegenElapsedTime = 0.f;
+    }
+}
+
 void StatusComponent::HealthUp(_uint health)
 {
     m_iHP += health;

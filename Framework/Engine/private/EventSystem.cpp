@@ -26,6 +26,8 @@ void EventSystem::Update(_float dt)
 {
 	_uint currEvents = m_Events.size();
 
+	RemoveListener();
+
 	for (_uint i = 0; i < currEvents; ++i)
 	{
 		if (m_Events.empty())
@@ -57,17 +59,20 @@ _int EventSystem::Subscribe(_uint eventID, const LISTENER& listener)
 	return m_iID++;
 }
 
-void EventSystem::UnSubscribe(_uint eventID, const EventHandler* listener)
+void EventSystem::UnSubscribe(const EventHandler* listener)
 {
-	if (eventID >= m_Listeners.size())
-		return;
-
 	m_RemoveHandler.push_back(listener);
 }
 
 void EventSystem::UnSubscribeById(_uint id)
 {
 	m_RemoveIds.push_back(id);
+}
+
+void EventSystem::ClearListener()
+{
+	for (_uint i = 0; i < m_Listeners.size(); ++i)
+		m_Listeners[i].clear();
 }
 
 void EventSystem::Free()

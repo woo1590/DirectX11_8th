@@ -151,8 +151,13 @@ void Cameleon::CameleonReload::TestForExit(Engine::Object* object)
 
 	if (animator->IsFinished())
 	{
+		auto engine = EngineCore::GetInstance();
+
 		object->ChangeState(&cameleon->m_CameleonIdle);
 		cameleon->m_iNumCurrAmmo = cameleon->m_iNumMaxAmmo;
+
+		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), cameleon->m_iNumCurrAmmo);
+		engine->PublishEvent(ENUM_CLASS(EventID::WeaponReload), cameleon->m_iNumMaxAmmo);
 	}
 }
 
@@ -199,6 +204,8 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 
 		defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 		--cameleon->m_iNumCurrAmmo;
+
+		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), cameleon->m_iNumCurrAmmo);
 
 		m_IsShot = true;
 	}

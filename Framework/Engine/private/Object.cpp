@@ -58,6 +58,12 @@ HRESULT Object::Initialize(InitDESC* arg)
 
 void Object::PriorityUpdate(_float dt)
 {
+	if (!m_IsLateInitialized)
+	{
+		LateInitialize();
+		m_IsLateInitialized = true;
+	}
+
 	for (const auto& comp : m_Components)
 		comp->PriorityUpdate(dt);
 }

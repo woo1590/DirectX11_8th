@@ -44,13 +44,13 @@ HRESULT Stage1::Initialize()
 	if (FAILED(Initialize_LayerLights("Layer_Light")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerUI("Layer_UI")))
+		return E_FAIL;
+
 	if (FAILED(Initialize_LayerPlayer("Layer_Player")))
 		return E_FAIL;
 
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
-		return E_FAIL;
-
-	if (FAILED(Initialize_LayerUI("Layer_UI")))
 		return E_FAIL;
 
 	return S_OK;
@@ -199,21 +199,21 @@ HRESULT Stage1::Initialize_LayerUI(const _string& layerTag)
 	auto engine = EngineCore::GetInstance();
 
 	Object* playerPanel = nullptr;
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PlayerPanel", ENUM_CLASS(LevelID::Static), layerTag, nullptr, &playerPanel)))
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PlayerPanel", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &playerPanel)))
 		return E_FAIL;
 	
 	Object* weaponPanel = nullptr;
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponPanel", ENUM_CLASS(LevelID::Static), layerTag, nullptr, &weaponPanel)))
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponPanel", ENUM_CLASS(LevelID::Stage1), layerTag, nullptr, &weaponPanel)))
 		return E_FAIL;
 
 	Object* skillPanel = nullptr;
 	SkillPanel::SKILL_PANEL_DESC skillPanelDesc{};
 	skillPanelDesc.numPanel = 0;
 	skillPanelDesc.skillID = SkillID::Dash;
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SkillPanel", ENUM_CLASS(LevelID::Static), layerTag, &skillPanelDesc, &weaponPanel)))
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SkillPanel", ENUM_CLASS(LevelID::Stage1), layerTag, &skillPanelDesc, &weaponPanel)))
 		return E_FAIL;
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", ENUM_CLASS(LevelID::Static), layerTag)))
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", ENUM_CLASS(LevelID::Stage1), layerTag)))
 		return E_FAIL;
 
 	return S_OK;

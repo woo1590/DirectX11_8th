@@ -2,8 +2,10 @@
 #include "WeaponPanel.h"
 
 //object
+#include "CountNumber.h"
 #include "Player.h"
 #include "WeaponIcon.h"
+#include "Cross.h"
 #include "WeaponSlot.h"
 
 //component
@@ -75,6 +77,9 @@ HRESULT WeaponPanel::Initialize(InitDESC* arg)
 	engine->Subscribe(ENUM_CLASS(EventID::ChangeWeapon), MakeListener(&WeaponPanel::ChangeWeapon));
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerJump), MakeListener(&WeaponPanel::OnJump));
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerLand), MakeListener(&WeaponPanel::OnLand));
+	engine->Subscribe(ENUM_CLASS(EventID::PlayerDash), MakeListener(&WeaponPanel::OnDash));
+	engine->Subscribe(ENUM_CLASS(EventID::MaxAmmoChange), MakeListener(&WeaponPanel::ChangeMaxAmmo));
+	engine->Subscribe(ENUM_CLASS(EventID::CurrAmmoChange), MakeListener(&WeaponPanel::ChangeCurrAmmo));
 
 	ChangeState(&m_WeaponPanelIdle);
 
@@ -127,6 +132,26 @@ void WeaponPanel::OnLand(std::any param)
 		ChangeState(&m_WeaponPanelOnLand);
 }
 
+void WeaponPanel::OnDash(std::any param)
+{
+	ChangeState(&m_WeaponPanelOnDash);
+}
+
+void WeaponPanel::ChangeCurrAmmo(std::any param)
+{
+	_uint currAmmo = std::any_cast<_uint>(param);
+
+	static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_CurrAmmo)])->SetNumber(currAmmo);
+	static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_CurrAmmo)])->Bounce();
+}
+
+void WeaponPanel::ChangeMaxAmmo(std::any param)
+{
+	_uint maxAmmo = std::any_cast<_uint>(param);
+
+	static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_MaxAmmo)])->SetNumber(maxAmmo);
+}
+
 void WeaponPanel::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
@@ -155,7 +180,6 @@ Object* WeaponPanel::Clone(InitDESC* arg)
 void WeaponPanel::Free()
 {
 	__super::Free();
-
 }
 
 HRESULT WeaponPanel::CreateChildren()
@@ -205,6 +229,43 @@ HRESULT WeaponPanel::CreateChildren()
 		
 		Object* slot = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_WeaponSlot", &slotDesc);
 		m_Childrens[ENUM_CLASS(Parts::Slot3)] = static_cast<UIObject*>(slot);
+	}
+	/*num curr ammo*/
+	{
+		CountNumber::COUNT_NUMBER_DESC numDesc{};
+		numDesc.parent = this;
+		numDesc.color = _float4{ 1.f,1.f,1.f,1.f };
+		numDesc.position = _float3{ m_fSizeX * 0.04f,m_fSizeY * 0.42f,0.f };
+		numDesc.scale = _float3{ 60.f * 0.6f,60.f * 0.6f,1.f };
+		numDesc.priority = 1;
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", &numDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_CurrAmmo)] = static_cast<UIObject*>(num);
+	}
+	/*num cross*/
+	{
+		Cross::CROSS_DESC crossDesc{};
+		crossDesc.parent = this;
+		crossDesc.color = _float4{ 1.f,1.f,1.f,1.f };
+		crossDesc.position = _float3{ m_fSizeX * 0.18f,m_fSizeY * 0.4f,0.f };
+		crossDesc.scale = _float3{ 60.f * 0.4f,60.f * 0.4f,1.f };
+		crossDesc.priority = 1;
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cross", &crossDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_Cross)] = static_cast<UIObject*>(num);
+	}
+
+	/*num max ammo*/
+	{
+		CountNumber::COUNT_NUMBER_DESC numDesc{};
+		numDesc.parent = this;
+		numDesc.color = _float4{ 1.f,1.f,1.f,1.f };
+		numDesc.position = _float3{ m_fSizeX * 0.25f,m_fSizeY * 0.4f,0.f };
+		numDesc.scale = _float3{ 60.f * 0.4f,60.f * 0.4f,1.f };
+		numDesc.priority = 1;
+		
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", &numDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_MaxAmmo)] = static_cast<UIObject*>(num);
 	}
 
 	return S_OK;
@@ -270,6 +331,42 @@ void WeaponPanel::WeaponPanelOnLand::Update(Object* object, _float dt)
 }
 
 void WeaponPanel::WeaponPanelOnLand::TestForExit(Object* object)
+{
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto panel = static_cast<WeaponPanel*>(object);
+		panel->GetComponent<TransformComponent>()->SetPosition(m_StartPosition);
+		panel->ChangeState(&panel->m_WeaponPanelIdle);
+	}
+}
+
+void WeaponPanel::WeaponPanelOnDash::Enter(Object* object)
+{
+	m_fElapsedTime = 0.f;
+	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
+	m_TargetPosition = m_StartPosition;
+	m_TargetPosition.x -= 45.f;
+	m_TargetPosition.y += 35.f;
+}
+
+void WeaponPanel::WeaponPanelOnDash::Update(Object* object, _float dt)
+{
+	m_fElapsedTime += dt;
+
+	if (m_fElapsedTime < m_fDuration)
+	{
+		_float t = m_fElapsedTime / m_fDuration;
+		t = math::EaseOutSline(t);
+		t = math::PalabolaCurve(t);
+
+		_float3 currPosition{};
+		XMStoreFloat3(&currPosition, XMVectorLerp(XMLoadFloat3(&m_StartPosition), XMLoadFloat3(&m_TargetPosition), t));
+
+		object->GetComponent<TransformComponent>()->SetPosition(currPosition);
+	}
+}
+
+void WeaponPanel::WeaponPanelOnDash::TestForExit(Object* object)
 {
 	if (m_fElapsedTime >= m_fDuration)
 	{

@@ -163,8 +163,13 @@ void ConcealedAmmo::ConcealedAmmoReload::TestForExit(Engine::Object* object)
 
 	if (animator->IsFinished())
 	{
+		auto engine = EngineCore::GetInstance();
+
 		ammo->ChangeState(&ammo->m_ConcealedAmmoIdle);
 		ammo->m_iNumCurrAmmo = ammo->m_iNumMaxAmmo;
+
+		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), ammo->m_iNumCurrAmmo);
+		engine->PublishEvent(ENUM_CLASS(EventID::WeaponReload), ammo->m_iNumMaxAmmo);
 	}
 }
 
@@ -203,6 +208,8 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 	--ammo->m_iNumCurrAmmo;
+
+	engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), ammo->m_iNumCurrAmmo);
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::Update(Engine::Object* object, Engine::_float dt)

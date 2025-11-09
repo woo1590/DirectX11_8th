@@ -48,6 +48,7 @@ HRESULT SkillPanel::Initialize(InitDESC* arg)
 
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerJump), MakeListener(&SkillPanel::OnJump));
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerLand), MakeListener(&SkillPanel::OnLand));
+	engine->Subscribe(ENUM_CLASS(EventID::PlayerDash), MakeListener(&SkillPanel::OnDash));
 
 	/*sprite*/
 	SpriteComponent::SPRITE_DESC spriteDesc{};
@@ -115,6 +116,11 @@ void SkillPanel::OnLand(std::any param)
 {
 	if (&m_SkillPanelIdle == m_CurrState)
 		ChangeState(&m_SkillPanelOnLand);
+}
+
+void SkillPanel::OnDash(std::any param)
+{
+	ChangeState(&m_SkillPanelOnDash);
 }
 
 Object* SkillPanel::Clone(InitDESC* arg)
@@ -198,6 +204,42 @@ void SkillPanel::SkillPanelOnLand::Update(Object* object, _float dt)
 }
 
 void SkillPanel::SkillPanelOnLand::TestForExit(Object* object)
+{
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto panel = static_cast<SkillPanel*>(object);
+		panel->GetComponent<TransformComponent>()->SetPosition(m_StartPosition);
+		panel->ChangeState(&panel->m_SkillPanelIdle);
+	}
+}
+
+void SkillPanel::SkillPanelOnDash::Enter(Object* object)
+{
+	m_fElapsedTime = 0.f;
+	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
+	m_TargetPosition = m_StartPosition;
+	m_TargetPosition.x -= 45.f;
+	m_TargetPosition.y += 35.f;
+}
+
+void SkillPanel::SkillPanelOnDash::Update(Object* object, _float dt)
+{
+	m_fElapsedTime += dt;
+
+	if (m_fElapsedTime < m_fDuration)
+	{
+		_float t = m_fElapsedTime / m_fDuration;
+		t = math::EaseOutSline(t);
+		t = math::PalabolaCurve(t);
+
+		_float3 currPosition{};
+		XMStoreFloat3(&currPosition, XMVectorLerp(XMLoadFloat3(&m_StartPosition), XMLoadFloat3(&m_TargetPosition), t));
+
+		object->GetComponent<TransformComponent>()->SetPosition(currPosition);
+	}
+}
+
+void SkillPanel::SkillPanelOnDash::TestForExit(Object* object)
 {
 	if (m_fElapsedTime >= m_fDuration)
 	{

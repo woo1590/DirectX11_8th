@@ -29,6 +29,7 @@ protected:
 public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(InitDESC* arg);
+    virtual HRESULT LateInitialize() { return S_OK; }
     virtual void PriorityUpdate(_float dt);
     virtual void Update(_float dt);
     virtual void LateUpdate(_float dt);
@@ -74,6 +75,7 @@ public:
 #endif
 
 protected:
+    _bool m_IsLateInitialized = false;
     _string m_strInstanceTag{};
     static _uint m_iInstanceID;
     _uint m_iCurrLevelID{};

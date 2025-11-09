@@ -544,9 +544,9 @@ _int EngineCore::Subscribe(_uint eventID, const LISTENER& listener)
 {
 	return m_pEventSystem->Subscribe(eventID, listener);
 }
-void EngineCore::UnSubscribe(_uint eventID, const EventHandler* listener)
+void EngineCore::UnSubscribe(const EventHandler* listener)
 {
-	m_pEventSystem->UnSubscribe(eventID, listener);
+	m_pEventSystem->UnSubscribe(listener);
 }
 #pragma endregion
 

@@ -145,9 +145,15 @@ void Foundry::FoundryReload::TestForExit(Object* object)
 
 	if (animator->IsFinished())
 	{
+		auto engine = EngineCore::GetInstance();
+
 		auto foundry = static_cast<Foundry*>(object);
 		foundry->ChangeState(&foundry->m_FoundryIdle);
+
 		foundry->m_iNumCurrAmmo = foundry->m_iNumMaxAmmo;
+
+		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), foundry->m_iNumCurrAmmo);
+		engine->PublishEvent(ENUM_CLASS(EventID::WeaponReload), foundry->m_iNumMaxAmmo);
 	}
 }
 
@@ -186,6 +192,8 @@ void Foundry::FoundryFire::Enter(Object* object)
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 	--foundry->m_iNumCurrAmmo;
+
+	engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), foundry->m_iNumCurrAmmo);
 }
 
 void Foundry::FoundryFire::Update(Object* object, _float dt)

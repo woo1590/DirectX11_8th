@@ -80,6 +80,9 @@ HRESULT Player::Initialize(InitDESC* arg)
 
 	auto engine = EngineCore::GetInstance();
 
+	engine->Subscribe(ENUM_CLASS(EventID::WeaponReload), MakeListener(&Player::OnReload));
+	engine->Subscribe(ENUM_CLASS(EventID::ChangeLevel), MakeListener(&Player::EnterLevel));
+
 	/*collider*/
 	Bounding_AABB::AABB_DESC aabbDesc{};
 	aabbDesc.useResolve = true;
@@ -111,6 +114,14 @@ HRESULT Player::Initialize(InitDESC* arg)
 	statusDesc.shield = 100.f;
 	auto status = GetComponent<StatusComponent>();
 	status->Initialize(&statusDesc);
+	
+	m_pCrosshairController = CrosshairController::Create();
+	if (!m_pCrosshairController)
+		return E_FAIL;
+
+	m_iLastShield = status->GetDesc().shield;
+	m_iLastHp = status->GetDesc().hp;
+	m_iMaxAmmo = 50;
 
 	{
 		/*equip first weapon*/
@@ -127,17 +138,19 @@ HRESULT Player::Initialize(InitDESC* arg)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
 
 		m_eCurrWeaponSlot = WeaponSlot::Slot1;
-		EquipCurrSlot();
 	}
-	
-	m_pCrosshairController = CrosshairController::Create();
-	if (!m_pCrosshairController)
-		return E_FAIL;
-
-	m_iLastShield = status->GetDesc().shield;
-	m_iLastHp = status->GetDesc().hp;
 
 	ChangeState(&m_PlayerIdle);
+
+	return S_OK;
+}
+
+HRESULT Player::LateInitialize()
+{
+	auto engine = EngineCore::GetInstance();
+
+	EquipCurrSlot();
+	engine->PublishEvent(ENUM_CLASS(EventID::MaxAmmoChange), m_iMaxAmmo);
 
 	return S_OK;
 }
@@ -149,11 +162,22 @@ void Player::PriorityUpdate(_float dt)
 
 void Player::Update(_float dt)
 {
+	m_fLastHitElapsedTime += dt;
+	if (m_fLastHitElapsedTime >= 4.f)
+	{
+		auto status = GetComponent<StatusComponent>();
+		status->RegenShield(dt);
+
+		PlayerPanel::PLAYER_SHIELD_PARAM param{};
+		param.ratio = status->GetShieldRatio();
+		param.currShield = status->GetDesc().shield;
+
+		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::PlayerShieldIncrease),param);
+	}
+
 	KeyInput(dt);
 	m_pCrosshairController->Update(dt);
-
 	__super::Update(dt);
-
 	MakeHandState();
 }
 
@@ -169,6 +193,25 @@ HRESULT Player::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 	m_pCrosshairController->ExtractRenderProxies(proxies);
 
 	return S_OK;
+}
+
+void Player::OnReload(std::any param)
+{
+	_uint ammoChanged = std::any_cast<_uint>(param);
+
+	if (m_iMaxAmmo < ammoChanged)
+		m_iMaxAmmo = 0;
+	else
+		m_iMaxAmmo -= ammoChanged;
+
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::MaxAmmoChange), m_iMaxAmmo);
+}
+
+void Player::AddAmmo(_uint numAmmo)
+{
+	m_iMaxAmmo += numAmmo;
+
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::MaxAmmoChange), m_iMaxAmmo);
 }
 
 void Player::PickUpWeapon(WeaponID id)
@@ -276,12 +319,26 @@ void Player::OnCollisionEnter(ColliderComponent* otherCollider)
 		_float hpRatio = status->GetHpRatio();
 
 		if (m_iLastHp != status->GetDesc().hp)
-			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), hpRatio);
+		{
+			PlayerPanel::PLAYER_HEALTH_PARAM param{};
+			param.ratio = hpRatio;
+			param.currHealth = status->GetDesc().hp;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), param);
+		}
+
 		if (m_iLastShield != status->GetDesc().shield)
-			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), shieldRatio);
+		{
+			PlayerPanel::PLAYER_SHIELD_PARAM param{};
+			param.ratio = shieldRatio;
+			param.currShield = status->GetDesc().shield;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), param);
+		}
 
 		m_iLastShield = status->GetDesc().shield;
 		m_iLastHp = status->GetDesc().hp;
+		m_fLastHitElapsedTime = 0.f;
 
 	}break;
 	case Client::ColliderFilter::BossArm:
@@ -400,6 +457,8 @@ void Player::EquipCurrSlot()
 	CHANGE_WEAPON_EVENT_PARAM param{};
 	param.slotNum = ENUM_CLASS(m_eCurrWeaponSlot);
 	param.weaponID = equipWeapon->GetWeaponID();
+
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), equipWeapon->GetCurrAmmo());
 	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::ChangeWeapon), param);
 }
 
@@ -425,6 +484,11 @@ void Player::DropCurrSlotWeapon()
 
 	m_PartObjects[ENUM_CLASS(Parts::Weapon)] = nullptr;
 	m_Weapons[ENUM_CLASS(m_eCurrWeaponSlot)] = nullptr;
+}
+
+void Player::EnterLevel(std::any param)
+{
+	m_IsLateInitialized = false;
 }
 
 void Player::KeyInput(_float dt)

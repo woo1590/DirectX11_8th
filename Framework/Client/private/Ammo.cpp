@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Ammo.h"
+#include "Random.h"
 #include "Bounding_Sphere.h"
 
 //component
+#include "PlayerInteractionComponent.h"
 #include "RigidBodyComponent.h"
 #include "ModelComponent.h"
 #include "ColliderComponent.h"
@@ -95,6 +97,12 @@ void Ammo::LateUpdate(_float dt)
 
 void Ammo::Interaction(PlayerInteractionComponent* interaction)
 {
+	auto random = EngineCore::GetInstance()->GetRandom();
+
+	_uint ammo = random->get<_uint>(15, 22);
+
+	interaction->AddAmmo(ammo);
+
 	SetDead();
 }
 

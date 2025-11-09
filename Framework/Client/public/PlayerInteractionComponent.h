@@ -20,6 +20,7 @@ public:
     void SetPlayer(Player* player);
     void EquipWeapon(WeaponID id);
     void HealthUp(_uint health);
+    void AddAmmo(_uint ammo);
 
     Component* Clone()override { return new PlayerInteractionComponent(*this); }
     void Free()override;

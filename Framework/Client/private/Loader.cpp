@@ -25,6 +25,8 @@
 #include "DashIcon.h"
 #include "Bar.h"
 #include "EffectBackground.h"
+#include "CountNumber.h"
+#include "Cross.h"
 
 //weapon
 #include "Cameleon.h"
@@ -452,6 +454,14 @@ HRESULT Loader::LoadingForLogo()
 		/*effect background*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_effect.json", "Mtrl_EffectBackground")))
 			return E_FAIL;
+
+		/*number*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/num_hit.json", "Mtrl_NumHit")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/num_count.json", "Mtrl_NumCount")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/num_cross.json", "Mtrl_NumCross")))
+			return E_FAIL;
 	}
 
 	/*Load Prototype Object*/
@@ -501,6 +511,11 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", EffectBackground::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", CountNumber::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cross", Cross::Create())))
 			return E_FAIL;
 
 		/*Enemy*/

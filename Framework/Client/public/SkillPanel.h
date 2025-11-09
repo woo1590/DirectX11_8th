@@ -34,6 +34,7 @@ public:
     /*Event*/
     void OnJump(std::any param);
     void OnLand(std::any param);
+    void OnDash(std::any param);
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
@@ -69,10 +70,22 @@ private:
         _float3 m_StartPosition{};
         _float3 m_TargetPosition{};
     };
+    class SkillPanelOnDash : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+
+        _float m_fDuration = 0.5f;
+        _float m_fElapsedTime = 0.f;
+        _float3 m_StartPosition{};
+        _float3 m_TargetPosition{};
+    };
 
     SkillPanelIdle m_SkillPanelIdle;
     SkillPanelOnJump m_SkillPanelOnJump;
     SkillPanelOnLand m_SkillPanelOnLand;
+    SkillPanelOnDash m_SkillPanelOnDash;
 
 };
 

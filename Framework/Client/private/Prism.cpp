@@ -55,7 +55,7 @@ HRESULT Prism::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
-	m_iNumMaxAmmo = 8;
+	m_iNumMaxAmmo = 1;
 	m_iNumCurrAmmo = m_iNumMaxAmmo;
 	m_eWeaponID = WeaponID::Prism;
 
@@ -116,6 +116,8 @@ void Prism::PrismIdle::TestForExit(Object* object)
 
 void Prism::PrismFire::Enter(Object* object)
 {
+	m_IsReload = false;
+
 	auto animator = object->GetComponent<AnimatorComponent>();
 	_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 2);
 	
@@ -151,10 +153,28 @@ void Prism::PrismFire::Enter(Object* object)
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismProjectile", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &prismProjectile);
 	
 	prismProjectile->GetComponent<TransformComponent>()->SetForward(forward);
+	--prism->m_iNumCurrAmmo;
+
+	engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), prism->m_iNumCurrAmmo);
 }
 
 void Prism::PrismFire::Update(Object* object, _float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsReload && progress >= 0.5f)
+	{
+		auto engine = EngineCore::GetInstance();
+		auto prism = static_cast<Prism*>(object);
+
+		prism->m_iNumCurrAmmo = prism->m_iNumMaxAmmo;
+
+		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), prism->m_iNumCurrAmmo);
+		engine->PublishEvent(ENUM_CLASS(EventID::WeaponReload), prism->m_iNumMaxAmmo);
+
+		m_IsReload = true;
+	}
 }
 
 void Prism::PrismFire::TestForExit(Object* object)
@@ -163,6 +183,8 @@ void Prism::PrismFire::TestForExit(Object* object)
 
 	if (animator->IsFinished())
 	{
+		auto engine = EngineCore::GetInstance();
+
 		auto prism = static_cast<Prism*>(object);
 		prism->ChangeState(&prism->m_PrismIdle);
 	}

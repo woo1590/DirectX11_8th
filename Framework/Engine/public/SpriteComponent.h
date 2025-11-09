@@ -40,6 +40,9 @@ public:
     /*Getter*/
     MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
 
+    /*setter*/
+    void SetFrameIndex(_uint index) { m_iCurrFrameIndex = index; }
+
     Component* Clone() { return new SpriteComponent(*this); }
     void Free()override;
 

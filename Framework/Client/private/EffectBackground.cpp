@@ -105,7 +105,7 @@ void EffectBackground::LateUpdate(_float dt)
 void EffectBackground::OnHurt(std::any param)
 {
 	auto mtrlInstance = GetComponent<SpriteComponent>()->GetMaterialInstance();
-	mtrlInstance->SetFloat4("g_MaskColor", _float4{ 0.82f,0.01f,0.11f,1.f });
+	mtrlInstance->SetFloat4("g_Color", _float4{ 0.82f,0.01f,0.11f,1.f });
 	
 	m_IsActive = true;
 	m_fElapsedTime = 0.f;
@@ -115,7 +115,7 @@ void EffectBackground::OnHurt(std::any param)
 void EffectBackground::OnHeal(std::any param)
 {
 	auto mtrlInstance = GetComponent<SpriteComponent>()->GetMaterialInstance();
-	mtrlInstance->SetFloat4("g_MaskColor", _float4{ 0.443f, 0.82f, 0.482f,1.f });
+	mtrlInstance->SetFloat4("g_Color", _float4{ 0.443f, 0.82f, 0.482f,1.f });
 
 	m_IsActive = true;
 	m_fElapsedTime = 0.f;

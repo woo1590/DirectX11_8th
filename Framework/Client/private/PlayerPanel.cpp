@@ -4,7 +4,9 @@
 
 //object
 #include "Bar.h"
+#include "CountNumber.h"
 #include "PlayerIcon.h"
+#include "Cross.h"
 
 //component
 #include "SpriteComponent.h"
@@ -58,6 +60,8 @@ HRESULT PlayerPanel::Initialize(InitDESC* arg)
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerHealthDecrease), MakeListener(&PlayerPanel::PlayerHealthDecrease));
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerHealthIncrease), MakeListener(&PlayerPanel::PlayerHealthIncrease));
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerShieldDecrease), MakeListener(&PlayerPanel::PlayerShieldDecrease));
+	engine->Subscribe(ENUM_CLASS(EventID::PlayerShieldIncrease), MakeListener(&PlayerPanel::PlayerShieldIncrease));
+	engine->Subscribe(ENUM_CLASS(EventID::PlayerDash), MakeListener(&PlayerPanel::OnDash));
 
 	/*sprite*/
 	SpriteComponent::SPRITE_DESC spriteDesc{};
@@ -107,9 +111,17 @@ void PlayerPanel::OnLand(std::any param)
 		ChangeState(&m_PlayerPanelOnLand);
 }
 
+void PlayerPanel::OnDash(std::any param)
+{
+	ChangeState(&m_PlayerPanelOnDash);
+}
+
 void PlayerPanel::PlayerHealthDecrease(std::any param)
 {
-	_float ratio = std::any_cast<_float>(param);
+	PLAYER_HEALTH_PARAM healthParam = std::any_cast<PLAYER_HEALTH_PARAM>(param);
+
+	_float ratio = healthParam.ratio;
+	_uint currHelath = healthParam.currHealth;
 
 	{
 		Bar::BAR_CHANGE_PARAM barParam{};
@@ -149,11 +161,19 @@ void PlayerPanel::PlayerHealthDecrease(std::any param)
 		healthHurt->InverseAlpha();
 	}
 
+	/*num change*/
+	{
+		static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_Health)])->SetNumber(currHelath);
+	}
+
 }
 
 void PlayerPanel::PlayerHealthIncrease(std::any param)
 {
-	_float ratio = std::any_cast<_float>(param);
+	PLAYER_HEALTH_PARAM healthParam = std::any_cast<PLAYER_HEALTH_PARAM>(param);
+
+	_float ratio = healthParam.ratio;
+	_uint currHelath = healthParam.currHealth;
 
 	{
 		Bar::BAR_CHANGE_PARAM barParam{};
@@ -190,12 +210,20 @@ void PlayerPanel::PlayerHealthIncrease(std::any param)
 		Bar* healthHurt = static_cast<Bar*>(m_Childrens[ENUM_CLASS(Parts::Bar_Health_Hurt)]);
 		healthHurt->MakeChange(barParam);
 	}
+
+	/*num change*/
+	{
+		static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_Health)])->SetNumber(currHelath);
+	}
 }
 
 void PlayerPanel::PlayerShieldDecrease(std::any param)
 {
-	_float ratio = std::any_cast<_float>(param);
+	PLAYER_SHIELD_PARAM shieldParam = std::any_cast<PLAYER_SHIELD_PARAM>(param);
+	_float ratio = shieldParam.ratio;
+	_uint currShield = shieldParam.currShield;
 
+	/*bar change*/
 	{
 		Bar::BAR_CHANGE_PARAM barParam{};
 		barParam.immediate = false;
@@ -233,10 +261,59 @@ void PlayerPanel::PlayerShieldDecrease(std::any param)
 		healthHurt->MakeChange(barParam);
 		healthHurt->InverseAlpha();
 	}
+
+	/*num change*/
+	{
+		static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_Shield)])->SetNumber(currShield);
+	}
 }
 
 void PlayerPanel::PlayerShieldIncrease(std::any param)
 {
+	PLAYER_SHIELD_PARAM shieldParam = std::any_cast<PLAYER_SHIELD_PARAM>(param);
+	_float ratio = shieldParam.ratio;
+	_uint currShield = shieldParam.currShield;
+
+	{
+		Bar::BAR_CHANGE_PARAM barParam{};
+		barParam.immediate = true;
+		barParam.paused = false;
+		barParam.pauseDuration = 0.f;
+		barParam.duration = 0.f;
+		barParam.targetRatio = ratio;
+
+		Bar* healthDecrease = static_cast<Bar*>(m_Childrens[ENUM_CLASS(Parts::Bar_Shield_Decrease)]);
+		healthDecrease->MakeChange(barParam);
+	}
+
+	{
+		Bar::BAR_CHANGE_PARAM barParam{};
+		barParam.immediate = true;
+		barParam.paused = false;
+		barParam.pauseDuration = 0.f;
+		barParam.duration = 0.f;
+		barParam.targetRatio = ratio;
+
+		Bar* health = static_cast<Bar*>(m_Childrens[ENUM_CLASS(Parts::Bar_Shield)]);
+		health->MakeChange(barParam);
+	}
+
+	{
+		Bar::BAR_CHANGE_PARAM barParam{};
+		barParam.immediate = true;
+		barParam.paused = false;
+		barParam.pauseDuration = 0.f;
+		barParam.duration = 0.f;
+		barParam.targetRatio = ratio;
+
+		Bar* healthHurt = static_cast<Bar*>(m_Childrens[ENUM_CLASS(Parts::Bar_Shield_Hurt)]);
+		healthHurt->MakeChange(barParam);
+	}
+
+	/*num change*/
+	{
+		static_cast<CountNumber*>(m_Childrens[ENUM_CLASS(Parts::Number_Shield)])->SetNumber(currShield);
+	}
 }
 
 Object* PlayerPanel::Clone(InitDESC* arg)
@@ -384,6 +461,84 @@ HRESULT PlayerPanel::CreateChildren()
 		bar->GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat("g_CustomAlpha", 0.f);
 	}
 
+	/*number shield*/
+	{
+		CountNumber::COUNT_NUMBER_DESC numDesc{};
+		numDesc.parent = this;
+		numDesc.color = _float4{ 0.094f, 0.84f, 0.94f, 1.f };
+		numDesc.priority = 1;
+		numDesc.position = _float3{ scale.x * 0.37f,scale.y * 0.17f,0.f };
+		numDesc.scale = _float3{ 60.f * 0.2f,60.f * 0.2f,1.f };
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", &numDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_Shield)] = static_cast<UIObject*>(num);
+	}
+
+	/*number shield cross*/
+	{
+		Cross::CROSS_DESC crossDesc{};
+		crossDesc.parent = this;
+		crossDesc.color = _float4{ 0.094f, 0.84f, 0.94f, 1.f };
+		crossDesc.priority = 1;
+		crossDesc.position = _float3{ scale.x * 0.41f,scale.y * 0.17f,0.f };
+		crossDesc.scale = _float3{ 60.f * 0.2f,60.f * 0.2f,1.f };
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cross", &crossDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_Shield_Cross)] = static_cast<UIObject*>(num);
+	}
+
+	/*number shield max*/
+	{
+		CountNumber::COUNT_NUMBER_DESC numDesc{};
+		numDesc.parent = this;
+		numDesc.color = _float4{ 0.094f, 0.84f, 0.94f, 1.f };
+		numDesc.priority = 1;
+		numDesc.position = _float3{ scale.x * 0.45f,scale.y * 0.17f,0.f };
+		numDesc.scale = _float3{ 60.f * 0.2f,60.f * 0.2f,1.f };
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", &numDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_MaxShield)] = static_cast<UIObject*>(num);
+	}
+
+	/*number helath*/
+	{
+		CountNumber::COUNT_NUMBER_DESC numDesc{};
+		numDesc.parent = this;
+		numDesc.color = _float4(0.56f, 0.92f, 0.32f, 1.f);
+		numDesc.priority = 1;
+		numDesc.position = _float3{ scale.x * 0.34f,scale.y * 0.05f,0.f };
+		numDesc.scale = _float3{ 60.f * 0.2f,60.f * 0.2f,1.f };
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", &numDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_Health)] = static_cast<UIObject*>(num);
+	}
+
+	/*number health cross*/
+	{
+		Cross::CROSS_DESC crossDesc{};
+		crossDesc.parent = this;
+		crossDesc.color = _float4(0.56f, 0.92f, 0.32f, 1.f);
+		crossDesc.priority = 1;
+		crossDesc.position = _float3{ scale.x * 0.39f,scale.y * 0.05f,0.f };
+		crossDesc.scale = _float3{ 60.f * 0.2f,60.f * 0.2f,1.f };
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cross", &crossDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_Health_Cross)] = static_cast<UIObject*>(num);
+	}
+
+	/*number health max*/
+	{
+		CountNumber::COUNT_NUMBER_DESC numDesc{};
+		numDesc.parent = this;
+		numDesc.color = _float4(0.56f, 0.92f, 0.32f, 1.f);
+		numDesc.priority = 1;
+		numDesc.position = _float3{ scale.x * 0.43f,scale.y * 0.05f,0.f };
+		numDesc.scale = _float3{ 60.f * 0.2f,60.f * 0.2f,1.f };
+
+		Object* num = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", &numDesc);
+		m_Childrens[ENUM_CLASS(Parts::Number_MaxHealth)] = static_cast<UIObject*>(num);
+	}
+
 	return S_OK;
 }
 
@@ -447,6 +602,42 @@ void PlayerPanel::PlayerPanelOnLand::Update(Object* object, _float dt)
 }
 
 void PlayerPanel::PlayerPanelOnLand::TestForExit(Object* object)
+{
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto panel = static_cast<PlayerPanel*>(object);
+		panel->GetComponent<TransformComponent>()->SetPosition(m_StartPosition);
+		panel->ChangeState(&panel->m_PlayerPanelIdle);
+	}
+}
+
+void PlayerPanel::PlayerPanelOnDash::Enter(Object* object)
+{
+	m_fElapsedTime = 0.f;
+	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
+	m_TargetPosition = m_StartPosition;
+	m_TargetPosition.x += 45.f;
+	m_TargetPosition.y += 35.f;
+}
+
+void PlayerPanel::PlayerPanelOnDash::Update(Object* object, _float dt)
+{
+	m_fElapsedTime += dt;
+
+	if (m_fElapsedTime < m_fDuration)
+	{
+		_float t = m_fElapsedTime / m_fDuration;
+		t = math::EaseOutSline(t);
+		t = math::PalabolaCurve(t);
+
+		_float3 currPosition{};
+		XMStoreFloat3(&currPosition, XMVectorLerp(XMLoadFloat3(&m_StartPosition), XMLoadFloat3(&m_TargetPosition), t));
+
+		object->GetComponent<TransformComponent>()->SetPosition(currPosition);
+	}
+}
+
+void PlayerPanel::PlayerPanelOnDash::TestForExit(Object* object)
 {
 	if (m_fElapsedTime >= m_fDuration)
 	{

@@ -28,12 +28,18 @@ public:
     static Player* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
+    HRESULT LateInitialize()override;
+
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
+    /*Event*/
+    void OnReload(std::any param);
+
     /*API*/
+    void AddAmmo(_uint numAmmo);
     void PickUpWeapon(WeaponID id);
     void AddRecoil(_float power);
     _float3 GetAimPosition();
@@ -51,6 +57,7 @@ private:
     void MakeHandState();
     void EquipCurrSlot();
     void DropCurrSlotWeapon();
+    void EnterLevel(std::any param);
 
     CrosshairController* m_pCrosshairController = nullptr;
     std::vector<Weapon*> m_Weapons;
@@ -63,9 +70,11 @@ private:
 
     _float m_fDashElapsedTime = 0.f;
     _float m_fDashCoolDown = 2.5f;
+    _float m_fLastHitElapsedTime = 0.f;
 
     _uint m_iLastShield{};
     _uint m_iLastHp{};
+    _uint m_iMaxAmmo{};
 
 private:
     class PlayerIdle : public State

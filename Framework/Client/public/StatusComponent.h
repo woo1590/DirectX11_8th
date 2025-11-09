@@ -26,6 +26,7 @@ public:
 
     _float GetShieldRatio();
     _float GetHpRatio();
+    void RegenShield(_float dt);
     void HealthUp(_uint health);
     void BeAttacked(_uint power);
     STATUS_DESC GetDesc()const;
@@ -45,6 +46,8 @@ private:
     _uint m_iAttackPower{};
     _float m_fMoveSpeed{};
 
+    _float m_fRegenDuration = 0.05f;
+    _float m_fRegenElapsedTime{};
 };
 
 NS_END

@@ -214,6 +214,7 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\Coin.h" />
     <ClInclude Include="..\public\Command_ChangeLevel.h" />
+    <ClInclude Include="..\public\Cross.h" />
     <ClInclude Include="..\public\CrossbowMan.h" />
     <ClInclude Include="..\public\CrossbowMan_Head.h" />
     <ClInclude Include="..\public\CrosshairController.h" />
@@ -237,6 +238,8 @@
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\LogoFire.h" />
     <ClInclude Include="..\public\LogoText.h" />
+    <ClInclude Include="..\public\CountNumber.h" />
+    <ClInclude Include="..\public\DamageFont.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
     <ClInclude Include="..\public\WeaponSlot.h" />
@@ -302,6 +305,7 @@
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\private\Coin.cpp" />
     <ClCompile Include="..\private\Command_ChangeLevel.cpp" />
+    <ClCompile Include="..\private\Cross.cpp" />
     <ClCompile Include="..\private\CrossbowMan.cpp" />
     <ClCompile Include="..\private\CrossbowMan_Head.cpp" />
     <ClCompile Include="..\private\CrosshairController.cpp" />
@@ -325,6 +329,8 @@
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\LogoFire.cpp" />
     <ClCompile Include="..\private\LogoText.cpp" />
+    <ClCompile Include="..\private\CountNumber.cpp" />
+    <ClCompile Include="..\private\DamageFont.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
     <ClCompile Include="..\private\WeaponSlot.cpp" />
