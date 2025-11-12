@@ -15,7 +15,7 @@ public:
     }SKILL_PANEL_DESC;
 
 private:
-    enum class Parts { Slot, Count };
+    enum class Parts { Slot,CoolDown_Count, Count };
 
 private:
     SkillPanel();
@@ -35,12 +35,17 @@ public:
     void OnJump(std::any param);
     void OnLand(std::any param);
     void OnDash(std::any param);
+    void CoolDown(std::any param);
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
     HRESULT CreateChildren();
+
+    _bool m_IsCoolDown = false;
+    _float m_fElapsedTime{};
+    _float m_fDuration{};
 
     class SkillPanelIdle : public State
     {

@@ -30,7 +30,7 @@ HRESULT MapEditorCamera::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_strInstanceTag = "MapEditorCamera";
+	m_strInstanceTag = "EffectEditorCamera";
 
 	AddComponent<CameraComponent>();
 

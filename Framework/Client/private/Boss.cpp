@@ -4,6 +4,7 @@
 #include "Random.h"
 
 //object
+#include "DamageFont.h"
 #include "Socket.h"
 #include "Boss_Core.h"
 #include "Boss_RightArm.h"
@@ -16,6 +17,7 @@
 //component	
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
+#include "StatusComponent.h"
 #include "ColliderComponent.h"
 
 Boss::Boss()
@@ -49,6 +51,7 @@ HRESULT Boss::Initialize_Prototype()
 
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
+	AddComponent<StatusComponent>();
 	AddComponent<ColliderComponent>();
 
 	m_strInstanceTag = "Boss";
@@ -74,7 +77,6 @@ HRESULT Boss::Initialize(InitDESC* arg)
 	aabbDesc.halfSize = _float3{ 50.f,50.f,25.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
-	
 	engine->RegisterCollider(collider);
 
 	/*model*/
@@ -86,6 +88,12 @@ HRESULT Boss::Initialize(InitDESC* arg)
 	animator->SetAnimation(ENUM_CLASS(LevelID::StageBoss), "AnimationSet_Enemy_Boss");
 
 	model->ConnectAnimator();
+
+	/*status*/
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.hp = 10000;
+	auto status = GetComponent<StatusComponent>();
+	status->Initialize(&statusDesc);
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
@@ -100,6 +108,9 @@ HRESULT Boss::Initialize(InitDESC* arg)
 
 	ChangeState(&m_BossIdle);
 
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossHpPanel", ENUM_CLASS(LevelID::StageBoss), "Layer_UI")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -113,7 +124,12 @@ void Boss::Update(_float dt)
 	__super::Update(dt);
 
 	if (EngineCore::GetInstance()->IsKeyPressed('K'))
-		ChangeState(&m_BossIdle);
+	{	
+		auto status = GetComponent<StatusComponent>();
+		status->BeAttacked(10000);
+		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
+		ChangeState(&m_BossDie);
+	}
 }
 
 void Boss::LateUpdate(_float dt)
@@ -121,10 +137,78 @@ void Boss::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+void Boss::HitBody(_uint attackPower)
+{
+	if (&m_BossDie == m_CurrState)
+		return;
+	
+	auto status = GetComponent<StatusComponent>();
+	status->BeAttacked(attackPower);
+
+	if (0 == status->GetDesc().hp)
+		ChangeState(&m_BossDie);
+
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+
+	DamageFont::DAMAGE_FONT_DESC desc{};
+	desc.position = m_pTransform->GetPosition();
+	desc.position.x += random->get<_float>(-50.f, 50.f);
+	desc.position.y += 150.f;
+	desc.position.z += random->get<_float>(-50.f, 50.f);
+	desc.fontSize = 0.04f;
+	desc.number = random->get<_uint>(600, 900);
+	desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+	engine->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
+}
+
+void Boss::HitWeakness(_uint attackPower)
+{
+	if (&m_BossDie == m_CurrState)
+		return;
+
+	auto status = GetComponent<StatusComponent>();
+	status->BeAttacked(attackPower * 1.2f);
+
+	if (0 == status->GetDesc().hp)
+		ChangeState(&m_BossDie);
+
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+
+	DamageFont::DAMAGE_FONT_DESC desc{};
+	desc.position = m_pTransform->GetPosition();
+	desc.position.x += random->get<_float>(-30.f, 30.f);
+	desc.position.y += 150.f;
+	desc.position.z += random->get<_float>(-30.f, 30.f);
+	desc.fontSize = 0.06f;
+	desc.number = random->get<_uint>(900, 1200);
+	desc.color = _float4{ 1.f,1.f,0.f,1.f };
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+	engine->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
+}
+
 void Boss::Dead()
 {
 	if(m_CurrState != &m_BossDie)
 		ChangeState(&m_BossDie);
+}
+
+void Boss::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case ColliderFilter::PlayerProjectile:
+	{
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+		HitBody(otherStatus->GetDesc().attackPower);
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* Boss::Clone(InitDESC* arg)

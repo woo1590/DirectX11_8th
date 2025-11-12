@@ -4,6 +4,7 @@
 #include "LoadingLevel.h"
 #include "VIBufferCube.h"
 #include "VIBufferQuad.h"
+#include "VIBuffer_Point.h"
 
 //object
 #include "Socket.h"
@@ -129,6 +130,10 @@ HRESULT MainApp::LoadStaticLevel()
         if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxSkinnedMesh.hlsl", "Shader_VtxSkinnedMesh",
             VTXSKINNEDMESH::elements, VTXSKINNEDMESH::numElement)))
             return E_FAIL;
+
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxPoint.hlsl", "Shader_VtxPoint",
+            VTXPOS::elements, VTXPOS::numElement)))
+            return E_FAIL;
     }
     /*Load Buffer*/
     {
@@ -136,6 +141,9 @@ HRESULT MainApp::LoadStaticLevel()
             return E_FAIL;
 
         if (FAILED(m_pEngineCore->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Cube", VIBufferCube::Create())))
+            return E_FAIL;
+        
+        if (FAILED(m_pEngineCore->LoadBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Point", VIBuffer_Point::Create())))
             return E_FAIL;
     }
     /*Load Material*/

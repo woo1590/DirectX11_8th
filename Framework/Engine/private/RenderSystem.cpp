@@ -43,6 +43,9 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderPriority(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Priority)])))
 		return E_FAIL;
 
+	if (FAILED(m_pRenderer->RenderShadow(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Shadow)])))
+		return E_FAIL;
+
 	if (FAILED(m_pRenderer->RenderNonBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NonBlend)])))
 		return E_FAIL;
 

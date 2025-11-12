@@ -52,6 +52,8 @@ public:
     void AddCamera(const _string& cameraTag, class CameraComponent* component);
     void SetMainCamera(const _string& cameraTag);
     CAMERA_CONTEXT GetCameraContext();
+    CAMERA_CONTEXT GetShadowCameraContext();
+    _float3 WorldToScreen(_float3 worldPosition);   /*only use late update*/
 #pragma endregion
 
 #pragma region Resource
@@ -59,6 +61,7 @@ public:
     HRESULT LoadShaderFromFile(const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadMaterial(_uint levelID, const _string& key, class Material* material);
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadNavMeshFromFile(_uint levelID, const _string& filePath, const _string& key);
@@ -134,8 +137,9 @@ public:
     HRESULT AddRenderTarget(const _string& targetTag, _uint width, _uint height, DXGI_FORMAT format, _float4 clearColor);
     HRESULT AddMRT(const _string& mrtTag, const _string& targetTag);
     HRESULT BindShaderResource(class Shader* shader, const _string& targetTag, const _string& constantName);
-    HRESULT BeginMRT(const _string& mrtTag);
+    HRESULT BeginMRT(const _string& mrtTag, _bool isClearDSV = false, ID3D11DepthStencilView* dsv = nullptr);
     HRESULT EndMRT();
+    ID3D11ShaderResourceView* GetSRV(const _string& targetTag);
 #pragma endregion
 
 #pragma region EventSystem
@@ -199,8 +203,8 @@ private:
     class CollisionSystem*     m_pCollisionSystem = nullptr;
     class EventSystem*         m_pEventSystem = nullptr;
 
-    _bool m_NavDebugEnable = true;
-    _bool m_ColliderDebugEnable = true;
+    _bool m_NavDebugEnable = false;
+    _bool m_ColliderDebugEnable = false;
     _bool m_RenderTargetDebugEnable = true;
 };
 

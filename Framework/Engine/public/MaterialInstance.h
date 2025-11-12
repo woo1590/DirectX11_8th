@@ -4,6 +4,7 @@
 NS_BEGIN(Engine)
 
 class Shader;
+class Texture;
 class ENGINE_DLL MaterialInstance :
     public Base
 {
@@ -23,6 +24,7 @@ public:
     void SetFloat3(_string name, _float3 param);
     void SetFloat4(_string name, _float4 param);
     void SetFloat4x4(_string name, _float4x4 param);
+    void SetTexture(_string name, ID3D11ShaderResourceView* texture);
     void Free()override;
 
 private:
@@ -33,6 +35,7 @@ private:
     std::unordered_map<_string, _float3> m_Float3Params;
     std::unordered_map<_string, _float4> m_Float4Params;
     std::unordered_map<_string, _float4x4> m_Float4x4Params;
+    std::unordered_map<_string, ID3D11ShaderResourceView*> m_TextureParams;
 };
 
 NS_END

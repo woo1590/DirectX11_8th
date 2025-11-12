@@ -99,7 +99,7 @@ void Ammo::Interaction(PlayerInteractionComponent* interaction)
 {
 	auto random = EngineCore::GetInstance()->GetRandom();
 
-	_uint ammo = random->get<_uint>(15, 22);
+	_uint ammo = random->get<_uint>(50, 70);
 
 	interaction->AddAmmo(ammo);
 

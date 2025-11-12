@@ -2,6 +2,9 @@
 #include "DefaultBullet.h"
 #include "Bounding_Sphere.h"
 
+//object
+#include "DamageFont.h"
+
 //component
 #include "ModelComponent.h"
 #include "ColliderComponent.h"
@@ -109,6 +112,8 @@ void DefaultBullet::LateUpdate(_float dt)
 
 void DefaultBullet::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	auto engine = EngineCore::GetInstance();
+
 	SetDead();
 }
 

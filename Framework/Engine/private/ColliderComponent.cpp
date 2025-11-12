@@ -275,6 +275,7 @@ void ColliderComponent::Draw()
 	m_pEffect->SetProjection(XMLoadFloat4x4(&camContext.projMatrix));
 	m_pEffect->Apply(m_pDeviceContext);
 	
+	m_pDeviceContext->GSSetShader(nullptr, nullptr, NULL);
 	m_pDeviceContext->OMSetDepthStencilState(m_pDSState,0);
 	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 

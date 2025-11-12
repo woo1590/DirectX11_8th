@@ -50,6 +50,7 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void HitHead();
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;

@@ -157,7 +157,65 @@ HRESULT StageBoss::Initialize_LayerLights(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if(FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static),"Prototype_Object_Sun",ENUM_CLASS(LevelID::StageBoss),layerTag)))
+	Object::OBJECT_DESC desc{};
+	desc.position = _float3{ 0.f, 234.f, 567.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -40.f, 234.f, 867.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 140.f, 234.f, 467.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -140.f, 234.f, 667.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 140.f, 234.f, 667.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -140.f, 234.f, 467.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 40.f, 234.f, 867.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+	
+	desc.position = _float3{ -40.f, 234.f, 667.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+	
+	desc.position = _float3{ 40.f, 234.f, 467.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+	
+	desc.position = _float3{ -40.f, 234.f, 567.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+	
+	desc.position = _float3{ 40.f, 234.f, 567.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 100.f, 234.f, 267.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -100.f, 234.f, 267.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -100.f, 234.f, 267.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 0.f, 234.f, 67.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
 		return E_FAIL;
 
 	return S_OK;

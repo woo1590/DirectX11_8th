@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "SpearMan_Head.h"
 #include "Bounding_Sphere.h"
+#include "SpearMan.h"
 
 //component
+#include "StatusComponent.h"
 #include "ColliderComponent.h"
 
 
@@ -70,6 +72,12 @@ void SpearMan_Head::Update(_float dt)
 void SpearMan_Head::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+void SpearMan_Head::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+	static_cast<SpearMan*>(m_pParent)->HitHead(otherStatus->GetDesc().attackPower);
 }
 
 Object* SpearMan_Head::Clone(InitDESC* arg)

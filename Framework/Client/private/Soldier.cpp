@@ -8,6 +8,8 @@
 #include "Soldier_Head.h"
 #include "Soldier_Sword.h"
 #include "Fracture.h"
+#include "DamageFont.h"
+#include "EnemyHpPanel.h"
 
 //component
 #include "ModelComponent.h"
@@ -98,17 +100,18 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 200;
+	statusDesc.hp = 100;
 	statusDesc.attackPower = 1;
-	statusDesc.shield = 100;
 	statusDesc.speed = 40.f;
 	status->Initialize(&statusDesc);
 
 	ChangeState(&m_SoldierShow);
 
+	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
+
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 
@@ -120,16 +123,33 @@ void Soldier::PriorityUpdate(_float dt)
 void Soldier::Update(_float dt)
 {
 	__super::Update(dt);
+
+	_float4x4 hpPanelMat = GetComponent<ModelComponent>()->GetCombinedMatrixByIndex(m_iHpPanelBoneIndex);
+	_float4x4 worldMat = m_pTransform->GetWorldMatrix();
+	_matrix panelMat = XMLoadFloat4x4(&hpPanelMat) * XMLoadFloat4x4(&worldMat);
+	_vector positionV, scaleV, rotV;
+	_float3 position{};
+	XMMatrixDecompose(&scaleV, &rotV, &positionV, panelMat);
+	XMStoreFloat3(&position, positionV);
+
+	auto engine = EngineCore::GetInstance();
+	EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+	param.ownerID = m_iEnemyID;
+	param.position = position;
+
+	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHpPanelPositionUpdate), param);
 }
 	
 void Soldier::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+
 }
 
-void Soldier::HitHead()
+void Soldier::HitHead(_uint attackPower)
 {
 	auto status = GetComponent<StatusComponent>();
+	status->BeAttacked(attackPower);
 
 	if (0 == status->GetDesc().hp)
 		ChangeState(&m_SoldierDead);
@@ -142,10 +162,30 @@ void Soldier::HitHead()
 			m_fElapsedTime = 0.f;
 		}
 	}
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+
+	DamageFont::DAMAGE_FONT_DESC desc{};
+	desc.position = m_pTransform->GetPosition();
+	desc.position.y += 5.f;
+	desc.fontSize = 0.06f;
+	desc.number = random->get<_uint>(900, 1200);
+	desc.color = _float4{ 1.f,1.f,0.f,1.f };
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+	EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+	param.ownerID = m_iEnemyID;
+	param.ratio = status->GetHpRatio();
+	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
 }
 
 void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{
 	case ColliderFilter::PlayerAttack:
@@ -165,6 +205,21 @@ void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 				m_fElapsedTime = 0.f;
 			}
 		}
+		DamageFont::DAMAGE_FONT_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.position.y += 5.f;
+		desc.fontSize = 0.04f;
+		desc.number = random->get<_uint>(600, 900);
+		desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+
+		EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+		param.ownerID = m_iEnemyID;
+		param.ratio = status->GetHpRatio();
+		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
 	}break;
 	case ColliderFilter::PlayerProjectile:
 	{
@@ -183,6 +238,21 @@ void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 				m_fElapsedTime = 0.f;
 			}
 		}
+
+		DamageFont::DAMAGE_FONT_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.position.y += 5.f;
+		desc.fontSize = 0.04f;
+		desc.number = random->get<_uint>(600, 900);
+		desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+		EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+		param.ownerID = m_iEnemyID;
+		param.ratio = status->GetHpRatio();
+		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
 	}break;
 	default:
 		break;

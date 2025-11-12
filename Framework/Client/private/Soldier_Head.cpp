@@ -2,8 +2,11 @@
 #include "Soldier_Head.h"
 #include "Bounding_Sphere.h"
 #include "Soldier.h"
+#include "Random.h"
+#include "DamageFont.h"
 
 //component
+#include "StatusComponent.h"
 #include "ColliderComponent.h"
 
 Soldier_Head::Soldier_Head()
@@ -74,7 +77,8 @@ void Soldier_Head::LateUpdate(_float dt)
 
 void Soldier_Head::OnCollisionEnter(ColliderComponent* otherCollider)
 {
-	static_cast<Soldier*>(m_pParent)->HitHead();
+	auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+	static_cast<Soldier*>(m_pParent)->HitHead(otherStatus->GetDesc().attackPower);
 }
 
 Object* Soldier_Head::Clone(InitDESC* arg)

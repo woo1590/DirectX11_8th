@@ -2,8 +2,10 @@
 #include "CrossbowMan.h"
 #include "Bounding_AABB.h"
 #include "Random.h"
+#include "DamageFont.h"
 
 #include "Fracture.h"
+#include "EnemyHpPanel.h"
 
 //component
 #include "StatusComponent.h"
@@ -94,6 +96,7 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     nav->SetMoveSpeed(35.f);
     nav->SetArriveRange(60.f);
 
+    m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
     m_iMuzzleBoneIndex = model->GetBoneIndex("muzzle");
     m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
     ChangeState(&m_CrossbowManShow);
@@ -110,8 +113,20 @@ void CrossbowMan::Update(_float dt)
 {
     __super::Update(dt);
 
-    if (EngineCore::GetInstance()->IsKeyPressed('1'))
-        ChangeState(&m_CrossbowManDead);
+    _float4x4 hpPanelMat = GetComponent<ModelComponent>()->GetCombinedMatrixByIndex(m_iHpPanelBoneIndex);
+    _float4x4 worldMat = m_pTransform->GetWorldMatrix();
+    _matrix panelMat = XMLoadFloat4x4(&hpPanelMat) * XMLoadFloat4x4(&worldMat);
+    _vector positionV, scaleV, rotV;
+    _float3 position{};
+    XMMatrixDecompose(&scaleV, &rotV, &positionV, panelMat);
+    XMStoreFloat3(&position, positionV);
+
+    auto engine = EngineCore::GetInstance();
+    EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+    param.ownerID = m_iEnemyID;
+    param.position = position;
+
+    engine->PublishEvent(ENUM_CLASS(EventID::EnemyHpPanelPositionUpdate), param);
 }
 
 void CrossbowMan::LateUpdate(_float dt)
@@ -119,8 +134,44 @@ void CrossbowMan::LateUpdate(_float dt)
     __super::LateUpdate(dt);
 }
 
+void CrossbowMan::HitHead()
+{
+    auto status = GetComponent<StatusComponent>();
+
+    if (0 == status->GetDesc().hp)
+        ChangeState(&m_CrossbowManDead);
+
+    if (m_CurrState == &m_CrossbowManIdle || m_CurrState == &m_CrossbowManRun)
+    {
+        if (m_fElapsedTime >= m_fHitDelay)
+        {
+            ChangeState(&m_CrossbowManHitHead);
+            m_fElapsedTime = 0.f;
+        }
+    }
+    auto engine = EngineCore::GetInstance();
+    auto random = engine->GetRandom();
+
+    DamageFont::DAMAGE_FONT_DESC desc{};
+    desc.position = m_pTransform->GetPosition();
+    desc.position.y += 5.f;
+    desc.fontSize = 0.06f;
+    desc.number = random->get<_uint>(900, 1200);
+    desc.color = _float4{ 1.f,1.f,0.f,1.f };
+
+    engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+    EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+    param.ownerID = m_iEnemyID;
+    param.ratio = status->GetHpRatio();
+    engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+}
+
 void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+    auto engine = EngineCore::GetInstance();
+    auto random = engine->GetRandom();
+
     switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
     {
     case ColliderFilter::PlayerAttack:
@@ -140,6 +191,21 @@ void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
                 m_fElapsedTime = 0.f;
             }
         }
+
+        DamageFont::DAMAGE_FONT_DESC desc{};
+        desc.position = m_pTransform->GetPosition();
+        desc.position.y += 5.f;
+        desc.fontSize = 0.04f;
+        desc.number = random->get<_uint>(600, 900);
+        desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+        engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+        EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+        param.ownerID = m_iEnemyID;
+        param.ratio = status->GetHpRatio();
+        engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
     }break;
     case ColliderFilter::PlayerProjectile:
     {
@@ -158,6 +224,21 @@ void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
                 m_fElapsedTime = 0.f;
             }
         }
+
+        DamageFont::DAMAGE_FONT_DESC desc{};
+        desc.position = m_pTransform->GetPosition();
+        desc.position.y += 5.f;
+        desc.fontSize = 0.04f;
+        desc.number = random->get<_uint>(600, 900);
+        desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+        engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+        EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+        param.ownerID = m_iEnemyID;
+        param.ratio = status->GetHpRatio();
+        engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
     }break;
     default:
         break;

@@ -58,11 +58,23 @@ namespace Client
 		MaxAmmoChange,
 		CurrAmmoChange,
 		WeaponReload,
+		BossHealthDecrease,
+		EnemyHpPanelPositionUpdate,
+		EnemyHealthDecrease,
+		EnemyDead,
 		Count
 	};
 	enum class SkillID
 	{
 		Dash,
+		Count
+	};
+
+	enum class EffectNodeType
+	{
+		Mesh,
+		Sprite,
+		Particle,
 		Count
 	};
 

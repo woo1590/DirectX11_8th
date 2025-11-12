@@ -63,7 +63,7 @@ HRESULT RenderTargetManager::BindShaderResource(Shader* shader, const _string& t
 	return target->BindShaderResource(shader, constantName);
 }
 
-HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag)
+HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag, _bool isClearDSV, ID3D11DepthStencilView* dsv)
 {
 	std::list<RenderTarget*>* mrt = FindMRT(mrtTag);
 	if (!mrt)
@@ -85,8 +85,14 @@ HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag)
 	if (numTargets >= 8)
 		return E_FAIL;
 
-	m_pDeviceContext->OMSetRenderTargets(numTargets, renderTargets, m_pDSV);
+	if (isClearDSV && dsv)
+		m_pDeviceContext->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
+	if(dsv)
+		m_pDeviceContext->OMSetRenderTargets(numTargets, renderTargets, dsv);
+	else
+		m_pDeviceContext->OMSetRenderTargets(numTargets, renderTargets, m_pDSV);
+	
 	return S_OK;
 }
 
@@ -100,6 +106,15 @@ HRESULT RenderTargetManager::EndMRT()
 	Safe_Release(m_pDSV);
 
 	return S_OK;
+}
+
+ID3D11ShaderResourceView* RenderTargetManager::GetSRV(const _string& targetTag)
+{
+	RenderTarget* target = FindRenderTarget(targetTag);
+	if (!target)
+		return nullptr;
+
+	return target->GetSRV();
 }
 
 HRESULT RenderTargetManager::Intialize()

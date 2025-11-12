@@ -4,6 +4,7 @@
 #include "Boss.h"
 
 //component
+#include "StatusComponent.h"
 #include "ColliderComponent.h"
 
 Boss_Core::Boss_Core()
@@ -80,8 +81,10 @@ void Boss_Core::OnCollisionEnter(ColliderComponent* other)
 	{
 	case ColliderFilter::PlayerProjectile:
 	{
+		auto otherStatus = other->GetOwner()->GetComponent<StatusComponent>();
+
 		auto boss = static_cast<Boss*>(m_pParent);
-		boss->Dead();
+		boss->HitWeakness(otherStatus->GetDesc().attackPower);
 	}break;
 	default:
 		break;

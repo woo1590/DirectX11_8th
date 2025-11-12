@@ -99,9 +99,7 @@ HRESULT Material::BindMaterial(_int frameIndex, MaterialInstance* mtrlInstance)
 
 	/*Bind material instance*/
 	if (mtrlInstance)
-	{
 		return mtrlInstance->BindMaterialInstance(m_pShader);
-	}
 	else
 		return m_pShader->Apply("Default_Pass");
 

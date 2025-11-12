@@ -19,8 +19,11 @@ public:
     HRESULT AddRenderTarget(const _string& targetTag, _uint width, _uint height, DXGI_FORMAT format, _float4 clearColor);
     HRESULT AddMRT(const _string& mrtTag, const _string& targetTag);
     HRESULT BindShaderResource(Shader* shader, const _string& targetTag, const _string& constantName);
-    HRESULT BeginMRT(const _string& mrtTag);
+    HRESULT BeginMRT(const _string& mrtTag, _bool isClearDSV = false, ID3D11DepthStencilView* dsv = nullptr);
     HRESULT EndMRT();
+    
+    /*getter*/
+    ID3D11ShaderResourceView* GetSRV(const _string& targetTag);
 
     /*for debug*/
     const std::unordered_map<_string, RenderTarget*>& GetRenderTargets() { return m_RenderTargets; }

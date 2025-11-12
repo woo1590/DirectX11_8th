@@ -24,6 +24,7 @@ public:
     HRESULT LoadBuffer(_uint levelID, const _string& key, VIBuffer* pBuffer);
     HRESULT LoadBufferFromModel() { return S_OK; }
     HRESULT LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadMaterial(_uint levelID, const _string& key, Material* material);
     HRESULT LoadShaderFromFile(const _string& filePath, const _string& key,
                                const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement);
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);

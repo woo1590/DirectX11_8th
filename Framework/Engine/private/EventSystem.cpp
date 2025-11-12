@@ -24,15 +24,10 @@ HRESULT EventSystem::Intialize(_uint numEvents)
 
 void EventSystem::Update(_float dt)
 {
-	_uint currEvents = m_Events.size();
-
 	RemoveListener();
 
-	for (_uint i = 0; i < currEvents; ++i)
+	while (!m_Events.empty())
 	{
-		if (m_Events.empty())
-			break;
-
 		auto& event = m_Events.front();
 
 		for (const auto& listener : m_Listeners[event.eventID])
@@ -98,4 +93,6 @@ void EventSystem::RemoveListener()
 			}
 		}
 	}
+
+	m_RemoveHandler.clear();
 }

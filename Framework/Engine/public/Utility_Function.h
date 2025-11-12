@@ -140,6 +140,7 @@ namespace math
 
 		return length / 2.0f;
 	}
+
 };
 
 namespace DXWrap

@@ -51,6 +51,7 @@ void LoadingLevel::Update(_float dt)
 	if (m_pLoader->IsFinish())
 	{
 		Level* nextLevel = nullptr;
+		auto engine = EngineCore::GetInstance();
 
 		switch (m_eNextLevelID)
 		{
@@ -61,7 +62,10 @@ void LoadingLevel::Update(_float dt)
 			nextLevel = Stage1::Create();
 			break;
 		case Client::LevelID::StageBoss:
+		{
 			nextLevel = StageBoss::Create();
+			engine->PublishEvent(ENUM_CLASS(EventID::ChangeLevel));
+		}
 			break;
 		default:
 			break;

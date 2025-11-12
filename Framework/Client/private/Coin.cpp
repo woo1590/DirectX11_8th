@@ -74,6 +74,8 @@ HRESULT Coin::Initialize(InitDESC* arg)
 	m_pTransform->SetScale(_float3{ 1.2f,1.2f,1.2f });
 	ChangeState(&m_CoinSpawn);
 
+	m_UseShadow = true;
+
 	return S_OK;
 }
 

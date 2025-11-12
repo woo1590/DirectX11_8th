@@ -74,6 +74,8 @@ HRESULT Fracture::Initialize(InitDESC* arg)
 	rigidBody->UseIntegrate();
 	rigidBody->SetInertiaTensor(1.5f);
 
+	m_UseShadow = true;
+
 	return S_OK;
 }
 

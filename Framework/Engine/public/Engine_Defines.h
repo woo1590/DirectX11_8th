@@ -87,6 +87,11 @@ using namespace DirectX;
 //util
 #include "Utility_Function.h"
 
+namespace Engine
+{
+	constexpr _uint g_iMaxWidth = 8192;
+	constexpr _uint g_iMaxHeight = 4608;
+}
 
 
 #define DIRECTINPUT_VERSION	0x0800

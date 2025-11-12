@@ -133,6 +133,13 @@ HRESULT ResourceManager::LoadMaterialFromJson(_uint levelID, const _string& file
 	return S_OK;
 }
 
+HRESULT ResourceManager::LoadMaterial(_uint levelID, const _string& key, Material* material)
+{
+	m_Materials[levelID].emplace(key, material);
+
+	return S_OK;
+}
+
 HRESULT ResourceManager::LoadShaderFromFile(const _string& filePath, const _string& key, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint numElement)
 {
 	auto shader = Shader::Create(filePath, pElement, numElement);

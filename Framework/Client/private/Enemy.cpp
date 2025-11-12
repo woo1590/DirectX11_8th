@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "Enemy.h"
 #include "Random.h"
+#include "EnemyHpPanel.h"
 
 //component
 #include "RigidBodyComponent.h"
+
+_uint Enemy::m_iNextEnemyID = 0;
 
 Enemy::Enemy()
 	:ContainerObject()
@@ -13,6 +16,32 @@ Enemy::Enemy()
 Enemy::Enemy(const Enemy& prototype)
 	:ContainerObject(prototype)
 {
+}
+
+HRESULT Enemy::Initialize(InitDESC* arg)
+{
+    if (FAILED(__super::Initialize(arg)))
+        return E_FAIL;
+
+    m_UseShadow = true;
+
+    return S_OK;
+}
+
+HRESULT Enemy::LateInitialize()
+{
+    __super::LateInitialize();
+
+    auto engine = EngineCore::GetInstance();
+
+    m_iEnemyID = m_iNextEnemyID++;
+
+    EnemyHpPanel::ENEMY_HP_PANEL_DESC desc{};
+    desc.ownerID = m_iEnemyID;
+    desc.scale = _float3{ 1.f,1.f,1.f };
+    engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyHpPanel", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+    return S_OK;
 }
 
 void Enemy::Update(_float dt)
@@ -34,6 +63,11 @@ void Enemy::SetDead()
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
     
+
+    EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+    param.ownerID = m_iEnemyID;
+    engine->PublishEvent(ENUM_CLASS(EventID::EnemyDead), param);
+
 	_uint numCoins = random->get<_uint>(4, 6);
     for (_uint i = 0; i < 5; ++i)
     {

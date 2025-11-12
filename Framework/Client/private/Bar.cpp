@@ -158,17 +158,24 @@ void Bar::LateUpdate(_float dt)
 
 void Bar::MakeChange(BAR_CHANGE_PARAM param)
 {
-	m_IsChanged = true;
-	m_IsUsedAlpha = param.useAlpha;
-	m_IsPaused = param.paused;
-	m_IsImmediateChange = param.immediate;
+	if (m_IsChanged)
+	{
+		m_fTargetRatio = param.targetRatio;
+	}
+	else
+	{
+		m_IsChanged = true;
+		m_IsUsedAlpha = param.useAlpha;
+		m_IsPaused = param.paused;
+		m_IsImmediateChange = param.immediate;
 
-	m_fTargetRatio = param.targetRatio;
-	m_fPauseDuration = param.pauseDuration;
-	m_fDuration = param.duration;
+		m_fTargetRatio = param.targetRatio;
+		m_fPauseDuration = param.pauseDuration;
+		m_fDuration = param.duration;
 
-	m_fElapsedTime = 0.f;
-	m_fPauseElapsedTime = 0.f;
+		m_fElapsedTime = 0.f;
+		m_fPauseElapsedTime = 0.f;
+	}
 }
 
 void Bar::InverseAlpha()

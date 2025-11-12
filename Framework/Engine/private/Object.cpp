@@ -95,7 +95,12 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 		return S_OK;
 
 	if (model)
+	{
+		if (m_UseShadow)
+			model->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::Shadow)]);
+
 		return model->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
+	}
 	else if (sprite)
 		return sprite->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
 

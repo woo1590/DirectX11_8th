@@ -41,8 +41,9 @@ HRESULT Sun::Initialize(InitDESC* arg)
 
 	LightComponent::LIGHT_DESC lightDesc{};
 	lightDesc.type = LightType::Point;
-	lightDesc.color = _float4(1.f, 1.f, 1.f, 1.f);
-	lightDesc.range = 500.f;
+	lightDesc.direction = _float4{ 1.f,-1.f,1.f,0.f };
+	lightDesc.color = _float4(0.6f, 0.6f, 0.8f, 1.f);
+	lightDesc.range = 300.f;
 
 	if (FAILED(GetComponent<LightComponent>()->Initialize(&lightDesc)))
 		return E_FAIL;

@@ -38,15 +38,19 @@ HRESULT SpriteComponent::Initialize(InitDESC* arg)
 	{
 		SPRITE_DESC* desc = static_cast<SPRITE_DESC*>(arg);
 
+		m_UseBillBoard = desc->useBillboard;
 		m_isAnimated = desc->isAnimated;
 		m_isRepeat = desc->isRepeat;
 		m_iMaxFrameIndex = desc->iMaxFrameIndex;
 		m_fSpeed = desc->fSpeed;
 	}
 
-	m_pMaterialInstance = MaterialInstance::Create();
 	if (!m_pMaterialInstance)
-		return E_FAIL;
+	{
+		m_pMaterialInstance = MaterialInstance::Create();
+		if (!m_pMaterialInstance)
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -68,7 +72,10 @@ void SpriteComponent::Update(_float dt)
 			if (m_isRepeat)
 				m_iCurrFrameIndex = 0;
 			else
+			{
 				m_iCurrFrameIndex--;
+				m_isEnd = true;
+			}
 		}
 
 		m_fElapsedTime = 0.f;

@@ -172,7 +172,7 @@ void Player::Update(_float dt)
 		param.ratio = status->GetShieldRatio();
 		param.currShield = status->GetDesc().shield;
 
-		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::PlayerShieldIncrease),param);
+		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::PlayerShieldIncrease), param);
 	}
 
 	KeyInput(dt);

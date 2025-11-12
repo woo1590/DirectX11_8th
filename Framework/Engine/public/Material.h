@@ -22,6 +22,7 @@ public:
     HRESULT BindMaterial(_int frameIndex, MaterialInstance* mtrlInstance);
     void SetTexture(const _string& key, Texture* value);
 
+    Shader* GetShader()const { return m_pShader; }
     void Free()override;
 
 protected:

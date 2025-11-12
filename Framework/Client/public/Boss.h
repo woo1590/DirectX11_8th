@@ -41,7 +41,11 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void HitBody(_uint attackPower);
+    void HitWeakness(_uint attackPower);
     void Dead();
+
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;

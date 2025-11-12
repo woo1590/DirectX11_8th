@@ -23,9 +23,12 @@ public:
     void Update(_float dt)override;
     
     HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
+    HRESULT ExtractShadowProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
     HRESULT ConnectAnimator();
 
     /*Setter*/
+    void ShadowEnable() { m_IsDrawShadow = true; }
+    void ShadowDisable() { m_IsDrawShadow = false; }
     HRESULT SetModel(_uint levelID, const _string& key);
     void SetOverride(Material* pMaterial);
     void ClearOverride();
@@ -45,6 +48,7 @@ public:
 
 private:
     Model* m_pModel = nullptr;
+    _bool m_IsDrawShadow = true;
     std::vector<BONE_PALETTE> m_BonePalettes;
 
     Material* m_pOverrideMtrl = nullptr;

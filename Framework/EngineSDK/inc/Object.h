@@ -76,6 +76,7 @@ public:
 
 protected:
     _bool m_IsLateInitialized = false;
+
     _string m_strInstanceTag{};
     static _uint m_iInstanceID;
     _uint m_iCurrLevelID{};
@@ -86,6 +87,7 @@ protected:
 
     RenderGroup m_eRenderGroup = RenderGroup::NonBlend;
     _bool m_isDead = false;
+    _bool m_UseShadow = false;
 
 protected:
     /*fsm*/

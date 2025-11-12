@@ -260,7 +260,7 @@ HRESULT WeaponPanel::CreateChildren()
 		CountNumber::COUNT_NUMBER_DESC numDesc{};
 		numDesc.parent = this;
 		numDesc.color = _float4{ 1.f,1.f,1.f,1.f };
-		numDesc.position = _float3{ m_fSizeX * 0.25f,m_fSizeY * 0.4f,0.f };
+		numDesc.position = _float3{ m_fSizeX * 0.27f,m_fSizeY * 0.4f,0.f };
 		numDesc.scale = _float3{ 60.f * 0.4f,60.f * 0.4f,1.f };
 		numDesc.priority = 1;
 		

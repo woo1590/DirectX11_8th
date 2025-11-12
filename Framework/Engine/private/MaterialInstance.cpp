@@ -77,6 +77,15 @@ HRESULT MaterialInstance::BindMaterialInstance(Shader* shader)
 			return E_FAIL;
 		}
 	}
+	/*Tex params*/
+	for (const auto& pair : m_TextureParams)
+	{
+		if (FAILED(shader->BindShaderResource(pair.first, pair.second)))
+		{
+			MSG_BOX("Failed to bind float4x4 : MaterialInstance");
+			return E_FAIL;
+		}
+	}
 
 	return shader->Apply(m_strPassTag);
 }
@@ -111,7 +120,17 @@ void MaterialInstance::SetFloat4x4(_string name, _float4x4 param)
 	m_Float4x4Params[name] = param;
 }
 
+void MaterialInstance::SetTexture(_string name, ID3D11ShaderResourceView* srv)
+{
+	m_TextureParams[name] = srv;
+	srv->AddRef();
+}
+
 void MaterialInstance::Free()
 {
 	__super::Free();
+
+	for (auto& pair : m_TextureParams)
+		Safe_Release(pair.second);
+	m_TextureParams.clear();
 }

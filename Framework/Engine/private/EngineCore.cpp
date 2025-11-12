@@ -289,6 +289,14 @@ CAMERA_CONTEXT EngineCore::GetCameraContext()
 {
 	return m_pCameraManager->GetCameraContext();
 }
+CAMERA_CONTEXT EngineCore::GetShadowCameraContext()
+{
+	return m_pCameraManager->GetShadowCameraContext();
+}
+_float3 EngineCore::WorldToScreen(_float3 worldPosition)
+{
+	return m_pCameraManager->WorldToScreen(worldPosition);
+}
 #pragma endregion
 
 #pragma region Resource
@@ -303,6 +311,10 @@ HRESULT EngineCore::LoadShaderFromFile(const _string& filePath, const _string& k
 HRESULT EngineCore::LoadMaterialFromJson(_uint levelID, const _string& filePath, const _string& key)
 {
 	return m_pResourceManager->LoadMaterialFromJson(levelID, filePath, key);
+}
+HRESULT EngineCore::LoadMaterial(_uint levelID,const _string& key, Material* material)
+{
+	return m_pResourceManager->LoadMaterial(levelID, key, material);
 }
 HRESULT EngineCore::LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key)
 {
@@ -525,13 +537,17 @@ HRESULT EngineCore::BindShaderResource(Shader* shader, const _string& targetTag,
 {
 	return m_pRenderTargetManager->BindShaderResource(shader, targetTag, constantName);
 }
-HRESULT EngineCore::BeginMRT(const _string& mrtTag)
+HRESULT EngineCore::BeginMRT(const _string& mrtTag, _bool isClearDSV, ID3D11DepthStencilView* dsv)
 {
-	return m_pRenderTargetManager->BeginMRT(mrtTag);
+	return m_pRenderTargetManager->BeginMRT(mrtTag, isClearDSV, dsv);
 }
 HRESULT EngineCore::EndMRT()
 {
 	return m_pRenderTargetManager->EndMRT();
+}
+ID3D11ShaderResourceView* EngineCore::GetSRV(const _string& targetTag)
+{
+	return m_pRenderTargetManager->GetSRV(targetTag);
 }
 #pragma endregion
 

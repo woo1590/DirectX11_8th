@@ -67,17 +67,11 @@ void Stage1::Update(_float dt)
 
 	if (engine->IsKeyPressed('N'))
 	{
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-
 	}
-
-	if (engine->IsKeyPressed('H'))
-		engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), 0.5f);
-	if (engine->IsKeyPressed('G'))
-		engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthIncrease), 1.f);
 }
 
 HRESULT Stage1::Render()
@@ -174,8 +168,21 @@ HRESULT Stage1::Initialize_LayerLights(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun",
-		ENUM_CLASS(LevelID::Stage1), layerTag)))
+	Object::OBJECT_DESC desc{};
+
+	desc.position = _float3{ 50.f,150.f,44.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
+		return E_FAIL;
+	desc.position = _float3{ 96.f,150.f,104.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 650.f,150.f,307.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 920.f, 150.f, 400.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -225,19 +232,19 @@ HRESULT Stage1::Initialize_LayerChest(const _string& layerTag)
 
 	Chest::CHEST_DESC chest1Desc{};
 	chest1Desc.weaponID = WeaponID::Prism;
-	chest1Desc.position = _float3{ 30.f,0.f,200.f };
+	chest1Desc.position = _float3{ 40.f,0.f,200.f };
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest1Desc)))
 		return E_FAIL;
 
 	Chest::CHEST_DESC chest2Desc{};
 	chest2Desc.weaponID = WeaponID::Cameleon;
-	chest2Desc.position = _float3{ 30.f,0.f,250.f };
+	chest2Desc.position = _float3{ 40.f,0.f,250.f };
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest2Desc)))
 		return E_FAIL;
 
 	Chest::CHEST_DESC chest3Desc{};
 	chest3Desc.weaponID = WeaponID::ConcealedAmmo;
-	chest3Desc.position = _float3{ 10.f,0.f,200.f };
+	chest3Desc.position = _float3{ 40.f,0.f,150.f };
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest3Desc)))
 		return E_FAIL;
 

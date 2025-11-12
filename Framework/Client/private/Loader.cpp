@@ -4,7 +4,7 @@
 
 //object
 #include "BackGround.h"
-#include "ThirdCam.h"
+#include "ShadowCam.h"
 #include "Terrain.h"
 #include "Sun.h"
 
@@ -27,6 +27,10 @@
 #include "EffectBackground.h"
 #include "CountNumber.h"
 #include "Cross.h"
+#include "DamageFont.h"
+#include "BossIcon.h"
+#include "BossHpPanel.h"
+#include "EnemyHpPanel.h"
 
 //weapon
 #include "Cameleon.h"
@@ -462,13 +466,42 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/num_cross.json", "Mtrl_NumCross")))
 			return E_FAIL;
+
+		/*boss hp panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_hp_panel.json", "Mtrl_BossHpPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_hp0.json", "Mtrl_BossHp0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_hp1.json", "Mtrl_BossHp1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_hp2.json", "Mtrl_BossHp2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_icon.json", "Mtrl_BossIcon")))
+			return E_FAIL;
+
+		/*enemy hp panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp_panel.json", "Mtrl_EnemyHpPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp_background.json", "Mtrl_EnemyBackground")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp_background2.json", "Mtrl_EnemyBackground2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp0.json", "Mtrl_EnemyHp0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp1.json", "Mtrl_EnemyHp1")))
+			return E_FAIL;
+
+
+		/*effect*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect/muzzle_fire.json", "Mtrl_MuzzleFire")))
+			return E_FAIL;
 	}
 
 	/*Load Prototype Object*/
 	{
 		m_strDebugText = L"객체원형 로딩중..";
 
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ThirdCam", ThirdCam::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShadowCam", ShadowCam::Create())))
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Terrain", Terrain::Create())))
@@ -516,6 +549,15 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CountNumber", CountNumber::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cross", Cross::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", DamageFont::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossHpPanel", BossHpPanel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossIcon", BossIcon::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyHpPanel", EnemyHpPanel::Create())))
 			return E_FAIL;
 
 		/*Enemy*/
@@ -613,7 +655,6 @@ HRESULT Loader::LoadingForLogo()
 
 HRESULT Loader::LoadingForTest()
 {
-	
 	return S_OK;
 }
 

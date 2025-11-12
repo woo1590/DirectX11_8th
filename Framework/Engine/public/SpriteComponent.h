@@ -14,6 +14,7 @@ class ENGINE_DLL SpriteComponent :
 public:
     typedef struct tagSpriteDesc : public InitDESC
     {
+        _bool useBillboard = false;
         _bool isAnimated{};
         _bool isRepeat{};
         _uint iMaxFrameIndex{};
@@ -36,12 +37,13 @@ public:
     void SetMaterial(_uint levelID, const _string& key);
 
     HRESULT ExtractRenderProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies);
+    _bool IsFinished()const { return m_isEnd; }
 
     /*Getter*/
     MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
 
     /*setter*/
-    void SetFrameIndex(_uint index) { m_iCurrFrameIndex = index; }
+    void SetFrameIndex(_uint index) { m_iCurrFrameIndex = index; m_isEnd = false; }
 
     Component* Clone() { return new SpriteComponent(*this); }
     void Free()override;
@@ -52,6 +54,7 @@ public:
 
 private:
     RenderGroup m_eGroup{};
+    _bool m_UseBillBoard = false;
 
     VIBuffer* m_pBuffer = nullptr;
     Material* m_pMaterial = nullptr;

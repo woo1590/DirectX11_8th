@@ -31,6 +31,7 @@ public:
     void LateUpdate(_float dt)override;
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
+    void SetActive(_bool active);
     void SetNumber(_uint number);
     void Bounce();
 

@@ -202,6 +202,8 @@
     <ClInclude Include="..\public\Bomber.h" />
     <ClInclude Include="..\public\Boss.h" />
     <ClInclude Include="..\public\BossArmProjectile.h" />
+    <ClInclude Include="..\public\BossHpPanel.h" />
+    <ClInclude Include="..\public\BossIcon.h" />
     <ClInclude Include="..\public\BossPillar.h" />
     <ClInclude Include="..\public\BossStage.h" />
     <ClInclude Include="..\public\BossStoneProjectile.h" />
@@ -228,7 +230,10 @@
     <ClInclude Include="..\public\Dumpling.h" />
     <ClInclude Include="..\public\Dynamite.h" />
     <ClInclude Include="..\public\EffectBackground.h" />
+    <ClInclude Include="..\public\EffectContainer.h" />
+    <ClInclude Include="..\public\EffectNode.h" />
     <ClInclude Include="..\public\Enemy.h" />
+    <ClInclude Include="..\public\EnemyHpPanel.h" />
     <ClInclude Include="..\public\Foundry.h" />
     <ClInclude Include="..\public\Fracture.h" />
     <ClInclude Include="..\public\HorseHead_Head.h" />
@@ -240,6 +245,7 @@
     <ClInclude Include="..\public\LogoText.h" />
     <ClInclude Include="..\public\CountNumber.h" />
     <ClInclude Include="..\public\DamageFont.h" />
+    <ClInclude Include="..\public\MuzzleFire.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
     <ClInclude Include="..\public\WeaponSlot.h" />
@@ -260,7 +266,7 @@
     <ClInclude Include="..\public\StageBoss.h" />
     <ClInclude Include="..\public\StaticMapObject.h" />
     <ClInclude Include="..\public\StatusComponent.h" />
-    <ClInclude Include="..\public\ThirdCam.h" />
+    <ClInclude Include="..\public\ShadowCam.h" />
     <ClInclude Include="..\public\GamePlayLevel.h" />
     <ClInclude Include="..\public\Hand.h" />
     <ClInclude Include="..\public\ConcealedAmmo.h" />
@@ -294,6 +300,8 @@
     <ClCompile Include="..\private\Bomber.cpp" />
     <ClCompile Include="..\private\Boss.cpp" />
     <ClCompile Include="..\private\BossArmProjectile.cpp" />
+    <ClCompile Include="..\private\BossHpPanel.cpp" />
+    <ClCompile Include="..\private\BossIcon.cpp" />
     <ClCompile Include="..\private\BossPillar.cpp" />
     <ClCompile Include="..\private\BossStage.cpp" />
     <ClCompile Include="..\private\BossStoneProjectile.cpp" />
@@ -319,7 +327,10 @@
     <ClCompile Include="..\private\Dumpling.cpp" />
     <ClCompile Include="..\private\Dynamite.cpp" />
     <ClCompile Include="..\private\EffectBackground.cpp" />
+    <ClCompile Include="..\private\EffectContainer.cpp" />
+    <ClCompile Include="..\private\EffectNode.cpp" />
     <ClCompile Include="..\private\Enemy.cpp" />
+    <ClCompile Include="..\private\EnemyHpPanel.cpp" />
     <ClCompile Include="..\private\Foundry.cpp" />
     <ClCompile Include="..\private\Fracture.cpp" />
     <ClCompile Include="..\private\HorseHead_Head.cpp" />
@@ -331,6 +342,7 @@
     <ClCompile Include="..\private\LogoText.cpp" />
     <ClCompile Include="..\private\CountNumber.cpp" />
     <ClCompile Include="..\private\DamageFont.cpp" />
+    <ClCompile Include="..\private\MuzzleFire.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
     <ClCompile Include="..\private\WeaponSlot.cpp" />
@@ -351,7 +363,7 @@
     <ClCompile Include="..\private\StageBoss.cpp" />
     <ClCompile Include="..\private\StaticMapObject.cpp" />
     <ClCompile Include="..\private\StatusComponent.cpp" />
-    <ClCompile Include="..\private\ThirdCam.cpp" />
+    <ClCompile Include="..\private\ShadowCam.cpp" />
     <ClCompile Include="..\private\GamePlayLevel.cpp" />
     <ClCompile Include="..\private\Hand.cpp" />
     <ClCompile Include="..\private\ConcealedAmmo.cpp" />
@@ -389,6 +401,7 @@
   <ItemGroup>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxPoint.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxTex.hlsl">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

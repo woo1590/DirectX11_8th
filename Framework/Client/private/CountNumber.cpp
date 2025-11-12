@@ -147,6 +147,16 @@ HRESULT CountNumber::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>&
 	return S_OK;
 }
 
+void CountNumber::SetActive(_bool active)
+{
+	if (!active)
+	{
+		m_Numbers[ENUM_CLASS(Digit::Hundreads)]->GetMaterialInstance()->SetFloat("g_CustomAlpha", 0.f);
+		m_Numbers[ENUM_CLASS(Digit::Tens)]->GetMaterialInstance()->SetFloat("g_CustomAlpha", 0.f);
+		m_Numbers[ENUM_CLASS(Digit::Units)]->GetMaterialInstance()->SetFloat("g_CustomAlpha", 0.f);
+	}
+}
+
 void CountNumber::SetNumber(_uint number)
 {
 	m_Numbers[ENUM_CLASS(Digit::Hundreads)]->GetMaterialInstance()->SetFloat("g_CustomAlpha", 1.f);

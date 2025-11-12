@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Boss_RightArm.h"
 #include "Bounding_OBB.h"
+#include "Boss.h"
 
 //component
+#include "StatusComponent.h"
 #include "ColliderComponent.h"
 
 Boss_RightArm::Boss_RightArm()
@@ -75,6 +77,18 @@ void Boss_RightArm::LateUpdate(_float dt)
 
 void Boss_RightArm::OnCollisionEnter(ColliderComponent* other)
 {
+	switch (static_cast<ColliderFilter>(other->GetFilter()))
+	{
+	case ColliderFilter::PlayerProjectile:
+	{
+		auto otherStatus = other->GetOwner()->GetComponent<StatusComponent>();
+
+		auto boss = static_cast<Boss*>(m_pParent);
+		boss->HitBody(otherStatus->GetDesc().attackPower);
+	}break;
+	default:
+		break;
+	}
 }
 
 Object* Boss_RightArm::Clone(InitDESC* arg)

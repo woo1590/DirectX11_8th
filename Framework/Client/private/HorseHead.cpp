@@ -5,6 +5,8 @@
 #include "Random.h"
 
 //object
+#include "DamageFont.h"
+#include "EnemyHpPanel.h"
 #include "Socket.h"
 #include "HorseHead_Head.h"
 #include "HorseHead_Shield.h"
@@ -104,6 +106,8 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 
 	ChangeState(&m_HorseHeadShow);
 
+	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
+
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
 
@@ -118,6 +122,21 @@ void HorseHead::PriorityUpdate(_float dt)
 void HorseHead::Update(_float dt)
 {
 	__super::Update(dt);
+
+	_float4x4 hpPanelMat = GetComponent<ModelComponent>()->GetCombinedMatrixByIndex(m_iHpPanelBoneIndex);
+	_float4x4 worldMat = m_pTransform->GetWorldMatrix();
+	_matrix panelMat = XMLoadFloat4x4(&hpPanelMat) * XMLoadFloat4x4(&worldMat);
+	_vector positionV, scaleV, rotV;
+	_float3 position{};
+	XMMatrixDecompose(&scaleV, &rotV, &positionV, panelMat);
+	XMStoreFloat3(&position, positionV);
+
+	auto engine = EngineCore::GetInstance();
+	EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+	param.ownerID = m_iEnemyID;
+	param.position = position;
+
+	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHpPanelPositionUpdate), param);
 }
 
 void HorseHead::LateUpdate(_float dt)
@@ -127,6 +146,8 @@ void HorseHead::LateUpdate(_float dt)
 
 void HorseHead::HitHead()
 {
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
 	auto status = GetComponent<StatusComponent>();
 
 	if (0 == status->GetDesc().hp)
@@ -140,10 +161,28 @@ void HorseHead::HitHead()
 			m_fElapsedTime = 0.f;
 		}
 	}
+
+	DamageFont::DAMAGE_FONT_DESC desc{};
+	desc.position = m_pTransform->GetPosition();
+	desc.position.y += 5.f;
+	desc.fontSize = 0.06f;
+	desc.number = random->get<_uint>(900, 1200);
+	desc.color = _float4{ 1.f,1.f,0.f,1.f };
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+	EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+	param.ownerID = m_iEnemyID;
+	param.ratio = status->GetHpRatio();
+	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
 }
 
 void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+
+
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{
 	case ColliderFilter::PlayerProjectile:
@@ -163,6 +202,20 @@ void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 				m_fElapsedTime = 0.f;
 			}
 		}
+
+		DamageFont::DAMAGE_FONT_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.position.y += 5.f;
+		desc.fontSize = 0.04f;
+		desc.number = random->get<_uint>(600, 900);
+		desc.color = _float4{ 1.f,1.f,1.f,1.f };
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+		EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+		param.ownerID = m_iEnemyID;
+		param.ratio = status->GetHpRatio();
+		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
 	}break;
 	case ColliderFilter::PlayerAttack:
 	{
@@ -181,6 +234,20 @@ void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 				m_fElapsedTime = 0.f;
 			}
 		}
+
+		DamageFont::DAMAGE_FONT_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.position.y += 5.f;
+		desc.fontSize = 0.04f;
+		desc.number = random->get<_uint>(600, 900);
+		desc.color = _float4{ 1.f,1.f,1.f,1.f };
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+		EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+		param.ownerID = m_iEnemyID;
+		param.ratio = status->GetHpRatio();
+		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
 	}break;
 	default:
 		break;

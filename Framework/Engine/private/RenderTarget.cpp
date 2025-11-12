@@ -50,6 +50,7 @@ HRESULT RenderTarget::Initialize(_uint width, _uint height, DXGI_FORMAT format, 
 	if (FAILED(m_pDevice->CreateRenderTargetView(m_pTexture2D, nullptr, &m_pRTV)))
 		return E_FAIL;
 
+	m_ClearColor = clearColor;
 	return S_OK;
 }
 

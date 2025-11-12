@@ -55,9 +55,9 @@ HRESULT ImGuiManager::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
     if (!renderTarget)
         return E_FAIL;
 
+	m_Panels.push_back(guizmo);
 	m_Panels.push_back(outliner);
 	m_Panels.push_back(inspector);
-	m_Panels.push_back(guizmo);
     m_Panels.push_back(renderTarget);
 
 	m_GuiState = state;
@@ -79,6 +79,7 @@ void ImGuiManager::Render()
 
 	ImGuiIO& io = ImGui::GetIO();
     static _bool isAvailable = true;
+    static _bool guizmoEnable = true;
 	ImGui::Begin("Debug");
 	ImGui::Text("FPS : %.1f (%.3f ms)", io.Framerate, 1000.f / io.Framerate);
     if (ImGui::Button("Visible"))
@@ -87,14 +88,19 @@ void ImGuiManager::Render()
         engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
     if (ImGui::Button("Collider Debug"))
         engine->IsColliderDebugEnable() ? engine->ColliderDebugDisable() : engine->ColliderDebugEnable();
+    if (ImGui::Button("Guizmo On/Off"))
+        guizmoEnable = guizmoEnable ? false : true;
 	ImGui::End();
 
 
     if (isAvailable)
     {
-	    for (const auto& panel : m_Panels)
+	    for (_uint i=0; i<m_Panels.size(); ++i)
 	    {
-		    panel->Draw(m_GuiState);
+            if (!guizmoEnable && i == 0)
+                continue;
+
+            m_Panels[i]->Draw(m_GuiState);
 	    }
     }
 }

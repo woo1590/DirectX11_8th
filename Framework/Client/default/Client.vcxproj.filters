@@ -43,9 +43,6 @@
     <Filter Include="02. Object\Camera">
       <UniqueIdentifier>{0b1f4ac7-ccc3-4521-815a-a3ce984a95b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Camera\FreeCam">
-      <UniqueIdentifier>{cfcb65ff-eac4-4202-bcb5-7746a4ace023}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\UIObject">
       <UniqueIdentifier>{bdf78020-6160-4122-a08f-45f390898588}</UniqueIdentifier>
     </Filter>
@@ -301,6 +298,30 @@
     <Filter Include="02. Object\UIObject\Cross">
       <UniqueIdentifier>{0cb017ec-a1b6-42f7-a140-15fc44484d2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\UIObject\BossHPPanel">
+      <UniqueIdentifier>{f9d69ef9-71fb-4e16-8004-ce2eee1825b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\BossHPPanel\BossIcon">
+      <UniqueIdentifier>{5cd634a0-a478-4308-b007-1af1d97aea6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\EnemyHpPanel">
+      <UniqueIdentifier>{099c7ba4-1f7c-4bd6-b831-b7f77781168d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect">
+      <UniqueIdentifier>{0bed3730-e16a-4d25-8c56-8845157fe4e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\MuzzleFire">
+      <UniqueIdentifier>{a7e06516-d1c0-47cd-9011-2c79fae3916e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Camera\ShadowCam">
+      <UniqueIdentifier>{cfcb65ff-eac4-4202-bcb5-7746a4ace023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\Effect Container">
+      <UniqueIdentifier>{23140437-747b-453d-89b0-76d820dfa694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\Effect Container\Effect Node">
+      <UniqueIdentifier>{461eac46-2023-42ba-9edd-5b11ad1e0a4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -339,8 +360,8 @@
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02. Object\UIObject\BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ThirdCam.h">
-      <Filter>02. Object\Camera\FreeCam</Filter>
+    <ClInclude Include="..\public\ShadowCam.h">
+      <Filter>02. Object\Camera\ShadowCam</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Terrain.h">
       <Filter>02. Object\Terrain</Filter>
@@ -573,6 +594,24 @@
     <ClInclude Include="..\public\Cross.h">
       <Filter>02. Object\UIObject\Cross</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BossHpPanel.h">
+      <Filter>02. Object\UIObject\BossHPPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossIcon.h">
+      <Filter>02. Object\UIObject\BossHPPanel\BossIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EnemyHpPanel.h">
+      <Filter>02. Object\Enemy\EnemyHpPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MuzzleFire.h">
+      <Filter>02. Object\Effect\MuzzleFire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectContainer.h">
+      <Filter>02. Object\Effect\Effect Container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectNode.h">
+      <Filter>02. Object\Effect\Effect Container\Effect Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -599,8 +638,8 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02. Object\UIObject\BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ThirdCam.cpp">
-      <Filter>02. Object\Camera\FreeCam</Filter>
+    <ClCompile Include="..\private\ShadowCam.cpp">
+      <Filter>02. Object\Camera\ShadowCam</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
       <Filter>02. Object\Terrain</Filter>
@@ -833,6 +872,24 @@
     <ClCompile Include="..\private\Cross.cpp">
       <Filter>02. Object\UIObject\Cross</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\BossHpPanel.cpp">
+      <Filter>02. Object\UIObject\BossHPPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossIcon.cpp">
+      <Filter>02. Object\UIObject\BossHPPanel\BossIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EnemyHpPanel.cpp">
+      <Filter>02. Object\Enemy\EnemyHpPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MuzzleFire.cpp">
+      <Filter>02. Object\Effect\MuzzleFire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectContainer.cpp">
+      <Filter>02. Object\Effect\Effect Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectNode.cpp">
+      <Filter>02. Object\Effect\Effect Container\Effect Node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -858,6 +915,9 @@
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxPoint.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -21,6 +21,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapEditor", "MapEditor\defa
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EffectEditor", "EffectEditor\default\EffectEditor.vcxproj", "{EA7DF44F-F571-4DBB-9FEF-DEE589C3A2BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9BEB0FE-013D-4887-86E0-5384799A6083} = {A9BEB0FE-013D-4887-86E0-5384799A6083}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

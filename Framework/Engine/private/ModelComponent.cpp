@@ -83,6 +83,37 @@ HRESULT ModelComponent::ExtractRenderProxy(TransformComponent* transform, std::v
 	return S_OK;
 }
 
+HRESULT ModelComponent::ExtractShadowProxy(TransformComponent* transform, std::vector<RenderProxy>& proxies)
+{
+	if (!m_pModel)
+		return S_OK;
+
+	const auto& meshes = m_pModel->GetBuffers();
+	const auto& materials = m_pModel->GetMaterials();
+
+	for (_uint i = 0; i < meshes.size(); ++i)
+	{
+		RenderProxy proxy{};
+		proxy.buffer = meshes[i];
+		proxy.worldMatrix = transform->GetWorldMatrix();
+
+		if (m_pModel->IsSkinned())
+		{
+			auto animator = m_pOwner->GetComponent<AnimatorComponent>();
+
+			const auto& combinedMatrices = animator->GetCombinedMatrices();
+			meshes[i]->ComputeBonePalette(combinedMatrices, m_BonePalettes[i].boneMatrices);
+
+			proxy.numBones = m_BonePalettes[i].boneMatrices.size();
+			proxy.boneMatrices = m_BonePalettes[i].boneMatrices.data();
+		}
+
+		proxies.push_back(proxy);
+	}
+
+	return S_OK;
+}
+
 HRESULT ModelComponent::ConnectAnimator()
 {
 	auto animator = m_pOwner->GetComponent<AnimatorComponent>();
