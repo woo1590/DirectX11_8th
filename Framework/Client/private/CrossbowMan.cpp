@@ -92,7 +92,7 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     engine->RegisterNavigation(nav);
     nav->AttachTransform();
     nav->AttachRigidBody();
-    nav->SpawnInCell(7);
+    nav->SpawnInCell(3);
     nav->SetMoveSpeed(35.f);
     nav->SetArriveRange(60.f);
 
@@ -271,6 +271,18 @@ void CrossbowMan::CrossbowManShow::Enter(Object* object)
 {
     auto animator = object->GetComponent<AnimatorComponent>();
     animator->ChangeAnimation(ENUM_CLASS(AnimationState::Land));
+
+    auto engine = EngineCore::GetInstance();
+
+    auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+    _float3 position = object->GetComponent<TransformComponent>()->GetPosition();
+    _float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+
+    EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+    effectDesc.position = object->GetComponent<TransformComponent>()->GetPosition();
+    XMStoreFloat3(&effectDesc.forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+
+    engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpawnSmoke", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
 }
 
 void CrossbowMan::CrossbowManShow::Update(Object* object, _float dt)

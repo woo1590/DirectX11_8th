@@ -7,18 +7,9 @@ EffectNode::EffectNode()
 }
 
 EffectNode::EffectNode(const EffectNode& prototype)
-	:PartObject(prototype)
+	:PartObject(prototype),
+	m_fDuration(prototype.m_fDuration)
 {
-}
-
-EffectNode* EffectNode::Create()
-{
-	EffectNode* Instance = new EffectNode();
-
-	if (FAILED(Instance->Initialize_Prototype()))
-		Safe_Release(Instance);
-
-	return Instance;
 }
 
 HRESULT EffectNode::Initialize_Prototype()

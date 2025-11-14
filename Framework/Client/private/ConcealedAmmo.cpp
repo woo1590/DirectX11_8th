@@ -3,7 +3,9 @@
 #include "Player.h"
 
 //object
+#include "Socket.h"
 #include "Dynamite.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -45,6 +47,8 @@ HRESULT ConcealedAmmo::Initialize_Prototype()
 
 HRESULT ConcealedAmmo::Initialize(InitDESC* arg)
 {
+	auto engine = EngineCore::GetInstance();
+
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_ConcealedAmmo");
 
@@ -55,6 +59,13 @@ HRESULT ConcealedAmmo::Initialize(InitDESC* arg)
 
 	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
 
+	Socket::SOCKET_DESC socketDesc{};
+	socketDesc.parentModel = model;
+	socketDesc.boneIndex = m_iFireLightBoneIndex;
+	socketDesc.useScale = false;
+	Object* socket = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", &socketDesc);
+	m_pMuzzleSocket = socket;
+	m_pMuzzleSocket->GetComponent<TransformComponent>()->SetParent(m_pTransform);
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
@@ -77,6 +88,8 @@ void ConcealedAmmo::Update(_float dt)
 {
 	__super::Update(dt);
 
+	if (m_pMuzzleSocket)
+		m_pMuzzleSocket->Update(dt);
 }
 
 void ConcealedAmmo::LateUpdate(_float dt)
@@ -125,6 +138,8 @@ Object* ConcealedAmmo::Clone(InitDESC* arg)
 void ConcealedAmmo::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pMuzzleSocket);
 }
 
 void ConcealedAmmo::ConcealedAmmoIdle::Enter(Engine::Object* object)
@@ -187,8 +202,11 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 	player->AddRecoil(3.f);
 
 	/*for test*/
-	_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[ammo->m_iFireLightBoneIndex];
-	_float4x4 worldMat = object->GetComponent<TransformComponent>()->GetWorldMatrix();
+	auto model = object->GetComponent<ModelComponent>();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float4x4 boneMat = model->GetCombinedMatrixByIndex(ammo->m_iFireLightBoneIndex);
+	_float4x4 worldMat = transform->GetWorldMatrix();
 	XMStoreFloat4x4(&worldMat, XMLoadFloat4x4(&boneMat) * XMLoadFloat4x4(&worldMat));
 
 	_float3 aimPosition = player->GetAimPosition();
@@ -205,11 +223,15 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 	desc.scale = _float3{ 3.f,3.f,3.f };
 	desc.position = position;
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
-
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 	--ammo->m_iNumCurrAmmo;
 
 	engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), ammo->m_iNumCurrAmmo);
+
+	EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+	effectDesc.socketObject = ammo->m_pMuzzleSocket;
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MuzzleRed", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
 }
 
 void ConcealedAmmo::ConcealedAmmoFire::Update(Engine::Object* object, Engine::_float dt)

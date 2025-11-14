@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PrismProjectile.h"
 #include "Bounding_Sphere.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -103,6 +104,8 @@ void PrismProjectile::Update(_float dt)
 	}
 
 	m_pTransform->SetPosition(nextPosition);
+
+	CreateEffect(dt);
 }
 
 void PrismProjectile::LateUpdate(_float dt)
@@ -130,4 +133,19 @@ void PrismProjectile::Free()
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
 	__super::Free();
+}
+
+void PrismProjectile::CreateEffect(_float dt)
+{
+	m_fElapsedTime += dt;
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismFire", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+
+		m_fElapsedTime = 0.f;
+	}
 }

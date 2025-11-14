@@ -38,6 +38,7 @@ public:
     _int GetBoneIndex(const _string& boneTag);
     _float4x4 GetOffsetMatrixByIndex(_uint index);
     _float4x4 GetCombinedMatrixByIndex(_uint index);
+    _float4x4* GetCombinedMatrixByIndex_PTR(_uint index);
 
     Component* Clone()override;
     void Free()override;

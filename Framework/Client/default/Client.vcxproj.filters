@@ -322,6 +322,12 @@
     <Filter Include="02. Object\Effect\Effect Container\Effect Node">
       <UniqueIdentifier>{461eac46-2023-42ba-9edd-5b11ad1e0a4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect\Effect Container\Effect Node\Sprite Effect">
+      <UniqueIdentifier>{a3f8bbf8-9add-4e63-8b0a-d6a1f8621905}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\Effect Container\Effect Node\Light Effect">
+      <UniqueIdentifier>{58e07d20-938a-4bfd-b6e2-3add563b458b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -612,6 +618,9 @@
     <ClInclude Include="..\public\EffectNode.h">
       <Filter>02. Object\Effect\Effect Container\Effect Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SpriteEffect.h">
+      <Filter>02. Object\Effect\Effect Container\Effect Node\Sprite Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -889,6 +898,9 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectNode.cpp">
       <Filter>02. Object\Effect\Effect Container\Effect Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SpriteEffect.cpp">
+      <Filter>02. Object\Effect\Effect Container\Effect Node\Sprite Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

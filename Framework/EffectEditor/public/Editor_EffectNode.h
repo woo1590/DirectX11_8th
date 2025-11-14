@@ -18,44 +18,33 @@ public:
         Editor_EffectContainer::EFFECT_EDIT_CONTEXT* context = nullptr;
     }EFFECT_NODE_DESC;
 
-private:
+protected:
     Editor_EffectNode();
     Editor_EffectNode(const Editor_EffectNode& prototype);
     virtual ~Editor_EffectNode() = default;
 
 public:
-    static Editor_EffectNode* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
-    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
-#ifdef USE_IMGUI
-    void RenderInspector()override;
-#endif
+    virtual void Start() = 0;
+    virtual void Export(nlohmann::ordered_json& j) = 0;
 
-    void Start();
-    Object* Clone(InitDESC* arg)override;
+    virtual Object* Clone(InitDESC* arg) = 0;
     void Free()override;
 
-private:
+protected:
     Editor_EffectContainer::EFFECT_EDIT_CONTEXT* m_pContext = nullptr;
     EffectType m_eEffectType = EffectType::Count;
-    void SetType();
 
-    /*----sprite effect----*/
-    void SpriteEffectSetUp();
-    void AddCurrTexture();
-    void ReplaceMaterial();
+    /*----public effect params----*/
     static _uint m_iMaterialIndex;
-    _float m_fSpeed{};
-    _int m_iMaxFrameIndex{};
-    _bool m_IsRepeat{};
-    _bool m_IsAnimated{};
-    Material* m_pSpriteMaterial = nullptr;
 
+    _float m_fDuration{};
+    _float m_fElapsedTime{};
 };
 
 NS_END

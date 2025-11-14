@@ -30,6 +30,7 @@ public:
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadNavMeshFromFile(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath);
 
     VIBuffer*   GetBuffer(_uint levelID, const _string& key);
     Shader*     GetShader(const _string& key);
@@ -37,13 +38,12 @@ public:
     Model*      GetModel(_uint levelID, const _string& key);
     ANIMATION_SET GetAnimation(_uint levelID, const _string& key);
     NavMesh* GetNavMesh(_uint levelID, const _string& key);
+    Texture* GetTexture(_uint levelID, const _string& key);
     void Clear(_uint levelID);
 
     void Free()override;
 
 private:
-    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath);
-    Texture* GetTexture(_uint levelID, const _string& key);
 
     _uint m_iNumLevel = 0;
 

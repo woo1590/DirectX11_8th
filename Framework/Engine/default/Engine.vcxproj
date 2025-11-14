@@ -253,6 +253,7 @@
     <ClInclude Include="..\public\nfd\nfd.h" />
     <ClInclude Include="..\public\nfd\nfd_common.h" />
     <ClInclude Include="..\public\OutlinerPanel.h" />
+    <ClInclude Include="..\public\ParticleSystemComponent.h" />
     <ClInclude Include="..\public\PartObject.h" />
     <ClInclude Include="..\public\RenderProxy.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -298,7 +299,7 @@
     <ClInclude Include="..\public\TimerManager.h" />
     <ClInclude Include="..\public\TransformComponent.h" />
     <ClInclude Include="..\public\VIBufferTerrain.h" />
-    <ClInclude Include="..\public\VIBuffer_Instancing.h" />
+    <ClInclude Include="..\public\VIBuffer_InstancingPoint.h" />
     <ClInclude Include="..\public\VIBuffer_Point.h" />
     <ClInclude Include="EnginePCH.h" />
   </ItemGroup>
@@ -346,6 +347,7 @@
     <ClCompile Include="..\private\NavigationSystem.cpp" />
     <ClCompile Include="..\private\NavMesh.cpp" />
     <ClCompile Include="..\private\OutlinerPanel.cpp" />
+    <ClCompile Include="..\private\ParticleSystemComponent.cpp" />
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\RenderTargetManager.cpp" />
@@ -379,7 +381,7 @@
     <ClCompile Include="..\private\TimerManager.cpp" />
     <ClCompile Include="..\private\TransformComponent.cpp" />
     <ClCompile Include="..\private\VIBufferTerrain.cpp" />
-    <ClCompile Include="..\private\VIBuffer_Instancing.cpp" />
+    <ClCompile Include="..\private\VIBuffer_InstancingPoint.cpp" />
     <ClCompile Include="..\private\VIBuffer_Point.cpp" />
     <ClCompile Include="..\public\guizmo\GraphEditor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

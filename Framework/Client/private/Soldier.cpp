@@ -10,6 +10,7 @@
 #include "Fracture.h"
 #include "DamageFont.h"
 #include "EnemyHpPanel.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -318,11 +319,23 @@ HRESULT Soldier::CreatePartObjects()
 
 void Soldier::SoldierShow::Enter(Object* object)
 {
+	auto engine = EngineCore::GetInstance();
+
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Show), false, true);
 
 	auto rigidBody = object->GetComponent<RigidBodyComponent>();
 	rigidBody->SetVelocity(_float3{ 0.f,0.f,0.f });
+
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
+	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+
+	EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+	effectDesc.position = object->GetComponent<TransformComponent>()->GetPosition();
+	XMStoreFloat3(&effectDesc.forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpawnSmoke", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
 }
 
 void Soldier::SoldierShow::Update(Object* object, _float dt)

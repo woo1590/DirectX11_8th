@@ -52,6 +52,15 @@
     <Filter Include="01 Level\EffectEditPanel">
       <UniqueIdentifier>{df72a6cf-525f-4ed7-ae3d-7b25b676874b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect Container\Effect Node\Sprite Effect">
+      <UniqueIdentifier>{29aafea3-4068-47bd-b1b7-b223c2406e6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect Container\Effect Node\Light Effect">
+      <UniqueIdentifier>{40a6b1a4-09be-4d2d-928b-361105ee1ad4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Etc\nfd">
+      <UniqueIdentifier>{682e6ec2-36de-4b17-9692-7b5528aedb70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EffectEditor.h">
@@ -96,6 +105,18 @@
     <ClInclude Include="..\public\EffectEditPanel.h">
       <Filter>01 Level\EffectEditPanel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Editor_SpriteEffect.h">
+      <Filter>02. Object\Effect Container\Effect Node\Sprite Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\common.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h">
+      <Filter>98. Etc\nfd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EffectEditor.cpp">
@@ -127,6 +148,15 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectEditPanel.cpp">
       <Filter>01 Level\EffectEditPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Editor_SpriteEffect.cpp">
+      <Filter>02. Object\Effect Container\Effect Node\Sprite Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_common.c">
+      <Filter>98. Etc\nfd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
+      <Filter>98. Etc\nfd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,5 +194,10 @@
     <FxCompile Include="..\bin\shaderfiles\Shader_Grid.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\EngineSDK\inc\nfd\nfd_cocoa.m">
+      <Filter>98. Etc\nfd</Filter>
+    </None>
   </ItemGroup>
 </Project>

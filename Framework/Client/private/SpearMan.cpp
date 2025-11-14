@@ -322,6 +322,18 @@ void SpearMan::SpearManShow::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Show));
+
+	auto engine = EngineCore::GetInstance();
+
+	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
+	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
+	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
+
+	EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+	effectDesc.position = object->GetComponent<TransformComponent>()->GetPosition();
+	XMStoreFloat3(&effectDesc.forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpawnSmoke", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
 }
 
 void SpearMan::SpearManShow::Update(Object* object, _float dt)

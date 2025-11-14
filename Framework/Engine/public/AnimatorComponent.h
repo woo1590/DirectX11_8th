@@ -23,6 +23,7 @@ public:
     void ChangeAnimation(_int animationIndex, _bool isLoop = false, _bool immediateChange = false);
 
     /*Getter*/
+    _float4x4* GetCombinedMatrixByIndex_PTR(_uint index);
     const std::vector<_float4x4>& GetCombinedMatrices() { return m_CombiendMatirices; }
     const std::vector<_float4x4>& GetTransformationMatrices() { return m_TransformationMatrices; }
     ANIMATIONCLIP_CONTEXT& GetCameraContext() { return m_Context; }

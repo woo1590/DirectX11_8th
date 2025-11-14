@@ -187,8 +187,12 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\common.h" />
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h" />
+    <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd_common.h" />
     <ClInclude Include="..\public\Editor_EffectContainer.h" />
     <ClInclude Include="..\public\Editor_EffectNode.h" />
+    <ClInclude Include="..\public\Editor_SpriteEffect.h" />
     <ClInclude Include="..\public\EffectEditorCamera.h" />
     <ClInclude Include="..\public\EffectEditorLevel.h" />
     <ClInclude Include="..\public\EffectEditorLight.h" />
@@ -203,8 +207,21 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_common.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\private\Editor_EffectContainer.cpp" />
     <ClCompile Include="..\private\Editor_EffectNode.cpp" />
+    <ClCompile Include="..\private\Editor_SpriteEffect.cpp" />
     <ClCompile Include="..\private\EffectEditorCamera.cpp" />
     <ClCompile Include="..\private\EffectEditorLevel.cpp" />
     <ClCompile Include="..\private\EffectEditorGrid.cpp" />
@@ -234,6 +251,9 @@
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxPoint.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxTex.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\EngineSDK\inc\nfd\nfd_cocoa.m" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,6 +11,8 @@
 #include "EffectEditorGrid.h"
 #include "EffectEditorLight.h"
 
+#include "Editor_SpriteEffect.h"
+
 EffectEditorLevel::EffectEditorLevel()
 	:Level()
 {
@@ -104,7 +106,7 @@ HRESULT EffectEditorLevel::Initialize_Resource()
             return E_FAIL;
         if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectContainer", Editor_EffectContainer::Create())))
             return E_FAIL;
-        if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectNode", Editor_EffectNode::Create())))
+        if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpriteEffect", Editor_SpriteEffect::Create())))
             return E_FAIL;
     }
 

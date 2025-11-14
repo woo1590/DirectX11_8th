@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Foundry.h"
 #include "Player.h"
+#include "EffectContainer.h"
+#include "Socket.h"
 
 //component
 #include "ModelComponent.h"
@@ -41,6 +43,8 @@ HRESULT Foundry::Initialize_Prototype()
 
 HRESULT Foundry::Initialize(InitDESC* arg)
 {
+	auto engine = EngineCore::GetInstance();
+
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Foundry");
 
@@ -50,6 +54,14 @@ HRESULT Foundry::Initialize(InitDESC* arg)
 	model->ConnectAnimator();
 
 	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
+
+	Socket::SOCKET_DESC socketDesc{};
+	socketDesc.parentModel = model;
+	socketDesc.boneIndex = m_iFireLightBoneIndex;
+	socketDesc.useScale = false;
+	Object* socket = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", &socketDesc);
+	m_pMuzzleSocket = socket;
+	m_pMuzzleSocket->GetComponent<TransformComponent>()->SetParent(m_pTransform);
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
@@ -71,6 +83,9 @@ void Foundry::PriorityUpdate(_float dt)
 void Foundry::Update(_float dt)
 {
 	__super::Update(dt);
+
+	if (m_pMuzzleSocket)
+		m_pMuzzleSocket->Update(dt);
 }
 
 void Foundry::LateUpdate(_float dt)
@@ -108,6 +123,8 @@ Object* Foundry::Clone(InitDESC* arg)
 void Foundry::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pMuzzleSocket);
 }
 
 void Foundry::FoundryIdle::Enter(Object* object)
@@ -192,8 +209,12 @@ void Foundry::FoundryFire::Enter(Object* object)
 
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 	--foundry->m_iNumCurrAmmo;
-
 	engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), foundry->m_iNumCurrAmmo);
+
+	EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+	effectDesc.socketObject = foundry->m_pMuzzleSocket;
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MuzzleOrange", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
 }
 
 void Foundry::FoundryFire::Update(Object* object, _float dt)

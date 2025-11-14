@@ -31,6 +31,7 @@ public:
 
 private:
     _uint m_iFireLightBoneIndex{};
+    Object* m_pMuzzleSocket = nullptr;
 
     class ConcealedAmmoIdle : public State
     {

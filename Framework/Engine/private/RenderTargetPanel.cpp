@@ -3,6 +3,8 @@
 #include "RenderTargetManager.h"
 #include "RenderTarget.h"
 
+#ifdef USE_IMGUI
+
 RenderTargetPanel::RenderTargetPanel()
 	:IPanel()
 {
@@ -59,3 +61,6 @@ void RenderTargetPanel::Free()
 {
 	__super::Free();
 }
+
+
+#endif

@@ -79,6 +79,7 @@ private:
     void ResolveDirty();
     void MakeDirty();
     void MakeChildrenDirty();
+    void RemovePendingChildren();
 
     _vector RemoveRoll(_fvector quaternion);
 
@@ -99,6 +100,7 @@ private:
     _bool m_UseParentScale = true;
     TransformComponent* m_pParent = nullptr;
     std::vector<TransformComponent*> m_Childrens;
+    std::vector<TransformComponent*> m_PendingRemoveChildren;
 };
 
 NS_END

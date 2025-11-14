@@ -142,6 +142,14 @@ void AnimatorComponent::ChangeAnimation(_int animationIndex, _bool isLoop, _bool
 	}
 }
 
+_float4x4* AnimatorComponent::GetCombinedMatrixByIndex_PTR(_uint index)
+{
+	if (index >= m_CombiendMatirices.size())
+		return nullptr;
+
+	return &m_CombiendMatirices[index];
+}
+
 _uint AnimatorComponent::GetNumBones() const
 {
 	return m_pSkeleton->GetBones().size();

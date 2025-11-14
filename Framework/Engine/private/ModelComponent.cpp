@@ -185,6 +185,18 @@ _float4x4 ModelComponent::GetCombinedMatrixByIndex(_uint index)
 	}
 }
 
+_float4x4* ModelComponent::GetCombinedMatrixByIndex_PTR(_uint index)
+{
+	auto animator = m_pOwner->GetComponent<AnimatorComponent>();
+
+	if (animator)
+	{
+		return animator->GetCombinedMatrixByIndex_PTR(index);
+	}
+	else
+		return nullptr;
+}
+
 void ModelComponent::Free()
 {
 	__super::Free();

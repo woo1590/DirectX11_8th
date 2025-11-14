@@ -434,6 +434,7 @@ HRESULT Renderer::ConnectConstantBuffer(Shader* shader)
 void Renderer::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pShader);
 

@@ -18,8 +18,9 @@ public:
 
     typedef struct tagEffectEditContext
     {
-        _string textureTag{};
-        Texture* texture = nullptr;
+        std::vector<_string> textureTags{};
+        std::vector<Texture*> textures;
+        std::map<_string, Texture*>* pAllTextures;
     }EFFECT_EDIT_CONTEXT;
 private:
     Editor_EffectContainer();
@@ -42,17 +43,22 @@ public:
     void Free()override;
 
 private:
-    std::unordered_map<_string, Texture*> m_Textures;
+    std::vector<_int> m_SelectIndices;
+    std::map<_string, Texture*> m_Textures;
     EFFECT_EDIT_CONTEXT m_Context{};
+
+    _string m_strEffectName{};
+    _float m_fDuration{};
 
 #ifdef USE_IMGUI
     void Play();
-    void Import(const _string& filePath);
-    void Export(const _string& outFilePath);
+    void Import();
+    void Export();
     void LoadTextureFromDirectory(const _string& dirPath);
     void DisplayTextures();
     void AddNode();
     void RemoveNode();
+    void ContextClear();
 #endif
 };
 

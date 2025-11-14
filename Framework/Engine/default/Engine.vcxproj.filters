@@ -262,9 +262,6 @@
     <Filter Include="05. Object Component\Collider Component\Bounding\DebugDraw">
       <UniqueIdentifier>{e0ad1bee-1bfb-4766-8151-df5b5a8befe0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Instancing">
-      <UniqueIdentifier>{19335e34-ea85-4047-b67c-9e7a511a9062}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Engine Component\Collision System">
       <UniqueIdentifier>{66004534-5581-4873-b2b4-98aa99fd95cf}</UniqueIdentifier>
     </Filter>
@@ -597,9 +594,6 @@
     <ClInclude Include="..\public\Bounding_OBB.h">
       <Filter>05. Object Component\Collider Component\Bounding\OBB</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\VIBuffer_Instancing.h">
-      <Filter>01. Engine Component\Resource Manager\VIBuffer\Instancing</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\CollisionSystem.h">
       <Filter>01. Engine Component\Collision System</Filter>
     </ClInclude>
@@ -637,6 +631,12 @@
       <Filter>98. Etc\Defines\Engine_Struct</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Point.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParticleSystemComponent.h">
+      <Filter>05. Object Component\ParticleSystem Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_InstancingPoint.h">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Point</Filter>
     </ClInclude>
   </ItemGroup>
@@ -887,9 +887,6 @@
     <ClCompile Include="..\private\Bounding_OBB.cpp">
       <Filter>05. Object Component\Collider Component\Bounding\OBB</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\VIBuffer_Instancing.cpp">
-      <Filter>01. Engine Component\Resource Manager\VIBuffer\Instancing</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\CollisionSystem.cpp">
       <Filter>01. Engine Component\Collision System</Filter>
     </ClCompile>
@@ -918,6 +915,12 @@
       <Filter>01. Engine Component\Event System\EventHandler</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Point.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParticleSystemComponent.cpp">
+      <Filter>05. Object Component\ParticleSystem Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_InstancingPoint.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Point</Filter>
     </ClCompile>
   </ItemGroup>

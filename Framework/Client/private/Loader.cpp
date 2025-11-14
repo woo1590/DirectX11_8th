@@ -81,6 +81,10 @@
 #include "CrossbowMan.h"
 #include "CrossbowMan_Head.h"
 
+//effect
+#include "EffectContainer.h"
+#include "SpriteEffect.h"
+
 //map
 #include "SkyBox.h"
 #include "BossStage.h"
@@ -328,7 +332,7 @@ HRESULT Loader::LoadingForLogo()
 				"Model_Fracture_" + modelTag)))
 				return E_FAIL;
 		}
-		
+
 		for (_uint i = 0; i < 12; ++i)
 		{
 			_string filePath = "crossbow_man" + std::to_string(i) + ".model";
@@ -338,6 +342,7 @@ HRESULT Loader::LoadingForLogo()
 				return E_FAIL;
 		}
 	}
+
 
 	/*Load Animation Set*/
 	{
@@ -490,10 +495,21 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp1.json", "Mtrl_EnemyHp1")))
 			return E_FAIL;
+	}
 
-
-		/*effect*/
-		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect/muzzle_fire.json", "Mtrl_MuzzleFire")))
+	/*Load Effect Prefab*/
+	{
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MuzzleRed",
+			EffectContainer::Create("../bin/resource/textures/effect/muzzle_red/muzzle_red.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MuzzleOrange",
+			EffectContainer::Create("../bin/resource/textures/effect/muzzle_orange/muzzle_orange.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismFire",
+			EffectContainer::Create("../bin/resource/textures/effect/prism_fire/prism_fire.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpawnSmoke",
+			EffectContainer::Create("../bin/resource/textures/effect/spawn_smoke/spawn_smoke.json"))))
 			return E_FAIL;
 	}
 
@@ -647,6 +663,8 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Dumpling", Dumpling::Create())))
 			return E_FAIL;
+
+		
 	}
 	m_strDebugText = L"로딩완료";
 

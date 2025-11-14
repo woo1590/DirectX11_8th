@@ -328,6 +328,10 @@ HRESULT EngineCore::LoadNavMeshFromFile(_uint levelID, const _string& filePath, 
 {
 	return m_pResourceManager->LoadNavMeshFromFile(levelID, filePath, key);
 }
+HRESULT EngineCore::LoadTextureFromFile(_uint levelID, const _string& filePath)
+{
+	return m_pResourceManager->LoadTextureFromFile(levelID, filePath);
+}
 VIBuffer* EngineCore::GetBuffer(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetBuffer(levelID, key);
@@ -352,6 +356,10 @@ ANIMATION_SET EngineCore::GetAnimation(_uint levelID, const _string& key)
 NavMesh* EngineCore::GetNavMesh(_uint levelID, const _string& key)
 {
 	return m_pResourceManager->GetNavMesh(levelID, key);
+}
+Texture* EngineCore::GetTexture(_uint levelID, const _string& key)
+{
+	return m_pResourceManager->GetTexture(levelID, key);
 }
 #pragma endregion
 

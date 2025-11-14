@@ -17,6 +17,9 @@ public:
     virtual HRESULT BindBuffers();
     virtual HRESULT Draw();
 
+    /*getter*/
+    ID3D11Buffer* GetVB()const { return m_pVB; }
+
 protected:
     ID3D11Buffer* m_pVB = nullptr;
     ID3D11Buffer* m_pIB = nullptr;

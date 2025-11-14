@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Editor_EffectContainer.h"
 #include "Editor_EffectNode.h"
+#include "Editor_SpriteEffect.h"
 #include "Texture.h"
 
 Editor_EffectContainer::Editor_EffectContainer()
@@ -66,8 +67,12 @@ void Editor_EffectContainer::LateUpdate(_float dt)
 void Editor_EffectContainer::RenderInspector()
 {
 	DisplayTextures();
+	ContextClear();
 	AddNode();
 	RemoveNode();
+
+	Import();
+	Export();
 	Play();
 
 	__super::RenderInspector();
@@ -102,20 +107,133 @@ void Editor_EffectContainer::Play()
 	}
 }
 
-void Editor_EffectContainer::Import(const _string& filePath)
+void Editor_EffectContainer::Import()
 {
+	using namespace nlohmann;
+	namespace fs = std::filesystem;
+
+	auto engine = EngineCore::GetInstance();
+
+	static _string openFilePath;
+	if (ImGui::Button("Import"))
+	{
+		nfdchar_t* outPath = nullptr;
+		nfdresult_t res = NFD_OpenDialog(nullptr, nullptr, &outPath);
+
+		if (res == NFD_OKAY)
+		{
+			openFilePath = outPath;
+			NFDi_Free(outPath);
+		}
+
+		if (!openFilePath.empty())
+		{
+			std::ifstream file(openFilePath);
+
+			ordered_json container = json::parse(file);
+
+			//m_strEffectName = container.at("name").get<_string>();
+			m_iNumPartObjects = container.at("num_node").get<_uint>();
+			m_fDuration = container.at("duration").get<_float>();
+
+			_float3 position = m_pTransform->GetPosition();
+			_float3 scale = m_pTransform->GetScale();
+			_float4 quaternion = m_pTransform->GetQuaternion();
+
+			position.x = container.at("position").at("x").get<_float>();
+			position.y = container.at("position").at("y").get<_float>();
+			position.z = container.at("position").at("z").get<_float>();
+
+			scale.x = container.at("scale").at("x").get<_float>();
+			scale.y = container.at("scale").at("y").get<_float>();
+			scale.z = container.at("scale").at("z").get<_float>();
+
+			quaternion.x = container.at("quaternion").at("x").get<_float>();
+			quaternion.y = container.at("quaternion").at("y").get<_float>();
+			quaternion.z = container.at("quaternion").at("z").get<_float>();
+			quaternion.w = container.at("quaternion").at("w").get<_float>();
+
+			for (auto& node : container["nodes"])
+			{
+				_string type = node.at("type").get<_string>();
+				if ("sprite" == type)
+				{
+					Editor_EffectNode::EFFECT_NODE_DESC desc{};
+					desc.effectType = EffectType::Sprite;
+					desc.parent = this;
+					desc.context = &m_Context;
+
+					Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpriteEffect", &desc);
+					m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
+
+					static_cast<Editor_SpriteEffect*>(effectNode)->Import(node);
+				}
+			}
+
+			m_pTransform->SetPosition(position);
+			m_pTransform->SetScale(scale);
+			m_pTransform->SetQuaternion(quaternion);
+
+		}
+	}
 }
 
-void Editor_EffectContainer::Export(const _string& outFilePath)
+void Editor_EffectContainer::Export()
 {
+	using namespace nlohmann;
+	namespace fs = std::filesystem;
 
+	static _string outFilePath;
+	if (ImGui::Button("Export"))
+	{
+		nfdchar_t* outPath = nullptr;
+		nfdresult_t res = NFD_SaveDialog(nullptr, nullptr, &outPath);
+
+		if (res == NFD_OKAY)
+		{
+			outFilePath = outPath;
+			NFDi_Free(outPath);
+		}
+
+		if (!outFilePath.empty())
+		{
+			ordered_json container = ordered_json::object();
+
+			//container["name"] = m_strEffectName;
+			container["num_node"] = m_iNumPartObjects;
+			container["duration"] = m_fDuration;
+
+			_float3 position = m_pTransform->GetPosition();
+			_float3 scale = m_pTransform->GetScale();
+			_float4 quaternion = m_pTransform->GetQuaternion();
+			container["position"] = { {"x",position.x},{"y",position.y},{"z",position.z} };
+			container["scale"] = { {"x",scale.x},{"y",scale.y},{"z",scale.z} };
+			container["quaternion"] = { {"x",quaternion.x},{"y",quaternion.y},{"z",quaternion.z},{"w",quaternion.w} };
+
+			container["nodes"] = json::array();
+
+			for (auto& node : m_PartObjects)
+			{
+				static_cast<Editor_EffectNode*>(node)->Export(container["nodes"]);
+			}
+
+			std::ofstream out(outFilePath);
+			if (!out.is_open())
+			{
+				MSG_BOX("Failed to save");
+				return;
+			}
+
+			out << container.dump(2);
+		}
+	}
 }
 
 void Editor_EffectContainer::LoadTextureFromDirectory(const _string& dirPath)
 {
 	namespace fs = std::filesystem;
 
-	for (auto& entry : fs::directory_iterator(dirPath))
+	for (auto& entry : fs::recursive_directory_iterator(dirPath))
 	{
 		if (!entry.is_regular_file())
 			continue;
@@ -123,13 +241,16 @@ void Editor_EffectContainer::LoadTextureFromDirectory(const _string& dirPath)
 		auto tex = Texture::Create(entry.path().string());
 		if (!tex)
 		{
-			MSG_BOX("Failed to load : %s", entry.path().string().c_str());
+			_string path = entry.path().string();
+			MSG_BOX("Failed to load : %s", path.c_str());
 			continue;
 		}
 
 		_string fileName = entry.path().stem().string();
 		m_Textures.emplace(fileName, tex);
 	}
+
+	m_Context.pAllTextures = &m_Textures;
 }
 
 void Editor_EffectContainer::DisplayTextures()
@@ -138,11 +259,10 @@ void Editor_EffectContainer::DisplayTextures()
 	float avail = ImGui::GetWindowSize().x;
 	int   cols = (std::max)(1, (int)((avail + 8.f) / (128.f + 8.f)));
 	float cellW = (avail - 8.f * (cols - 1)) / cols;
-	float cellH = cellW; // 정사각 타일
+	float cellH = cellW;
 
 	_uint idx = 0;
 	_uint count = 0;
-	static _int select = -1;
 	for (auto& pair : m_Textures)
 	{
 		if (idx % cols != 0) ImGui::SameLine();
@@ -153,34 +273,44 @@ void Editor_EffectContainer::DisplayTextures()
 		ImVec2 size(cellW, cellH);
 		_bool isPressed = ImGui::InvisibleButton(("imgbtn" + std::to_string(idx)).c_str(), size);
 
+		_bool isLeftClick = ImGui::IsItemClicked(ImGuiMouseButton_Left);
+		_bool isRightClick = ImGui::IsItemClicked(ImGuiMouseButton_Right);
+
 		_float iw = 1.f;
 		_float ih = 1.f;
 		_float scale = (std::min)(size.x / iw, size.y / ih);
 		ImVec2 drawSize(iw * scale, ih * scale);
 		ImVec2 offset((size.x - drawSize.x) * 0.5f, (size.y - drawSize.y) * 0.5f);
 
-		// SRV를 ImTextureID로
 		ImTextureID texID = (ImTextureID)pair.second->GetSRV();
 		ImGui::GetWindowDrawList()->AddImage(texID,
 			ImVec2(p0.x + offset.x, p0.y + offset.y),
 			ImVec2(p0.x + offset.x + drawSize.x, p0.y + offset.y + drawSize.y));
 
-		_bool isHovered = ImGui::IsItemHovered();
-		_bool isSelected = (select == static_cast<_int>(idx));
-		if (isHovered || isSelected)
+
+		for (const auto& select : m_SelectIndices)
 		{
-			ImU32 col = isSelected ? IM_COL32(80, 170, 255, 255) : IM_COL32(255, 255, 255, 180);
+			_bool isHovered = ImGui::IsItemHovered();
+			_bool isSelected = (select == static_cast<_int>(idx));
+			if (isHovered || isSelected)
+			{
+				ImU32 col = isSelected ? IM_COL32(80, 170, 255, 255) : IM_COL32(255, 255, 255, 180);
 			
-			ImVec2 rMin = ImGui::GetItemRectMin();
-			ImVec2 rMax = ImGui::GetItemRectMax();
-			ImGui::GetWindowDrawList()->AddRect(rMin, rMax, col, 6.0f, 0, 2.0f);
+				ImVec2 rMin = ImGui::GetItemRectMin();
+				ImVec2 rMax = ImGui::GetItemRectMax();
+				ImGui::GetWindowDrawList()->AddRect(rMin, rMax, col, 6.0f, 0, 2.0f);
+			}
 		}
 
-		if (isPressed)
+		if (isLeftClick)
 		{
-			select = idx;
-			m_Context.textureTag = pair.first;
-			m_Context.texture = pair.second;
+			auto iter = std::find(m_SelectIndices.begin(), m_SelectIndices.end(), idx);
+			if (iter == m_SelectIndices.end())
+			{
+				m_SelectIndices.push_back(idx);
+				m_Context.textureTags.push_back(pair.first);
+				m_Context.textures.push_back(pair.second);
+			}
 		}
 
 		ImGui::TextWrapped("%s", pair.first.c_str());
@@ -193,19 +323,20 @@ void Editor_EffectContainer::DisplayTextures()
 
 void Editor_EffectContainer::AddNode()
 {
-	if (ImGui::Button("Add Node"))
-	{
-		auto engine = EngineCore::GetInstance();
+	auto engine = EngineCore::GetInstance();
 
+	if (ImGui::Button("Add Node : Sprite"))
+	{
 		Editor_EffectNode::EFFECT_NODE_DESC desc{};
+		desc.effectType = EffectType::Sprite;
 		desc.parent = this;
 		desc.context = &m_Context;
 
-		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectNode", &desc);
+		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpriteEffect", &desc);
 		m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
 
 		m_iNumPartObjects = m_PartObjects.size();
-	}
+	}	
 }
 
 void Editor_EffectContainer::RemoveNode()
@@ -219,5 +350,15 @@ void Editor_EffectContainer::RemoveNode()
 		m_PartObjects.pop_back();
 
 		m_iNumPartObjects = m_PartObjects.size();
+	}
+}
+
+void Editor_EffectContainer::ContextClear()
+{
+	if (ImGui::Button("Context Clear"))
+	{
+		m_SelectIndices.clear();
+		m_Context.textureTags.clear();
+		m_Context.textures.clear();
 	}
 }

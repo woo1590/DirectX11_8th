@@ -28,7 +28,7 @@ HRESULT PartObject::Initialize(InitDESC* arg)
 	/*if use socket*/
 	if (desc->parentSocketTransform)
 		m_pTransform->SetParent(desc->parentSocketTransform);
-	else
+	else if(desc->parent)
 		m_pTransform->SetParent(m_pParent->GetComponent<TransformComponent>());
 
 	if (FAILED(__super::Initialize(arg)))

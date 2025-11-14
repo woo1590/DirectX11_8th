@@ -70,7 +70,7 @@ namespace Client
 		Count
 	};
 
-	enum class EffectNodeType
+	enum class EffectType
 	{
 		Mesh,
 		Sprite,

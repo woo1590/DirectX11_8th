@@ -1,5 +1,6 @@
 #pragma once
 #include "ContainerObject.h"
+#include "EffectContainer.h"
 
 NS_BEGIN(Client)
 

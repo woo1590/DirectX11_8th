@@ -97,13 +97,10 @@ void TransformComponent::SetParent(TransformComponent* parent)
 void TransformComponent::RemoveChild(TransformComponent* child)
 {
 	auto iter = std::find(m_Childrens.begin(), m_Childrens.end(), child);
-
 	if (iter != m_Childrens.end())
 	{
 		_uint index = std::distance(m_Childrens.begin(), iter);
-
-		_uint lastIndex = m_Childrens.size() - 1;
-		std::swap(m_Childrens[index], m_Childrens[lastIndex]);
+		std::swap(m_Childrens[index], m_Childrens.back());
 		m_Childrens.pop_back();
 	}
 }
@@ -359,6 +356,19 @@ void TransformComponent::MakeChildrenDirty()
 			child->MakeChildrenDirty();
 		}
 	}
+}
+
+void TransformComponent::RemovePendingChildren()
+{
+	if (m_PendingRemoveChildren.empty())
+		return;
+
+	for (const auto& child : m_PendingRemoveChildren)
+	{
+		
+	}
+
+	m_PendingRemoveChildren.clear();
 }
 
 _vector TransformComponent::RemoveRoll(_fvector quaternion)

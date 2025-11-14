@@ -23,6 +23,11 @@ public:
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
+
+private:
+    void CreateEffect(_float dt);
+    _float m_fElapsedTime{};
+    _float m_fDuration = 0.02f;
 };
 
 NS_END

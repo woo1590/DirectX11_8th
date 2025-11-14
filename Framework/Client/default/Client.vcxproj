@@ -248,6 +248,7 @@
     <ClInclude Include="..\public\MuzzleFire.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
+    <ClInclude Include="..\public\SpriteEffect.h" />
     <ClInclude Include="..\public\WeaponSlot.h" />
     <ClInclude Include="..\public\PlayerIcon.h" />
     <ClInclude Include="..\public\PlayerInteractionComponent.h" />
@@ -345,6 +346,7 @@
     <ClCompile Include="..\private\MuzzleFire.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
+    <ClCompile Include="..\private\SpriteEffect.cpp" />
     <ClCompile Include="..\private\WeaponSlot.cpp" />
     <ClCompile Include="..\private\PlayerIcon.cpp" />
     <ClCompile Include="..\private\PlayerInteractionComponent.cpp" />

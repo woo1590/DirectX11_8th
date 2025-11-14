@@ -65,6 +65,7 @@ public:
     HRESULT LoadModelFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadAnimationSetFromFile(_uint levelID, const _string& filePath, const _string& key);
     HRESULT LoadNavMeshFromFile(_uint levelID, const _string& filePath, const _string& key);
+    HRESULT LoadTextureFromFile(_uint levelID, const _string& filePath);
 
     class VIBuffer* GetBuffer(_uint levelID, const _string& key);
     class Shader* GetShader(const _string& key);
@@ -72,6 +73,7 @@ public:
     class Model* GetModel(_uint levelID, const _string& key);
     ANIMATION_SET GetAnimation(_uint levelID, const _string& key);
     class NavMesh* GetNavMesh(_uint levelID, const _string& key);
+    class Texture* GetTexture(_uint levelID, const _string& key);
 #pragma endregion
 
 #pragma region Prototype

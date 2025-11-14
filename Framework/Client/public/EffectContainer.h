@@ -9,8 +9,8 @@ class EffectContainer :
 public:
     typedef struct tagEffectContainerDesc : public ContainerObject::CONTAINER_OBJECT_DESC
     {
-        _uint numNodes{};
-        _float duration{};
+        Object* socketObject = nullptr;
+        _float3 forward{ 0.f,0.f,1.f };
     }EFFECT_CONTAINER_DESC;
 private:
     EffectContainer();
@@ -18,8 +18,8 @@ private:
     virtual ~EffectContainer() = default;
 
 public:
-    static EffectContainer* Create();
-    HRESULT Initialize_Prototype()override;
+    static EffectContainer* Create(const _string& filePath);
+    HRESULT Initialize_Prototype(const _string& filePath);
     HRESULT Initialize(InitDESC* arg)override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
@@ -29,6 +29,7 @@ public:
     void Free()override;
 
 private:
+    Object* m_pParentSocket = nullptr;
     _float m_fElapsedTime = 0.f;
     _float m_fDuration = 0.f;
 };

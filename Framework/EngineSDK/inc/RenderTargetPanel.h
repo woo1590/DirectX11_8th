@@ -1,6 +1,8 @@
 #pragma once
 #include "IPanel.h"
 
+#ifdef USE_IMGUI
+
 NS_BEGIN(Engine)
 
 class RenderTargetPanel :
@@ -20,4 +22,6 @@ public:
 private:
 
 };
-    NS_END
+NS_END
+
+#endif
