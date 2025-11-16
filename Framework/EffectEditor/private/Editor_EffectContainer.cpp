@@ -2,6 +2,7 @@
 #include "Editor_EffectContainer.h"
 #include "Editor_EffectNode.h"
 #include "Editor_SpriteEffect.h"
+#include "Editor_ParticleEffect.h"
 #include "Texture.h"
 
 Editor_EffectContainer::Editor_EffectContainer()
@@ -135,6 +136,7 @@ void Editor_EffectContainer::Import()
 			//m_strEffectName = container.at("name").get<_string>();
 			m_iNumPartObjects = container.at("num_node").get<_uint>();
 			m_fDuration = container.at("duration").get<_float>();
+			m_IsLoop = container.at("is_loop").get<_bool>();
 
 			_float3 position = m_pTransform->GetPosition();
 			_float3 scale = m_pTransform->GetScale();
@@ -202,6 +204,7 @@ void Editor_EffectContainer::Export()
 			//container["name"] = m_strEffectName;
 			container["num_node"] = m_iNumPartObjects;
 			container["duration"] = m_fDuration;
+			container["is_loop"] = m_IsLoop;
 
 			_float3 position = m_pTransform->GetPosition();
 			_float3 scale = m_pTransform->GetScale();
@@ -333,6 +336,32 @@ void Editor_EffectContainer::AddNode()
 		desc.context = &m_Context;
 
 		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpriteEffect", &desc);
+		m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
+
+		m_iNumPartObjects = m_PartObjects.size();
+	}	
+
+	if (ImGui::Button("Add Node : Particle"))
+	{
+		Editor_EffectNode::EFFECT_NODE_DESC desc{};
+		desc.effectType = EffectType::Particle;
+		desc.parent = this;
+		desc.context = &m_Context;
+
+		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ParticleEffect", &desc);
+		m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
+
+		m_iNumPartObjects = m_PartObjects.size();
+	}
+
+	if (ImGui::Button("Add Node : Light"))
+	{
+		Editor_EffectNode::EFFECT_NODE_DESC desc{};
+		desc.effectType = EffectType::Light;
+		desc.parent = this;
+		desc.context = &m_Context;
+
+		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LightEffect", &desc);
 		m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
 
 		m_iNumPartObjects = m_PartObjects.size();

@@ -511,6 +511,13 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpawnSmoke",
 			EffectContainer::Create("../bin/resource/textures/effect/spawn_smoke/spawn_smoke.json"))))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitWall",
+			EffectContainer::Create("../bin/resource/textures/effect/hit_wall/hit_wall.json"))))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitWall",
+			EffectContainer::Create("../bin/resource/textures/effect/prism_hit_wall/prism_hit_wall.json"))))
+			return E_FAIL;
 	}
 
 	/*Load Prototype Object*/

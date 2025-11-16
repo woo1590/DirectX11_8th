@@ -11,6 +11,7 @@ public:
     {
         Object* socketObject = nullptr;
         _float3 forward{ 0.f,0.f,1.f };
+        _float3 surfaceDir{ 0.f,0.f,1.f };
     }EFFECT_CONTAINER_DESC;
 private:
     EffectContainer();
@@ -25,13 +26,19 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    _float3 GetSurfaceDir()const { return m_SurfaceDir; }
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
     Object* m_pParentSocket = nullptr;
+
     _float m_fElapsedTime = 0.f;
     _float m_fDuration = 0.f;
+    _bool m_IsLoop = false;
+
+    /*for particle*/
+    _float3 m_SurfaceDir{};
 };
 
 NS_END

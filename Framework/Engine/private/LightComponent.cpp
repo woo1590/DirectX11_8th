@@ -40,7 +40,6 @@ HRESULT LightComponent::Initialize(InitDESC* arg)
 		m_Direction = desc->direction;
 		m_fRange = desc->range;
 
-		EngineCore::GetInstance()->RegisterLight(this);
 	}
 	else
 	{
@@ -54,7 +53,8 @@ HRESULT LightComponent::Initialize(InitDESC* arg)
 HRESULT LightComponent::ExtractLightProxy(std::vector<LightProxy>& lights)
 {
 	LightProxy proxy;
-	_float3 position = m_pOwner->GetComponent<TransformComponent>()->GetPosition();
+	_float4x4 worldMat = m_pOwner->GetComponent<TransformComponent>()->GetWorldMatrix();
+	_float3 position{ worldMat._41,worldMat._42,worldMat._43 };
 
 	proxy.type = m_eType;
 	proxy.lightColor = m_Color;
@@ -71,7 +71,6 @@ void LightComponent::Free()
 {
 	__super::Free();
 
-	EngineCore::GetInstance()->UnRegisterLight(this);
 }
 
 #ifdef USE_IMGUI

@@ -241,11 +241,13 @@
     <ClInclude Include="..\public\HorseHead_Sword.h" />
     <ClInclude Include="..\public\EnemySpawner.h" />
     <ClInclude Include="..\public\Item.h" />
+    <ClInclude Include="..\public\LightEffect.h" />
     <ClInclude Include="..\public\LogoFire.h" />
     <ClInclude Include="..\public\LogoText.h" />
     <ClInclude Include="..\public\CountNumber.h" />
     <ClInclude Include="..\public\DamageFont.h" />
     <ClInclude Include="..\public\MuzzleFire.h" />
+    <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
     <ClInclude Include="..\public\SpriteEffect.h" />
@@ -339,11 +341,13 @@
     <ClCompile Include="..\private\HorseHead_Sword.cpp" />
     <ClCompile Include="..\private\EnemySpawner.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
+    <ClCompile Include="..\private\LightEffect.cpp" />
     <ClCompile Include="..\private\LogoFire.cpp" />
     <ClCompile Include="..\private\LogoText.cpp" />
     <ClCompile Include="..\private\CountNumber.cpp" />
     <ClCompile Include="..\private\DamageFont.cpp" />
     <ClCompile Include="..\private\MuzzleFire.cpp" />
+    <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
     <ClCompile Include="..\private\SpriteEffect.cpp" />
@@ -402,6 +406,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxInstancePoint.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxPoint.hlsl" />
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxSkinnedMesh.hlsl" />

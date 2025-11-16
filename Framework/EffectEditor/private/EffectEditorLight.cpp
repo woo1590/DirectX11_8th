@@ -49,6 +49,8 @@ HRESULT EffectEditorLight::Initialize(InitDESC* arg)
 	if (FAILED(GetComponent<LightComponent>()->Initialize(&desc)))
 		return E_FAIL;
 
+	EngineCore::GetInstance()->RegisterLight(GetComponent<LightComponent>());
+
 	return S_OK;
 }
 
@@ -79,5 +81,7 @@ Object* EffectEditorLight::Clone(InitDESC* arg)
 
 void EffectEditorLight::Free()
 {
+	EngineCore::GetInstance()->UnRegisterLight(GetComponent<LightComponent>());
+
 	__super::Free();
 }

@@ -4,6 +4,7 @@
 #include "ModelComponent.h"
 #include "SpriteComponent.h"
 #include "ColliderComponent.h"
+#include "ParticleSystemComponent.h"
 
 _uint Object::m_iInstanceID = 0;
 
@@ -90,8 +91,9 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 
 	auto model = GetComponent<ModelComponent>();
 	auto sprite = GetComponent<SpriteComponent>();
+	auto particle = GetComponent<ParticleSystemComponent>();
 
-	if (!model && !sprite)
+	if (!model && !sprite && !particle)
 		return S_OK;
 
 	if (model)
@@ -103,6 +105,8 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 	}
 	else if (sprite)
 		return sprite->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
+	else
+		return particle->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
 
 	return S_OK;
 }

@@ -101,6 +101,13 @@ void PrismProjectile::Update(_float dt)
 		XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&forward) * m_fSpeed * dt);
 
 		m_pTransform->SetForward(forward);
+
+		_float4x4 viewMatrix = engine->GetCameraContext().viewMatrix;
+		EffectContainer::EFFECT_CONTAINER_DESC testdesc{};
+		testdesc.position = m_pTransform->GetPosition();
+		
+		XMStoreFloat3(&testdesc.surfaceDir, XMVector3TransformNormal(XMLoadFloat3(&result.hitNormal), XMLoadFloat4x4(&viewMatrix)));
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitWall", engine->GetCurrLevelID(), "Layer_Effect", &testdesc);
 	}
 
 	m_pTransform->SetPosition(nextPosition);
@@ -145,6 +152,8 @@ void PrismProjectile::CreateEffect(_float dt)
 		EffectContainer::EFFECT_CONTAINER_DESC desc{};
 		desc.position = m_pTransform->GetPosition();
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismFire", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+
+		
 
 		m_fElapsedTime = 0.f;
 	}

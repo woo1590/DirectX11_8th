@@ -49,6 +49,7 @@ private:
 
     _string m_strEffectName{};
     _float m_fDuration{};
+    _bool m_IsLoop = false;
 
 #ifdef USE_IMGUI
     void Play();

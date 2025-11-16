@@ -99,8 +99,8 @@ void Editor_SpriteEffect::Update(_float dt)
 		_float4 currRotation{};
 		_float currAlpha{};
 
-		_vector startQuaternion = XMQuaternionRotationRollPitchYaw(m_StartRotaion.x, m_StartRotaion.y, m_StartRotaion.z);
-		_vector targetQuaternion = XMQuaternionRotationRollPitchYaw(m_TargetRotation.x, m_TargetRotation.y, m_TargetRotation.z);
+		_vector startQuaternion = XMQuaternionRotationRollPitchYaw(math::ToRadian(m_StartRotaion.x), math::ToRadian(m_StartRotaion.y), math::ToRadian(m_StartRotaion.z));
+		_vector targetQuaternion = XMQuaternionRotationRollPitchYaw(math::ToRadian(m_TargetRotation.x), math::ToRadian(m_TargetRotation.y), math::ToRadian(m_TargetRotation.z));
 
 		XMStoreFloat3(&currPosition, XMVectorLerp(XMLoadFloat3(&m_StartPosition), XMLoadFloat3(&m_TargetPositon), t));
 		XMStoreFloat3(&currScale, XMVectorLerp(XMLoadFloat3(&m_StartScale), XMLoadFloat3(&m_TargetScale), t));
@@ -326,6 +326,7 @@ void Editor_SpriteEffect::Import(nlohmann::ordered_json& j)
 	quaternion.z = j.at("quaternion").at("z").get<_float>();
 	quaternion.w = j.at("quaternion").at("w").get<_float>();
 
+	m_UseBillboard = j.at("use_billboard").get<_bool>();
 	m_UseEaseOut = j.at("use_easeout").get<_float>();
 
 	m_StartPosition.x = j.at("start_position").at("x").get<_float>();
@@ -385,6 +386,7 @@ void Editor_SpriteEffect::Export(nlohmann::ordered_json& j)
 	node["scale"] = { {"x",scale.x},{"y",scale.y},{"z",scale.z} };
 	node["quaternion"] = { {"x",quaternion.x},{"y",quaternion.y},{"z",quaternion.z},{"w",quaternion.w} };
 
+	node["use_billboard"] = m_UseBillboard;
 	node["use_easeout"] = m_UseEaseOut;
 
 	node["start_position"] = { {"x",m_StartPosition.x},{"y",m_StartPosition.y},{"z",m_StartPosition.z} };

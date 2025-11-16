@@ -48,6 +48,8 @@ HRESULT Sun::Initialize(InitDESC* arg)
 	if (FAILED(GetComponent<LightComponent>()->Initialize(&lightDesc)))
 		return E_FAIL;
 
+	EngineCore::GetInstance()->RegisterLight(GetComponent<LightComponent>());
+
 	return S_OK;
 }
 
@@ -78,5 +80,7 @@ Object* Sun::Clone(InitDESC* arg)
 
 void Sun::Free()
 {
+	EngineCore::GetInstance()->UnRegisterLight(GetComponent<LightComponent>());
+
 	__super::Free();
 }

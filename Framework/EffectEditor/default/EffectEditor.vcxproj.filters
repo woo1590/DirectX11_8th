@@ -61,6 +61,9 @@
     <Filter Include="98. Etc\nfd">
       <UniqueIdentifier>{682e6ec2-36de-4b17-9692-7b5528aedb70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect Container\Effect Node\Particle Effect">
+      <UniqueIdentifier>{842647c0-09d0-42b2-b667-e09e885dc98b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EffectEditor.h">
@@ -117,6 +120,12 @@
     <ClInclude Include="..\..\EngineSDK\inc\nfd\nfd.h">
       <Filter>98. Etc\nfd</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Editor_ParticleEffect.h">
+      <Filter>02. Object\Effect Container\Effect Node\Particle Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Editor_LightEffect.h">
+      <Filter>02. Object\Effect Container\Effect Node\Light Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EffectEditor.cpp">
@@ -158,6 +167,12 @@
     <ClCompile Include="..\..\EngineSDK\inc\nfd\nfd_win.cpp">
       <Filter>98. Etc\nfd</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Editor_ParticleEffect.cpp">
+      <Filter>02. Object\Effect Container\Effect Node\Particle Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Editor_LightEffect.cpp">
+      <Filter>02. Object\Effect Container\Effect Node\Light Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="EffectEditor.ico">
@@ -192,6 +207,9 @@
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_Grid.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxInstancePoint.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

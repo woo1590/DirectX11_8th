@@ -3,6 +3,7 @@
 #include "Bounding_Sphere.h"
 
 //object
+#include "EffectContainer.h"
 #include "DamageFont.h"
 
 //component
@@ -83,6 +84,8 @@ void DefaultBullet::Update(_float dt)
 {
 	__super::Update(dt);
 
+	auto engine = EngineCore::GetInstance();
+
 	_float3 forward = m_pTransform->GetForward();
 	_vector velocity = XMLoadFloat3(&forward) * m_fSpeed;
 
@@ -95,10 +98,27 @@ void DefaultBullet::Update(_float dt)
 	worldRay.origin = currPosition;
 	XMStoreFloat3(&worldRay.direction, XMVector3Normalize(XMLoadFloat3(&nextPosition) - XMLoadFloat3(&currPosition)));
 
-	RAYCAST_DATA result = EngineCore::GetInstance()->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::StaticMapObject));
+	RAYCAST_DATA result = engine->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::StaticMapObject));
 	if (result.isHit)
 	{
 		//currPos + result.distance 더해서 nextPos 만들고 nextPos에 데칼 생성
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = currPosition;
+		XMStoreFloat3(&desc.position, XMLoadFloat3(&currPosition) + XMLoadFloat3(&result.hitNormal) * 2.f);
+
+		_float rotZ{};
+		_float3 viewNormal{};
+		_float4x4 viewMatrix = engine->GetCameraContext().viewMatrix;
+		XMStoreFloat3(&viewNormal, XMVector3TransformNormal(XMLoadFloat3(&result.hitNormal), XMLoadFloat4x4(&viewMatrix)));
+		_float lenSqrt = viewNormal.x * viewNormal.x + viewNormal.y * viewNormal.y;
+
+		rotZ = std::atan2(-viewNormal.y, viewNormal.x);
+
+		Object* effect = nullptr;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitWall", engine->GetCurrLevelID(), "Layer_Effect", &desc, &effect);
+
+		effect->GetComponent<TransformComponent>()->Rotate(_float3(0.f, 0.f, rotZ));
+
 		SetDead();
 	}
 	else

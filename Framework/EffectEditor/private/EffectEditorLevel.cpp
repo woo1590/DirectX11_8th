@@ -12,6 +12,8 @@
 #include "EffectEditorLight.h"
 
 #include "Editor_SpriteEffect.h"
+#include "Editor_LightEffect.h"
+#include "Editor_ParticleEffect.h"
 
 EffectEditorLevel::EffectEditorLevel()
 	:Level()
@@ -78,6 +80,10 @@ HRESULT EffectEditorLevel::Initialize_Resource()
         if (FAILED(engine->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxPoint.hlsl", "Shader_VtxPoint",
             VTXPOS::elements, VTXPOS::numElement)))
             return E_FAIL;
+
+        if (FAILED(engine->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxInstancePoint.hlsl", "Shader_VtxInstancePoint",
+            INSTANCE_POINT_PARTICLE_DESC::elements, INSTANCE_POINT_PARTICLE_DESC::numElement)))
+            return E_FAIL;
     }
     /*Load Buffer*/
     {
@@ -107,6 +113,10 @@ HRESULT EffectEditorLevel::Initialize_Resource()
         if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectContainer", Editor_EffectContainer::Create())))
             return E_FAIL;
         if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpriteEffect", Editor_SpriteEffect::Create())))
+            return E_FAIL;
+        if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ParticleEffect", Editor_ParticleEffect::Create())))
+            return E_FAIL;
+        if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LightEffect", Editor_LightEffect::Create())))
             return E_FAIL;
     }
 

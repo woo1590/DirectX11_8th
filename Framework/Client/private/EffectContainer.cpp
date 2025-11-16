@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "EffectContainer.h"
 #include "SpriteEffect.h"
+#include "ParticleEffect.h"
+
+#include "ParticleSystemComponent.h"
 
 EffectContainer::EffectContainer()
 	:ContainerObject()
@@ -55,6 +58,7 @@ HRESULT EffectContainer::Initialize_Prototype(const _string& filePath)
 	ordered_json prefab = json::parse(file);
 	m_iNumPartObjects = prefab.at("num_node").get<_uint>();
 	m_fDuration = prefab.at("duration").get<_float>();
+	m_IsLoop = prefab.at("is_loop").get<_bool>();
 
 	position.x = prefab.at("position").at("x").get<_float>();
 	position.y = prefab.at("position").at("y").get<_float>();
@@ -77,6 +81,11 @@ HRESULT EffectContainer::Initialize_Prototype(const _string& filePath)
 			auto spriteEffect = SpriteEffect::Create(node, filePath);
 			m_PartObjects.push_back(spriteEffect);
 		}
+		else if ("particle" == type)
+		{
+			auto particleEffect = ParticleEffect::Create(node, filePath);
+			m_PartObjects.push_back(particleEffect);
+		}
 	}
 
 	m_pTransform->SetPosition(position);
@@ -98,6 +107,7 @@ HRESULT EffectContainer::Initialize(InitDESC* arg)
 
 	m_pTransform->SetPosition(desc->position);
 	m_pTransform->SetForward(desc->forward);
+	m_SurfaceDir = desc->surfaceDir;
 
 	return S_OK;
 }
@@ -112,9 +122,9 @@ void EffectContainer::Update(_float dt)
 	__super::Update(dt);
 
 	m_fElapsedTime += dt;
-	if (m_fElapsedTime >= m_fDuration)
+	if (m_fElapsedTime >= m_fDuration && !m_IsLoop)
 	{
-		//SetDead();
+		SetDead();
 	}
 	else
 	{

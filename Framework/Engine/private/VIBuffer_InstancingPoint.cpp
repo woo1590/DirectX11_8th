@@ -35,12 +35,12 @@ HRESULT VIBuffer_InstancingPoint::Initialize(_uint bufferLevelID, const _string&
 	m_eIndexFormat = DXGI_FORMAT_UNKNOWN;
 	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-	m_iNumInstance = numInstance;
+	m_iNumMaxInstance = numInstance;
 	m_iInstanceStride = sizeof(VTX_INSTANCE_POINT);
 
 	/*---Instance buffer---*/
 	D3D11_BUFFER_DESC instanceDesc{};
-	instanceDesc.ByteWidth = m_iNumInstance * m_iInstanceStride;
+	instanceDesc.ByteWidth = m_iNumMaxInstance * m_iInstanceStride;
 	instanceDesc.Usage = D3D11_USAGE_DYNAMIC;
 	instanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	instanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -87,9 +87,22 @@ HRESULT VIBuffer_InstancingPoint::BindBuffers()
 
 HRESULT VIBuffer_InstancingPoint::Draw()
 {
-	m_pDeviceContext->DrawInstanced(1, m_iNumInstance, 0, 0);
+	m_pDeviceContext->DrawInstanced(1, m_iNumCurrInstance, 0, 0);
 
 	return S_OK;
+}
+
+void VIBuffer_InstancingPoint::UploadInstanceData(std::vector<VTX_INSTANCE_POINT>& instanceDatas, _uint numInstance)
+{
+	if (numInstance > m_iNumMaxInstance)
+		numInstance = m_iNumMaxInstance;
+
+	D3D11_MAPPED_SUBRESOURCE subResource{};
+	m_pDeviceContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
+	memcpy_s(subResource.pData, sizeof(VTX_INSTANCE_POINT) * m_iNumMaxInstance, instanceDatas.data(), sizeof(VTX_INSTANCE_POINT) * numInstance);
+	m_pDeviceContext->Unmap(m_pInstanceBuffer, 0);
+
+	m_iNumCurrInstance = numInstance;
 }
 
 void VIBuffer_InstancingPoint::Free()
@@ -97,4 +110,5 @@ void VIBuffer_InstancingPoint::Free()
 	__super::Free();
 
 	Safe_Release(m_pBaseBuffer);
+	Safe_Release(m_pInstanceBuffer);
 }

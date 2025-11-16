@@ -38,6 +38,8 @@ public:
     _bool IsActive()const { return m_isActive; }
     void SetActive() { m_isActive = true; }
     void SetDeactive() { m_isActive = false; }
+    void SetColor(_float4 color) { m_Color = color; }
+    void SetLightRange(_float range) { m_fRange = range; }
 
     Component* Clone() { return new LightComponent(*this); }
     void Free()override;

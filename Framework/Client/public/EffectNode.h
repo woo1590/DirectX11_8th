@@ -30,6 +30,7 @@ public:
 
 protected:
     EffectType m_eEffectType = EffectType::Count;
+    _bool m_IsActive = true;
     _float m_fDuration{};
     _float m_fElapsedTime{};
 };

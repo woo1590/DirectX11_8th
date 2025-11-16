@@ -16,5 +16,5 @@ namespace EffectEditor
 	constexpr unsigned int CELL_SIZE = 40;
 
 	enum class LevelID { Static, EffectEditor, Count };
-	enum class EffectType { Mesh, Sprite, Particle, Count };
+	enum class EffectType { Mesh, Sprite, Particle, Light, Count };
 }

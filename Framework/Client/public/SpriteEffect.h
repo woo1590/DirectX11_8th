@@ -28,8 +28,6 @@ public:
     void Free()override;
 
 private:
-    _bool m_IsActive = true;
-
     _string m_strMaterialTag{};
 
     _float m_fSpeed{};

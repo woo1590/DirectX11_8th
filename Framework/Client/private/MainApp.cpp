@@ -134,6 +134,10 @@ HRESULT MainApp::LoadStaticLevel()
         if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxPoint.hlsl", "Shader_VtxPoint",
             VTXPOS::elements, VTXPOS::numElement)))
             return E_FAIL;
+
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxInstancePoint.hlsl", "Shader_VtxInstancePoint",
+            INSTANCE_POINT_PARTICLE_DESC::elements, INSTANCE_POINT_PARTICLE_DESC::numElement)))
+            return E_FAIL;
     }
     /*Load Buffer*/
     {

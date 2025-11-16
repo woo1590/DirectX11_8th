@@ -13,5 +13,8 @@ namespace Engine
 	enum class NavCellPoint { A, B, C, Count };
 	enum class NavCellLine { AB, BC, CA, Count };
 	enum class ColliderType { AABB, OBB, Sphere, Count };
+
+	enum class ParticleSpace { Local, World, Count };
+	enum class ParticleDirMode { None, SurfaceDir, SwayUp, Count };
 }
 #endif // Engine_Enum_h__
