@@ -2,6 +2,7 @@
 #include "EngineCore.h"
 #include "LogoLevel.h"
 #include "LoadingLevel.h"
+#include "Command_ChangeLevel.h"
 
 //object
 #include "BackGround.h"
@@ -37,7 +38,9 @@ void LogoLevel::Free()
 void LogoLevel::Update(_float dt)
 {
 	if (GetAsyncKeyState(VK_RETURN))
-		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(LevelID::Loading), LoadingLevel::Create(LevelID::Stage1));
+	{
+		EngineCore::GetInstance()->RegisterCommand(Command_ChangeLevel::Create(LevelID::Stage1));
+	}
 }
 
 HRESULT LogoLevel::Render()

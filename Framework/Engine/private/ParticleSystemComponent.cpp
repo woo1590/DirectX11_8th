@@ -50,6 +50,7 @@ HRESULT ParticleSystemComponent::Initialize(InitDESC* arg)
 	m_iNumBurst = desc->numBurst;
 	m_fSpawnPerSec = desc->spawnPerSec;
 	m_IsLoop = desc->isLoop;
+	m_iMaxNumSpawnParticle = desc->maxSpawnParticle;
 
 	m_SpawnAreaMin = desc->spawnAreaMin;
 	m_SpawnAreaMax = desc->spawnAreaMax;
@@ -183,12 +184,16 @@ void ParticleSystemComponent::SpawnParticles(_float dt)
 	}
 	else
 	{
+		if (!m_IsLoop && m_iNumSpawnParticle >= m_iMaxNumSpawnParticle)
+			return;
+
 		m_fSpawnAcc += m_fSpawnPerSec * dt;
 		_uint spawnNum = static_cast<_uint>(m_fSpawnAcc);
 
 		if (spawnNum)
 		{
 			m_fSpawnAcc -= spawnNum;
+			m_iNumSpawnParticle += spawnNum;
 
 			for (_uint i = 0; i < spawnNum; ++i)
 			{
@@ -265,16 +270,11 @@ void ParticleSystemComponent::BuildInstanceData()
 		data.position.y = particle.position.y;
 		data.position.z = particle.position.z;
 		data.position.w = 1.f;
+
+		data.velocity = particle.velocity;
 		
-		_float rotZ = std::atan2(particle.velocity.y, particle.velocity.x);
-		_float cos = std::cos(rotZ);
-		_float sin = std::sin(rotZ);
-
-		_vector right = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-		_vector up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-		XMStoreFloat4(&data.right, (right * cos - up * sin) * particle.size.x);
-		XMStoreFloat4(&data.up, (right * sin + up * cos) * particle.size.y);
+		data.right = _float4(particle.size.x, 0.f, 0.f, 0.f);
+		data.up = _float4(0.f, particle.size.y, 0.f, 0.f);
 		data.forward = _float4(0.f, 0.f, 1.f, 0.f);
 
 		data.lifeTime.x = particle.lifeTime;

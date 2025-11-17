@@ -21,6 +21,7 @@ ParticleEffect::ParticleEffect(const ParticleEffect& prototype)
 	m_fSpawnPerSec(prototype.m_fSpawnPerSec),
 	m_fSpawnAcc(prototype.m_fSpawnAcc),
 	m_IsLoop(prototype.m_IsLoop),
+	m_iMaxNumSpawnParticle(prototype.m_iMaxNumSpawnParticle),
 	m_SpawnAreaMin(prototype.m_SpawnAreaMin),
 	m_SpawnAreaMax(prototype.m_SpawnAreaMax),
 	m_VelocityMin(prototype.m_VelocityMin),
@@ -107,7 +108,7 @@ HRESULT ParticleEffect::Initialize_Prototype(nlohmann::ordered_json prefab, cons
 
 	if ("none" == dirMode)
 		m_eDirMode = ParticleDirMode::None;
-	else if ("surface_dir")
+	else if ("surface_dir" == dirMode)
 		m_eDirMode = ParticleDirMode::SurfaceDir;
 	else
 		m_eDirMode = ParticleDirMode::SwayUp;
@@ -118,6 +119,16 @@ HRESULT ParticleEffect::Initialize_Prototype(nlohmann::ordered_json prefab, cons
 	m_fSpawnAcc = 0.f;
 
 	m_IsLoop = prefab.at("is_loop").get<_bool>();
+	m_iMaxNumSpawnParticle = prefab.at("max_num_spawn_particle").get<_uint>();
+
+	m_SpawnAreaMin.x = prefab.at("spawn_area_min").at("x").get<_float>();
+	m_SpawnAreaMin.y = prefab.at("spawn_area_min").at("y").get<_float>();
+	m_SpawnAreaMin.z = prefab.at("spawn_area_min").at("z").get<_float>();
+
+	m_SpawnAreaMax.x = prefab.at("spawn_area_max").at("x").get<_float>();
+	m_SpawnAreaMax.y = prefab.at("spawn_area_max").at("y").get<_float>();
+	m_SpawnAreaMax.z = prefab.at("spawn_area_max").at("z").get<_float>();
+
 	m_VelocityMin.x = prefab.at("velocity_min").at("x").get<_float>();
 	m_VelocityMin.y = prefab.at("velocity_min").at("y").get<_float>();
 	m_VelocityMin.z = prefab.at("velocity_min").at("z").get<_float>();
@@ -161,6 +172,7 @@ HRESULT ParticleEffect::Initialize(InitDESC* arg)
 	particleDesc.useGravity = m_UseGravity;
 
 	particleDesc.isLoop = m_IsLoop;
+	particleDesc.maxSpawnParticle = m_iMaxNumSpawnParticle;
 	particleDesc.numBurst = m_iNumBurst;
 	particleDesc.spawnPerSec = m_fSpawnPerSec;
 	particleDesc.spawnAreaMin = m_SpawnAreaMin;
@@ -198,8 +210,11 @@ HRESULT ParticleEffect::LateInitialize()
 	if (m_eSpace == ParticleSpace::World)
 	{
 		_float3 position = m_pParent->GetComponent<TransformComponent>()->GetPosition();
+		_float3 minPosition{}, maxPosition{};
+		XMStoreFloat3(&minPosition, XMLoadFloat3(&position) + XMLoadFloat3(&m_SpawnAreaMin));
+		XMStoreFloat3(&maxPosition, XMLoadFloat3(&position) + XMLoadFloat3(&m_SpawnAreaMax));
 
-		particle->SetSpawnArea(position, position);
+		particle->SetSpawnArea(minPosition, maxPosition);
 	}
 
 	if (m_eDirMode == ParticleDirMode::SurfaceDir)

@@ -176,6 +176,15 @@ void Editor_ParticleEffect::Import(nlohmann::ordered_json& j)
 	m_fSpawnAcc = 0.f;
 
 	m_IsLoop = j.at("is_loop").get<_bool>();
+	m_iMaxNumSpawnParticle = j.at("max_num_spawn_particle").get<_uint>();
+	m_SpawnAreaMin.x = j.at("spawn_area_min").at("x").get<_float>();
+	m_SpawnAreaMin.y = j.at("spawn_area_min").at("y").get<_float>();
+	m_SpawnAreaMin.z = j.at("spawn_area_min").at("z").get<_float>();
+
+	m_SpawnAreaMax.x = j.at("spawn_area_max").at("x").get<_float>();
+	m_SpawnAreaMax.y = j.at("spawn_area_max").at("y").get<_float>();
+	m_SpawnAreaMax.z = j.at("spawn_area_max").at("z").get<_float>();
+
 	m_VelocityMin.x = j.at("velocity_min").at("x").get<_float>();
 	m_VelocityMin.y = j.at("velocity_min").at("y").get<_float>();
 	m_VelocityMin.z = j.at("velocity_min").at("z").get<_float>();
@@ -260,6 +269,9 @@ void Editor_ParticleEffect::Export(nlohmann::ordered_json& j)
 	node["spawn_acc"] = m_fSpawnAcc;
 
 	node["is_loop"] = m_IsLoop;
+	node["max_num_spawn_particle"] = m_iMaxNumSpawnParticle;
+	node["spawn_area_min"] = { {"x",m_SpawnAreaMin.x},{"y",m_SpawnAreaMin.y},{"z",m_SpawnAreaMin.z} };
+	node["spawn_area_max"] = { {"x",m_SpawnAreaMax.x},{"y",m_SpawnAreaMax.y},{"z",m_SpawnAreaMax.z} };
 
 	node["velocity_min"] = { {"x",m_VelocityMin.x},{"y",m_VelocityMin.y},{"z",m_VelocityMin.z} };
 	node["velocity_max"] = { {"x",m_VelocityMax.x},{"y",m_VelocityMax.y},{"z",m_VelocityMax.z} };
@@ -358,17 +370,25 @@ void Editor_ParticleEffect::ParticleEffectSetUp()
 		isDirty |= ImGui::DragFloat("Life Min : ", &m_fLifeMin);
 		isDirty |= ImGui::DragFloat("Life Max : ", &m_fLifeMax);
 
-		if (isDirty)
+		if (isDirty &&
+			m_SpawnAreaMax.x >= m_SpawnAreaMin.x && m_SpawnAreaMax.y >= m_SpawnAreaMin.y && m_SpawnAreaMax.z >= m_SpawnAreaMin.z &&
+			m_VelocityMax.x >= m_VelocityMin.x && m_VelocityMax.y >= m_VelocityMin.y && m_VelocityMax.z >= m_VelocityMin.z &&
+			m_fMaxSpeed >= m_fMinSpeed &&
+			m_fUpSpeedMax >= m_fUpSpeedMin &&
+			m_SizeMax.x >= m_SizeMin.x && m_SizeMax.y >= m_SizeMin.y &&
+			m_fLifeMax >= m_fLifeMin)
 		{
 			ParticleSystemComponent::PARTICLE_SYSTEM_DESC desc{};
 
 			desc.space = m_eSpace;
 			desc.dirMode = m_eDirMode;
 			desc.useGravity = m_UseGravity;
-
-			desc.isLoop = m_IsLoop;
 			desc.numBurst = m_iNumBurst;
 			desc.spawnPerSec = m_fSpawnPerSec;
+
+			desc.isLoop = m_IsLoop;
+			desc.maxSpawnParticle = m_iMaxNumSpawnParticle;
+
 			desc.spawnAreaMin = m_SpawnAreaMin;
 			desc.spawnAreaMax = m_SpawnAreaMax;
 

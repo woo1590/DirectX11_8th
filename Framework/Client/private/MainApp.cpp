@@ -86,6 +86,11 @@ void MainApp::Run()
             }
         }
 
+        /*임시용*/
+        //SetCursorPos(WinSizeX / 2, WinSizeY / 2);
+        //ShowCursor(false);
+        /*임시용*/
+
         m_pEngineCore->UpdateTimer("Timer_Default");
         timeAcc += m_pEngineCore->GetDeltaTime("Timer_Default");
         

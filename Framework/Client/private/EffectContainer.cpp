@@ -2,6 +2,7 @@
 #include "EffectContainer.h"
 #include "SpriteEffect.h"
 #include "ParticleEffect.h"
+#include "LightEffect.h"
 
 #include "ParticleSystemComponent.h"
 
@@ -85,6 +86,11 @@ HRESULT EffectContainer::Initialize_Prototype(const _string& filePath)
 		{
 			auto particleEffect = ParticleEffect::Create(node, filePath);
 			m_PartObjects.push_back(particleEffect);
+		}
+		else if ("light" == type)
+		{
+			auto lightEffect = LightEffect::Create(node, filePath);
+			m_PartObjects.push_back(lightEffect);
 		}
 	}
 

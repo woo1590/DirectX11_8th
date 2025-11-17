@@ -102,17 +102,21 @@ void PrismProjectile::Update(_float dt)
 
 		m_pTransform->SetForward(forward);
 
+		_float3 viewNormal{};
 		_float4x4 viewMatrix = engine->GetCameraContext().viewMatrix;
+		XMStoreFloat3(&viewNormal, XMVector3TransformNormal(XMLoadFloat3(&result.hitNormal), XMLoadFloat4x4(&viewMatrix)));
+		_float rotZ = std::atan2(-viewNormal.y, viewNormal.x);
+
 		EffectContainer::EFFECT_CONTAINER_DESC testdesc{};
 		testdesc.position = m_pTransform->GetPosition();
-		
-		XMStoreFloat3(&testdesc.surfaceDir, XMVector3TransformNormal(XMLoadFloat3(&result.hitNormal), XMLoadFloat4x4(&viewMatrix)));
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitWall", engine->GetCurrLevelID(), "Layer_Effect", &testdesc);
+		testdesc.surfaceDir = result.hitNormal;
+
+		Object* effect = nullptr;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitWall", engine->GetCurrLevelID(), "Layer_Effect", &testdesc, &effect);
+		effect->GetComponent<TransformComponent>()->Rotate(_float3(0.f, 0.f, rotZ));
 	}
 
 	m_pTransform->SetPosition(nextPosition);
-
-	CreateEffect(dt);
 }
 
 void PrismProjectile::LateUpdate(_float dt)

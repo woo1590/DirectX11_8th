@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Fracture.h"
+#include "Random.h"
 #include "Bounding_Sphere.h"
 
 //component
+#include "EffectContainer.h"
 #include "ModelComponent.h"
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
@@ -74,6 +76,10 @@ HRESULT Fracture::Initialize(InitDESC* arg)
 	rigidBody->UseIntegrate();
 	rigidBody->SetInertiaTensor(1.5f);
 
+	auto random = engine->GetRandom();
+	m_fDissolveStartProgress = random->get<_float>(0.2f, 0.4f);
+
+
 	m_UseShadow = true;
 
 	return S_OK;
@@ -91,9 +97,24 @@ void Fracture::Update(_float dt)
 	m_fElapsedTime += dt;
 
 	if (m_fElapsedTime >= m_fLifeDuration)
+	{
 		SetDead();
+		return;
+	}
 
 	auto engine = EngineCore::GetInstance();
+	_float t = m_fElapsedTime / m_fLifeDuration;
+
+	if (t >= m_fDissolveStartProgress && !m_IsDissolved)
+	{
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.surfaceDir = _float3(0.f, 1.f, 0.f);
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyDeadParticle", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+
+		m_IsDissolved = true;
+	}
+
 	auto rigidBody = GetComponent<RigidBodyComponent>();
 
 	_float3 velocity = rigidBody->GetVelocity();

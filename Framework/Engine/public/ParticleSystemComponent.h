@@ -39,6 +39,7 @@ public:
         _float spawnPerSec{};
         _float spawnAcc{};
         _bool isLoop = false;
+        _uint maxSpawnParticle{};
 
         _float3 spawnAreaMin{};
         _float3 spawnAreaMax{};
@@ -117,6 +118,8 @@ private:
     _float m_fSpawnPerSec{};
     _float m_fSpawnAcc{};
     _bool m_IsLoop = false;
+    _uint m_iNumSpawnParticle{};
+    _uint m_iMaxNumSpawnParticle{};
 
     _float3 m_SpawnAreaMin{};
     _float3 m_SpawnAreaMax{};

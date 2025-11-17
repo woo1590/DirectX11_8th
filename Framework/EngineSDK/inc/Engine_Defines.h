@@ -92,7 +92,7 @@ namespace Engine
 	constexpr _uint g_iMaxWidth = 8192;
 	constexpr _uint g_iMaxHeight = 4608;
 
-	constexpr _uint g_iMaxParticle = 1000;
+	constexpr _uint g_iMaxParticle = 100;
 }
 
 

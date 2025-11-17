@@ -37,6 +37,9 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _float m_fElapsedTime = 0.f;
+        _float m_fDuration = 0.04f;
     };
     class DynamiteDead : public State
     {

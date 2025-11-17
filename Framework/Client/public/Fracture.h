@@ -29,8 +29,10 @@ public:
     void Free()override;
 
 private:
-    _float m_fLifeDuration = 2.5f;
+    _float m_fLifeDuration = 3.5f;
     _float m_fElapsedTime = 0.f;
+    _float m_fDissolveStartProgress{};
+    _bool m_IsDissolved = false;
 };
 
 NS_END

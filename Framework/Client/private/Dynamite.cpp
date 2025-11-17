@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Dynamite.h"
 #include "Bounding_Sphere.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -73,6 +74,7 @@ HRESULT Dynamite::Initialize(InitDESC* arg)
 
 	m_fLifeTime = 3.f;
 	m_Velocity = desc->velocity;
+
 	ChangeState(&m_DynamiteIdle);
 
 	return S_OK;
@@ -108,7 +110,10 @@ void Dynamite::Update(_float dt)
 		RAYCAST_DATA enemyWeakHitData = engine->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::EnemyWeakness));
 
 		if (mapHitData.isHit || enemyHitData.isHit || enemyShieldHitData.isHit || enemyWeakHitData.isHit)
-			ChangeState(&m_DynamiteDead);
+		{
+			if(&m_DynamiteDead != m_CurrState)
+				ChangeState(&m_DynamiteDead);
+		}
 
 		m_pTransform->SetPosition(nextPosition);
 		m_pTransform->Turn(_float3{ dt * 10.f,0.f,0.f });
@@ -122,7 +127,8 @@ void Dynamite::LateUpdate(_float dt)
 
 void Dynamite::OnCollisionEnter(ColliderComponent* otherCollider)
 {
-	ChangeState(&m_DynamiteDead);
+	if(&m_DynamiteDead != m_CurrState)
+		ChangeState(&m_DynamiteDead);
 }
 
 Object* Dynamite::Clone(InitDESC* arg)
@@ -148,6 +154,17 @@ void Dynamite::DynamiteIdle::Enter(Object* object)
 
 void Dynamite::DynamiteIdle::Update(Object* object, _float dt)
 {
+	auto engine = EngineCore::GetInstance();
+
+	m_fElapsedTime += dt;
+	if (m_fElapsedTime >= m_fDuration)
+	{
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = object->GetComponent<TransformComponent>()->GetPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DynamiteFire", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+		
+		m_fElapsedTime = 0.f;
+	}
 }
 
 void Dynamite::DynamiteIdle::TestForExit(Object* object)
@@ -156,6 +173,8 @@ void Dynamite::DynamiteIdle::TestForExit(Object* object)
 
 void Dynamite::DynamiteDead::Enter(Object* object)
 {
+	auto engine = EngineCore::GetInstance();
+
 	auto collider = object->GetComponent<ColliderComponent>();
 	collider->SetActive(true);
 
@@ -163,6 +182,14 @@ void Dynamite::DynamiteDead::Enter(Object* object)
 	dynamite->m_eRenderGroup = RenderGroup::None;
 
 	m_fElapsedTime = 0.f;
+
+	_float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+
+	EffectContainer::EFFECT_CONTAINER_DESC desc{};
+	desc.position = object->GetComponent<TransformComponent>()->GetPosition();
+	XMStoreFloat3(&desc.forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&desc.position)));
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Explode", engine->GetCurrLevelID(), "Layer_Effect", &desc);
 }
 
 void Dynamite::DynamiteDead::Update(Object* object, _float dt)

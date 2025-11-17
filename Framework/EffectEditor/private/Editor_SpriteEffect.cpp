@@ -352,7 +352,7 @@ void Editor_SpriteEffect::Import(nlohmann::ordered_json& j)
 	m_TargetRotation.x = j.at("target_rotation").at("x").get<_float>();
 	m_TargetRotation.y = j.at("target_rotation").at("y").get<_float>();
 	m_TargetRotation.z = j.at("target_rotation").at("z").get<_float>();
-
+	
 	m_fStartAlpha = j.at("start_alpha").get<_float>();
 	m_fTargetAlpha = j.at("target_alpha").get<_float>();
 

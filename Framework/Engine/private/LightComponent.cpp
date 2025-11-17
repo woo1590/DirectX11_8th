@@ -52,6 +52,9 @@ HRESULT LightComponent::Initialize(InitDESC* arg)
 
 HRESULT LightComponent::ExtractLightProxy(std::vector<LightProxy>& lights)
 {
+	if (!m_isActive)
+		return S_OK;
+
 	LightProxy proxy;
 	_float4x4 worldMat = m_pOwner->GetComponent<TransformComponent>()->GetWorldMatrix();
 	_float3 position{ worldMat._41,worldMat._42,worldMat._43 };

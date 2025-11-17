@@ -63,6 +63,13 @@ void Enemy::SetDead()
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
     
+    /*----dead effect----*/
+    _float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+    EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+    effectDesc.position = m_pTransform->GetPosition();
+    effectDesc.position.y += 5.f;
+    XMStoreFloat3(&effectDesc.forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&effectDesc.position)));
+    engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyDeadSmoke", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
 
     EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
     param.ownerID = m_iEnemyID;

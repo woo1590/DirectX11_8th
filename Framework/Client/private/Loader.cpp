@@ -7,6 +7,7 @@
 #include "ShadowCam.h"
 #include "Terrain.h"
 #include "Sun.h"
+#include "Decal.h"
 
 //player
 #include "Player.h"
@@ -495,6 +496,10 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp1.json", "Mtrl_EnemyHp1")))
 			return E_FAIL;
+
+		/*effect*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_decal.json", "Mtrl_Decal")))
+			return E_FAIL;
 	}
 
 	/*Load Effect Prefab*/
@@ -514,9 +519,20 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitWall",
 			EffectContainer::Create("../bin/resource/textures/effect/hit_wall/hit_wall.json"))))
 			return E_FAIL;
-
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitWall",
 			EffectContainer::Create("../bin/resource/textures/effect/prism_hit_wall/prism_hit_wall.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyDeadParticle",
+			EffectContainer::Create("../bin/resource/textures/effect/enemy_dead_particle/enemy_dead_particle.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Explode",
+			EffectContainer::Create("../bin/resource/textures/effect/explode/explode.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DynamiteFire",
+			EffectContainer::Create("../bin/resource/textures/effect/dynamite_fire/dynamite_fire.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyDeadSmoke",
+			EffectContainer::Create("../bin/resource/textures/effect/enemy_dead_smoke/enemy_dead_smoke.json"))))
 			return E_FAIL;
 	}
 
@@ -671,6 +687,9 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Dumpling", Dumpling::Create())))
 			return E_FAIL;
 
+		/*effect*/
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Decal", Decal::Create())))
+			return E_FAIL;
 		
 	}
 	m_strDebugText = L"로딩완료";

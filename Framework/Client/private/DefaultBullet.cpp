@@ -4,6 +4,7 @@
 
 //object
 #include "EffectContainer.h"
+#include "Decal.h"
 #include "DamageFont.h"
 
 //component
@@ -104,6 +105,7 @@ void DefaultBullet::Update(_float dt)
 		//currPos + result.distance 더해서 nextPos 만들고 nextPos에 데칼 생성
 		EffectContainer::EFFECT_CONTAINER_DESC desc{};
 		desc.position = currPosition;
+		desc.surfaceDir = result.hitNormal;
 		XMStoreFloat3(&desc.position, XMLoadFloat3(&currPosition) + XMLoadFloat3(&result.hitNormal) * 2.f);
 
 		_float rotZ{};
@@ -118,6 +120,15 @@ void DefaultBullet::Update(_float dt)
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitWall", engine->GetCurrLevelID(), "Layer_Effect", &desc, &effect);
 
 		effect->GetComponent<TransformComponent>()->Rotate(_float3(0.f, 0.f, rotZ));
+
+		/*----decal----*/
+		_float3 decalPosition{};
+		XMStoreFloat3(&decalPosition, XMLoadFloat3(&currPosition) + result.worldDistance*0.9f * XMLoadFloat3(&worldRay.direction));
+
+		Decal::DECAL_DESC decalDesc{};
+		decalDesc.position = decalPosition;
+		decalDesc.surfaceDir = result.hitNormal;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Decal", engine->GetCurrLevelID(), "Layer_Effect", &decalDesc);
 
 		SetDead();
 	}

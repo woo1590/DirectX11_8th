@@ -124,9 +124,6 @@
     <Filter Include="02. Object\Map Object\Enemy Spawner">
       <UniqueIdentifier>{e144cfb2-a7da-48b3-b791-64d05358d7ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Decal">
-      <UniqueIdentifier>{05b5105e-144f-42a3-a468-29200669609d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\Enemy\SpearMan">
       <UniqueIdentifier>{5c0fc325-f27f-47f8-a4de-6698fdcd5477}</UniqueIdentifier>
     </Filter>
@@ -331,6 +328,9 @@
     <Filter Include="02. Object\Effect\Effect Container\Effect Node\Particle Effect">
       <UniqueIdentifier>{9ddd983b-2543-4cb8-a76c-68e3eeac3d59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect\Decal">
+      <UniqueIdentifier>{05b5105e-144f-42a3-a468-29200669609d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -469,7 +469,7 @@
       <Filter>02. Object\Map Object\Enemy Spawner</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Decal.h">
-      <Filter>02. Object\Decal</Filter>
+      <Filter>02. Object\Effect\Decal</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Crosshair.h">
       <Filter>02. Object\UIObject\Crosshair</Filter>
@@ -756,7 +756,7 @@
       <Filter>02. Object\Map Object\Enemy Spawner</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Decal.cpp">
-      <Filter>02. Object\Decal</Filter>
+      <Filter>02. Object\Effect\Decal</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Crosshair.cpp">
       <Filter>02. Object\UIObject\Crosshair</Filter>
