@@ -5,6 +5,7 @@
 #include "SpriteComponent.h"
 #include "ColliderComponent.h"
 #include "ParticleSystemComponent.h"
+#include "TrailComponent.h"
 
 _uint Object::m_iInstanceID = 0;
 
@@ -92,8 +93,9 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 	auto model = GetComponent<ModelComponent>();
 	auto sprite = GetComponent<SpriteComponent>();
 	auto particle = GetComponent<ParticleSystemComponent>();
+	auto trail = GetComponent<TrailComponent>();
 
-	if (!model && !sprite && !particle)
+	if (!model && !sprite && !particle && !trail)
 		return S_OK;
 
 	if (model)
@@ -105,8 +107,10 @@ HRESULT Object::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& prox
 	}
 	else if (sprite)
 		return sprite->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
-	else
+	else if (particle)
 		return particle->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(m_eRenderGroup)]);
+	else
+		trail->ExtractRenderProxy(proxies[ENUM_CLASS(m_eRenderGroup)]);
 
 	return S_OK;
 }

@@ -3,6 +3,7 @@
 
 NS_BEGIN(Client)
 
+class PrismTrail;
 class PrismProjectile :
     public Projectile
 {
@@ -18,6 +19,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
@@ -26,6 +28,8 @@ public:
 
 private:
     void CreateEffect(_float dt);
+
+    PrismTrail* m_pTrail = nullptr;
     _float m_fElapsedTime{};
     _float m_fDuration = 0.02f;
 };

@@ -8,6 +8,8 @@
 #include "Terrain.h"
 #include "Sun.h"
 #include "Decal.h"
+#include "DefaultBulletTrail.h"
+#include "PrismTrail.h"
 
 //player
 #include "Player.h"
@@ -500,6 +502,12 @@ HRESULT Loader::LoadingForLogo()
 		/*effect*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_decal.json", "Mtrl_Decal")))
 			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/trail_bullet_red.json", "Mtrl_TrailBulletRed")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/trail_bullet_green.json", "Mtrl_TrailBulletGreen")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/trail_prism.json", "Mtrl_TrailPrism")))
+			return E_FAIL;
 	}
 
 	/*Load Effect Prefab*/
@@ -533,6 +541,18 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyDeadSmoke",
 			EffectContainer::Create("../bin/resource/textures/effect/enemy_dead_smoke/enemy_dead_smoke.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyHit",
+			EffectContainer::Create("../bin/resource/textures/effect/enemy_hit/enemy_hit.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonFireRed",
+			EffectContainer::Create("../bin/resource/textures/effect/cameleon_fire_red/cameleon_fire_red.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonFireGreen",
+			EffectContainer::Create("../bin/resource/textures/effect/cameleon_fire_green/cameleon_fire_green.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonHeadFire",
+			EffectContainer::Create("../bin/resource/textures/effect/cameleon_head_fire/cameleon_head_fire.json"))))
 			return E_FAIL;
 	}
 
@@ -689,6 +709,10 @@ HRESULT Loader::LoadingForLogo()
 
 		/*effect*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Decal", Decal::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DefaultBulletTrail", DefaultBulletTrail::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_TrailPrism", PrismTrail::Create())))
 			return E_FAIL;
 		
 	}

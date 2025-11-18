@@ -2,6 +2,7 @@
 #include "PrismProjectile.h"
 #include "Bounding_Sphere.h"
 #include "EffectContainer.h"
+#include "PrismTrail.h"
 
 //component
 #include "ModelComponent.h"
@@ -66,6 +67,10 @@ HRESULT PrismProjectile::Initialize(InitDESC* arg)
 	auto status = GetComponent<StatusComponent>();
 	status->Initialize(&statusDesc);
 
+	/*trail*/
+	Object* trail = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_TrailPrism", nullptr);
+	m_pTrail = static_cast<PrismTrail*>(trail);
+
 	m_fLifeTime = 2.5f;
 	m_fSpeed = 800.f;
 
@@ -117,11 +122,23 @@ void PrismProjectile::Update(_float dt)
 	}
 
 	m_pTransform->SetPosition(nextPosition);
+	m_pTrail->GetComponent<TransformComponent>()->SetPosition(nextPosition);
+	m_pTrail->Update(dt);
 }
 
 void PrismProjectile::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT PrismProjectile::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+	
+	if (m_pTrail)
+		m_pTrail->ExtractRenderProxies(proxies);
+	
+	return S_OK;
 }
 
 void PrismProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
@@ -143,6 +160,7 @@ void PrismProjectile::Free()
 {
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
+	Safe_Release(m_pTrail);
 	__super::Free();
 }
 
@@ -156,8 +174,6 @@ void PrismProjectile::CreateEffect(_float dt)
 		EffectContainer::EFFECT_CONTAINER_DESC desc{};
 		desc.position = m_pTransform->GetPosition();
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismFire", engine->GetCurrLevelID(), "Layer_Effect", &desc);
-
-		
 
 		m_fElapsedTime = 0.f;
 	}

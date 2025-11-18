@@ -30,6 +30,7 @@ public:
 
 private:
     _uint m_iMuzzleBoneIndex{};
+    Object* m_pMuzzleSocket = nullptr;
 
     class CameleonIdle : public State
     {

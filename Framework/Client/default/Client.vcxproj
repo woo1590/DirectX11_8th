@@ -223,6 +223,7 @@
     <ClInclude Include="..\public\DashIcon.h" />
     <ClInclude Include="..\public\Decal.h" />
     <ClInclude Include="..\public\DefaultBullet.h" />
+    <ClInclude Include="..\public\DefaultBulletTrail.h" />
     <ClInclude Include="..\public\Door.h" />
     <ClInclude Include="..\public\Door_L.h" />
     <ClInclude Include="..\public\Door_R.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="..\public\DamageFont.h" />
     <ClInclude Include="..\public\MuzzleFire.h" />
     <ClInclude Include="..\public\ParticleEffect.h" />
+    <ClInclude Include="..\public\PrismTrail.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
     <ClInclude Include="..\public\SpriteEffect.h" />
@@ -323,6 +325,7 @@
     <ClCompile Include="..\private\DashIcon.cpp" />
     <ClCompile Include="..\private\Decal.cpp" />
     <ClCompile Include="..\private\DefaultBullet.cpp" />
+    <ClCompile Include="..\private\DefaultBulletTrail.cpp" />
     <ClCompile Include="..\private\Door.cpp" />
     <ClCompile Include="..\private\Door_L.cpp" />
     <ClCompile Include="..\private\Door_R.cpp" />
@@ -348,6 +351,7 @@
     <ClCompile Include="..\private\DamageFont.cpp" />
     <ClCompile Include="..\private\MuzzleFire.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
+    <ClCompile Include="..\private\PrismTrail.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
     <ClCompile Include="..\private\SpriteEffect.cpp" />
@@ -424,6 +428,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxTrail.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shaderfiles\Shader_VtxMesh.hlsl" />

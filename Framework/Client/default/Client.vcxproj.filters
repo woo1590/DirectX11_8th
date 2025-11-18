@@ -97,9 +97,6 @@
     <Filter Include="02. Object\Map Object\Static Map Object">
       <UniqueIdentifier>{7a37b63d-7822-4f89-9dba-7419143f0c4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Level\Stage1">
-      <UniqueIdentifier>{372fe6b1-b3d5-455e-93f8-b6037d196700}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Level\Stage Boss">
       <UniqueIdentifier>{e9158f42-b3bf-4f1c-a2ed-c36cca2f9fab}</UniqueIdentifier>
     </Filter>
@@ -330,6 +327,18 @@
     </Filter>
     <Filter Include="02. Object\Effect\Decal">
       <UniqueIdentifier>{05b5105e-144f-42a3-a468-29200669609d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\Trail">
+      <UniqueIdentifier>{0f85f8f8-ac95-4b5c-8258-bdde44cb9681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\Trail\Default Bullet">
+      <UniqueIdentifier>{c07f198c-7364-4378-9b38-0586146c1ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\Stage1">
+      <UniqueIdentifier>{372fe6b1-b3d5-455e-93f8-b6037d196700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\Trail\Prism">
+      <UniqueIdentifier>{7334cd4f-5506-497e-856c-a2a0a1b679d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -630,6 +639,12 @@
     <ClInclude Include="..\public\LightEffect.h">
       <Filter>02. Object\Effect\Effect Container\Effect Node\Light Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DefaultBulletTrail.h">
+      <Filter>02. Object\Projectile\Trail\Default Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PrismTrail.h">
+      <Filter>02. Object\Projectile\Trail\Prism</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -917,6 +932,12 @@
     <ClCompile Include="..\private\LightEffect.cpp">
       <Filter>02. Object\Effect\Effect Container\Effect Node\Light Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\DefaultBulletTrail.cpp">
+      <Filter>02. Object\Projectile\Trail\Default Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PrismTrail.cpp">
+      <Filter>02. Object\Projectile\Trail\Prism</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -948,6 +969,9 @@
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxInstancePoint.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_VtxTrail.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

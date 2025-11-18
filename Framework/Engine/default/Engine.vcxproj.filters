@@ -295,6 +295,15 @@
     <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Point">
       <UniqueIdentifier>{e39a31b2-6aef-44d9-bab6-28ff96518810}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Trail">
+      <UniqueIdentifier>{d0ef0fce-285a-4475-9563-e5a5eb1c58e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Object Component\Trail Component">
+      <UniqueIdentifier>{7a7c090e-a200-4d97-a747-e8cfc143c3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Ribbon">
+      <UniqueIdentifier>{8ecef937-041d-487f-97e4-e691aeaba63b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -639,6 +648,15 @@
     <ClInclude Include="..\public\VIBuffer_InstancingPoint.h">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Point</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Trail.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TrailComponent.h">
+      <Filter>05. Object Component\Trail Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Ribbon.h">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Ribbon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -922,6 +940,15 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_InstancingPoint.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Trail.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TrailComponent.cpp">
+      <Filter>05. Object Component\Trail Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Ribbon.cpp">
+      <Filter>01. Engine Component\Resource Manager\VIBuffer\Ribbon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

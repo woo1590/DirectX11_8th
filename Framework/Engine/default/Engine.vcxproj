@@ -277,6 +277,7 @@
     <ClInclude Include="..\public\Struct_Vertex.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\public\GuizmoPanel.h" />
+    <ClInclude Include="..\public\TrailComponent.h" />
     <ClInclude Include="..\public\UIObject.h" />
     <ClInclude Include="..\public\Utility_Function.h" />
     <ClInclude Include="..\public\VIBufferCell.h" />
@@ -301,6 +302,8 @@
     <ClInclude Include="..\public\VIBufferTerrain.h" />
     <ClInclude Include="..\public\VIBuffer_InstancingPoint.h" />
     <ClInclude Include="..\public\VIBuffer_Point.h" />
+    <ClInclude Include="..\public\VIBuffer_Ribbon.h" />
+    <ClInclude Include="..\public\VIBuffer_Trail.h" />
     <ClInclude Include="EnginePCH.h" />
   </ItemGroup>
   <ItemGroup>
@@ -359,6 +362,7 @@
     <ClCompile Include="..\private\SpriteComponent.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\private\GuizmoPanel.cpp" />
+    <ClCompile Include="..\private\TrailComponent.cpp" />
     <ClCompile Include="..\private\UIObject.cpp" />
     <ClCompile Include="..\private\Utility_Function.cpp" />
     <ClCompile Include="..\private\VIBufferCell.cpp" />
@@ -383,6 +387,8 @@
     <ClCompile Include="..\private\VIBufferTerrain.cpp" />
     <ClCompile Include="..\private\VIBuffer_InstancingPoint.cpp" />
     <ClCompile Include="..\private\VIBuffer_Point.cpp" />
+    <ClCompile Include="..\private\VIBuffer_Ribbon.cpp" />
+    <ClCompile Include="..\private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\public\guizmo\GraphEditor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

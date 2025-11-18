@@ -16,5 +16,7 @@ namespace Engine
 
 	enum class ParticleSpace { Local, World, Count };
 	enum class ParticleDirMode { None, SurfaceDir, SwayUp, Count };
+
+	enum class TrailMode { Default, Ribbon, Count };
 }
 #endif // Engine_Enum_h__

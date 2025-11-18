@@ -3,6 +3,7 @@
 #include "Player.h"
 
 //object
+#include "DefaultBullet.h"
 #include "Socket.h"
 #include "Dynamite.h"
 #include "EffectContainer.h"
@@ -217,11 +218,13 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 
 	_float3 forward{};
 	XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&aimPosition) - XMLoadFloat3(&position)));
+	XMStoreFloat3(&position, XMLoadFloat3(&position) + XMLoadFloat3(&forward) * 20.f);
 
 	Object* defaultBullet = nullptr;
-	Object::OBJECT_DESC desc{};
+	DefaultBullet::DEFAULT_BULLET_DESC desc{};
 	desc.scale = _float3{ 3.f,3.f,3.f };
 	desc.position = position;
+	
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
 	defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 	--ammo->m_iNumCurrAmmo;

@@ -142,4 +142,34 @@ namespace Engine
 			{"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 1, 76, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 		};
 	}INSTANCE_POINT_PARTICLE_DESC;
+
+	typedef struct tagVertexTrail
+	{
+		_float3 position{};
+		_float width{};
+		_float2 lifeTime{};
+
+		static constexpr _uint numElement = 3;
+		static constexpr D3D11_INPUT_ELEMENT_DESC elements[numElement] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
+	}VTX_TRAIL;
+
+	typedef struct tagVertexRibbon
+	{
+		_float3 position{};
+		_float width{};
+		_float2 lifeTime{};
+
+		static constexpr _uint numElement = 3;
+		static constexpr D3D11_INPUT_ELEMENT_DESC elements[numElement] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
+	}VTX_RIBBON;
 }

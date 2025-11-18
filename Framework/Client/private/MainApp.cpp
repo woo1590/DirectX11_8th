@@ -143,6 +143,10 @@ HRESULT MainApp::LoadStaticLevel()
         if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxInstancePoint.hlsl", "Shader_VtxInstancePoint",
             INSTANCE_POINT_PARTICLE_DESC::elements, INSTANCE_POINT_PARTICLE_DESC::numElement)))
             return E_FAIL;
+
+        if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxTrail.hlsl", "Shader_VtxTrail",
+            VTX_TRAIL::elements, VTX_TRAIL::numElement)))
+            return E_FAIL;
     }
     /*Load Buffer*/
     {

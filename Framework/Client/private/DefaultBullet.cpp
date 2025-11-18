@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "DefaultBullet.h"
 #include "Bounding_Sphere.h"
+#include "Random.h"
 
 //object
+#include "DefaultBulletTrail.h"
 #include "EffectContainer.h"
 #include "Decal.h"
 #include "DamageFont.h"
@@ -52,6 +54,8 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
+	auto engine = EngineCore::GetInstance();
+
 	/*collider*/
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
 	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerProjectile);
@@ -70,6 +74,22 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 	StatusComponent::STATUS_DESC statusDesc{};
 	statusDesc.attackPower = 20;
 	status->Initialize(&statusDesc);
+
+	/*trail*/
+	auto random = engine->GetRandom();
+
+	DEFAULT_BULLET_DESC* desc = static_cast<DEFAULT_BULLET_DESC*>(arg);
+	DefaultBulletTrail::DEFAULT_BULLET_TRAIL_DESC bulletDesc{};
+	bulletDesc.startPosition = desc->position;
+	if (desc->useRandomColor)
+	{
+		_uint randNum = random->get<_uint>(0, 2);
+		if (randNum == 0)
+			bulletDesc.mtrlTag = "Mtrl_TrailBulletGreen";
+	}
+	Object* trail = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DefaultBulletTrail", &bulletDesc);
+
+	m_pTrail = static_cast<DefaultBulletTrail*>(trail);
 
 	m_fSpeed = 1000.f;
 
@@ -134,6 +154,9 @@ void DefaultBullet::Update(_float dt)
 	}
 	else
 		m_pTransform->SetPosition(nextPosition);
+
+	m_pTrail->Update(dt);
+	m_pTrail->AddNextPosition(nextPosition);
 }
 
 void DefaultBullet::LateUpdate(_float dt)
@@ -141,9 +164,34 @@ void DefaultBullet::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+HRESULT DefaultBullet::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pTrail)
+		m_pTrail->ExtractRenderProxies(proxies);
+
+	return S_OK;
+}
+
 void DefaultBullet::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	auto engine = EngineCore::GetInstance();
+
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Enemy) ||
+		otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::EnemyWeakness))
+	{
+		_float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+		_float3 position = m_pTransform->GetPosition();
+		_float3 forward{};
+		XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.forward = forward;
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyHit", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+	}
 
 	SetDead();
 }
@@ -162,5 +210,6 @@ void DefaultBullet::Free()
 {
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
+	Safe_Release(m_pTrail);
 	__super::Free();
 }

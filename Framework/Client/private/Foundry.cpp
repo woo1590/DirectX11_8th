@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "EffectContainer.h"
 #include "Socket.h"
+#include "DefaultBullet.h"
 
 //component
 #include "ModelComponent.h"
@@ -202,7 +203,7 @@ void Foundry::FoundryFire::Enter(Object* object)
 	XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&aimPosition) - XMLoadFloat3(&position)));
 
 	Object* defaultBullet = nullptr;
-	Object::OBJECT_DESC desc{};
+	DefaultBullet::DEFAULT_BULLET_DESC desc{};
 	desc.scale = _float3{ 3.f,3.f,3.f };
 	desc.position = position;
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet",engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);

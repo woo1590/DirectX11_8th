@@ -3,6 +3,9 @@
 #include "EngineCore.h"
 #include "Skeleton.h"
 #include "Player.h"
+#include "DefaultBullet.h"
+#include "Socket.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -54,13 +57,23 @@ HRESULT Cameleon::Initialize(InitDESC* arg)
 	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_Cameleon");
 
 	model->ConnectAnimator();
+	m_iMuzzleBoneIndex = model->GetBoneIndex("fireeffect");
+
+	{
+		Socket::SOCKET_DESC socketDesc{};
+		socketDesc.parentModel = model;
+		socketDesc.boneIndex = m_iMuzzleBoneIndex;
+		socketDesc.useScale = false;
+		Object* socket = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", &socketDesc);
+		m_pMuzzleSocket = socket;
+		m_pMuzzleSocket->GetComponent<TransformComponent>()->SetParent(m_pTransform);
+	}
 
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
 	ChangeState(&m_CameleonIdle);
-	m_iMuzzleBoneIndex = model->GetBoneIndex("muzzle");
 	m_iNumMaxAmmo = 30;
 	m_iNumCurrAmmo = m_iNumMaxAmmo;
 	m_eWeaponID = WeaponID::Cameleon;
@@ -116,6 +129,8 @@ Object* Cameleon::Clone(InitDESC* arg)
 void Cameleon::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pMuzzleSocket);
 }
 
 void Cameleon::CameleonIdle::Enter(Engine::Object* object)
@@ -194,18 +209,27 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 		XMStoreFloat3(&position, positionV);
 
 		_float3 forward{};
+		_float3 bulletPosition{};
+		_float3 effectPosition{};
 		XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&aimPosition) - XMLoadFloat3(&position)));
+		XMStoreFloat3(&bulletPosition, XMLoadFloat3(&position) + XMLoadFloat3(&forward) * 20.f);
 
 		Object* defaultBullet = nullptr;
-		Object::OBJECT_DESC desc{};
+		DefaultBullet::DEFAULT_BULLET_DESC desc{};
 		desc.scale = _float3{ 3.f,3.f,3.f };
-		desc.position = position;
+		desc.position = bulletPosition;
+		desc.useRandomColor = true;
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
 
 		defaultBullet->GetComponent<TransformComponent>()->SetForward(forward);
 		--cameleon->m_iNumCurrAmmo;
 
 		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), cameleon->m_iNumCurrAmmo);
+
+		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+		effectDesc.position = position;
+		effectDesc.socketObject = cameleon->m_pMuzzleSocket;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonFireRed", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
 
 		m_IsShot = true;
 	}
