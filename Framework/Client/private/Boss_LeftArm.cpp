@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Boss_LeftArm.h"
 #include "Bounding_OBB.h"
+#include "EffectContainer.h"
 #include "ContainerObject.h"
 #include "Boss.h"
 

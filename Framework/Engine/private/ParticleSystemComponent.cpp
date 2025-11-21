@@ -138,6 +138,9 @@ void ParticleSystemComponent::Free()
 	Safe_Release(m_pMaterialInstance);
 }
 
+#ifdef USE_IMGUI
+
+
 void ParticleSystemComponent::RenderInspector()
 {
 	/*ImGui::PushID(this);
@@ -163,6 +166,7 @@ void ParticleSystemComponent::RenderInspector()
 
 	ImGui::PopID();*/
 }
+#endif // USE_IMGUI
 
 void ParticleSystemComponent::SpawnParticles(_float dt)
 {

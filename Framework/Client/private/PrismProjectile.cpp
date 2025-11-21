@@ -143,6 +143,36 @@ HRESULT PrismProjectile::ExtractRenderProxies(std::vector<std::vector<RenderProx
 
 void PrismProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	auto engine = EngineCore::GetInstance();
+
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Enemy) ||
+		otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::EnemyWeakness))
+	{
+		_float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+		_float3 position = m_pTransform->GetPosition();
+		_float3 forward{};
+		XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.forward = forward;
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitEnemy", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+	}
+	else if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::EnemyShield))
+	{
+		_float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+		_float3 position = m_pTransform->GetPosition();
+		_float3 forward{};
+		XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&position)));
+		XMStoreFloat3(&position, XMLoadFloat3(&position) + XMLoadFloat3(&forward) * 5.f);
+		EffectContainer::EFFECT_CONTAINER_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.forward = forward;
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShieldHit", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+	}
+
 	SetDead();
 }
 

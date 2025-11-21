@@ -18,9 +18,13 @@ public:
 
     typedef struct tagEffectEditContext
     {
-        std::vector<_string> textureTags{};
+        std::vector<_string> textureTags;
         std::vector<Texture*> textures;
         std::map<_string, Texture*>* pAllTextures;
+
+        std::vector<_string> modelTags;
+        _int selectModelIndex = -1;
+
     }EFFECT_EDIT_CONTEXT;
 private:
     Editor_EffectContainer();
@@ -56,7 +60,9 @@ private:
     void Import();
     void Export();
     void LoadTextureFromDirectory(const _string& dirPath);
+    void LoadModel();
     void DisplayTextures();
+    void DisplayModels();
     void AddNode();
     void RemoveNode();
     void ContextClear();

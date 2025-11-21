@@ -29,6 +29,7 @@ public:
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
+private:
 };
 
 NS_END

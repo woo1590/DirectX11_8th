@@ -39,6 +39,7 @@ public:
     static SpearMan* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
+    HRESULT LateInitialize()override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;

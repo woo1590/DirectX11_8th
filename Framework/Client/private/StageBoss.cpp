@@ -65,7 +65,14 @@ void StageBoss::Update(_float dt)
 			m_IsBossSpawned = true;
 		}
 	}
+	
+	auto engine = EngineCore::GetInstance();
+	if (engine->IsKeyPressed('N'))
+	{
+		engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
+	}
 }
+
 
 HRESULT StageBoss::Render()
 {

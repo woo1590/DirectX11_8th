@@ -92,7 +92,6 @@ void ImGuiManager::Render()
         guizmoEnable = guizmoEnable ? false : true;
 	ImGui::End();
 
-
     if (isAvailable)
     {
 	    for (_uint i=0; i<m_Panels.size(); ++i)

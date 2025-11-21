@@ -20,6 +20,7 @@ public:
     void SetShadowCamera(const _string& cameraTag);
     void AddCamera(const _string& cameraTag, CameraComponent* component);
 
+    void MakeShake(_float duration, _float power);
     CAMERA_CONTEXT GetCameraContext()const { return m_MainCameraContext; }
     CAMERA_CONTEXT GetShadowCameraContext()const { return m_ShadowCameraContext; }
     _float3 WorldToScreen(_float3 worldPosition);

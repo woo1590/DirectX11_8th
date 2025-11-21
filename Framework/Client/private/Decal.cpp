@@ -30,6 +30,8 @@ HRESULT Decal::Initialize_Prototype()
 
     AddComponent<SpriteComponent>();
 
+    m_eRenderGroup = RenderGroup::Blend;
+
     return S_OK;
 }
 
@@ -82,6 +84,13 @@ void Decal::Update(_float dt)
 void Decal::LateUpdate(_float dt)
 {
     __super::LateUpdate(dt);
+}
+
+HRESULT Decal::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+    __super::ExtractRenderProxies(proxies);
+
+    return S_OK;
 }
 
 Object* Decal::Clone(InitDESC* arg)

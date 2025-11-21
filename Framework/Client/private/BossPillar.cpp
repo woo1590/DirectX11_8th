@@ -2,6 +2,7 @@
 #include "BossPillar.h"
 #include "Random.h"
 #include "Bounding_AABB.h"
+#include "EffectContainer.h"
 
 //component
 #include "ColliderComponent.h"
@@ -133,13 +134,29 @@ void BossPillar::BossPillarSpawn::Enter(Object* object)
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_EndPosition = m_StartPosition;
 	m_EndPosition.y = -13.f;
+	m_IsSpawned = false;
+
+	/*effect*/
+	EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+	effectDesc.position = m_EndPosition;
+	effectDesc.position.y = -10.f;
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarSpawn", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
 }
 
 void BossPillar::BossPillarSpawn::Update(Object* object, _float dt)
 {
 	m_fElapsedTime += dt;
 
-	if (m_fElapsedTime < m_fDuration)
+	if (!m_IsSpawned && m_fElapsedTime >= m_fDelayDuration)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		m_fElapsedTime = 0.f;
+		m_IsSpawned = true;
+	}
+
+	if (m_IsSpawned && m_fElapsedTime < m_fDuration)
 	{
 		_float t = m_fElapsedTime / m_fDuration;
 		t = std::clamp(t, 0.f, 1.f);
@@ -153,7 +170,7 @@ void BossPillar::BossPillarSpawn::Update(Object* object, _float dt)
 
 void BossPillar::BossPillarSpawn::TestForExit(Object* object)
 {
-	if (m_fElapsedTime >= m_fDuration)
+	if (m_IsSpawned && m_fElapsedTime >= m_fDuration)
 	{
 		auto pillar = static_cast<BossPillar*>(object);
 
@@ -166,7 +183,7 @@ void BossPillar::BossPillarExlplode::Enter(Object* object)
 	auto random = EngineCore::GetInstance()->GetRandom();
 
 	m_fElapsedTime = 0.f;
-	m_fDuration = random->get<_float>(2.f, 3.5f);
+	m_fDuration = random->get<_float>(1.f, 2.5f);
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 }
 
@@ -195,5 +212,14 @@ void BossPillar::BossPillarExlplode::Update(Object* object, _float dt)
 void BossPillar::BossPillarExlplode::TestForExit(Object* object)
 {
 	if (m_fElapsedTime >= m_fDuration)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+		effectDesc.position = object->GetComponent<TransformComponent>()->GetPosition();
+		effectDesc.position.y = -10.f;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarExplode", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
 		object->SetDead();
+	}
 }

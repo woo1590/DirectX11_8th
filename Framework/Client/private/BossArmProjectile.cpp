@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BossArmProjectile.h"
 #include "Bounding_Sphere.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -72,6 +73,19 @@ HRESULT BossArmProjectile::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+HRESULT BossArmProjectile::LateInitialize()
+{
+	auto engine = EngineCore::GetInstance();
+
+	EffectContainer::EFFECT_CONTAINER_DESC desc{};
+	desc.position = m_pTransform->GetPosition();
+	desc.forward = m_pTransform->GetForward();
+
+	m_pBossPunchEffect = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPunch", &desc);
+
+	return E_NOTIMPL;
+}
+
 void BossArmProjectile::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
@@ -86,11 +100,32 @@ void BossArmProjectile::Update(_float dt)
 	XMStoreFloat3(&velocity, XMLoadFloat3(&forward) * m_fSpeed);
 
 	m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
+
+	if (m_pBossPunchEffect)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		_float3 forward = m_pTransform->GetForward();
+		_float3 position = m_pTransform->GetPosition();
+		XMStoreFloat3(&position, XMLoadFloat3(&position) + XMLoadFloat3(&forward) * 40.f);
+		m_pBossPunchEffect->GetComponent<TransformComponent>()->SetPosition(position);
+		m_pBossPunchEffect->Update(dt);
+	}
 }
 
 void BossArmProjectile::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT BossArmProjectile::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pBossPunchEffect)
+		m_pBossPunchEffect->ExtractRenderProxies(proxies);
+
+	return S_OK;
 }
 
 void BossArmProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
@@ -121,4 +156,5 @@ void BossArmProjectile::Free()
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
 	__super::Free();
+	Safe_Release(m_pBossPunchEffect);
 }

@@ -22,6 +22,7 @@ public:
     static CameraComponent* Create(Object* pOnwer);
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
+    void Update(_float dt)override;
 
     void SetActive(_bool active) { m_isActive = active; }
     _bool IsActive()const { return m_isActive; }
@@ -31,6 +32,8 @@ public:
 
     _float GetFarZ()const { return m_fFarZ; }
     _float GetNearZ()const { return m_fNearZ; }
+
+    void MakeShake(_float duration, _float power);
 
     Component* Clone()override { return new CameraComponent(*this); }
     void Free()override;
@@ -48,6 +51,15 @@ private:
 
     _bool m_isActive = true;
     _bool m_isDirty = true;
+
+    _float m_fShakeElapsedTime{};
+    _float m_fShakeDuration{};
+    _float m_fShakePower{};
+    _float3 m_ShakeOffset{};
+    _float3 m_Frequency{};
+    _float3 m_Amp{};
+    _float3 m_Phase{};
+    _bool m_IsShake = false;
 
     TransformComponent* m_pTransform = nullptr;
 };

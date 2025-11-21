@@ -87,8 +87,21 @@ void MainApp::Run()
         }
 
         /*임시용*/
-        //SetCursorPos(WinSizeX / 2, WinSizeY / 2);
-        //ShowCursor(false);
+        static _bool fixCursor = false;
+        if (m_pEngineCore->IsKeyPressed('P'))
+        {
+            fixCursor = fixCursor ? false : true;
+        }
+
+        if (fixCursor)
+        {
+            SetCursorPos(WinSizeX / 2, WinSizeY / 2);
+            while (ShowCursor(false) >= 0);
+        }
+        else
+        {
+            while (ShowCursor(true) < 0);
+        }
         /*임시용*/
 
         m_pEngineCore->UpdateTimer("Timer_Default");

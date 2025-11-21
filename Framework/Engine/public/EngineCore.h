@@ -54,6 +54,7 @@ public:
     CAMERA_CONTEXT GetCameraContext();
     CAMERA_CONTEXT GetShadowCameraContext();
     _float3 WorldToScreen(_float3 worldPosition);   /*only use late update*/
+    void MakeShake(_float duration, _float power);
 #pragma endregion
 
 #pragma region Resource

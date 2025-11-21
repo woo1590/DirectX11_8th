@@ -14,6 +14,7 @@
 #include "Editor_SpriteEffect.h"
 #include "Editor_LightEffect.h"
 #include "Editor_ParticleEffect.h"
+#include "Editor_MeshEffect.h"
 
 EffectEditorLevel::EffectEditorLevel()
 	:Level()
@@ -117,6 +118,8 @@ HRESULT EffectEditorLevel::Initialize_Resource()
         if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ParticleEffect", Editor_ParticleEffect::Create())))
             return E_FAIL;
         if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LightEffect", Editor_LightEffect::Create())))
+            return E_FAIL;
+        if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MeshEffect", Editor_MeshEffect::Create())))
             return E_FAIL;
     }
 

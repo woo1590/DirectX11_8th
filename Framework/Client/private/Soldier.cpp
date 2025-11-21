@@ -106,13 +106,20 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	statusDesc.speed = 40.f;
 	status->Initialize(&statusDesc);
 
-	ChangeState(&m_SoldierShow);
-
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
 	
+	return S_OK;
+}
+
+HRESULT Soldier::LateInitialize()
+{
+	__super::LateInitialize();
+
+	ChangeState(&m_SoldierShow);
+
 	return S_OK;
 }
 

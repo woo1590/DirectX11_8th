@@ -2,6 +2,8 @@
 #include "Stage1.h"
 #include "EngineCore.h"
 #include "LoadingLevel.h"
+#include "Command_ChangeLevel.h"
+#include "EffectContainer.h"
 
 //object
 #include "Door.h"
@@ -67,10 +69,16 @@ void Stage1::Update(_float dt)
 
 	if (engine->IsKeyPressed('N'))
 	{
+		//engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+	}
+
+	if (engine->IsKeyPressed('O'))
+	{
+		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::StageBoss));
 	}
 }
 

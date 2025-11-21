@@ -146,10 +146,10 @@ void EnemySpawner::SpawnerSpawn::Enter(Object* object)
 		{
 			_uint rand = engine->GetRandom()->get<_uint>(0, spawner->m_AvailableNavCellIndices.size() - 1);
 			Object* enemy = nullptr;
-			engine->AddObject(ENUM_CLASS(LevelID::Static), entry.prototypeTag, engine->GetCurrLevelID(), "Layer_Enemy", nullptr, &enemy);
-
-			enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[rand]);
-			spawner->m_CurrWaveEnemies.push_back(enemy);
+			//engine->AddObject(ENUM_CLASS(LevelID::Static), entry.prototypeTag, engine->GetCurrLevelID(), "Layer_Enemy", nullptr, &enemy);
+			//
+			//enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[rand]);
+			//spawner->m_CurrWaveEnemies.push_back(enemy);
 		}
 	}
 }

@@ -10,6 +10,10 @@
 #include "Decal.h"
 #include "DefaultBulletTrail.h"
 #include "PrismTrail.h"
+#include "ItemGlow.h"
+#include "AttackRange.h"
+#include "BossStoneSmoke.h"
+#include "BossStoneTrail.h"
 
 //player
 #include "Player.h"
@@ -298,12 +302,28 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		/*Map*/
-
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/boss2/boss_stage.model",
 			"Model_Boss_Stage")))
 			return E_FAIL;
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/chest/chest.model",
 			"Model_Chest")))
+			return E_FAIL;
+
+		/*Effect*/
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/spearman_hit/spearman_hit.model",
+			"Model_SpearmanHit")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_hit_ground/boss_hit_ground.model",
+			"Model_BossHitGround")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_punch/boss_punch.model",
+			"Model_BossPunch")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_stone_smoke/boss_stone_smoke.model",
+			"Model_BossStoneSmoke")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_stone_trail/boss_stone_trail.model",
+			"Model_BossStoneTrail")))
 			return E_FAIL;
 	}
 
@@ -345,7 +365,6 @@ HRESULT Loader::LoadingForLogo()
 				return E_FAIL;
 		}
 	}
-
 
 	/*Load Animation Set*/
 	{
@@ -508,6 +527,12 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/trail_prism.json", "Mtrl_TrailPrism")))
 			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/item_glow.json", "Mtrl_ItemGlow")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/item_particle.json", "Mtrl_ItemParticle")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_attack_range.json", "Mtrl_AttackRange")))
+			return E_FAIL;
 	}
 
 	/*Load Effect Prefab*/
@@ -553,6 +578,30 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonHeadFire",
 			EffectContainer::Create("../bin/resource/textures/effect/cameleon_head_fire/cameleon_head_fire.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShieldHit",
+			EffectContainer::Create("../bin/resource/textures/effect/shield_hit/shield_hit.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitEnemy",
+			EffectContainer::Create("../bin/resource/textures/effect/prism_hit_enemy/prism_hit_enemy.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearmanHit",
+			EffectContainer::Create("../bin/resource/textures/effect/spearman_hit/spearman_hit.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarSpawn",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_pillar_spawn/boss_pillar_spawn.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarExplode",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_pillar_explode/boss_pillar_explode.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossHitGround",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_hit_ground/boss_hit_ground.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPunch",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_punch/boss_punch.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneExplode",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_stone_explode/boss_stone_explode.json"))))
 			return E_FAIL;
 	}
 
@@ -713,6 +762,14 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DefaultBulletTrail", DefaultBulletTrail::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_TrailPrism", PrismTrail::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ItemGlow", ItemGlow::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_AttackRange", AttackRange::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneSmoke", BossStoneSmoke::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneTrail", BossStoneTrail::Create())))
 			return E_FAIL;
 		
 	}

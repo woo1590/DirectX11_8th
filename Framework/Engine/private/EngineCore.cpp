@@ -297,6 +297,10 @@ _float3 EngineCore::WorldToScreen(_float3 worldPosition)
 {
 	return m_pCameraManager->WorldToScreen(worldPosition);
 }
+void EngineCore::MakeShake(_float duration, _float power)
+{
+	m_pCameraManager->MakeShake(duration, power);
+}
 #pragma endregion
 
 #pragma region Resource

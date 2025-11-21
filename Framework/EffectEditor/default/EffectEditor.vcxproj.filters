@@ -64,6 +64,9 @@
     <Filter Include="02. Object\Effect Container\Effect Node\Particle Effect">
       <UniqueIdentifier>{842647c0-09d0-42b2-b667-e09e885dc98b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect Container\Effect Node\Mesh Effect">
+      <UniqueIdentifier>{911e1af7-b887-42d0-8252-5d8283c66916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EffectEditor.h">
@@ -126,6 +129,9 @@
     <ClInclude Include="..\public\Editor_LightEffect.h">
       <Filter>02. Object\Effect Container\Effect Node\Light Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Editor_MeshEffect.h">
+      <Filter>02. Object\Effect Container\Effect Node\Mesh Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EffectEditor.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Editor_LightEffect.cpp">
       <Filter>02. Object\Effect Container\Effect Node\Light Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Editor_MeshEffect.cpp">
+      <Filter>02. Object\Effect Container\Effect Node\Mesh Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

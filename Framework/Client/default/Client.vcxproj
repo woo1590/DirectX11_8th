@@ -196,6 +196,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Ammo.h" />
+    <ClInclude Include="..\public\AttackRange.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Bar.h" />
     <ClInclude Include="..\public\BobbingController.h" />
@@ -207,6 +208,8 @@
     <ClInclude Include="..\public\BossPillar.h" />
     <ClInclude Include="..\public\BossStage.h" />
     <ClInclude Include="..\public\BossStoneProjectile.h" />
+    <ClInclude Include="..\public\BossStoneSmoke.h" />
+    <ClInclude Include="..\public\BossStoneTrail.h" />
     <ClInclude Include="..\public\Boss_Core.h" />
     <ClInclude Include="..\public\Boss_Head.h" />
     <ClInclude Include="..\public\Boss_LeftArm.h" />
@@ -242,11 +245,13 @@
     <ClInclude Include="..\public\HorseHead_Sword.h" />
     <ClInclude Include="..\public\EnemySpawner.h" />
     <ClInclude Include="..\public\Item.h" />
+    <ClInclude Include="..\public\ItemGlow.h" />
     <ClInclude Include="..\public\LightEffect.h" />
     <ClInclude Include="..\public\LogoFire.h" />
     <ClInclude Include="..\public\LogoText.h" />
     <ClInclude Include="..\public\CountNumber.h" />
     <ClInclude Include="..\public\DamageFont.h" />
+    <ClInclude Include="..\public\MeshEffect.h" />
     <ClInclude Include="..\public\MuzzleFire.h" />
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PrismTrail.h" />
@@ -299,6 +304,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Ammo.cpp" />
+    <ClCompile Include="..\private\AttackRange.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Bar.cpp" />
     <ClCompile Include="..\private\BobbingController.cpp" />
@@ -310,6 +316,8 @@
     <ClCompile Include="..\private\BossPillar.cpp" />
     <ClCompile Include="..\private\BossStage.cpp" />
     <ClCompile Include="..\private\BossStoneProjectile.cpp" />
+    <ClCompile Include="..\private\BossStoneSmoke.cpp" />
+    <ClCompile Include="..\private\BossStoneTrail.cpp" />
     <ClCompile Include="..\private\Boss_Core.cpp" />
     <ClCompile Include="..\private\Boss_Head.cpp" />
     <ClCompile Include="..\private\Boss_LeftArm.cpp" />
@@ -344,11 +352,13 @@
     <ClCompile Include="..\private\HorseHead_Sword.cpp" />
     <ClCompile Include="..\private\EnemySpawner.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
+    <ClCompile Include="..\private\ItemGlow.cpp" />
     <ClCompile Include="..\private\LightEffect.cpp" />
     <ClCompile Include="..\private\LogoFire.cpp" />
     <ClCompile Include="..\private\LogoText.cpp" />
     <ClCompile Include="..\private\CountNumber.cpp" />
     <ClCompile Include="..\private\DamageFont.cpp" />
+    <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\private\MuzzleFire.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PrismTrail.cpp" />

@@ -99,6 +99,13 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
     m_iMuzzleBoneIndex = model->GetBoneIndex("muzzle");
     m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
+
+    return S_OK;
+}
+
+HRESULT CrossbowMan::LateInitialize()
+{
+    __super::LateInitialize();
     ChangeState(&m_CrossbowManShow);
 
     return S_OK;

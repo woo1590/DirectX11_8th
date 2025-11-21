@@ -65,13 +65,15 @@ private:
         void TestForExit(Object* object)override;
 
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 1.f;
+        _float m_fDuration = 0.8f;
     };
     class BossAttack1Start : public State
     {
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _bool m_IsSpawnEffect = false;
     };
     class BossAttack1InProgress : public State
     {
@@ -85,10 +87,12 @@ private:
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
+        std::vector<_float3> m_SpawnPositions;
         std::vector<_uint> m_IndexX;
         std::vector<_uint> m_IndexZ;
         _uint m_iNumPillars = 10;
         _bool m_IsPillarSpawned = false;
+        _bool m_IsEffectSpawned = false;
     };
     class BossFire1Start : public State
     {
@@ -151,6 +155,8 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _bool m_IsCameraShaked = false;
     };
     class BossFire3InProgress : public State
     {

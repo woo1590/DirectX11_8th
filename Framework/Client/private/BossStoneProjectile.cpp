@@ -2,6 +2,7 @@
 #include "BossStoneProjectile.h"
 #include "Bounding_Sphere.h"
 #include "Random.h"
+#include "EffectContainer.h"
 
 //component
 #include "ModelComponent.h"
@@ -68,7 +69,9 @@ HRESULT BossStoneProjectile::Initialize(InitDESC* arg)
 	m_pTarget->AddRef();
 
 	m_fLifeTime = 20.f;
-	m_fSpeed = 100.f;
+	m_fSpeed = 0.f;
+
+	m_pStoneSmoke = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneSmoke", nullptr);
 
 	return S_OK;
 }
@@ -84,18 +87,41 @@ void BossStoneProjectile::Update(_float dt)
 
 	m_pTransform->Turn(_float3{ math::ToRadian(-360.f * dt * 1.5f),math::ToRadian(100.f * dt),0.f });
 
-	if (m_IsActive)
-	{
-		_float3 targetPosition = m_pTarget->GetComponent<TransformComponent>()->GetPosition();
-		_float3 currPosition = m_pTransform->GetPosition();
-		_float3 nextPosition{};
-		_float3 targetDir{};
-		XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&targetPosition) - XMLoadFloat3(&currPosition)));
-		XMStoreFloat3(&m_CurrDirection, XMVectorLerp(XMLoadFloat3(&m_CurrDirection), XMLoadFloat3(&targetDir), dt * 5.f));
-		XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&m_CurrDirection) * m_fSpeed * dt);
+	_float3 targetPosition = m_pTarget->GetComponent<TransformComponent>()->GetPosition();
+	_float3 currPosition = m_pTransform->GetPosition();
+	_float3 nextPosition{};
+	_float3 targetDir{};
+	XMStoreFloat3(&targetDir, XMVector3Normalize(XMLoadFloat3(&targetPosition) - XMLoadFloat3(&currPosition)));
+	XMStoreFloat3(&m_CurrDirection, XMVectorLerp(XMLoadFloat3(&m_CurrDirection), XMLoadFloat3(&targetDir), dt * 5.f));
+	XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&m_CurrDirection) * m_fSpeed * dt);
 
-		m_pTransform->SetPosition(nextPosition);
+	m_pTransform->SetPosition(nextPosition);
+
+	if (m_pStoneTrail)
+	{
+		_float3 position = m_pTransform->GetPosition();
+		_float3 forward = m_CurrDirection;
+
+		XMStoreFloat3(&position, XMLoadFloat3(&position) -5.f * XMLoadFloat3(&forward));
+		
+		auto smokeTransform = m_pStoneTrail->GetComponent<TransformComponent>();
+		smokeTransform->SetPosition(position);
+		smokeTransform->SetForward(m_CurrDirection);
+		m_pStoneTrail->Update(dt);
 	}
+	
+	if (m_pStoneSmoke)
+	{
+		_float3 position = m_pTransform->GetPosition();
+		_float3 forward = m_CurrDirection;
+
+		auto smoke1Transform = m_pStoneSmoke->GetComponent<TransformComponent>();
+		smoke1Transform->SetPosition(position);
+		smoke1Transform->SetForward(m_CurrDirection);
+
+		m_pStoneSmoke->Update(dt);
+	}
+
 }
 
 void BossStoneProjectile::LateUpdate(_float dt)
@@ -103,9 +129,42 @@ void BossStoneProjectile::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+HRESULT BossStoneProjectile::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pStoneTrail)
+		m_pStoneTrail->ExtractRenderProxies(proxies);
+	if (m_pStoneSmoke)
+		m_pStoneSmoke->ExtractRenderProxies(proxies);
+
+	return S_OK;
+}
+
 void BossStoneProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
 {
-	SetDead();
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::PlayerProjectile))
+	{
+		++m_iHitCount;
+		if (m_iHitCount >= 4)
+			SetDead();
+
+		return;
+	}
+	else
+		SetDead();
+}
+
+void BossStoneProjectile::SetDead()
+{
+	__super::SetDead();
+
+	auto engine = EngineCore::GetInstance();
+
+	EffectContainer::EFFECT_CONTAINER_DESC desc{};
+	desc.position = m_pTransform->GetPosition();
+
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneExplode", engine->GetCurrLevelID(), "Layer_Effect", &desc);
 }
 
 Object* BossStoneProjectile::Clone(InitDESC* arg)
@@ -123,6 +182,9 @@ void BossStoneProjectile::Free()
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
 	Safe_Release(m_pTarget);
+	Safe_Release(m_pStoneSmoke);
+	Safe_Release(m_pStoneTrail);
+
 	__super::Free();
 }
 
@@ -146,7 +208,7 @@ void BossStoneProjectile::BossStoneProjectileSpawn::Update(Object* object, _floa
 	if (m_fElapsedTime < m_fDuration)
 	{
 		_float t = m_fElapsedTime / m_fDuration;
-		t = math::EaseOutQuint(t);
+		t = math::EaseOutSline(t);
 
 		_float3 currScale{};
 		XMStoreFloat3(&currScale, XMVectorLerp(XMLoadFloat3(&m_StartScale), XMLoadFloat3(&m_EndScale), t));
@@ -161,6 +223,9 @@ void BossStoneProjectile::BossStoneProjectileSpawn::TestForExit(Object* object)
 	{
 		auto stone = static_cast<BossStoneProjectile*>(object);
 		stone->ChangeState(&stone->m_BossStoneProjectileIdle);
-		stone->m_IsActive = true;
+		stone->m_fSpeed = 110.f;
+
+		auto engine = EngineCore::GetInstance();
+		stone->m_pStoneTrail = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneTrail", nullptr);
 	}
 }

@@ -3,6 +3,7 @@
 #include "SpriteEffect.h"
 #include "ParticleEffect.h"
 #include "LightEffect.h"
+#include "MeshEffect.h"
 
 #include "ParticleSystemComponent.h"
 
@@ -22,6 +23,7 @@ EffectContainer::EffectContainer(const EffectContainer& prototype)
 		m_PartObjects.push_back(static_cast<PartObject*>(effect->Clone(&desc)));
 	}
 
+	m_IsLoop = prototype.m_IsLoop;
 	m_fDuration = prototype.m_fDuration;
 	m_iNumPartObjects = m_PartObjects.size();
 }
@@ -91,6 +93,11 @@ HRESULT EffectContainer::Initialize_Prototype(const _string& filePath)
 		{
 			auto lightEffect = LightEffect::Create(node, filePath);
 			m_PartObjects.push_back(lightEffect);
+		}
+		else if ("mesh" == type)
+		{
+			auto meshEffect = MeshEffect::Create(node, filePath);
+			m_PartObjects.push_back(meshEffect);
 		}
 	}
 

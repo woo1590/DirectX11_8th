@@ -71,6 +71,8 @@ void Editor_EffectContainer::RenderInspector()
 	ContextClear();
 	AddNode();
 	RemoveNode();
+	LoadModel();
+	DisplayModels();
 
 	Import();
 	Export();
@@ -256,6 +258,83 @@ void Editor_EffectContainer::LoadTextureFromDirectory(const _string& dirPath)
 	m_Context.pAllTextures = &m_Textures;
 }
 
+void Editor_EffectContainer::LoadModel()
+{
+	namespace fs = std::filesystem;
+
+	auto engine = EngineCore::GetInstance();
+
+	static _string openFilePath;
+	static _string pendingFilePath;
+	static _string modelTag{};
+	static _bool showPopUp = false;
+
+	_char rename[128] = {};
+	if (ImGui::Button("Load Model"))
+	{
+		nfdchar_t* outPath = nullptr;
+		nfdresult_t res = NFD_OpenDialog(nullptr, nullptr, &outPath);
+
+		if (res == NFD_OKAY)
+		{
+			openFilePath = outPath;
+			NFDi_Free(outPath);
+		}
+
+		if (!openFilePath.empty())
+		{
+			showPopUp = true;
+			ImGui::OpenPopup("Rename##model");
+		}
+	}
+
+	if (showPopUp)
+	{
+		if (ImGui::BeginPopupModal("Rename##model", nullptr,
+			ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+		{
+			if (ImGui::IsWindowAppearing())
+			{
+				ImGui::SetKeyboardFocusHere();
+			}
+
+			ImGui::TextUnformatted("Input new model name..");
+
+			_bool confirm = ImGui::InputText("##name", rename, 128,
+				ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue);
+
+			if (ImGui::Button("OK"))
+				confirm = true;
+
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+			{
+				showPopUp = false;
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (confirm)
+			{
+				modelTag = rename;
+
+				m_Context.modelTags.push_back(modelTag);
+				engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static),
+					openFilePath,
+					modelTag);
+
+				showPopUp = false;
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+		else
+		{
+			showPopUp = false;
+		}
+	}
+}
+
 void Editor_EffectContainer::DisplayTextures()
 {
 	ImGui::Begin("Texture");
@@ -324,6 +403,37 @@ void Editor_EffectContainer::DisplayTextures()
 	ImGui::End();
 }
 
+void Editor_EffectContainer::DisplayModels()
+{
+	ImGui::Begin("Models");
+
+	if (m_Context.modelTags.empty())
+	{
+		ImGui::Text("No Model");
+		ImGui::End();
+		return;
+	}
+
+	for (_uint i = 0; i < m_Context.modelTags.size(); ++i)
+	{
+		_bool isSelect = (i == m_Context.selectModelIndex);
+
+		if (ImGui::Selectable(m_Context.modelTags[i].c_str(), isSelect))
+			m_Context.selectModelIndex = i;
+
+		if (isSelect)
+			ImGui::SetItemDefaultFocus();
+	}
+
+	if (-1 != m_Context.selectModelIndex) 
+	{
+		ImGui::Separator();
+		ImGui::Text("Select Model : %s", m_Context.modelTags[m_Context.selectModelIndex].c_str());
+	}
+
+	ImGui::End();
+}
+
 void Editor_EffectContainer::AddNode()
 {
 	auto engine = EngineCore::GetInstance();
@@ -362,6 +472,19 @@ void Editor_EffectContainer::AddNode()
 		desc.context = &m_Context;
 
 		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LightEffect", &desc);
+		m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
+
+		m_iNumPartObjects = m_PartObjects.size();
+	}	
+
+	if (ImGui::Button("Add Node : Mesh"))
+	{
+		Editor_EffectNode::EFFECT_NODE_DESC desc{};
+		desc.effectType = EffectType::Mesh;
+		desc.parent = this;
+		desc.context = &m_Context;
+
+		Object* effectNode = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MeshEffect", &desc);
 		m_PartObjects.push_back(static_cast<PartObject*>(effectNode));
 
 		m_iNumPartObjects = m_PartObjects.size();

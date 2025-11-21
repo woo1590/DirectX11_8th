@@ -13,6 +13,7 @@
 #include "BossPillar.h"
 #include "BossStoneProjectile.h"
 #include "BossArmProjectile.h"
+#include "AttackRange.h"
 
 //component	
 #include "ModelComponent.h"
@@ -380,6 +381,7 @@ void Boss::BossIdle::TestForExit(Object* object)
 		else
 			boss->ChangeState(&boss->m_BossFire3Start);
 
+		//boss->ChangeState(&boss->m_BossFire1Start);
 	}
 }
 
@@ -389,14 +391,35 @@ void Boss::BossAttack1Start::Enter(Object* object)
 
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack1Start));
+	animator->SetPlaySpeedScale(1.2f);
 
 	auto& pillars = engine->GetObjects(ENUM_CLASS(LevelID::StageBoss), "Layer_BossPillar");
 	for (const auto& pillar : pillars)
 		static_cast<BossPillar*>(pillar)->Explode();
+
+	m_IsSpawnEffect = false;
 }
 
 void Boss::BossAttack1Start::Update(Object* object, _float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsSpawnEffect && progress >= 0.72f)
+	{
+		auto engine = EngineCore::GetInstance();
+
+		/*effect*/
+		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+		effectDesc.position = object->GetComponent<TransformComponent>()->GetPosition();
+		effectDesc.position.y = -6.f;
+		effectDesc.position.z -= 120.f;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossHitGround", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+		
+		engine->MakeShake(0.4f, 0.3f);
+
+		m_IsSpawnEffect = true;
+	}
 }
 
 void Boss::BossAttack1Start::TestForExit(Object* object)
@@ -436,7 +459,9 @@ void Boss::BossAttack1InProgress::TestForExit(Object* object)
 
 void Boss::BossAttack1End::Enter(Object* object)
 {
-	auto random = EngineCore::GetInstance()->GetRandom();
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+	auto boss = static_cast<Boss*>(object);
 
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack1End));
@@ -451,6 +476,31 @@ void Boss::BossAttack1End::Enter(Object* object)
 	}
 	random->Shuffle(m_IndexX);
 	random->Shuffle(m_IndexZ);
+
+	m_SpawnPositions.clear();
+	m_SpawnPositions.reserve(m_iNumPillars);
+
+	_float3 spawnGap{};
+	spawnGap.x = (boss->m_PillarAreaMax.x - boss->m_PillarAreaMin.x) / m_iNumPillars;
+	spawnGap.y = 0.f;
+	spawnGap.z = (boss->m_PillarAreaMax.z - boss->m_PillarAreaMin.z) / m_iNumPillars;
+
+	for (_uint i = 0; i < m_iNumPillars; ++i)
+	{
+		_float3 position{};
+		position.x = boss->m_PillarAreaMin.x + (spawnGap.x * m_IndexX[i]) + random->get<_float>(-5.f, 5.f);
+		position.z = boss->m_PillarAreaMin.z + (spawnGap.z * m_IndexZ[i]) + random->get<_float>(-5.f, 5.f);
+
+		/*effect*/
+		AttackRange::ATTACK_RANGE_DESC effectDesc{};
+		effectDesc.position = position;
+		effectDesc.position.y = -6.f;
+		effectDesc.attackRange = 50.f;
+		effectDesc.lifeDuration = 0.85f;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_AttackRange", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
+		m_SpawnPositions.push_back(position);
+	}
 
 	m_IsPillarSpawned = false;
 }
@@ -472,12 +522,12 @@ void Boss::BossAttack1End::Update(Object* object, _float dt)
 		auto random = engine->GetRandom();
 		for (_uint i = 0; i < m_iNumPillars; ++i)
 		{
+			_float3 position = m_SpawnPositions[i];
 
 			Object::OBJECT_DESC pillarDesc{};
-			pillarDesc.position.x = boss->m_PillarAreaMin.x + (spawnGap.x * m_IndexX[i]) + random->get<_float>(-5.f, 5.f);
+			pillarDesc.position.x = position.x;
 			pillarDesc.position.y = -50.f;
-			pillarDesc.position.z = boss->m_PillarAreaMin.z + (spawnGap.z * m_IndexZ[i]) + random->get<_float>(-5.f, 5.f);
-
+			pillarDesc.position.z = position.z;
 			engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossPillar", ENUM_CLASS(LevelID::StageBoss), "Layer_BossPillar",&pillarDesc);
 		}
 
@@ -795,10 +845,22 @@ void Boss::BossFire3Start::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire3Start));
+
+	m_IsCameraShaked = false;
 }
 
 void Boss::BossFire3Start::Update(Object* object, _float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+	
+	if (!m_IsCameraShaked && progress >= 0.83f)
+	{
+		auto engine = EngineCore::GetInstance();
+		engine->MakeShake(0.3f, 0.1f);
+
+		m_IsCameraShaked = true;
+	}
 }
 
 void Boss::BossFire3Start::TestForExit(Object* object)

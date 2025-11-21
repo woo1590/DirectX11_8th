@@ -734,9 +734,6 @@
     <ClCompile Include="..\private\Model.cpp">
       <Filter>01. Engine Component\Resource Manager\Model</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ImGuiManager.cpp">
-      <Filter>01. Engine Component\ImGui Manager</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\VIBufferQuad.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Quad</Filter>
     </ClCompile>
@@ -949,6 +946,9 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Ribbon.cpp">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGuiManager.cpp">
+      <Filter>01. Engine Component\ImGui Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

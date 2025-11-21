@@ -340,6 +340,21 @@
     <Filter Include="02. Object\Projectile\Trail\Prism">
       <UniqueIdentifier>{7334cd4f-5506-497e-856c-a2a0a1b679d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect\ItemGlow">
+      <UniqueIdentifier>{b3c951e4-5ab0-42fd-972c-d5363cddf3aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\Effect Container\Effect Node\Mesh Effect">
+      <UniqueIdentifier>{2737f72c-0329-4261-ab27-b892bf61b079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\AttackRange">
+      <UniqueIdentifier>{740a1599-857d-44da-a55c-677aaba7586e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\BossStoneSmoke">
+      <UniqueIdentifier>{5159406d-a46b-4561-887f-1d3b093bda2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\BossStoneTrail">
+      <UniqueIdentifier>{00db62e2-afd8-43cd-811f-2f80a89c63b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -645,6 +660,21 @@
     <ClInclude Include="..\public\PrismTrail.h">
       <Filter>02. Object\Projectile\Trail\Prism</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ItemGlow.h">
+      <Filter>02. Object\Effect\ItemGlow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MeshEffect.h">
+      <Filter>02. Object\Effect\Effect Container\Effect Node\Mesh Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AttackRange.h">
+      <Filter>02. Object\Effect\AttackRange</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossStoneSmoke.h">
+      <Filter>02. Object\Effect\BossStoneSmoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossStoneTrail.h">
+      <Filter>02. Object\Effect\BossStoneTrail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -937,6 +967,21 @@
     </ClCompile>
     <ClCompile Include="..\private\PrismTrail.cpp">
       <Filter>02. Object\Projectile\Trail\Prism</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemGlow.cpp">
+      <Filter>02. Object\Effect\ItemGlow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MeshEffect.cpp">
+      <Filter>02. Object\Effect\Effect Container\Effect Node\Mesh Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AttackRange.cpp">
+      <Filter>02. Object\Effect\AttackRange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossStoneSmoke.cpp">
+      <Filter>02. Object\Effect\BossStoneSmoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossStoneTrail.cpp">
+      <Filter>02. Object\Effect\BossStoneTrail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

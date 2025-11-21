@@ -104,12 +104,20 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	statusDesc.hp = 500;
 	status->Initialize(&statusDesc);
 
-	ChangeState(&m_HorseHeadShow);
 
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT HorseHead::LateInitialize()
+{
+	__super::LateInitialize();
+
+	ChangeState(&m_HorseHeadShow);
 
 	return S_OK;
 }

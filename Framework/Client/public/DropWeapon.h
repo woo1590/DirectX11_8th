@@ -23,6 +23,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
     void Interaction(PlayerInteractionComponent* interaction)override;
 
@@ -31,6 +32,7 @@ public:
 
 private:
     WeaponID m_eWeaponID = WeaponID::Count;
+    Object* m_pItemGlow = nullptr;
 
     class DropWeaponSpawn : public State
     {

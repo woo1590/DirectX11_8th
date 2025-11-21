@@ -99,6 +99,11 @@ HRESULT DropWeapon::Initialize(InitDESC* arg)
 
 	ChangeState(&m_DropWeaponSpawn);
 
+	/*item glow*/
+	Object::OBJECT_DESC itemGlowDesc{};
+	m_pItemGlow = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ItemGlow", &itemGlowDesc);
+	m_pItemGlow->GetComponent<TransformComponent>()->SetParent(m_pTransform);
+
 	return S_OK;
 }
 
@@ -111,12 +116,22 @@ void DropWeapon::Update(_float dt)
 {
 	__super::Update(dt);
 
-	m_pTransform->Turn(0.f, dt);
+	m_pItemGlow->Update(dt);
 }
 
 void DropWeapon::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT DropWeapon::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pItemGlow)
+		m_pItemGlow->ExtractRenderProxies(proxies);
+
+	return S_OK;
 }
 
 void DropWeapon::Interaction(PlayerInteractionComponent* interaction)
@@ -147,6 +162,7 @@ void DropWeapon::Free()
 {
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
+	Safe_Release(m_pItemGlow);
 	__super::Free();
 }
 
@@ -192,15 +208,6 @@ void DropWeapon::DropWeaponIdel::Enter(Object* object)
 
 void DropWeapon::DropWeaponIdel::Update(Object* object, _float dt)
 {
-	m_fElapsedTime += dt;
-
-	auto transform = object->GetComponent<TransformComponent>();
-
-	_float3 position = m_StartPosition;
-	position.y += std::sinf(m_fElapsedTime);
-
-	transform->SetPosition(position);
-	transform->Turn(0.f, dt);
 }
 
 void DropWeapon::DropWeaponIdel::TestForExit(Object* object)

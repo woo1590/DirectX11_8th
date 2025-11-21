@@ -18,16 +18,25 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
+    void SetDead()override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
+    _uint m_iHitCount{};
     Object* m_pTarget = nullptr;
+    Object* m_pStoneSmoke = nullptr;
+    Object* m_pStoneTrail = nullptr;
+
     _float3 m_CurrDirection{};
     _bool m_IsActive = false;
+
+    _float m_fSmokeSpawnElapsedTime{};
+    _float m_fSmokeSpawnDuration = 0.1f;
 
     class BossStoneProjectileSpawn : public State
     {
@@ -39,7 +48,7 @@ private:
         _float3 m_EndScale{};
 
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 1.f;
+        _float m_fDuration = 1.5f;
         _float m_fDelayTimer = 0.f;
         _float m_fDelayDuration{};
     };

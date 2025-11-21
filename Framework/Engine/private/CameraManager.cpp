@@ -82,6 +82,12 @@ void CameraManager::AddCamera(const _string& cameraTag, CameraComponent* compone
 	component->AddRef();
 }
 
+void CameraManager::MakeShake(_float duration, _float power)
+{
+	if (m_pMainCamera)
+		m_pMainCamera->MakeShake(duration, power);
+}
+
 _float3 CameraManager::WorldToScreen(_float3 worldPosition)
 {
 	auto engine = EngineCore::GetInstance();

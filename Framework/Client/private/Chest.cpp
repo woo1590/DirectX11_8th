@@ -39,6 +39,8 @@ HRESULT Chest::Initialize_Prototype()
 	AddComponent<ModelComponent>();
 	AddComponent<AnimatorComponent>();
 
+	m_eRenderGroup = RenderGroup::NonBlend;
+
 	return S_OK;
 }
 

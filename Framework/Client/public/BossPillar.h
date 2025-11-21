@@ -35,10 +35,12 @@ private:
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
 
+        _float m_fDelayDuration = 0.05f;
         _float m_fElapsedTime = 0.f;
-        _float m_fDuration = 0.1f;
+        _float m_fDuration = 0.05f;
         _float3 m_StartPosition{};
         _float3 m_EndPosition{};
+        _bool m_IsSpawned = false;
     };
     class BossPillarIdle : public State
     {

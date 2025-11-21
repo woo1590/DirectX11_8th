@@ -262,7 +262,7 @@ HRESULT Renderer::RenderCombined()
 {
 	auto engine = EngineCore::GetInstance();
 
-	engine->BindShaderResource(m_pShader, "Target_Diffuse", "g_DiffuseTexture");
+	engine->BindShaderResource(m_pShader, "Target_Diffuse", "g_DiffuseTargetTexture");
 	engine->BindShaderResource(m_pShader, "Target_Shade", "g_ShadeTexture");
 	engine->BindShaderResource(m_pShader, "Target_LightSpecular", "g_LightSpecularTexture");
 	engine->BindShaderResource(m_pShader, "Target_Shadow", "g_ShadowTexture");

@@ -51,6 +51,7 @@ HRESULT SpearMan::Initialize_Prototype()
 	AddComponent<ColliderComponent>();
 	AddComponent<StatusComponent>();
 
+	m_eRenderGroup = RenderGroup::NonBlend;
 
 	return S_OK;
 }
@@ -105,11 +106,18 @@ HRESULT SpearMan::Initialize(InitDESC* arg)
 
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
 
-	ChangeState(&m_SpearManShow);
 	m_pTransform->SetScale(_float3{ 1.4f,1.4f,1.4f });
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT SpearMan::LateInitialize()
+{
+	__super::LateInitialize();
+	ChangeState(&m_SpearManShow);
 
 	return S_OK;
 }
@@ -431,8 +439,6 @@ void SpearMan::SpearManRun::TestForExit(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
 
-	
-
 	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
 	_float3 playerPos = player->GetComponent<TransformComponent>()->GetPosition();
@@ -531,6 +537,8 @@ void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
 		rigidBody->SetVelocity(velocity);
 
 		m_IsStartAttacked = true;
+
+		
 	}
 
 	if (!m_IsEndAttacked && progress >= 0.7f)
@@ -539,6 +547,16 @@ void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
 		rigidBody->SetVelocity(_float3{0.f,0.f,0.f});
 
 		m_IsEndAttacked = true;
+
+		/*effect*/
+		auto engine = EngineCore::GetInstance();
+		_float3 position = object->GetComponent<TransformComponent>()->GetPosition();
+		position.y -= 5.f;
+		Object* effect = nullptr;
+		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+		effectDesc.position = position;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearmanHit", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc, &effect);
+		effect->GetComponent<TransformComponent>()->SetScale(_float3{ 0.5f,0.5f,0.5f });
 	}
 
 	auto nav = object->GetComponent<NavigationComponent>();
