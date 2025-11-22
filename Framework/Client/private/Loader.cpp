@@ -14,6 +14,9 @@
 #include "AttackRange.h"
 #include "BossStoneSmoke.h"
 #include "BossStoneTrail.h"
+#include "BossLaserTrail.h"
+#include "BossLaserProjectile.h"
+#include "BossLaserProjectileTrail.h"
 
 //player
 #include "Player.h"
@@ -38,6 +41,7 @@
 #include "BossIcon.h"
 #include "BossHpPanel.h"
 #include "EnemyHpPanel.h"
+#include "CoolDownEffect.h"
 
 //weapon
 #include "Cameleon.h"
@@ -69,6 +73,7 @@
 #include "BossPillar.h"
 #include "BossArmProjectile.h"
 #include "BossStoneProjectile.h"
+#include "BossEye.h"
 
 #include "Bomber.h"
 
@@ -282,6 +287,9 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/projectile/dynamite/dynamite.model",
 			"Model_Projectile_Dynamite")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/boss_laser_projectile/boss_laser_projectile.model",
+			"Model_BossLaserProjectile")))
+			return E_FAIL;
 
 		/*Map*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/door/door_l.model",
@@ -481,6 +489,8 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/dash1.json", "Mtrl_Dash1")))
 			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/cooldown_effect.json", "Mtrl_CoolDownEffect")))
+			return E_FAIL;
 
 		/*effect background*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/background_effect.json", "Mtrl_EffectBackground")))
@@ -532,6 +542,10 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/item_particle.json", "Mtrl_ItemParticle")))
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_attack_range.json", "Mtrl_AttackRange")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_laser_trail.json", "Mtrl_BossLaserTrail")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_laser_projectile_trail.json", "Mtrl_BossLaserProjectileTrail")))
 			return E_FAIL;
 	}
 
@@ -603,6 +617,9 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneExplode",
 			EffectContainer::Create("../bin/resource/textures/effect/boss_stone_explode/boss_stone_explode.json"))))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserCharge",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_laser_charge/boss_laser_charge.json"))))
+			return E_FAIL;
 	}
 
 	/*Load Prototype Object*/
@@ -649,6 +666,8 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SkillPanel", SkillPanel::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_DashIcon", DashIcon::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CoolDownEffect", CoolDownEffect::Create())))
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", EffectBackground::Create())))
@@ -771,6 +790,12 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneTrail", BossStoneTrail::Create())))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserTrail", BossLaserTrail::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectile", BossLaserProjectile::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectileTrail", BossLaserProjectileTrail::Create())))
+			return E_FAIL;
 		
 	}
 	m_strDebugText = L"로딩완료";
@@ -818,6 +843,9 @@ HRESULT Loader::LoadingForBossStage()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::StageBoss), "../bin/resource/models/enemy/boss_arm_projectile/boss_arm_projectile_r.model",
 			"Model_Boss_Arm_Projectile_R")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::StageBoss), "../bin/resource/models/enemy/boss_eye/boss_eye.model",
+			"Model_BossEye")))
+			return E_FAIL;
 	}
 	/*Load AnimationSet*/
 	{
@@ -848,6 +876,8 @@ HRESULT Loader::LoadingForBossStage()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossStoneProjectile", BossStoneProjectile::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossArmProjectile", BossArmProjectile::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossEye", BossEye::Create())))
 			return E_FAIL;
 	}
 

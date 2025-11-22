@@ -146,7 +146,7 @@ void BossStoneProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
 	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::PlayerProjectile))
 	{
 		++m_iHitCount;
-		if (m_iHitCount >= 4)
+		if (m_iHitCount >= 2)
 			SetDead();
 
 		return;

@@ -50,7 +50,7 @@ HRESULT BossStoneSmoke::Initialize(InitDESC* arg)
 	auto mtrlInstance = model->GetMaterialInstance();
 	mtrlInstance->SetPass("BossStone_Pass");
 	
-	m_pTransform->SetScale(_float3{ 4.f,4.f,8.f });
+	m_pTransform->SetScale(_float3{ 4.5f,4.5f,8.f });
 
 	return S_OK;
 }

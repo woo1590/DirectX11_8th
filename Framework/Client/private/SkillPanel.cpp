@@ -120,8 +120,17 @@ void SkillPanel::Update(_float dt)
 			m_IsCoolDown = false;
 			GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat("g_Ratio", 1.f);
 			GetComponent<SpriteComponent>()->GetMaterialInstance()->SetInt("g_IsCoolDown", 0);
-			
+		
 			number->SetActive(false);
+
+			UIObject::UIOBJECT_DESC desc{};
+			desc.x = m_fX;
+			desc.y = m_fY;
+			desc.sizeX = m_fSizeX;
+			desc.sizeY = m_fSizeY;
+			auto engine = EngineCore::GetInstance();
+			engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CoolDownEffect", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
 			return;
 		}
 

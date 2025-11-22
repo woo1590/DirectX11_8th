@@ -89,6 +89,13 @@ void BossPillar::OnCollisionEnter(ColliderComponent* otherCollider)
 	{
 	case ColliderFilter::BossArmProjectile:
 	{
+		auto engine = EngineCore::GetInstance();
+
+		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+		effectDesc.position = GetComponent<TransformComponent>()->GetPosition();
+		effectDesc.position.y = 5.f;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarExplode", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
 		SetDead();
 	}break;
 	case ColliderFilter::BossStoneProjectile:
@@ -97,8 +104,21 @@ void BossPillar::OnCollisionEnter(ColliderComponent* otherCollider)
 		if (!m_iResistantCount)
 			SetDead();
 	}break;
+	case ColliderFilter::BossLaserProjectile:
+	{
+		auto engine = EngineCore::GetInstance();
+
+		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+		effectDesc.position = GetComponent<TransformComponent>()->GetPosition();
+		effectDesc.position.y = 5.f;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarExplode", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
+		SetDead();
+	}break;
 	default:
-		break;
+	{
+
+	}break;
 	}
 }
 

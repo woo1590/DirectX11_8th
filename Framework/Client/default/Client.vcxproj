@@ -203,8 +203,12 @@
     <ClInclude Include="..\public\Bomber.h" />
     <ClInclude Include="..\public\Boss.h" />
     <ClInclude Include="..\public\BossArmProjectile.h" />
+    <ClInclude Include="..\public\BossEye.h" />
     <ClInclude Include="..\public\BossHpPanel.h" />
     <ClInclude Include="..\public\BossIcon.h" />
+    <ClInclude Include="..\public\BossLaserProjectile.h" />
+    <ClInclude Include="..\public\BossLaserProjectileTrail.h" />
+    <ClInclude Include="..\public\BossLaserTrail.h" />
     <ClInclude Include="..\public\BossPillar.h" />
     <ClInclude Include="..\public\BossStage.h" />
     <ClInclude Include="..\public\BossStoneProjectile.h" />
@@ -219,6 +223,7 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\Coin.h" />
     <ClInclude Include="..\public\Command_ChangeLevel.h" />
+    <ClInclude Include="..\public\CoolDownEffect.h" />
     <ClInclude Include="..\public\Cross.h" />
     <ClInclude Include="..\public\CrossbowMan.h" />
     <ClInclude Include="..\public\CrossbowMan_Head.h" />
@@ -311,8 +316,12 @@
     <ClCompile Include="..\private\Bomber.cpp" />
     <ClCompile Include="..\private\Boss.cpp" />
     <ClCompile Include="..\private\BossArmProjectile.cpp" />
+    <ClCompile Include="..\private\BossEye.cpp" />
     <ClCompile Include="..\private\BossHpPanel.cpp" />
     <ClCompile Include="..\private\BossIcon.cpp" />
+    <ClCompile Include="..\private\BossLaserProjectile.cpp" />
+    <ClCompile Include="..\private\BossLaserProjectileTrail.cpp" />
+    <ClCompile Include="..\private\BossLaserTrail.cpp" />
     <ClCompile Include="..\private\BossPillar.cpp" />
     <ClCompile Include="..\private\BossStage.cpp" />
     <ClCompile Include="..\private\BossStoneProjectile.cpp" />
@@ -326,6 +335,7 @@
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\private\Coin.cpp" />
     <ClCompile Include="..\private\Command_ChangeLevel.cpp" />
+    <ClCompile Include="..\private\CoolDownEffect.cpp" />
     <ClCompile Include="..\private\Cross.cpp" />
     <ClCompile Include="..\private\CrossbowMan.cpp" />
     <ClCompile Include="..\private\CrossbowMan_Head.cpp" />

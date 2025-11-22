@@ -355,6 +355,21 @@
     <Filter Include="02. Object\Effect\BossStoneTrail">
       <UniqueIdentifier>{00db62e2-afd8-43cd-811f-2f80a89c63b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\Effect\BossLaserTrail">
+      <UniqueIdentifier>{bf392d4c-8576-47eb-a8f4-bc5a9f991a0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Projectile\BossLaserProjectile">
+      <UniqueIdentifier>{91d3c85e-7336-4a07-8a64-7c8e3b3a2b97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\BossLaserProjectileTrail">
+      <UniqueIdentifier>{f6b6b391-0f36-4c98-9ea0-6b7c733986fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\CoolDownEffect">
+      <UniqueIdentifier>{9721d94a-12b5-4e3f-9121-8981f59c8d67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Boss\BossEye">
+      <UniqueIdentifier>{a2e4ff3f-18f6-4a14-9702-8f0c082d75cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -675,6 +690,21 @@
     <ClInclude Include="..\public\BossStoneTrail.h">
       <Filter>02. Object\Effect\BossStoneTrail</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BossLaserTrail.h">
+      <Filter>02. Object\Effect\BossLaserTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossLaserProjectile.h">
+      <Filter>02. Object\Projectile\BossLaserProjectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossLaserProjectileTrail.h">
+      <Filter>02. Object\Effect\BossLaserProjectileTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CoolDownEffect.h">
+      <Filter>02. Object\UIObject\CoolDownEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossEye.h">
+      <Filter>02. Object\Enemy\Boss\BossEye</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -982,6 +1012,21 @@
     </ClCompile>
     <ClCompile Include="..\private\BossStoneTrail.cpp">
       <Filter>02. Object\Effect\BossStoneTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossLaserTrail.cpp">
+      <Filter>02. Object\Effect\BossLaserTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossLaserProjectile.cpp">
+      <Filter>02. Object\Projectile\BossLaserProjectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossLaserProjectileTrail.cpp">
+      <Filter>02. Object\Effect\BossLaserProjectileTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CoolDownEffect.cpp">
+      <Filter>02. Object\UIObject\CoolDownEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossEye.cpp">
+      <Filter>02. Object\Enemy\Boss\BossEye</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 
 NS_BEGIN(Client)
 
+class BossLaserTrail;
 class Boss :
     public Enemy
 {
@@ -27,7 +28,26 @@ class Boss :
         Fire4,
         Count
     };
-    enum class Parts { Core, Core_Socket, Head, Head_Socket, RightArm, RightArm_Socket, LeftArm, LeftArm_Socket, RightArmStart_Socket, RightArmEnd_Socket, LeftArmStart_Socket, LeftArmEnd_Socket, Count };
+    enum class Parts
+    {
+        Core,
+        Core_Socket,
+        Head,
+        Head_Socket,
+        Left_Eye_Socket,
+        Left_Eye,
+        Right_Eye_Socket,
+        Right_Eye,
+        RightArm,
+        RightArm_Socket,
+        LeftArm,
+        LeftArm_Socket,
+        RightArmStart_Socket,
+        RightArmEnd_Socket,
+        LeftArmStart_Socket,
+        LeftArmEnd_Socket,
+        Count
+    };
 private:
     Boss();
     Boss(const Boss& prototype);
@@ -40,6 +60,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
     void HitBody(_uint attackPower);
     void HitWeakness(_uint attackPower);
@@ -52,6 +73,9 @@ public:
 
 private:
     HRESULT CreatePartObjects();
+
+    BossLaserTrail* m_pBossLaserTrail = nullptr;
+    Object* m_pBossLaserChargeEffect = nullptr;
 
     _float3 m_PillarAreaMin{};
     _float3 m_PillarAreaMax{};
@@ -175,6 +199,8 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _float m_fMinDistance{};
     };
     class BossDie : public State
     {

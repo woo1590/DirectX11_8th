@@ -14,12 +14,16 @@
 #include "BossStoneProjectile.h"
 #include "BossArmProjectile.h"
 #include "AttackRange.h"
+#include "BossLaserTrail.h"
+#include "BossLaserProjectileTrail.h"
+#include "BossEye.h"
 
 //component	
 #include "ModelComponent.h"
 #include "AnimatorComponent.h"
 #include "StatusComponent.h"
 #include "ColliderComponent.h"
+#include "TrailComponent.h"
 
 Boss::Boss()
 	:Enemy()
@@ -118,24 +122,38 @@ HRESULT Boss::Initialize(InitDESC* arg)
 void Boss::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
+
+	if (m_pBossLaserChargeEffect)
+		m_pBossLaserChargeEffect->PriorityUpdate(dt);
 }
 
 void Boss::Update(_float dt)
 {
 	__super::Update(dt);
 
-	if (EngineCore::GetInstance()->IsKeyPressed('K'))
-	{	
-		auto status = GetComponent<StatusComponent>();
-		status->BeAttacked(10000);
-		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
-		ChangeState(&m_BossDie);
-	}
+	if (m_pBossLaserChargeEffect)
+		m_pBossLaserChargeEffect->Update(dt);
+
+	if (m_pBossLaserTrail)
+		m_pBossLaserTrail->Update(dt);
 }
 
 void Boss::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT Boss::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pBossLaserTrail)
+		m_pBossLaserTrail->ExtractRenderProxies(proxies);
+
+	if (m_pBossLaserChargeEffect)
+		m_pBossLaserChargeEffect->ExtractRenderProxies(proxies);
+
+	return S_OK;
 }
 
 void Boss::HitBody(_uint attackPower)
@@ -227,6 +245,8 @@ void Boss::Free()
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
 	__super::Free();
+	Safe_Release(m_pBossLaserTrail);
+	Safe_Release(m_pBossLaserChargeEffect);
 }
 
 HRESULT Boss::CreatePartObjects()
@@ -348,6 +368,43 @@ HRESULT Boss::CreatePartObjects()
 		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::LeftArmEnd_Socket), &leftArmEndSocket)))
 			return E_FAIL;
 	}
+	/*add left eye socket*/	
+	{
+		Socket::SOCKET_DESC leftEyeSocket{};
+		leftEyeSocket.parent = this;
+		leftEyeSocket.parentModel = GetComponent<ModelComponent>();
+		leftEyeSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("eye_01");
+		leftEyeSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Left_Eye_Socket), &leftEyeSocket)))
+			return E_FAIL;
+	}
+	/*add left eye*/
+	{
+		BossEye::BOSS_EYE_DESC leftEyeDesc{};
+		leftEyeDesc.parent = this;
+		leftEyeDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Left_Eye_Socket)]->GetComponent<TransformComponent>();
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossEye", ENUM_CLASS(Parts::Left_Eye), &leftEyeDesc)))
+			return E_FAIL;
+	}
+	/*add right eye socket*/	
+	{
+		Socket::SOCKET_DESC rightEyeSocket{};
+		rightEyeSocket.parent = this;
+		rightEyeSocket.parentModel = GetComponent<ModelComponent>();
+		rightEyeSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("eye_02");
+		rightEyeSocket.useScale = true;
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Right_Eye_Socket), &rightEyeSocket)))
+			return E_FAIL;
+	}
+	/*add right eye*/
+	{
+		BossEye::BOSS_EYE_DESC rightEyeDesc{};
+		rightEyeDesc.isRightEye = true;
+		rightEyeDesc.parent = this;
+		rightEyeDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Right_Eye_Socket)]->GetComponent<TransformComponent>();
+		if (FAILED(AddPartObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossEye", ENUM_CLASS(Parts::Right_Eye), &rightEyeDesc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -369,19 +426,17 @@ void Boss::BossIdle::TestForExit(Object* object)
 {
 	if (m_fElapsedTime >= m_fDuration)
 	{
-		_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 11);
+		_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 20);
 		auto boss = static_cast<Boss*>(object);
 
-		if (rand < 4)
-			boss->ChangeState(&boss->m_BossAttack1Start);
-		else if (rand < 6)
-			boss->ChangeState(&boss->m_BossFire1Start);
-		else if (rand < 9)
-			boss->ChangeState(&boss->m_BossFire2Start);
-		else
-			boss->ChangeState(&boss->m_BossFire3Start);
-
-		//boss->ChangeState(&boss->m_BossFire1Start);
+		//if (rand < 3)
+		//	boss->ChangeState(&boss->m_BossAttack1Start);
+		//else if (rand < 7)
+		//	boss->ChangeState(&boss->m_BossFire1Start);
+		//else if (rand < 10)
+		//	boss->ChangeState(&boss->m_BossFire2Start);
+		//else
+		//	boss->ChangeState(&boss->m_BossFire3Start);
 	}
 }
 
@@ -925,10 +980,43 @@ void Boss::BossFire4::Enter(Object* object)
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire4));
 	animator->SetPlaySpeedScale(0.6f);
+
+	auto engine = EngineCore::GetInstance();
+	auto boss = static_cast<Boss*>(object);
+	Object* bossLaserTrail = nullptr;
+	bossLaserTrail = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserTrail", nullptr);
+	boss->m_pBossLaserTrail = static_cast<BossLaserTrail*>(bossLaserTrail);
+
+	EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+	effectDesc.position = boss->m_PartObjects[ENUM_CLASS(Parts::Core_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+	effectDesc.position.z -= 20.f;
+	boss->m_pBossLaserChargeEffect = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserCharge", &effectDesc);
+
+	m_fMinDistance = 0.f;
 }
 
 void Boss::BossFire4::Update(Object* object, _float dt)
 {
+	auto engine = EngineCore::GetInstance();
+	auto boss = static_cast<Boss*>(object);
+
+	_float3 bossCorePosition = boss->m_PartObjects[ENUM_CLASS(Parts::Core_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+	_float3 playerPosition = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+	playerPosition.y += 4.f;
+	_float3 dir{};
+	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&playerPosition) - XMLoadFloat3(&bossCorePosition)));
+
+	RAY worldRay{};
+	worldRay.origin = bossCorePosition;
+	worldRay.direction = dir;
+	_float3 hitPosition{};
+	RAYCAST_DATA resultPlayer =  engine->RayCast(worldRay, ENUM_CLASS(ColliderFilter::Player));
+	RAYCAST_DATA resultPillar = engine->RayCast(worldRay, ENUM_CLASS(ColliderFilter::BossPillar));
+
+	m_fMinDistance = (resultPlayer.worldDistance < resultPillar.worldDistance) ? resultPlayer.worldDistance : resultPillar.worldDistance;
+	XMStoreFloat3(&hitPosition, XMLoadFloat3(&bossCorePosition) + m_fMinDistance * XMLoadFloat3(&dir));
+	
+	boss->m_pBossLaserTrail->SetLaserPoints(bossCorePosition, hitPosition);
 }
 
 void Boss::BossFire4::TestForExit(Object* object)
@@ -938,8 +1026,45 @@ void Boss::BossFire4::TestForExit(Object* object)
 
 	if (animator->IsFinished())
 	{
+		auto engine = EngineCore::GetInstance();
+
 		auto boss = static_cast<Boss*>(object);
 		boss->ChangeState(&boss->m_BossFire3End);
+
+		Safe_Release(boss->m_pBossLaserTrail);
+		Safe_Release(boss->m_pBossLaserChargeEffect);
+
+		_float3 bossCorePosition = boss->m_PartObjects[ENUM_CLASS(Parts::Core_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
+		bossCorePosition.y += 4.f;
+		_float3 playerPosition = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+		_float3 dir{};
+		XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&playerPosition) - XMLoadFloat3(&bossCorePosition)));
+
+		Object* projectile = nullptr;
+		Object::OBJECT_DESC desc{};
+		desc.position = bossCorePosition;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectile", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &projectile);
+		projectile->GetComponent<TransformComponent>()->SetForward(dir);
+
+		/*trail*/
+		auto random = engine->GetRandom();
+		for (_uint i = 0; i < 5; ++i)
+		{
+			_float3 posGap{};
+			posGap.x = random->get<_float>(-7.f, 7.f);
+			posGap.y = random->get<_float>(-7.f, 7.f);
+			posGap.z = random->get<_float>(-7.f, 7.f);
+			
+			_float3 p0{}, p1{};
+			XMStoreFloat3(&p0, XMLoadFloat3(&bossCorePosition) + XMLoadFloat3(&posGap));
+			XMStoreFloat3(&p1, XMLoadFloat3(&p0) + XMLoadFloat3(&dir) * m_fMinDistance);
+
+			Object* trail = nullptr;
+			BossLaserProjectileTrail::BOSS_LASER_PROJECTILE_TRAIL_DESC desc{};
+			desc.duration = random->get<_float>(1.f, 2.2f);
+			engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectileTrail", engine->GetCurrLevelID(), "Layer_Effect", &desc, &trail);
+			trail->GetComponent<TrailComponent>()->AddPoints(p0, p1);
+		}
 	}
 }
 

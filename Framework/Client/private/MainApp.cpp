@@ -220,7 +220,9 @@ void MainApp::AddColliderFilterGroup()
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Item));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Door));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Chest));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossLaserProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossLaserProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossArmProjectile));
 
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::Enemy));

@@ -41,6 +41,7 @@ public:
     void SetMaterial(_uint levelID, const _string& key);
     MaterialInstance* GetMaterialInstance()const { return m_pMaterialInstance; }
     void AddPoints(_float3 point0, _float3 point1);/*only default*/
+    void SetWidth(_float width) { m_fWidth = width; }
 
     HRESULT ExtractRenderProxy(std::vector<RenderProxy>& proxies);
     Component* Clone()override { return new TrailComponent(*this); }

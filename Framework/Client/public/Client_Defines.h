@@ -27,6 +27,7 @@ namespace Client
 		BossStoneProjectile,
 		BossPillar,
 		BossArmProjectile,
+		BossLaserProjectile,
 		Spawner,
 		StaticMapObject,
 		Item,
