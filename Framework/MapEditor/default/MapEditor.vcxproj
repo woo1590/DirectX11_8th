@@ -210,7 +210,9 @@
     <ClInclude Include="..\public\NavPickable.h" />
     <ClInclude Include="..\public\PickableComponent.h" />
     <ClInclude Include="..\public\PickingSystem.h" />
+    <ClInclude Include="..\public\PointLight.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
+    <ClInclude Include="..\public\Torch.h" />
     <ClInclude Include="..\public\VIBufferGrid.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MapEditor.h" />
@@ -249,7 +251,9 @@
     <ClCompile Include="..\private\NavPickable.cpp" />
     <ClCompile Include="..\private\PickableComponent.cpp" />
     <ClCompile Include="..\private\PickingSystem.cpp" />
+    <ClCompile Include="..\private\PointLight.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
+    <ClCompile Include="..\private\Torch.cpp" />
     <ClCompile Include="..\private\VIBufferGrid.cpp" />
     <ClCompile Include="MapEditor.cpp" />
     <ClCompile Include="MapEditorPCH.cpp">

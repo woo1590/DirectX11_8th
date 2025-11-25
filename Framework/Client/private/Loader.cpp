@@ -17,6 +17,10 @@
 #include "BossLaserTrail.h"
 #include "BossLaserProjectile.h"
 #include "BossLaserProjectileTrail.h"
+#include "BossPillarSmoke.h"
+#include "Cloud.h"
+#include "Torch.h"
+#include "PointLight.h"
 
 //player
 #include "Player.h"
@@ -42,6 +46,9 @@
 #include "BossHpPanel.h"
 #include "EnemyHpPanel.h"
 #include "CoolDownEffect.h"
+#include "HitCrossHair.h"
+#include "InteractionUI.h"
+#include "VictoryText.h"
 
 //weapon
 #include "Cameleon.h"
@@ -50,6 +57,7 @@
 #include "PoisonousGhost.h"
 #include "Foundry.h"
 #include "Prism.h"
+#include "Hell.h"
 
 #include "DefaultBullet.h"
 #include "PrismProjectile.h"
@@ -190,6 +198,10 @@ HRESULT Loader::LoadingForLogo()
 
 	/*Load Sound*/
 	m_strDebugText = L"사운드 로딩중..";
+	{
+		engine->Load2DSound("BGM_Logo", "../bin/resource/sounds/bgm/logo_bgm.mp3", true);
+		engine->Load2DSound("BGM_Stage1", "../bin/resource/sounds/bgm/stage1_bgm.mp3", true);
+	}
 
 	/*Load Navigation*/
 	{
@@ -250,6 +262,9 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/prism/prism.model",
 			"Model_Weapon_Prism")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/weapon/hell/hell.model",
+			"Model_Weapon_Hell")))
+			return E_FAIL;
 
 		/*Drop Weapon*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/foundry/drop_foundry.model",
@@ -266,6 +281,9 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/cameleon/drop_cameleon.model",
 			"Model_DropWeapon_Cameleon")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/drop_weapon/hell/drop_hell.model",
+			"Model_DropWeapon_Hell")))
 			return E_FAIL;
 
 		/*Item*/
@@ -316,6 +334,9 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/chest/chest.model",
 			"Model_Chest")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/cloud/cloud.model",
+			"Model_Cloud")))
+			return E_FAIL;
 
 		/*Effect*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/spearman_hit/spearman_hit.model",
@@ -332,6 +353,12 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_stone_trail/boss_stone_trail.model",
 			"Model_BossStoneTrail")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_pillar_smoke/boss_pillar_smoke.model",
+			"Model_BossPillarSmoke")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/boss_weakness/boss_weakness.model",
+			"Model_BossWeakness")))
 			return E_FAIL;
 	}
 
@@ -430,6 +457,10 @@ HRESULT Loader::LoadingForLogo()
 			"AnimationSet_Weapon_Prism")))
 			return E_FAIL;
 
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/hell.animationset",
+			"AnimationSet_Weapon_Hell")))
+			return E_FAIL;
+
 		/*Map*/
 		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/chest.animationset",
 			"AnimationSet_Chest")))
@@ -463,6 +494,8 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/bar_hp.json", "Mtrl_Bar_HP")))
 			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/hit_cross_hair.json", "Mtrl_HitCrossHair")))
+			return E_FAIL;
 
 		/*weapon panel*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_panel.json", "Mtrl_WeaponPanel")))
@@ -480,6 +513,8 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_cameleon.json", "Mtrl_WeaponIcon_Cameleon")))
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_prism.json", "Mtrl_WeaponIcon_Prism")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/weapon_icon_hell.json", "Mtrl_WeaponIcon_Hell")))
 			return E_FAIL;
 
 		/*skill panel*/
@@ -528,6 +563,22 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/enemy_hp1.json", "Mtrl_EnemyHp1")))
 			return E_FAIL;
 
+		/*interaction panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/interaction_frame.json", "Mtrl_InteractionFrame")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/interaction_key.json", "Mtrl_InteractionKey")))
+			return E_FAIL;
+
+		/*victory ui*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/victory_text.json", "Mtrl_VictoryText")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/victory_text_white.json", "Mtrl_VictoryTextWhite")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/victory_ring.json", "Mtrl_VictoryRing")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/victory_rock.json", "Mtrl_VictoryRock")))
+			return E_FAIL;
+
 		/*effect*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_decal.json", "Mtrl_Decal")))
 			return E_FAIL;
@@ -546,6 +597,8 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_laser_trail.json", "Mtrl_BossLaserTrail")))
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_laser_projectile_trail.json", "Mtrl_BossLaserProjectileTrail")))
+			return E_FAIL;
+		if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/textures/dissolve_mask.png")))
 			return E_FAIL;
 	}
 
@@ -620,6 +673,12 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserCharge",
 			EffectContainer::Create("../bin/resource/textures/effect/boss_laser_charge/boss_laser_charge.json"))))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossEyeSmoke",
+			EffectContainer::Create("../bin/resource/textures/effect/boss_eye_smoke/boss_eye_smoke.json"))))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_TorchFire",
+			EffectContainer::Create("../bin/resource/textures/effect/torch_fire/torch_fire.json"))))
+			return E_FAIL;
 	}
 
 	/*Load Prototype Object*/
@@ -642,6 +701,13 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Hand", Hand::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cloud", Cloud::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PointLight", PointLight::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Torch", Torch::Create())))
 			return E_FAIL;
 
 		/*UI*/
@@ -669,6 +735,8 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CoolDownEffect", CoolDownEffect::Create())))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitCrossHair", HitCrossHair::Create())))
+			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", EffectBackground::Create())))
 			return E_FAIL;
@@ -687,6 +755,12 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyHpPanel", EnemyHpPanel::Create())))
 			return E_FAIL;
 
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_InteractionUI", InteractionUI::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_VictoryText", VictoryText::Create())))
+			return E_FAIL;
+		
 		/*Enemy*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", HorseHead::Create())))
 			return E_FAIL;
@@ -729,6 +803,8 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", Foundry::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Prism", Prism::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Hell", Hell::Create())))
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet", DefaultBullet::Create())))
@@ -795,6 +871,8 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectile", BossLaserProjectile::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectileTrail", BossLaserProjectileTrail::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarSmoke", BossPillarSmoke::Create())))
 			return E_FAIL;
 		
 	}

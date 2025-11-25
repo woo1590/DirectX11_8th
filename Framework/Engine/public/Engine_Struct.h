@@ -140,6 +140,15 @@ namespace Engine
 		}
 
 	}LISTENER;
+
+	typedef struct tagFontProxy
+	{
+		_string fontTag{};
+		_wstring text{};
+		_float3 screenPosition{};
+		_float scale{};
+		_float4 color{};
+	}FONT_PROXY;
 	
 }
 #endif // Engine_Struct_h__

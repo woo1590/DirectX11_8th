@@ -15,6 +15,8 @@
 #include "Door_L.h"
 #include "Door_R.h"
 #include "EnemySpawner.h"
+#include "Torch.h"
+#include "PointLight.h"
 
 EditorLevel::EditorLevel()
 {
@@ -216,6 +218,10 @@ HRESULT EditorLevel::Initialize_LayerLight(const _string& layerTag)
 
 	/*Add Prototype*/
 	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_MapEditorLight", MapEditorLight::Create())))
+		return E_FAIL;
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Torch", Torch::Create())))
+		return E_FAIL;
+	if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Editor), "Prototype_Object_PointLight", PointLight::Create())))
 		return E_FAIL;
 
 	/*Add Object to layer*/

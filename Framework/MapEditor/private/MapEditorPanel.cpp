@@ -9,6 +9,8 @@
 #include "PreviewObject.h"
 #include "Door.h"
 #include "EnemySpawner.h"
+#include "Torch.h"
+#include "PointLight.h"
 
 //component
 #include "MakePrefabComponent.h"
@@ -72,6 +74,9 @@ void MapEditorPanel::Draw(GUIState& state)
 			ImGui::SameLine();
 			if (ImGui::Button("SpawnerPlacement"))
 				m_eMode = EditMode::SpawnerPlacement;
+			ImGui::SameLine();
+			if (ImGui::Button("LightPlacement"))
+				m_eMode = EditMode::LightPlacement;
 
 			if (ImGui::BeginMenu("File"))
 			{
@@ -127,6 +132,32 @@ void MapEditorPanel::Draw(GUIState& state)
 						ImportNavFile(path);
 					}
 				}
+				if (ImGui::MenuItem("Save Light"))
+				{
+					nfdchar_t* outPath = nullptr;
+					nfdresult_t res = NFD_SaveDialog(nullptr, nullptr, &outPath);
+
+					if (res == NFD_OKAY)
+					{
+						_string path = outPath;
+						NFDi_Free(outPath);
+
+						ExportLightFile(path);
+					}
+				}
+				if (ImGui::MenuItem("Load Light"))
+				{
+					nfdchar_t* importPath = nullptr;
+					nfdresult_t res = NFD_OpenDialog(nullptr, nullptr, &importPath);
+
+					if (res == NFD_OKAY)
+					{
+						_string path = importPath;
+						NFDi_Free(importPath);
+
+						ImportLightFile(path);
+					}
+				}
 				ImGui::EndMenu();
 			}
 		}
@@ -159,6 +190,8 @@ void MapEditorPanel::Draw(GUIState& state)
 		NavEditMode(state, pickRes);
 	else if (m_eMode == EditMode::SpawnerPlacement)
 		SpawnerPlacement(state, pickRes);
+	else if (m_eMode == EditMode::LightPlacement)
+		LightPlacement(state, pickRes);
 	else
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -552,6 +585,58 @@ void MapEditorPanel::AddNavCellToSpawner(_uint index)
 	spawner->AddNavCellIndex(index);
 }
 
+void MapEditorPanel::LightPlacement(GUIState& state, PICK_RESULT pickRes)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse)
+		return;
+
+	auto engine = EngineCore::GetInstance();
+
+	if (pickRes.type == PickType::Model)
+	{
+		if (engine->IsMousePress(MouseButton::LButton))
+		{
+			AddTorch(pickRes);
+		}
+
+		if (engine->IsMousePress(MouseButton::RButton))
+		{
+			AddLight(pickRes);
+		}
+		
+		if (engine->IsKeyPressed('Z'))
+		{
+			engine->GetLastObject(ENUM_CLASS(LevelID::Editor), "Layer_PointLight")->SetDead();
+		}
+	}
+}
+
+void MapEditorPanel::AddTorch(PICK_RESULT pickRes)
+{
+	if (!pickRes.isHit || !pickRes.object)
+		return;
+
+	auto engine = EngineCore::GetInstance();
+
+	Object::OBJECT_DESC desc{};
+	desc.position = pickRes.worldHitPosition;
+	engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Torch", ENUM_CLASS(LevelID::Editor), "Layer_Torch", &desc);
+
+}
+
+void MapEditorPanel::AddLight(PICK_RESULT pickRes)
+{
+	if (!pickRes.isHit || !pickRes.object)
+		return;
+
+	auto engine = EngineCore::GetInstance();
+
+	Object::OBJECT_DESC desc{};
+	desc.position = pickRes.worldHitPosition;
+	engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_PointLight", ENUM_CLASS(LevelID::Editor), "Layer_PointLight", &desc);
+}
+
 void MapEditorPanel::ImportMapFile(const _string& filePath)
 {
 	using namespace nlohmann;
@@ -716,6 +801,81 @@ void MapEditorPanel::ExportNavFile(const _string& filePath)
 	auto navMeshObject = engine->GetLayers(ENUM_CLASS(LevelID::Editor))["Layer_NavMeshObject"]->GetFrontObject();
 
 	navMeshObject->GetComponent<NavDataComponent>()->ExportNavData(out);
+}
+
+void MapEditorPanel::ImportLightFile(const _string& filePath)
+{
+	using namespace nlohmann;
+	namespace fs = std::filesystem;
+
+	auto engine = EngineCore::GetInstance();
+
+	std::vector<PREFAB> staticObjectPrefabs;
+	std::vector<EnemySpawner::ENEMY_SPAWNER_DESC> spawnerDescs;
+	std::ifstream file(filePath);
+	if (!file.is_open())
+	{
+		MSG_BOX("Failed to load");
+		return;
+	}
+
+	ordered_json map = json::parse(file);
+
+	/*point lights*/
+	for (auto& node : map["point_lights"])
+	{
+		Object::OBJECT_DESC desc{};
+		Object* light = nullptr;
+		engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_PointLight", ENUM_CLASS(LevelID::Editor), "Layer_PointLight", &desc, &light);
+		static_cast<PointLight*>(light)->Import(node);
+	}
+
+	/*torches*/
+	for (auto& node : map["torches"])
+	{
+		Object::OBJECT_DESC desc{};
+		Object* light = nullptr;
+		engine->AddObject(ENUM_CLASS(LevelID::Editor), "Prototype_Object_Torch", ENUM_CLASS(LevelID::Editor), "Layer_Torch", &desc, &light);
+		static_cast<Torch*>(light)->Import(node);
+	}
+
+	MSG_BOX("Load success");
+}
+
+void MapEditorPanel::ExportLightFile(const _string& filePath)
+{
+	using namespace nlohmann;
+	namespace fs = std::filesystem;
+
+	auto& layers = EngineCore::GetInstance()->GetLayers(ENUM_CLASS(LevelID::Editor));
+	auto& pointLights = layers["Layer_PointLight"]->GetObjects();
+	auto& torches = layers["Layer_Torch"]->GetObjects();
+
+	ordered_json map;
+	map["point_lights"] = json::array();
+	map["torches"] = json::array();
+
+	/*point lights to json*/
+	for (const auto& light : pointLights)
+	{
+		static_cast<PointLight*>(light)->Export(map["point_lights"]);
+	}
+
+	/*torch to json*/	
+	for (const auto& torch : torches)
+	{
+		static_cast<Torch*>(torch)->Export(map["torches"]);
+	}
+
+	std::ofstream out(filePath);
+	if (!out.is_open())
+	{
+		MSG_BOX("Failed to save");
+		return;
+	}
+	out << map.dump(2);
+
+	MSG_BOX("Save Success!");
 }
 
 void MapEditorPanel::ShowPrefabs()

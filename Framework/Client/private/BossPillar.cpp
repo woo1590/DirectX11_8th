@@ -3,6 +3,7 @@
 #include "Random.h"
 #include "Bounding_AABB.h"
 #include "EffectContainer.h"
+#include "BossPillarSmoke.h"
 
 //component
 #include "ColliderComponent.h"
@@ -76,11 +77,24 @@ void BossPillar::PriorityUpdate(_float dt)
 void BossPillar::Update(_float dt)
 {
 	__super::Update(dt);
+
+	if (m_pBossPillarSmoke)
+		m_pBossPillarSmoke->Update(dt);
 }
 
 void BossPillar::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT BossPillar::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pBossPillarSmoke)
+		m_pBossPillarSmoke->ExtractRenderProxies(proxies);
+
+	return S_OK;
 }
 
 void BossPillar::OnCollisionEnter(ColliderComponent* otherCollider)
@@ -143,6 +157,7 @@ void BossPillar::Free()
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
 	__super::Free();
+	Safe_Release(m_pBossPillarSmoke);
 }
 
 void BossPillar::BossPillarSpawn::Enter(Object* object)
@@ -200,11 +215,19 @@ void BossPillar::BossPillarSpawn::TestForExit(Object* object)
 
 void BossPillar::BossPillarExlplode::Enter(Object* object)
 {
+	auto engine = EngineCore::GetInstance();
 	auto random = EngineCore::GetInstance()->GetRandom();
 
 	m_fElapsedTime = 0.f;
 	m_fDuration = random->get<_float>(1.f, 2.5f);
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
+
+	BossPillarSmoke::BOSS_PILLAR_SMOKE_DESC effectDesc{};
+	effectDesc.duration = m_fDuration;
+	effectDesc.position = object->GetComponent<TransformComponent>()->GetPosition();
+	effectDesc.position.y += 15.f;
+	auto pillar = static_cast<BossPillar*>(object);
+	pillar->m_pBossPillarSmoke = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarSmoke", &effectDesc);
 }
 
 void BossPillar::BossPillarExlplode::Update(Object* object, _float dt)

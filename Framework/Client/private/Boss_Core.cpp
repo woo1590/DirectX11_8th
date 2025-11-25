@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Boss_Core.h"
 #include "Bounding_Sphere.h"
+#include "MaterialInstance.h"
 #include "Boss.h"
 
 //component
 #include "StatusComponent.h"
 #include "ColliderComponent.h"
+#include "ModelComponent.h"
 
 Boss_Core::Boss_Core()
 	:PartObject()
@@ -33,7 +35,9 @@ HRESULT Boss_Core::Initialize_Prototype()
 		return E_FAIL;
 
 	AddComponent<ColliderComponent>();
+	AddComponent<ModelComponent>();
 
+	m_eRenderGroup = RenderGroup::Blend;
 	m_strInstanceTag = "Boss_Core";
 
 	return S_OK;
@@ -51,11 +55,19 @@ HRESULT Boss_Core::Initialize(InitDESC* arg)
 	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyWeakness);
 	sphereDesc.type = ColliderType::Sphere;
 	sphereDesc.center = _float3{ 1.5f,0.f,0.f };
-	sphereDesc.radius = 1.5f;
+	sphereDesc.radius = 3.f;
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&sphereDesc);
 
 	engine->RegisterCollider(collider);
+
+	/*model*/
+	auto model = GetComponent<ModelComponent>();
+	model->Initialize(nullptr);
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_BossWeakness");
+	model->GetMaterialInstance()->SetPass("BossCore_Pass");
+
+	m_pTransform->SetScale(_float3{ 0.5f,0.5f,0.5f });
 
 	return S_OK;
 }
@@ -68,6 +80,10 @@ void Boss_Core::PriorityUpdate(_float dt)
 void Boss_Core::Update(_float dt)
 {
 	__super::Update(dt);
+
+	m_UVOffset.x += dt;
+
+	GetComponent<ModelComponent>()->GetMaterialInstance()->SetFloat2("g_UVOffset", m_UVOffset);
 }
 
 void Boss_Core::LateUpdate(_float dt)

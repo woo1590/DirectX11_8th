@@ -30,7 +30,7 @@ public:
     void Free()override;
 
 private:
-    
+    _float2 m_UVOffset{};
 };
 
 NS_END

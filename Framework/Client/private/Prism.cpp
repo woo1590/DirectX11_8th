@@ -2,6 +2,7 @@
 #include "Prism.h"
 #include "Random.h"
 #include "Player.h"
+#include "MaterialInstance.h"
 
 //component
 #include "ModelComponent.h"
@@ -42,9 +43,11 @@ HRESULT Prism::Initialize_Prototype()
 
 HRESULT Prism::Initialize(InitDESC* arg)
 {
+	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Prism");
 
+	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
 	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_Weapon_Prism");
 
@@ -53,6 +56,14 @@ HRESULT Prism::Initialize(InitDESC* arg)
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Prism");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("PlayerOutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.025f);
 
 	m_iFireLightBoneIndex = model->GetBoneIndex("FireLight");
 	m_iNumMaxAmmo = 1;

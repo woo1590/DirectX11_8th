@@ -88,11 +88,25 @@ void Door::OnCollisionStay(ColliderComponent* otherCollider)
 		if (&m_DoorConnectNextStage == m_CurrState)
 		{
 			auto engine = EngineCore::GetInstance();
+			engine->PublishEvent(ENUM_CLASS(EventID::InteractionDoor));
+
 			if (engine->IsKeyPressed('F'))
 			{
 				auto command = Command_ChangeLevel::Create(m_eConnectStageID);
 				engine->RegisterCommand(command);  
 			}
+		}
+	}
+}
+
+void Door::OnCollisionExit(ColliderComponent* otherCollider)
+{
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Player))
+	{
+		if (&m_DoorConnectNextStage == m_CurrState)
+		{
+			auto engine = EngineCore::GetInstance();
+			engine->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
 		}
 	}
 }

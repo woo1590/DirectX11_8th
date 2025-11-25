@@ -10,6 +10,8 @@
 #include "EnemySpawner.h"
 #include "DropWeapon.h"
 #include "Chest.h"
+#include "PointLight.h"
+#include "Torch.h"
 
 #include "Player.h"
 #include "WeaponPanel.h"
@@ -41,10 +43,10 @@ HRESULT Stage1::Initialize()
 	if (FAILED(LoadMapFromFile("../bin/data/map/stage1_map.json")))
 		return E_FAIL;
 
-	engine->SetNavMesh(ENUM_CLASS(LevelID::Static), "NavMesh_Stage1");
-
-	if (FAILED(Initialize_LayerLights("Layer_Light")))
+	if (FAILED(LoadLightFromFile("../bin/data/map/stage1_map_light.json")))
 		return E_FAIL;
+
+	engine->SetNavMesh(ENUM_CLASS(LevelID::Static), "NavMesh_Stage1");
 
 	if (FAILED(Initialize_LayerUI("Layer_UI")))
 		return E_FAIL;
@@ -70,10 +72,11 @@ void Stage1::Update(_float dt)
 	if (engine->IsKeyPressed('N'))
 	{
 		//engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		
 	}
 
 	if (engine->IsKeyPressed('O'))
@@ -172,29 +175,68 @@ HRESULT Stage1::LoadMapFromFile(const _string& filePath)
 	return S_OK;
 }
 
-HRESULT Stage1::Initialize_LayerLights(const _string& layerTag)
+HRESULT Stage1::LoadLightFromFile(const _string& filePath)
 {
+	using namespace nlohmann;
+	namespace fs = std::filesystem;
+
 	auto engine = EngineCore::GetInstance();
-
-	Object::OBJECT_DESC desc{};
-
-	desc.position = _float3{ 50.f,150.f,44.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
+	std::ifstream file(filePath);
+	if (!file.is_open())
+	{
+		MSG_BOX("Failed to load");
 		return E_FAIL;
-	desc.position = _float3{ 96.f,150.f,104.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
-		return E_FAIL;
+	}
 
-	desc.position = _float3{ 650.f,150.f,307.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
-		return E_FAIL;
+	ordered_json map = json::parse(file);
 
-	desc.position = _float3{ 920.f, 150.f, 400.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
-		return E_FAIL;
+	/*point light*/
+	for (const auto& light : map["point_lights"])
+	{
+		_float3 position{};
+		PointLight::POINT_LIGHT_DESC desc{};
+
+		position.x = light.at("position").at("x").get<_float>();
+		position.y = light.at("position").at("y").get<_float>();
+		position.z = light.at("position").at("z").get<_float>();
+
+		desc.position = position;
+
+		desc.color.x = light.at("color").at("x").get<_float>();
+		desc.color.y = light.at("color").at("y").get<_float>();
+		desc.color.z = light.at("color").at("z").get<_float>();
+		desc.color.w = light.at("color").at("w").get<_float>();
+
+		desc.range = light.at("range").get<_float>();
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PointLight", ENUM_CLASS(LevelID::Stage1), "Layer_PointLight", &desc);
+
+	}
+
+	/*torch*/
+	for (const auto& light : map["torches"])
+	{
+		_float3 position{};
+		Torch::TORCH_DESC desc{};
+
+		position.x = light.at("position").at("x").get<_float>();
+		position.y = light.at("position").at("y").get<_float>();
+		position.z = light.at("position").at("z").get<_float>();
+
+		desc.position = position;
+		desc.color.x = light.at("color").at("x").get<_float>();
+		desc.color.y = light.at("color").at("y").get<_float>();
+		desc.color.z = light.at("color").at("z").get<_float>();
+		desc.color.w = light.at("color").at("w").get<_float>();
+
+		desc.range = light.at("range").get<_float>();
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Torch", ENUM_CLASS(LevelID::StageBoss), "Layer_Torch", &desc);
+	}
 
 	return S_OK;
 }
+
 
 HRESULT Stage1::Initialize_LayerPlayer(const _string& layerTag)
 {
@@ -229,6 +271,12 @@ HRESULT Stage1::Initialize_LayerUI(const _string& layerTag)
 		return E_FAIL;
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", ENUM_CLASS(LevelID::Stage1), layerTag)))
+		return E_FAIL;
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitCrossHair", ENUM_CLASS(LevelID::Stage1), layerTag)))
+		return E_FAIL;
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_InteractionUI", ENUM_CLASS(LevelID::Stage1), layerTag)))
 		return E_FAIL;
 
 	return S_OK;

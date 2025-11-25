@@ -79,6 +79,8 @@ void Decal::Update(_float dt)
     m_fElapsedTime += dt;
     if (m_fElapsedTime >= m_fDuration)
         SetDead();
+
+    GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat2("g_UVOffset", _float2{ 0.f, 0.f });
 }
 
 void Decal::LateUpdate(_float dt)

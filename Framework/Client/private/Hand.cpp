@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Hand.h"
 #include "Player.h"
+#include "MaterialInstance.h"
 
 //component
 #include "TransformComponent.h"
@@ -51,14 +52,27 @@ HRESULT Hand::Initialize(InitDESC* arg)
 
 	m_pTransform->SetPosition(_float3{ -0.1f,0.f,-1.2f });
 
+	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_PlayerHand");
+	model->Initialize(nullptr);
+	model->GetMaterialInstance()->SetPass("Player_Pass");
+	model->GetMaterialInstance()->SetInt("g_ObjectMask", 1);
 
+	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
 	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_PlayerHand");
 
 	model->ConnectAnimator();
-	animator->ChangeAnimation(0);
+
+	/*outline model*/
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_PlayerHand");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("PlayerOutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.025f);
 
 	XMStoreFloat4(&m_TargetRotation, XMQuaternionIdentity());
 	XMStoreFloat4(&m_CurrRotation, XMQuaternionIdentity());
@@ -66,6 +80,7 @@ HRESULT Hand::Initialize(InitDESC* arg)
 	m_pBobbingController = BobbingController::Create();
 
 	ChangeState(&m_HandIdle);
+	animator->ChangeAnimation(0);
 
 	return S_OK;
 }
@@ -92,12 +107,21 @@ void Hand::Update(_float dt)
 	XMStoreFloat4x4(&additive, rotMat * transMat);
 	GetComponent<AnimatorComponent>()->SetAdditiveMatrix(additive, 1);
 
-	
 }
 
 void Hand::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT Hand::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pOutLineModel)
+		m_pOutLineModel->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::NonLight)]);
+
+	return S_OK;
 }
 
 void Hand::Idle()
@@ -166,6 +190,7 @@ void Hand::Free()
 	__super::Free();
 
 	Safe_Release(m_pBobbingController);
+	Safe_Release(m_pOutLineModel);
 }
 
 void Hand::UpdateSway(_float dt)

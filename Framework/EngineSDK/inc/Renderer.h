@@ -25,6 +25,7 @@ public:
     HRESULT RenderNonBlend(const std::vector<RenderProxy>& proxies);
     HRESULT RenderLight(const std::vector<LightProxy>& proxies);
     HRESULT RenderCombined();
+    HRESULT RenderNonLight(const std::vector<RenderProxy>& proxies);
     HRESULT RenderBlend(const std::vector<RenderProxy>& proxies);
     HRESULT RenderUI(const std::vector<RenderProxy>& proxies);
 

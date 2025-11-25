@@ -9,7 +9,7 @@ class PickingSystem;
 class MapEditorPanel :
     public IPanel
 {
-    enum class EditMode { Guizmo, Placement, NavPlacement, NavLinked, NavEdit, SpawnerPlacement, Count };
+    enum class EditMode { Guizmo, Placement, NavPlacement, NavLinked, NavEdit, SpawnerPlacement, LightPlacement, Count };
 private:
     MapEditorPanel(PickingSystem* picking);
     virtual ~MapEditorPanel() = default;
@@ -28,6 +28,9 @@ private:
 
     void ImportNavFile(const _string& filePath);
     void ExportNavFile(const _string& filePath);
+
+    void ImportLightFile(const _string& filePath);
+    void ExportLightFile(const _string& filePath);
     
     void ShowPrefabs();
 
@@ -69,8 +72,12 @@ private:
     void AddSpawner(PICK_RESULT pickRes);
     void AddNavCellToSpawner(_uint index);
     Object* m_pEnemySpawner = nullptr;
-
     /*----------------------------------*/
+
+    /*----------Light Placement--------------*/
+    void LightPlacement(GUIState& state, PICK_RESULT pickRes);
+    void AddTorch(PICK_RESULT pickRes);
+    void AddLight(PICK_RESULT pickRes);
 
     PickingSystem* m_pPickingSystem = nullptr;
     EditMode m_eMode = EditMode::Placement;

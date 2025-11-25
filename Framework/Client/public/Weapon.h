@@ -2,6 +2,7 @@
 #include "PartObject.h"
 
 NS_BEGIN(Engine)
+class ModelComponent;
 class Skeleton;
 NS_END
 
@@ -26,6 +27,7 @@ public:
     virtual void PriorityUpdate(_float dt)override;
     virtual void Update(_float dt)override;
     virtual void LateUpdate(_float dt)override;
+    virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     virtual void Idle() = 0;
     virtual void Reload() = 0;
@@ -42,6 +44,8 @@ protected:
     WeaponID m_eWeaponID = WeaponID::Count;
     _uint m_iNumMaxAmmo{};
     _uint m_iNumCurrAmmo{};
+
+    ModelComponent* m_pOutLineModel = nullptr;
 };
 
 NS_END

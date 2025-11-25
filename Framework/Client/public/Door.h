@@ -21,6 +21,7 @@ public:
     void Open();
 
     void OnCollisionStay(ColliderComponent* otherCollider)override;
+    void OnCollisionExit(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;

@@ -127,6 +127,10 @@ void MainApp::Free()
 
 HRESULT MainApp::LoadStaticLevel()
 {
+    /*Load Font*/
+    {
+        m_pEngineCore->AddFont("Default_Font", "../bin/resource/font/Pretendard.spritefont");
+    }
     /*Load Shader*/
     {
         if (FAILED(m_pEngineCore->LoadShaderFromFile("../bin/shaderfiles/Shader_VtxTex.hlsl", "Shader_VtxTex",

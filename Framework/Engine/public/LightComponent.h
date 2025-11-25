@@ -40,6 +40,7 @@ public:
     void SetDeactive() { m_isActive = false; }
     void SetColor(_float4 color) { m_Color = color; }
     void SetLightRange(_float range) { m_fRange = range; }
+    LIGHT_DESC GetDesc();
 
     Component* Clone() { return new LightComponent(*this); }
     void Free()override;

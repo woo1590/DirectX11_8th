@@ -210,6 +210,7 @@
     <ClInclude Include="..\public\BossLaserProjectileTrail.h" />
     <ClInclude Include="..\public\BossLaserTrail.h" />
     <ClInclude Include="..\public\BossPillar.h" />
+    <ClInclude Include="..\public\BossPillarSmoke.h" />
     <ClInclude Include="..\public\BossStage.h" />
     <ClInclude Include="..\public\BossStoneProjectile.h" />
     <ClInclude Include="..\public\BossStoneSmoke.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="..\public\Cameleon.h" />
     <ClInclude Include="..\public\Chest.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\Cloud.h" />
     <ClInclude Include="..\public\Coin.h" />
     <ClInclude Include="..\public\Command_ChangeLevel.h" />
     <ClInclude Include="..\public\CoolDownEffect.h" />
@@ -245,10 +247,13 @@
     <ClInclude Include="..\public\EnemyHpPanel.h" />
     <ClInclude Include="..\public\Foundry.h" />
     <ClInclude Include="..\public\Fracture.h" />
+    <ClInclude Include="..\public\Hell.h" />
+    <ClInclude Include="..\public\HitCrossHair.h" />
     <ClInclude Include="..\public\HorseHead_Head.h" />
     <ClInclude Include="..\public\HorseHead_Shield.h" />
     <ClInclude Include="..\public\HorseHead_Sword.h" />
     <ClInclude Include="..\public\EnemySpawner.h" />
+    <ClInclude Include="..\public\InteractionUI.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemGlow.h" />
     <ClInclude Include="..\public\LightEffect.h" />
@@ -259,10 +264,13 @@
     <ClInclude Include="..\public\MeshEffect.h" />
     <ClInclude Include="..\public\MuzzleFire.h" />
     <ClInclude Include="..\public\ParticleEffect.h" />
+    <ClInclude Include="..\public\PointLight.h" />
     <ClInclude Include="..\public\PrismTrail.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
     <ClInclude Include="..\public\SpriteEffect.h" />
+    <ClInclude Include="..\public\Torch.h" />
+    <ClInclude Include="..\public\VictoryText.h" />
     <ClInclude Include="..\public\WeaponSlot.h" />
     <ClInclude Include="..\public\PlayerIcon.h" />
     <ClInclude Include="..\public\PlayerInteractionComponent.h" />
@@ -323,6 +331,7 @@
     <ClCompile Include="..\private\BossLaserProjectileTrail.cpp" />
     <ClCompile Include="..\private\BossLaserTrail.cpp" />
     <ClCompile Include="..\private\BossPillar.cpp" />
+    <ClCompile Include="..\private\BossPillarSmoke.cpp" />
     <ClCompile Include="..\private\BossStage.cpp" />
     <ClCompile Include="..\private\BossStoneProjectile.cpp" />
     <ClCompile Include="..\private\BossStoneSmoke.cpp" />
@@ -333,6 +342,7 @@
     <ClCompile Include="..\private\Boss_RightArm.cpp" />
     <ClCompile Include="..\private\Cameleon.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
+    <ClCompile Include="..\private\Cloud.cpp" />
     <ClCompile Include="..\private\Coin.cpp" />
     <ClCompile Include="..\private\Command_ChangeLevel.cpp" />
     <ClCompile Include="..\private\CoolDownEffect.cpp" />
@@ -357,10 +367,13 @@
     <ClCompile Include="..\private\EnemyHpPanel.cpp" />
     <ClCompile Include="..\private\Foundry.cpp" />
     <ClCompile Include="..\private\Fracture.cpp" />
+    <ClCompile Include="..\private\Hell.cpp" />
+    <ClCompile Include="..\private\HitCrossHair.cpp" />
     <ClCompile Include="..\private\HorseHead_Head.cpp" />
     <ClCompile Include="..\private\HorseHead_Shield.cpp" />
     <ClCompile Include="..\private\HorseHead_Sword.cpp" />
     <ClCompile Include="..\private\EnemySpawner.cpp" />
+    <ClCompile Include="..\private\InteractionUI.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\ItemGlow.cpp" />
     <ClCompile Include="..\private\LightEffect.cpp" />
@@ -371,10 +384,13 @@
     <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\private\MuzzleFire.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
+    <ClCompile Include="..\private\PointLight.cpp" />
     <ClCompile Include="..\private\PrismTrail.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
     <ClCompile Include="..\private\SpriteEffect.cpp" />
+    <ClCompile Include="..\private\Torch.cpp" />
+    <ClCompile Include="..\private\VictoryText.cpp" />
     <ClCompile Include="..\private\WeaponSlot.cpp" />
     <ClCompile Include="..\private\PlayerIcon.cpp" />
     <ClCompile Include="..\private\PlayerInteractionComponent.cpp" />

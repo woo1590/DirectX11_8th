@@ -2,6 +2,7 @@
 #include "Soldier.h"
 #include "Bounding_AABB.h"
 #include "Random.h"
+#include "MaterialInstance.h"
 
 //object
 #include "Socket.h"
@@ -82,6 +83,7 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_Soldier");
+	model->Initialize(nullptr);
 
 	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
@@ -107,6 +109,15 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	status->Initialize(&statusDesc);
 
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
+
+	/*outline model*/
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_Soldier");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("OutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
@@ -159,7 +170,7 @@ void Soldier::HitHead(_uint attackPower)
 	auto status = GetComponent<StatusComponent>();
 	status->BeAttacked(attackPower);
 
-	if (0 == status->GetDesc().hp)
+	if (0 == status->GetDesc().hp && m_CurrState != &m_SoldierDead)
 		ChangeState(&m_SoldierDead);
 
 	if (m_CurrState == &m_SoldierIdle || m_CurrState == &m_SoldierRun)
@@ -202,7 +213,7 @@ void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
 		status->BeAttacked(otherStatus->GetDesc().attackPower);
-		if (0 == status->GetDesc().hp)
+		if (0 == status->GetDesc().hp && m_CurrState != &m_SoldierDead)
 			ChangeState(&m_SoldierDead);
 
 		if (m_CurrState == &m_SoldierIdle || m_CurrState == &m_SoldierRun)
@@ -235,7 +246,7 @@ void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
 		status->BeAttacked(otherStatus->GetDesc().attackPower);
-		if (0 == status->GetDesc().hp)
+		if (0 == status->GetDesc().hp && m_CurrState != &m_SoldierDead)
 			ChangeState(&m_SoldierDead);
 
 		if (m_CurrState == &m_SoldierIdle || m_CurrState == &m_SoldierRun)

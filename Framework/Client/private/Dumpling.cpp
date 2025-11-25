@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Dumpling.h"
 #include "Bounding_Sphere.h"
+#include "MaterialInstance.h"
 
 //component
 #include "PlayerInteractionComponent.h"
@@ -50,6 +51,8 @@ HRESULT Dumpling::Initialize(InitDESC* arg)
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Item_Dumpling");
+	model->Initialize(nullptr);
+	model->GetMaterialInstance()->SetPass("EmissiveItem_Pass");
 
 	/*collider*/
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};

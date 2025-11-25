@@ -3,6 +3,7 @@
 #include "Bounding_AABB.h"
 #include "Random.h"
 #include "DamageFont.h"
+#include "MaterialInstance.h"
 
 #include "Fracture.h"
 #include "EnemyHpPanel.h"
@@ -80,6 +81,7 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     /*model*/
     auto model = GetComponent<ModelComponent>();
     model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_CrossbowMan");
+    model->Initialize(nullptr);
 
     /*animator*/
     auto animator = GetComponent<AnimatorComponent>();
@@ -95,6 +97,15 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     nav->SpawnInCell(3);
     nav->SetMoveSpeed(35.f);
     nav->SetArriveRange(60.f);
+
+    /*outline model*/
+    m_pOutLineModel = ModelComponent::Create(this);
+    m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_CrossbowMan");
+    m_pOutLineModel->Initialize(nullptr);
+    auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+    outlineMtrlInstance->SetPass("OutLine_Pass");
+    outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+    outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
 
     m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
     m_iMuzzleBoneIndex = model->GetBoneIndex("muzzle");
@@ -145,7 +156,7 @@ void CrossbowMan::HitHead()
 {
     auto status = GetComponent<StatusComponent>();
 
-    if (0 == status->GetDesc().hp)
+    if (0 == status->GetDesc().hp && m_CurrState != &m_CrossbowManDead)
         ChangeState(&m_CrossbowManDead);
 
     if (m_CurrState == &m_CrossbowManIdle || m_CurrState == &m_CrossbowManRun)
@@ -187,7 +198,7 @@ void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
         auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
         status->BeAttacked(otherStatus->GetDesc().attackPower);
-        if (0 == status->GetDesc().hp)
+        if (0 == status->GetDesc().hp && m_CurrState != &m_CrossbowManDead)
             ChangeState(&m_CrossbowManDead);
 
         if (m_CurrState == &m_CrossbowManIdle || m_CurrState == &m_CrossbowManRun || m_CurrState == &m_CrossbowManWalk_F)
@@ -220,7 +231,7 @@ void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
         auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
         status->BeAttacked(otherStatus->GetDesc().attackPower);
-        if (0 == status->GetDesc().hp)
+        if (0 == status->GetDesc().hp && m_CurrState != &m_CrossbowManDead)
             ChangeState(&m_CrossbowManDead);
 
         if (m_CurrState == &m_CrossbowManIdle || m_CurrState == &m_CrossbowManRun || m_CurrState == &m_CrossbowManWalk_F)

@@ -18,6 +18,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
@@ -28,6 +29,7 @@ public:
 
 private:
     _uint m_iResistantCount = 3;
+    Object* m_pBossPillarSmoke = nullptr;
 
     class BossPillarSpawn : public State
     {

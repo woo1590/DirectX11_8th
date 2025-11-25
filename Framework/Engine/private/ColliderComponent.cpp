@@ -280,7 +280,7 @@ void ColliderComponent::Draw()
 	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 
 	m_pBatch->Begin();
-	m_pBounding->Draw(m_pBatch,color);
+	m_pBounding->Draw(m_pBatch, color);
 	m_pBatch->End();
 }
 

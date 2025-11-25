@@ -2,8 +2,10 @@
 #include "Enemy.h"
 #include "Random.h"
 #include "EnemyHpPanel.h"
+#include "MaterialInstance.h"
 
 //component
+#include "ModelComponent.h"
 #include "RigidBodyComponent.h"
 
 _uint Enemy::m_iNextEnemyID = 0;
@@ -44,6 +46,26 @@ HRESULT Enemy::LateInitialize()
     return S_OK;
 }
 
+void Enemy::PriorityUpdate(_float dt)
+{
+    __super::PriorityUpdate(dt);
+
+    if (m_pOutLineModel)
+    {
+        if (m_IsLockOn)
+        {
+            m_IsLockOn = false;
+            GetComponent<ModelComponent>()->GetMaterialInstance()->SetPass("Default_Pass");
+
+            auto mtrlInstance = m_pOutLineModel->GetMaterialInstance();
+            mtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+            mtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
+            mtrlInstance->SetPass("OutLine_Pass");
+            mtrlInstance->SetInt("g_ObjectMask", 1);
+        }
+    }
+}
+
 void Enemy::Update(_float dt)
 {
 	__super::Update(dt);
@@ -51,9 +73,38 @@ void Enemy::Update(_float dt)
 	m_fElapsedTime += dt;
 }
 
+void Enemy::LateUpdate(_float dt)
+{
+    __super::LateUpdate(dt);
+
+    if (m_pOutLineModel)
+    {
+        if (m_IsLockOn)
+        {
+            GetComponent<ModelComponent>()->GetMaterialInstance()->SetPass("LockOn_Pass");
+
+            auto mtrlInstance = m_pOutLineModel->GetMaterialInstance();
+            mtrlInstance->SetFloat4("g_OutLineColor", _float4(1.f, 0.2f, 0.2f, 1.f));
+            mtrlInstance->SetFloat("g_OutLineWidth", 0.2f);
+            mtrlInstance->SetPass("LockOnOutLine_Pass");
+        }
+    }
+}
+
+HRESULT Enemy::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+    __super::ExtractRenderProxies(proxies);
+
+    if (m_pOutLineModel)
+        m_pOutLineModel->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::NonLight)]);
+
+    return S_OK;
+}
+
 void Enemy::Free()
 {
 	__super::Free();
+    Safe_Release(m_pOutLineModel);
 }
 
 void Enemy::SetDead()

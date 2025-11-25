@@ -5,8 +5,6 @@
 
 NS_BEGIN(Engine)
 
-
-
 class DebugRenderer;
 class Renderer;
 class ENGINE_DLL RenderSystem :

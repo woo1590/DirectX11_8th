@@ -4,6 +4,7 @@
 #include "EffectContainer.h"
 #include "Socket.h"
 #include "DefaultBullet.h"
+#include "MaterialInstance.h"
 
 //component
 #include "ModelComponent.h"
@@ -67,6 +68,14 @@ HRESULT Foundry::Initialize(InitDESC* arg)
 	/*모델 세팅 이후에 무기 초기화 해야함*/
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
+
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Foundry");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("PlayerOutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.025f);
 
 	m_iNumMaxAmmo = 8;
 	m_iNumCurrAmmo = m_iNumMaxAmmo;

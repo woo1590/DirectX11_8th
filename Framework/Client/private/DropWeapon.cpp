@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DropWeapon.h"
 #include "Bounding_Sphere.h"
+#include "MaterialInstance.h"
 
 //component
 #include "PlayerInteractionComponent.h"
@@ -62,6 +63,8 @@ HRESULT DropWeapon::Initialize(InitDESC* arg)
 
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
+	model->Initialize(nullptr);
+	model->GetMaterialInstance()->SetPass("EmissiveItem_Pass");
 	switch (m_eWeaponID)
 	{
 	case Client::WeaponID::Foundry:
@@ -92,6 +95,11 @@ HRESULT DropWeapon::Initialize(InitDESC* arg)
 	{
 		m_pTransform->Turn(math::ToRadian(20.f), 0.f);
 		model->SetModel(ENUM_CLASS(LevelID::Static), "Model_DropWeapon_Prism");
+	}break;
+	case Client::WeaponID::Hell:
+	{
+		//m_pTransform->Turn(math::ToRadian(20.f), 0.f);
+		model->SetModel(ENUM_CLASS(LevelID::Static), "Model_DropWeapon_Hell");
 	}break;
 	default:
 		break;
@@ -134,6 +142,18 @@ HRESULT DropWeapon::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& 
 	return S_OK;
 }
 
+void DropWeapon::OnCollisionStay(ColliderComponent* otherCollider)
+{
+	if(otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Player) && !m_isDead)
+		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::InteractionWeapon));
+}
+
+void DropWeapon::OnCollisionExit(ColliderComponent* otherCollider)
+{
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Player))
+		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
+}
+
 void DropWeapon::Interaction(PlayerInteractionComponent* interaction)
 {
 	if (&m_DropWeaponIdle == m_CurrState)
@@ -143,6 +163,7 @@ void DropWeapon::Interaction(PlayerInteractionComponent* interaction)
 		if (engine->IsKeyPressed('F'))
 		{
 			interaction->EquipWeapon(m_eWeaponID);
+			engine->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
 			SetDead();
 		}
 	}
@@ -161,9 +182,11 @@ Object* DropWeapon::Clone(InitDESC* arg)
 void DropWeapon::Free()
 {
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
+
+	__super::Free();
 
 	Safe_Release(m_pItemGlow);
-	__super::Free();
 }
 
 void DropWeapon::DropWeaponSpawn::Enter(Object* object)

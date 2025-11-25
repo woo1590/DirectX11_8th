@@ -70,6 +70,17 @@ HRESULT LightComponent::ExtractLightProxy(std::vector<LightProxy>& lights)
 	return S_OK;
 }
 
+LightComponent::LIGHT_DESC LightComponent::GetDesc()
+{
+	LIGHT_DESC desc{};
+	desc.type = m_eType;
+	desc.color = m_Color;
+	desc.range = m_fRange;
+	desc.direction = m_Direction;
+
+	return desc;
+}
+
 void LightComponent::Free()
 {
 	__super::Free();
@@ -89,6 +100,7 @@ void LightComponent::RenderInspector()
 
 		ImGui::DragFloat4("Color", &m_Color.x, 0.1f, 0.f, 1.f);
 		ImGui::DragFloat4("Direction", &m_Direction.x, 0.1f, -FLT_MAX, FLT_MAX);
+		ImGui::DragFloat("Range", &m_fRange);
 	}
 
 	ImGui::PopID();

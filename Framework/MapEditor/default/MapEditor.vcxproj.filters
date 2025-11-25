@@ -94,6 +94,15 @@
     <Filter Include="03. Object\EnemySpawner">
       <UniqueIdentifier>{ca843912-79c3-4ab2-951c-719a33a10373}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Object\Light">
+      <UniqueIdentifier>{65d6767b-5689-45d1-8a0b-497faad95280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\Light\Torch">
+      <UniqueIdentifier>{886baa1d-1668-4efc-8a6a-2d662f269da6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Object\Light\PointLight">
+      <UniqueIdentifier>{2a716b71-1324-4460-a624-bb75b12a16e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -186,6 +195,12 @@
     <ClInclude Include="..\public\EnemySpawner.h">
       <Filter>03. Object\EnemySpawner</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Torch.h">
+      <Filter>03. Object\Light\Torch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PointLight.h">
+      <Filter>03. Object\Light\PointLight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapEditorPCH.cpp">
@@ -259,6 +274,12 @@
     </ClCompile>
     <ClCompile Include="..\private\EnemySpawner.cpp">
       <Filter>03. Object\EnemySpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Torch.cpp">
+      <Filter>03. Object\Light\Torch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PointLight.cpp">
+      <Filter>03. Object\Light\PointLight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

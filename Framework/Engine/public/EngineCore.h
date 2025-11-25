@@ -151,6 +151,13 @@ public:
     void UnSubscribe(const EventHandler* listener);
 #pragma endregion
 
+#pragma region Font
+    void AddFont(const _string& fontTag, const _string& filePath);
+    void AddFontProxy(FONT_PROXY proxy);
+    HRESULT RenderFont();
+#pragma endregion
+
+
     class Random* GetRandom()const { return m_pRandom; }
     void RegisterCommand(class ICommand* command) { m_Commands.push(command); }
     
@@ -200,11 +207,13 @@ private:
     // 경인이 왔다감
     class ResourceManager*     m_pResourceManager = nullptr;
     class RenderTargetManager* m_pRenderTargetManager = nullptr;
+    class FontManager*         m_pFontManager = nullptr;
     class InputSystem*         m_pInputSystem = nullptr;
     class LightSystem*         m_pLightManager = nullptr;
     class NavigationSystem*    m_pNavigationSystem = nullptr;
     class CollisionSystem*     m_pCollisionSystem = nullptr;
     class EventSystem*         m_pEventSystem = nullptr;
+
 
     _bool m_NavDebugEnable = false;
     _bool m_ColliderDebugEnable = false;

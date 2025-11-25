@@ -158,6 +158,12 @@ void PrismProjectile::OnCollisionEnter(ColliderComponent* otherCollider)
 		desc.forward = forward;
 
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitEnemy", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+
+		if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Enemy))
+			engine->PublishEvent(ENUM_CLASS(EventID::Hit));
+		else if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::EnemyWeakness))
+			engine->PublishEvent(ENUM_CLASS(EventID::WeaknessHit));
+
 	}
 	else if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::EnemyShield))
 	{

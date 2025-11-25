@@ -43,6 +43,7 @@ namespace Client
 		Cameleon,
 		IcySpear,
 		Prism,
+		Hell,
 		Count
 	};
 	enum class EventID
@@ -63,6 +64,12 @@ namespace Client
 		EnemyHpPanelPositionUpdate,
 		EnemyHealthDecrease,
 		EnemyDead,
+		Hit,
+		WeaknessHit,
+		InteractionWeapon,
+		InteractionDoor,
+		InteractionChest,
+		InteractionDeactive,
 		Count
 	};
 	enum class SkillID

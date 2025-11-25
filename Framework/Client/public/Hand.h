@@ -1,6 +1,10 @@
 #pragma once
 #include "PartObject.h"
 
+NS_BEGIN(Engine)
+class ModelComponent;
+NS_END
+
 NS_BEGIN(Client)
 
 class BobbingController;
@@ -24,6 +28,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     void Idle();
     void Walk();
@@ -40,6 +45,9 @@ public:
 
 private:
     void UpdateSway(_float dt);
+    /*for outline*/
+    ModelComponent* m_pOutLineModel = nullptr;
+
     _float4 m_TargetRotation{};
     _float4 m_CurrRotation{};
     _float3 m_TargetPosition{};

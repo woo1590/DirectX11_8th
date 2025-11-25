@@ -19,6 +19,7 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector <std::vector<RenderProxy>>& proxies)override;
 
     void Idle()override;
     void Reload() override;
@@ -31,6 +32,7 @@ public:
 private:
     _uint m_iMuzzleBoneIndex{};
     Object* m_pMuzzleSocket = nullptr;
+    Object* m_pFireEffect = nullptr;
 
     class CameleonIdle : public State
     {
@@ -53,6 +55,7 @@ private:
         void TestForExit(Engine::Object* object) override;
 
         _bool m_IsShot = false;
+        _bool m_IsAddEffect = false;
     };
 
     CameleonIdle m_CameleonIdle;

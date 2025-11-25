@@ -166,9 +166,6 @@
     <Filter Include="02. Object\Player\Weapon\Cameleon">
       <UniqueIdentifier>{8b429c1d-86ef-4425-b6fa-a46a682b47ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Player\Weapon\ConcealedAmmo">
-      <UniqueIdentifier>{7b024412-3d22-41ff-bee6-2e6edd4c17bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\Player\Weapon\IcySpear">
       <UniqueIdentifier>{37fb6ffb-7fb8-4030-ad2d-bc912f5001f9}</UniqueIdentifier>
     </Filter>
@@ -369,6 +366,33 @@
     </Filter>
     <Filter Include="02. Object\Enemy\Boss\BossEye">
       <UniqueIdentifier>{a2e4ff3f-18f6-4a14-9702-8f0c082d75cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\HitCrossHair">
+      <UniqueIdentifier>{5ea77afe-ac09-469f-b6aa-16a4e8dd1a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Light\Torch">
+      <UniqueIdentifier>{d49bef21-9b36-4dc4-a901-bbf116e32d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\BossPillarSmoke">
+      <UniqueIdentifier>{5b8864fa-1fdf-4053-ba22-4916bc55d60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Cloud">
+      <UniqueIdentifier>{9f5bd725-0f6d-4e1c-85b6-07242a9228bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Light\PointLight">
+      <UniqueIdentifier>{0a17be20-db19-4abb-a876-9272d6509170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\Hell">
+      <UniqueIdentifier>{3d53c6eb-9a35-4fe4-a820-da8c62ee1087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\InteractionUI">
+      <UniqueIdentifier>{82c83946-b828-4027-b089-8b3114c08aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Player\Weapon\ConcealedAmmo">
+      <UniqueIdentifier>{7b024412-3d22-41ff-bee6-2e6edd4c17bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\VIctoryText">
+      <UniqueIdentifier>{66e83e05-6ccf-4e35-b2a9-c0b9a7f2bf6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -705,6 +729,30 @@
     <ClInclude Include="..\public\BossEye.h">
       <Filter>02. Object\Enemy\Boss\BossEye</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HitCrossHair.h">
+      <Filter>02. Object\UIObject\HitCrossHair</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Torch.h">
+      <Filter>02. Object\Light\Torch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossPillarSmoke.h">
+      <Filter>02. Object\Effect\BossPillarSmoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cloud.h">
+      <Filter>02. Object\Cloud</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PointLight.h">
+      <Filter>02. Object\Light\PointLight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Hell.h">
+      <Filter>02. Object\Player\Weapon\Hell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InteractionUI.h">
+      <Filter>02. Object\UIObject\InteractionUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VictoryText.h">
+      <Filter>02. Object\UIObject\VIctoryText</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1027,6 +1075,30 @@
     </ClCompile>
     <ClCompile Include="..\private\BossEye.cpp">
       <Filter>02. Object\Enemy\Boss\BossEye</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HitCrossHair.cpp">
+      <Filter>02. Object\UIObject\HitCrossHair</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Torch.cpp">
+      <Filter>02. Object\Light\Torch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossPillarSmoke.cpp">
+      <Filter>02. Object\Effect\BossPillarSmoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cloud.cpp">
+      <Filter>02. Object\Cloud</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PointLight.cpp">
+      <Filter>02. Object\Light\PointLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hell.cpp">
+      <Filter>02. Object\Player\Weapon\Hell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InteractionUI.cpp">
+      <Filter>02. Object\UIObject\InteractionUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VictoryText.cpp">
+      <Filter>02. Object\UIObject\VIctoryText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

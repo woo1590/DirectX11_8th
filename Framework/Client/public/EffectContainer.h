@@ -38,7 +38,6 @@ private:
     _bool m_IsLoop = false;
 
     /*for particle*/
-
     _float3 m_SurfaceDir{};
 };
 

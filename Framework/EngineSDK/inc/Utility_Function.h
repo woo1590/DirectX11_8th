@@ -60,6 +60,11 @@ namespace math
 		return 1.f - std::pow(1.f - t, 5.f);
 	}
 
+	inline _float EaseInQuint(_float t)
+	{
+		return t * t * t * t;
+	}
+
 	inline _float EaseOutSline(_float t)
 	{
 		t = std::clamp(t, 0.f, 1.f);
@@ -86,7 +91,7 @@ namespace math
 
 	inline _float PalabolaCurve(_float t)
 	{
-		return -4.f * t * (1.f - t);
+		return 4.f * t * (1.f - t);
 	}
 
 	inline _float DistancePointToLine(_float3 P, _float3 A, _float3 B)

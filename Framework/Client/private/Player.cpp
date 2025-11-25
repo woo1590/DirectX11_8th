@@ -132,7 +132,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 		Weapon::WEAPON_DESC cameleonDesc{};
 		cameleonDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
 		cameleonDesc.parent = this;
-		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", &cameleonDesc);
+		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Hell", &cameleonDesc);
 
 		if (firstWeapon)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
@@ -263,6 +263,14 @@ void Player::PickUpWeapon(WeaponID id)
 		prismDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
 		prismDesc.parent = this;
 		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Prism", &prismDesc);
+	}break;
+	case Client::WeaponID::Hell:
+	{
+		weapon = nullptr;
+		Weapon::WEAPON_DESC hellDesc{};
+		hellDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
+		hellDesc.parent = this;
+		weapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Hell", &hellDesc);
 	}break;
 	default:
 		break;

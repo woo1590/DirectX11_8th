@@ -2,6 +2,7 @@
 #include "SpearMan.h"
 #include "Random.h"
 #include "Bounding_AABB.h"
+#include "MaterialInstance.h"
 
 //object
 #include "Socket.h"
@@ -80,6 +81,7 @@ HRESULT SpearMan::Initialize(InitDESC* arg)
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_SpearMan");
+	model->Initialize(nullptr);
 
 	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
@@ -107,6 +109,15 @@ HRESULT SpearMan::Initialize(InitDESC* arg)
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
 
 	m_pTransform->SetScale(_float3{ 1.4f,1.4f,1.4f });
+
+	/*outline model*/
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_SpearMan");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("OutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
@@ -157,7 +168,7 @@ void SpearMan::HitHead(_uint attackPower)
 	auto status = GetComponent<StatusComponent>();
 	status->BeAttacked(attackPower);
 
-	if (0 == status->GetDesc().hp)
+	if (0 == status->GetDesc().hp && m_CurrState != &m_SpearManDead)
 		ChangeState(&m_SpearManDead);
 
 	if (m_CurrState == &m_SpearManIdle || m_CurrState == &m_SpearManRun)
@@ -199,7 +210,7 @@ void SpearMan::OnCollisionEnter(ColliderComponent* otherCollider)
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
 		status->BeAttacked(otherStatus->GetDesc().attackPower);
-		if (0 == status->GetDesc().hp)
+		if (0 == status->GetDesc().hp && m_CurrState != &m_SpearManDead)
 			ChangeState(&m_SpearManDead);
 
 		if (m_CurrState == &m_SpearManIdle || m_CurrState == &m_SpearManRun)
@@ -232,7 +243,7 @@ void SpearMan::OnCollisionEnter(ColliderComponent* otherCollider)
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
 		status->BeAttacked(otherStatus->GetDesc().attackPower);
-		if (0 == status->GetDesc().hp)
+		if (0 == status->GetDesc().hp && m_CurrState != &m_SpearManDead)
 			ChangeState(&m_SpearManDead);
 
 		if (m_CurrState == &m_SpearManIdle || m_CurrState == &m_SpearManRun)

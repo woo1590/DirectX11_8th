@@ -2,6 +2,7 @@
 #include "Ammo.h"
 #include "Random.h"
 #include "Bounding_Sphere.h"
+#include "MaterialInstance.h"
 
 //component
 #include "PlayerInteractionComponent.h"
@@ -51,6 +52,8 @@ HRESULT Ammo::Initialize(InitDESC* arg)
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Item_Ammo");
+	model->Initialize(nullptr);
+	model->GetMaterialInstance()->SetPass("EmissiveItem_Pass");
 
 	/*collider*/	
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};

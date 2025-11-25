@@ -15,6 +15,7 @@
 #include "LevelManager.h"
 #include "CameraManager.h"
 #include "RenderTargetManager.h"
+#include "FontManager.h"
 
 //system
 #include "RenderSystem.h"
@@ -91,6 +92,10 @@ HRESULT EngineCore::Initialize(const EngineDESC& desc)
 	if (!m_pResourceManager)
 		return E_FAIL;
 
+	m_pFontManager = FontManager::Create();
+	if (!m_pFontManager)
+		return E_FAIL;
+
 	m_pLightManager = LightSystem::Create();
 	if (!m_pLightManager)
 		return E_FAIL;
@@ -135,6 +140,7 @@ void EngineCore::Free()
 	Safe_Release(m_pImGuiManager);
 #endif
 
+	Safe_Release(m_pFontManager);
 	Safe_Release(m_pLevelManager);
 	Safe_Release(m_pTaskManager);
 	Safe_Release(m_pPrototypeManager);
@@ -154,7 +160,6 @@ void EngineCore::Free()
 void EngineCore::Tick(_float dt)
 {
 	m_pInputSystem->Update();
-
 	m_pSoundManager->Update();
 
 	m_pObjectManager->PriorityUpdate(dt);
@@ -577,6 +582,24 @@ void EngineCore::UnSubscribe(const EventHandler* listener)
 	m_pEventSystem->UnSubscribe(listener);
 }
 #pragma endregion
+
+#pragma region Font
+void EngineCore::AddFont(const _string& fontTag, const _string& filePath)
+{
+	m_pFontManager->AddFont(fontTag, filePath);
+}
+
+void EngineCore::AddFontProxy(FONT_PROXY proxy)
+{
+	m_pFontManager->AddProxy(proxy);
+}
+
+HRESULT EngineCore::RenderFont()
+{
+	return m_pFontManager->RenderFont();
+}
+#pragma endregion
+
 
 
 

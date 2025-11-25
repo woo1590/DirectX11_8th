@@ -1,6 +1,10 @@
 #pragma once
 #include "Object.h"
 
+NS_BEGIN(Engine)
+class ModelComponent;
+NS_END
+
 NS_BEGIN(Client)
 
 class Chest :
@@ -31,16 +35,18 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
 
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
     void OnCollisionStay(ColliderComponent* otherCollider)override;
-    void OnCollisionExit(ColliderComponent* otherCollider)override {};
+    void OnCollisionExit(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
     WeaponID m_eSpawnWeaponID = WeaponID::Count;
+    ModelComponent* m_pOutLineModel = nullptr;
 
     class ChestClosed : public State
     {

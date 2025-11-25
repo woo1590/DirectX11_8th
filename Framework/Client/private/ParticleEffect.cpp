@@ -56,7 +56,7 @@ HRESULT ParticleEffect::Initialize_Prototype(nlohmann::ordered_json prefab, cons
 		return E_FAIL;
 
 	AddComponent<ParticleSystemComponent>();
-	m_eRenderGroup = RenderGroup::Blend;
+	m_eRenderGroup = RenderGroup::NonLight;
 
 	namespace fs = std::filesystem;
 

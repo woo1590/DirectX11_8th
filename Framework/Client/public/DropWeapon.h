@@ -25,6 +25,8 @@ public:
     void LateUpdate(_float dt)override;
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies);
 
+    void OnCollisionStay(ColliderComponent* otherCollider)override;
+    void OnCollisionExit(ColliderComponent* otherCollider)override;
     void Interaction(PlayerInteractionComponent* interaction)override;
 
     Object* Clone(InitDESC* arg)override;

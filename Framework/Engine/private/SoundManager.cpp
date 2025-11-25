@@ -81,7 +81,7 @@ void SoundManager::PlayBGM(const std::string& key)
     if (m_SoundMap.count(key) == 0) return;
 
     FMOD::Channel* ch = nullptr;
-    m_System->playSound(m_SoundMap[key], m_BGMGroup, false, &ch);//bgm은 pause없이 바로 재생
+    m_System->playSound(m_SoundMap[key], m_BGMGroup, false, &ch);
 
     m_ChannelMap["BGM"] = ch;
 }

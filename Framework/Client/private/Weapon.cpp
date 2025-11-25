@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Weapon.h"
+#include "MaterialInstance.h"
 
 //component
 #include "ModelComponent.h"
@@ -29,7 +30,9 @@ HRESULT Weapon::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto model = GetComponent<ModelComponent>();
+	model->Initialize(nullptr);
 	m_iBip001_R_Hand_Index = model->GetBoneIndex("Bip001 Neck");
+	model->GetMaterialInstance()->SetPass("Player_Pass");
 
 	return S_OK;
 }
@@ -73,7 +76,18 @@ void Weapon::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+HRESULT Weapon::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pOutLineModel)
+		m_pOutLineModel->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::NonLight)]);
+
+	return S_OK;
+}
+
 void Weapon::Free()
 {
 	__super::Free();
+	Safe_Release(m_pOutLineModel);
 }

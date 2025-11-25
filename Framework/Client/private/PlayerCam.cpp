@@ -2,6 +2,7 @@
 #include "PlayerCam.h"
 #include "Random.h"
 #include "CameraComponent.h"
+#include "Enemy.h"
 
 PlayerCam::PlayerCam()
 	:PartObject()
@@ -44,7 +45,7 @@ HRESULT PlayerCam::Initialize(InitDESC* arg)
 	camDesc.aspect = static_cast<_float>(WinSizeX) / WinSizeY;
 	camDesc.fov = math::ToRadian(60.f);
 	camDesc.nearZ = 0.1f;
-	camDesc.farZ = 1000.f;
+	camDesc.farZ = 2000.f;
 
 	auto engine = EngineCore::GetInstance();
 
@@ -97,6 +98,16 @@ void PlayerCam::Update(_float dt)
 		XMStoreFloat3(&m_AimPosition, camPosition + forward * 10000.f);
 
 	XMStoreFloat3(&m_AimPosition, XMLoadFloat3(&m_AimPosition) + XMLoadFloat3(&aimGap));
+
+	/*enemy lock on*/
+	{
+		RAYCAST_DATA enemyResult = engine->RayCast(worldRay, ENUM_CLASS(ColliderFilter::Enemy));
+		if (enemyResult.isHit)
+		{
+			auto enemy = static_cast<Enemy*>(enemyResult.hitObject);
+			enemy->LockOn();
+		}
+	}
 }
 
 void PlayerCam::LateUpdate(_float dt)

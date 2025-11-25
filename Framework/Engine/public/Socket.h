@@ -13,6 +13,7 @@ public:
         ModelComponent* parentModel = nullptr;
         _uint boneIndex{};
         _bool useScale{};
+        _float3 offset{};
     }SOCKET_DESC;
 
 private:
@@ -28,6 +29,10 @@ public:
     virtual void Update(_float dt)override;
     virtual void LateUpdate(_float dt)override;
 
+#ifdef USE_IMGUI
+    void RenderInspector()override;
+#endif
+
     virtual Object* Clone(InitDESC* arg);
     virtual void Free()override;
 
@@ -35,6 +40,7 @@ private:
     ModelComponent* m_pParentModel = nullptr;
     _uint m_iBoneIndex{};
     _bool m_useScale = false;
+    _float3 m_Offset{};
 };
 
 NS_END

@@ -304,6 +304,12 @@
     <Filter Include="01. Engine Component\Resource Manager\VIBuffer\Ribbon">
       <UniqueIdentifier>{8ecef937-041d-487f-97e4-e691aeaba63b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine Component\Font Manager">
+      <UniqueIdentifier>{c1f94685-57a4-42a1-aa32-8cb44e72b86c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Engine Component\Font Manager\CustomFont">
+      <UniqueIdentifier>{2ae73ff0-a9a8-458c-a0a6-db6d65946ab7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -657,6 +663,12 @@
     <ClInclude Include="..\public\VIBuffer_Ribbon.h">
       <Filter>01. Engine Component\Resource Manager\VIBuffer\Ribbon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FontManager.h">
+      <Filter>01. Engine Component\Font Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CustomFont.h">
+      <Filter>01. Engine Component\Font Manager\CustomFont</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -949,6 +961,12 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGuiManager.cpp">
       <Filter>01. Engine Component\ImGui Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FontManager.cpp">
+      <Filter>01. Engine Component\Font Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CustomFont.cpp">
+      <Filter>01. Engine Component\Font Manager\CustomFont</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -55,6 +55,9 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderCombined()))
 		return E_FAIL;
 
+	if (FAILED(m_pRenderer->RenderNonLight(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NonLight)])))
+		return E_FAIL;
+
 	if (FAILED(m_pRenderer->RenderBlend(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::Blend)])))
 		return E_FAIL;
 
@@ -74,6 +77,10 @@ HRESULT RenderSystem::RenderLoop()
 
 	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
 		return E_FAIL;
+
+	if (FAILED(engine->RenderFont()))
+		return E_FAIL;
+
 	Clear();
 
 	return S_OK;

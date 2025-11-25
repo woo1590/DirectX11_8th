@@ -96,7 +96,7 @@ HRESULT Boss::Initialize(InitDESC* arg)
 
 	/*status*/
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 10000;
+	statusDesc.hp = 1000;
 	auto status = GetComponent<StatusComponent>();
 	status->Initialize(&statusDesc);
 
@@ -136,6 +136,9 @@ void Boss::Update(_float dt)
 
 	if (m_pBossLaserTrail)
 		m_pBossLaserTrail->Update(dt);
+
+	if (EngineCore::GetInstance()->IsKeyPressed('K'))
+		ChangeState(&m_BossDie);
 }
 
 void Boss::LateUpdate(_float dt)
@@ -429,14 +432,17 @@ void Boss::BossIdle::TestForExit(Object* object)
 		_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 20);
 		auto boss = static_cast<Boss*>(object);
 
-		//if (rand < 3)
-		//	boss->ChangeState(&boss->m_BossAttack1Start);
-		//else if (rand < 7)
-		//	boss->ChangeState(&boss->m_BossFire1Start);
-		//else if (rand < 10)
-		//	boss->ChangeState(&boss->m_BossFire2Start);
-		//else
-		//	boss->ChangeState(&boss->m_BossFire3Start);
+		if (rand < 3)
+			boss->ChangeState(&boss->m_BossAttack1Start);
+		else if (rand < 7)
+			boss->ChangeState(&boss->m_BossFire1Start);
+		else if (rand < 10)
+			boss->ChangeState(&boss->m_BossFire2Start);
+		else
+			boss->ChangeState(&boss->m_BossFire3Start);
+		
+		//boss->ChangeState(&boss->m_BossAttack1Start);
+
 	}
 }
 
@@ -1035,8 +1041,8 @@ void Boss::BossFire4::TestForExit(Object* object)
 		Safe_Release(boss->m_pBossLaserChargeEffect);
 
 		_float3 bossCorePosition = boss->m_PartObjects[ENUM_CLASS(Parts::Core_Socket)]->GetComponent<TransformComponent>()->GetWorldPosition();
-		bossCorePosition.y += 4.f;
 		_float3 playerPosition = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
+		playerPosition.y += 4.f;
 		_float3 dir{};
 		XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&playerPosition) - XMLoadFloat3(&bossCorePosition)));
 
@@ -1072,6 +1078,12 @@ void Boss::BossDie::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Die),false,true);
+
+	auto boss = static_cast<Boss*>(object);
+	static_cast<BossEye*>(boss->m_PartObjects[ENUM_CLASS(Parts::Left_Eye)])->DeleteEffect();
+	static_cast<BossEye*>(boss->m_PartObjects[ENUM_CLASS(Parts::Right_Eye)])->DeleteEffect();
+
+	EngineCore::GetInstance()->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_VictoryText", ENUM_CLASS(LevelID::StageBoss), "Layer_UI");
 }
 
 void Boss::BossDie::Update(Object* object, _float dt)

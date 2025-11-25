@@ -7,6 +7,8 @@
 
 //object
 #include "SkillPanel.h"
+#include "PointLight.h"
+#include "Torch.h"
 
 StageBoss::StageBoss()
 	:Level()
@@ -29,11 +31,10 @@ HRESULT StageBoss::Initialize()
 
 	if (FAILED(LoadMapFromFile("../bin/data/map/boss_map.json")))
 		return E_FAIL;
+	if (FAILED(LoadLightFromFile("../bin/data/map/boss_map_light.json")))
+		return E_FAIL;
 
 	engine->SetNavMesh(ENUM_CLASS(LevelID::Static), "NavMesh_StageBoss");
-
-	if (FAILED(Initialize_LayerLights("Layer_Light")))
-		return E_FAIL;
 
 	if (FAILED(Initialize_LayerSkybox("Layer_Skybox")))
 		return E_FAIL;
@@ -160,70 +161,63 @@ HRESULT StageBoss::LoadMapFromFile(const _string& filePath)
 	return S_OK;
 }
 
-HRESULT StageBoss::Initialize_LayerLights(const _string& layerTag)
+HRESULT StageBoss::LoadLightFromFile(const _string& filePath)
 {
+	using namespace nlohmann;
+	namespace fs = std::filesystem;
+
 	auto engine = EngineCore::GetInstance();
+	std::ifstream file(filePath);
+	if (!file.is_open())
+	{
+		MSG_BOX("Failed to load");
+		return E_FAIL;
+	}
 
-	Object::OBJECT_DESC desc{};
-	desc.position = _float3{ 0.f, 234.f, 567.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+	ordered_json map = json::parse(file);
 
-	desc.position = _float3{ -40.f, 234.f, 867.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+	/*point light*/
+	for (const auto& light : map["point_lights"])
+	{
+		_float3 position{};
+		PointLight::POINT_LIGHT_DESC desc{};
 
-	desc.position = _float3{ 140.f, 234.f, 467.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		position.x = light.at("position").at("x").get<_float>();
+		position.y = light.at("position").at("y").get<_float>();
+		position.z = light.at("position").at("z").get<_float>();
 
-	desc.position = _float3{ -140.f, 234.f, 667.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		desc.position = position;
 
-	desc.position = _float3{ 140.f, 234.f, 667.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		desc.color.x = light.at("color").at("x").get<_float>();
+		desc.color.y = light.at("color").at("y").get<_float>();
+		desc.color.z = light.at("color").at("z").get<_float>();
+		desc.color.w = light.at("color").at("w").get<_float>();
 
-	desc.position = _float3{ -140.f, 234.f, 467.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		desc.range = light.at("range").get<_float>();
 
-	desc.position = _float3{ 40.f, 234.f, 867.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
-	
-	desc.position = _float3{ -40.f, 234.f, 667.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
-	
-	desc.position = _float3{ 40.f, 234.f, 467.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
-	
-	desc.position = _float3{ -40.f, 234.f, 567.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
-	
-	desc.position = _float3{ 40.f, 234.f, 567.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PointLight", ENUM_CLASS(LevelID::StageBoss), "Layer_PointLight", &desc);
+	}
 
-	desc.position = _float3{ 100.f, 234.f, 267.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+	/*torch*/
+	for (const auto& light : map["torches"])
+	{
+		_float3 position{};
+		Torch::TORCH_DESC desc{};
 
-	desc.position = _float3{ -100.f, 234.f, 267.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		position.x = light.at("position").at("x").get<_float>();
+		position.y = light.at("position").at("y").get<_float>();
+		position.z = light.at("position").at("z").get<_float>();
 
-	desc.position = _float3{ -100.f, 234.f, 267.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		desc.position = position;
+		desc.color.x = light.at("color").at("x").get<_float>();
+		desc.color.y = light.at("color").at("y").get<_float>();
+		desc.color.z = light.at("color").at("z").get<_float>();
+		desc.color.w = light.at("color").at("w").get<_float>();
 
-	desc.position = _float3{ 0.f, 234.f, 67.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Sun", ENUM_CLASS(LevelID::StageBoss), layerTag, &desc)))
-		return E_FAIL;
+		desc.range = light.at("range").get<_float>();
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Torch", ENUM_CLASS(LevelID::StageBoss), "Layer_Torch", &desc);
+	}
 
 	return S_OK;
 }
@@ -234,6 +228,9 @@ HRESULT StageBoss::Initialize_LayerSkybox(const _string& layerTag)
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Skybox", ENUM_CLASS(LevelID::StageBoss), layerTag)))
 		return E_FAIL;
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Cloud", ENUM_CLASS(LevelID::StageBoss), layerTag)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -268,6 +265,9 @@ HRESULT StageBoss::Initialize_LayerUI(const _string& layerTag)
 		return E_FAIL;
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", ENUM_CLASS(LevelID::StageBoss), layerTag)))
+		return E_FAIL;
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitCrossHair", ENUM_CLASS(LevelID::Stage1), layerTag)))
 		return E_FAIL;
 
 	return S_OK;

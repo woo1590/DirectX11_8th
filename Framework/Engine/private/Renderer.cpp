@@ -178,6 +178,8 @@ HRESULT Renderer::BeginFrame()
 
 HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 {
+	auto engine = EngineCore::GetInstance();
+
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy);
 
@@ -267,10 +269,19 @@ HRESULT Renderer::RenderCombined()
 	engine->BindShaderResource(m_pShader, "Target_LightSpecular", "g_LightSpecularTexture");
 	engine->BindShaderResource(m_pShader, "Target_Shadow", "g_ShadowTexture");
 	engine->BindShaderResource(m_pShader, "Target_Depth", "g_DepthTexture");
+	engine->BindShaderResource(m_pShader, "Target_Emissive", "g_EmissiveTexture");
 
 	m_pBuffer->BindBuffers();
 	m_pShader->Apply("Combined_Pass");
 	m_pBuffer->Draw();
+
+	return S_OK;
+}
+
+HRESULT Renderer::RenderNonLight(const std::vector<RenderProxy>& proxies)
+{
+	for (const auto& proxy : proxies)
+		DrawProxy(proxy);
 
 	return S_OK;
 }
@@ -303,13 +314,19 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Specular", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_Emissive", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Depth", viewPort.Width, viewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 1.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_ObjectMask", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8_UINT, _float4(0.f, 0.f, 0.f, 1.f))))
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Shade", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_LightSpecular", viewPort.Width, viewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Shadow", g_iMaxWidth, g_iMaxHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_Final", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 	}
 	
@@ -322,6 +339,8 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Specular")))
 			return E_FAIL;
 		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Depth")))
+			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Emissive")))
 			return E_FAIL;
 	}
 	/*add mrt light acc*/
@@ -336,6 +355,11 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 		if (FAILED(engine->AddMRT("MRT_Shadow", "Target_Shadow")))
 			return E_FAIL;
 	}
+	/*add final*/
+	{
+		if (FAILED(engine->AddMRT("MRT_Final", "Target_Final")))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -346,7 +370,7 @@ HRESULT Renderer::DrawProxy(const RenderProxy& proxy)
 		D3D11_MAPPED_SUBRESOURCE perObjectData{};
 		CBPerObject perObject{};
 		perObject.worldMatrix = proxy.worldMatrix;
-		 
+
 		m_pDeviceContext->Map(m_pCBPerObject, 0, D3D11_MAP_WRITE_DISCARD, 0, &perObjectData);
 		memcpy_s(perObjectData.pData, sizeof(CBPerObject), &perObject, sizeof(CBPerObject));
 		m_pDeviceContext->Unmap(m_pCBPerObject, 0);

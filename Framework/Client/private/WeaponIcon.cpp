@@ -62,6 +62,9 @@ HRESULT WeaponIcon::Initialize(InitDESC* arg)
 	case Client::WeaponID::Prism:
 		mtrlTag = "Mtrl_WeaponIcon_Prism";
 		break;
+	case Client::WeaponID::Hell:
+		mtrlTag = "Mtrl_WeaponIcon_Hell";
+		break;
 	default:
 		break;
 	}

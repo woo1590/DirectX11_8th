@@ -104,6 +104,12 @@
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
     </PostBuildEvent>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -131,6 +137,12 @@
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
     </PostBuildEvent>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -154,6 +166,12 @@
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
     </PostBuildEvent>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,6 +199,12 @@
     <PostBuildEvent>
       <Command>call "$(SolutionDir)Copy.bat"</Command>
     </PostBuildEvent>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\AiController.h" />
@@ -200,6 +224,7 @@
     <ClInclude Include="..\public\CollisionSystem.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\ContainerObject.h" />
+    <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\public\DebugDraw.h" />
     <ClInclude Include="..\public\DebugRenderer.h" />
     <ClInclude Include="..\public\Delegate.h" />
@@ -213,6 +238,7 @@
     <ClInclude Include="..\public\Engine_Typedef.h" />
     <ClInclude Include="..\public\EventHandler.h" />
     <ClInclude Include="..\public\EventSystem.h" />
+    <ClInclude Include="..\public\FontManager.h" />
     <ClInclude Include="..\public\FreecamComponent.h" />
     <ClInclude Include="..\public\GraphicDevice.h" />
     <ClInclude Include="..\public\GUIState.h" />
@@ -324,12 +350,14 @@
     <ClCompile Include="..\private\CollisionSystem.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\ContainerObject.cpp" />
+    <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\private\DebugDraw.cpp" />
     <ClCompile Include="..\private\DebugRenderer.cpp" />
     <ClCompile Include="..\private\Delegate.cpp" />
     <ClCompile Include="..\private\EngineCore.cpp" />
     <ClCompile Include="..\private\EventHandler.cpp" />
     <ClCompile Include="..\private\EventSystem.cpp" />
+    <ClCompile Include="..\private\FontManager.cpp" />
     <ClCompile Include="..\private\FreecamComponent.cpp" />
     <ClCompile Include="..\private\GraphicDevice.cpp" />
     <ClCompile Include="..\private\ICommand.cpp" />

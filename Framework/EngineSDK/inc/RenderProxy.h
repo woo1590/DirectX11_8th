@@ -6,11 +6,13 @@ class VIBuffer;
 class Material;
 class MaterialInstance;
 class ColliderComponent;
+class CustomFont;
 struct RenderProxy
 {
 	VIBuffer* buffer = nullptr;
 	Material* material = nullptr;
 	MaterialInstance* materialInstance = nullptr;
+	CustomFont* font = nullptr;
 
 	_float4x4 worldMatrix{};
 	_int frameIndex = 0;

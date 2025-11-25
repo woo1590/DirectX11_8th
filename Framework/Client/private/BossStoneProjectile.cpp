@@ -88,6 +88,7 @@ void BossStoneProjectile::Update(_float dt)
 	m_pTransform->Turn(_float3{ math::ToRadian(-360.f * dt * 1.5f),math::ToRadian(100.f * dt),0.f });
 
 	_float3 targetPosition = m_pTarget->GetComponent<TransformComponent>()->GetPosition();
+	targetPosition.y += 10.f;
 	_float3 currPosition = m_pTransform->GetPosition();
 	_float3 nextPosition{};
 	_float3 targetDir{};

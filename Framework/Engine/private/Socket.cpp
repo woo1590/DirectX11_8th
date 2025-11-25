@@ -36,6 +36,7 @@ HRESULT Socket::Initialize(InitDESC* arg)
 	m_pParentModel = desc->parentModel;
 	m_iBoneIndex = desc->boneIndex;
 	m_useScale = desc->useScale;
+	m_Offset = desc->offset;
 
 	m_pParentModel->AddRef();
 
@@ -74,7 +75,7 @@ void Socket::Update(_float dt)
 	m_pTransform->SetQuaternion(rotation);
 
 	/*Set Position*/
-	XMStoreFloat3(&position, vPosition);
+	XMStoreFloat3(&position, vPosition + XMLoadFloat3(&m_Offset));
 	m_pTransform->SetPosition(position);
 }
 
@@ -82,6 +83,16 @@ void Socket::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
 }
+#ifdef USE_IMGUI
+void Socket::RenderInspector()
+{
+	__super::RenderInspector();
+
+	ImGui::PushID(this);
+	ImGui::DragFloat3("Offset", &m_Offset.x);
+	ImGui::PopID();
+}
+#endif
 
 Object* Socket::Clone(InitDESC* arg)
 {

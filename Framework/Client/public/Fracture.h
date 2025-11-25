@@ -32,6 +32,8 @@ private:
     _float m_fLifeDuration = 3.5f;
     _float m_fElapsedTime = 0.f;
     _float m_fDissolveStartProgress{};
+    _float m_fDissolveElapsedTime{};
+    _float m_fDissolveDuration = 2.5f;
     _bool m_IsDissolved = false;
 };
 

@@ -6,6 +6,7 @@
 #include "DefaultBullet.h"
 #include "Socket.h"
 #include "EffectContainer.h"
+#include "MaterialInstance.h"
 
 //component
 #include "ModelComponent.h"
@@ -73,6 +74,14 @@ HRESULT Cameleon::Initialize(InitDESC* arg)
 	if (FAILED(__super::Initialize(arg)))
 		return E_FAIL;
 
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Weapon_Cameleon");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("PlayerOutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.025f);
+
 	ChangeState(&m_CameleonIdle);
 	m_iNumMaxAmmo = 30;
 	m_iNumCurrAmmo = m_iNumMaxAmmo;
@@ -91,11 +100,26 @@ void Cameleon::Update(_float dt)
 {
 	__super::Update(dt);
 
+	if (m_pMuzzleSocket)
+		m_pMuzzleSocket->Update(dt);
+
+	if (m_pFireEffect)
+		m_pFireEffect->Update(dt);
 }
 
 void Cameleon::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+HRESULT Cameleon::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pFireEffect)
+		m_pFireEffect->ExtractRenderProxies(proxies);
+
+	return S_OK;
 }
 
 void Cameleon::Idle()
@@ -138,6 +162,9 @@ void Cameleon::CameleonIdle::Enter(Engine::Object* object)
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->SetFadeDurtaion(0.2f);
 	animator->ChangeAnimation(0, true, false);
+
+	auto cameleon = static_cast<Cameleon*>(object);
+	Safe_Release(cameleon->m_pFireEffect);
 }
 
 void Cameleon::CameleonIdle::Update(Engine::Object* object, Engine::_float dt)
@@ -183,6 +210,7 @@ void Cameleon::CameleonFire::Enter(Engine::Object* object)
 	animator->SetPlaySpeedScale(1.3f);
 
 	m_IsShot = false;
+	m_IsAddEffect = false;
 }
 
 void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
@@ -226,10 +254,15 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 
 		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), cameleon->m_iNumCurrAmmo);
 
-		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
-		effectDesc.position = position;
-		effectDesc.socketObject = cameleon->m_pMuzzleSocket;
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonFireRed", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+		if (!m_IsAddEffect)
+		{
+			EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
+			effectDesc.position = position;
+			effectDesc.socketObject = cameleon->m_pMuzzleSocket;
+			cameleon->m_pFireEffect = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonFireRed", &effectDesc);
+
+			m_IsAddEffect = true;
+		}
 
 		m_IsShot = true;
 	}
@@ -249,7 +282,13 @@ void Cameleon::CameleonFire::TestForExit(Engine::Object* object)
 	auto cameleon = static_cast<Cameleon*>(object);
 
 	if (animator->IsFinished())
+	{
 		object->ChangeState(&cameleon->m_CameleonIdle);
+		Safe_Release(cameleon->m_pFireEffect);
+	}
 	else if (cameleon->m_iNumCurrAmmo <= 0)
+	{
 		cameleon->ChangeState(&cameleon->m_CameleonReload);
+		Safe_Release(cameleon->m_pFireEffect);
+	}
 }

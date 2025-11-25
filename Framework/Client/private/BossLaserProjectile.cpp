@@ -49,7 +49,7 @@ HRESULT BossLaserProjectile::Initialize(InitDESC* arg)
 	/*collider*/	
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
 	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::BossLaserProjectile);
-	sphereDesc.radius = 3.f;
+	sphereDesc.radius = 0.7f;
 	sphereDesc.type = ColliderType::Sphere;
 	
 	auto collider = GetComponent<ColliderComponent>();
@@ -64,7 +64,7 @@ HRESULT BossLaserProjectile::Initialize(InitDESC* arg)
 	auto mtrlInstance = model->GetMaterialInstance();
 	mtrlInstance->SetPass("BossLaserProjectile_Pass");
 
-	m_fSpeed = 4000.f;
+	m_fSpeed = 5000.f;
 	m_fLifeTime = 2.f;
 	m_pTransform->SetScale(_float3{ 2.f,2.f,10.f });
 	m_pTransform->SetForward(_float3{ 0.f,0.f,1.f });

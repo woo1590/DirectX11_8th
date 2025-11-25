@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Chest.h"
 #include "Bounding_OBB.h"
+#include "MaterialInstance.h"
 
 //object
 #include "DropWeapon.h"
@@ -73,6 +74,15 @@ HRESULT Chest::Initialize(InitDESC* arg)
 
 	model->ConnectAnimator();
 
+	/*outline model*/
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Chest");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("OutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
+
 	m_eSpawnWeaponID = desc->weaponID;
 	m_pTransform->SetScale(_float3{ 1.6f,1.6f,1.6f });
 	ChangeState(&m_ChestClosed);
@@ -98,6 +108,16 @@ void Chest::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+HRESULT Chest::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)
+{
+	__super::ExtractRenderProxies(proxies);
+
+	if (m_pOutLineModel)
+		m_pOutLineModel->ExtractRenderProxy(m_pTransform, proxies[ENUM_CLASS(RenderGroup::NonLight)]);
+
+	return S_OK;
+}
+
 void Chest::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 }
@@ -107,10 +127,20 @@ void Chest::OnCollisionStay(ColliderComponent* otherCollider)
 	if (&m_ChestClosed == m_CurrState)
 	{
 		auto engine = EngineCore::GetInstance();
+		engine->PublishEvent(ENUM_CLASS(EventID::InteractionChest));
 
 		if (engine->IsKeyPressed('F'))
+		{
 			ChangeState(&m_ChestOpen);
+			engine->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
+		}
 	}
+}
+
+void Chest::OnCollisionExit(ColliderComponent* otherCollider)
+{
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Player))
+		EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
 }
 
 Object* Chest::Clone(InitDESC* arg)
@@ -128,6 +158,8 @@ void Chest::Free()
 	EngineCore::GetInstance()->UnRegisterCollider(GetComponent<ColliderComponent>());
 
 	__super::Free();
+	Safe_Release(m_pOutLineModel);
+
 }
 
 void Chest::ChestClosed::Enter(Object* object)

@@ -3,6 +3,7 @@
 #include "Bounding_AABB.h"
 #include "Layer.h"
 #include "Random.h"
+#include "MaterialInstance.h"
 
 //object
 #include "DamageFont.h"
@@ -75,6 +76,7 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	aabbDesc.type = ColliderType::AABB;
 	aabbDesc.center = _float3{ 0.f,10.5f,0.f };
 	aabbDesc.halfSize = _float3{ 6.f,10.5f,6.f };
+	aabbDesc.useResolve = true;
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
@@ -82,6 +84,7 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	/*model*/
 	auto model = GetComponent<ModelComponent>();
 	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_HorseHead");
+	model->Initialize(nullptr);
 
 	/*animator*/
 	auto animator = GetComponent<AnimatorComponent>();
@@ -104,8 +107,16 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	statusDesc.hp = 500;
 	status->Initialize(&statusDesc);
 
-
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
+
+	/*outline model*/
+	m_pOutLineModel = ModelComponent::Create(this);
+	m_pOutLineModel->SetModel(ENUM_CLASS(LevelID::Static), "Model_Enemy_HorseHead");
+	m_pOutLineModel->Initialize(nullptr);
+	auto outlineMtrlInstance = m_pOutLineModel->GetMaterialInstance();
+	outlineMtrlInstance->SetPass("OutLine_Pass");
+	outlineMtrlInstance->SetFloat4("g_OutLineColor", _float4(0.f, 0.f, 0.f, 1.f));
+	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
 
 	if (FAILED(CreatePartObjects()))
 		return E_FAIL;
@@ -158,7 +169,7 @@ void HorseHead::HitHead()
 	auto random = engine->GetRandom();
 	auto status = GetComponent<StatusComponent>();
 
-	if (0 == status->GetDesc().hp)
+	if (0 == status->GetDesc().hp && m_CurrState != &m_HorseHeadDead)
 		ChangeState(&m_HorseHeadDead);
 
 	if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)
@@ -199,7 +210,7 @@ void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
 		status->BeAttacked(otherStatus->GetDesc().attackPower);
-		if (0 == status->GetDesc().hp)
+		if (0 == status->GetDesc().hp && m_CurrState != &m_HorseHeadDead)
 			ChangeState(&m_HorseHeadDead);
 
 		if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)
@@ -231,7 +242,7 @@ void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 
 		status->BeAttacked(otherStatus->GetDesc().attackPower);
-		if (0 == status->GetDesc().hp)
+		if (0 == status->GetDesc().hp && m_CurrState != &m_HorseHeadDead)
 			ChangeState(&m_HorseHeadDead);
 
 		if (m_CurrState == &m_HorseHeadIdle || m_CurrState == &m_HorseHeadWalk_F)

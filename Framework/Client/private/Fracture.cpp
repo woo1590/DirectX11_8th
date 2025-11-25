@@ -2,6 +2,8 @@
 #include "Fracture.h"
 #include "Random.h"
 #include "Bounding_Sphere.h"
+#include "MaterialInstance.h"
+#include "Texture.h"
 
 //component
 #include "EffectContainer.h"
@@ -62,6 +64,7 @@ HRESULT Fracture::Initialize(InitDESC* arg)
 
 	/*model*/	
 	auto model = GetComponent<ModelComponent>();
+	model->Initialize(nullptr);
 	model->SetModel(ENUM_CLASS(LevelID::Static), desc->modelTag);
 
 	/*rigid body*/
@@ -78,7 +81,6 @@ HRESULT Fracture::Initialize(InitDESC* arg)
 
 	auto random = engine->GetRandom();
 	m_fDissolveStartProgress = random->get<_float>(0.2f, 0.4f);
-
 
 	m_UseShadow = true;
 
@@ -112,51 +114,74 @@ void Fracture::Update(_float dt)
 		desc.surfaceDir = _float3(0.f, 1.f, 0.f);
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemyDeadParticle", engine->GetCurrLevelID(), "Layer_Effect", &desc);
 
+		auto tex = engine->GetTexture(ENUM_CLASS(LevelID::Static), "../bin/resource/textures/dissolve_mask.png");
+		auto mtrlInstance = GetComponent<ModelComponent>()->GetMaterialInstance();
+		mtrlInstance->SetTexture("g_DissolveTexture", tex->GetSRV());
+		mtrlInstance->SetPass("Dissolve_Pass");
+		mtrlInstance->SetFloat("g_DissolveProgress", 0.f);
+
 		m_IsDissolved = true;
 	}
 
-	auto rigidBody = GetComponent<RigidBodyComponent>();
-
-	_float3 velocity = rigidBody->GetVelocity();
-	_float3 angularVelocity = rigidBody->GetAngularVelocity();
-	_float3x3 invInertiaTensor = rigidBody->GetInvInertiaTensor();
-
-	_float3 currPosition = m_pTransform->GetPosition();
-	_float3 dir{};
-	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&velocity)));
-
-	RAY worldRay{};
-	worldRay.origin = currPosition;
-	worldRay.direction = dir;
-
-	RAYCAST_DATA data = engine->RayCast(worldRay, 2.f, ENUM_CLASS(ColliderFilter::StaticMapObject));
-
-	if (data.isHit)
+	/*update dissolve*/
 	{
-		_float3 outVel{};
-		_float3 hitPosition{};
+		if (m_IsDissolved)
+		{
+			m_fDissolveElapsedTime += dt;
+			_float progress = m_fDissolveElapsedTime / m_fDissolveDuration;
+			progress = std::clamp(progress, 0.f, 1.f);
 
-		XMStoreFloat3(&hitPosition, XMLoadFloat3(&currPosition) * data.worldDistance + XMLoadFloat3(&worldRay.direction));
-		_float t = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&velocity) * -1.f, XMLoadFloat3(&data.hitNormal)));
-		
-		/*make linear velocity*/
-		_vector reflectVec = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-		_vector angularVec{};
-
-		reflectVec = XMLoadFloat3(&velocity) + 2.f * t * XMLoadFloat3(&data.hitNormal) * 0.8f;
-
-		if (XMVectorGetX(XMVector3Length(reflectVec)) < 0.3f)
-			reflectVec = XMVectorZero();
-
-		angularVec = XMVector3TransformNormal(reflectVec * 0.3f, XMLoadFloat3x3(&invInertiaTensor));
-		XMStoreFloat3(&angularVelocity, angularVec);
-
-		XMStoreFloat3(&velocity, reflectVec);
+			auto mtrlInstance = GetComponent<ModelComponent>()->GetMaterialInstance();
+			mtrlInstance->SetFloat("g_DissolveProgress", progress);
+		}
 	}
+
+	/*move update*/
+	{
+		auto rigidBody = GetComponent<RigidBodyComponent>();
+
+		_float3 velocity = rigidBody->GetVelocity();
+		_float3 angularVelocity = rigidBody->GetAngularVelocity();
+		_float3x3 invInertiaTensor = rigidBody->GetInvInertiaTensor();
+
+		_float3 currPosition = m_pTransform->GetPosition();
+		_float3 dir{};
+		XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&velocity)));
+
+		RAY worldRay{};
+		worldRay.origin = currPosition;
+		worldRay.direction = dir;
+
+		RAYCAST_DATA data = engine->RayCast(worldRay, 2.f, ENUM_CLASS(ColliderFilter::StaticMapObject));
+
+		if (data.isHit)
+		{
+			_float3 outVel{};
+			_float3 hitPosition{};
+
+			XMStoreFloat3(&hitPosition, XMLoadFloat3(&currPosition) * data.worldDistance + XMLoadFloat3(&worldRay.direction));
+			_float t = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&velocity) * -1.f, XMLoadFloat3(&data.hitNormal)));
+		
+			/*make linear velocity*/
+			_vector reflectVec = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+			_vector angularVec{};
+
+			reflectVec = XMLoadFloat3(&velocity) + 2.f * t * XMLoadFloat3(&data.hitNormal) * 0.8f;
+
+			if (XMVectorGetX(XMVector3Length(reflectVec)) < 0.3f)
+				reflectVec = XMVectorZero();
+
+			angularVec = XMVector3TransformNormal(reflectVec * 0.3f, XMLoadFloat3x3(&invInertiaTensor));
+			XMStoreFloat3(&angularVelocity, angularVec);
+
+			XMStoreFloat3(&velocity, reflectVec);
+		}
 	
-	rigidBody->SetVelocity(velocity);
-	rigidBody->SetAngularVelocity(angularVelocity);
-	m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
+		rigidBody->SetVelocity(velocity);
+		rigidBody->SetAngularVelocity(angularVelocity);
+		m_pTransform->Translate(XMLoadFloat3(&velocity) * dt);
+
+	}
 }
 
 void Fracture::LateUpdate(_float dt)
