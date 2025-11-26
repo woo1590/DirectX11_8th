@@ -49,6 +49,9 @@ private:
         void Enter(Object* object) override;
         void Update(Object* object, _float dt) override;
         void TestForExit(Object* object) override;
+
+        _bool m_IsSound1Play = false;
+        _bool m_IsSound2Play = false;
     };
     class FoundryFire : public State
     {

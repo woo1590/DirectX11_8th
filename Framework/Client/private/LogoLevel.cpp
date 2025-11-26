@@ -26,8 +26,6 @@ HRESULT LogoLevel::Initialize()
 	if (FAILED(InitializeLayerBackground("Layer_Background")))
 		return E_FAIL;
 
-	EngineCore::GetInstance()->PlayBGM("BGM_Logo");
-
 	return S_OK;
 }
 

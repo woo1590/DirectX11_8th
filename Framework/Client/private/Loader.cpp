@@ -201,6 +201,34 @@ HRESULT Loader::LoadingForLogo()
 	{
 		engine->Load2DSound("BGM_Logo", "../bin/resource/sounds/bgm/logo_bgm.mp3", true);
 		engine->Load2DSound("BGM_Stage1", "../bin/resource/sounds/bgm/stage1_bgm.mp3", true);
+		engine->Load2DSound("SFX_Stage", "../bin/resource/sounds/sfx/stage_sfx.wav", false);
+
+		engine->Load2DSound("SFX_HitWeakness", "../bin/resource/sounds/sfx/hit_weakness.wav", false);
+		engine->Load2DSound("SFX_EnemyDead", "../bin/resource/sounds/sfx/enemy_dead.wav", false);
+		engine->Load2DSound("SFX_EnemySpread", "../bin/resource/sounds/sfx/enemy_spread.wav", false);
+		engine->Load2DSound("SFX_PickUpCoin", "../bin/resource/sounds/sfx/pickup_coin.wav", false);
+		engine->Load2DSound("SFX_ChestOpen", "../bin/resource/sounds/sfx/chest_open.wav", false);
+
+		/*player*/
+		engine->Load2DSound("SFX_WeaponChange", "../bin/resource/sounds/sfx/weapon_change.wav", false);
+		engine->Load2DSound("SFX_PlayerJump", "../bin/resource/sounds/sfx/player_jump.wav", false);
+		engine->Load2DSound("SFX_PlayerLanding", "../bin/resource/sounds/sfx/player_landing.wav", false);
+		engine->Load2DSound("SFX_PlayerWalk0", "../bin/resource/sounds/sfx/player_walk0.wav", false);
+		engine->Load2DSound("SFX_PlayerWalk1", "../bin/resource/sounds/sfx/player_walk1.wav", false);
+
+		/*weapon*/
+		engine->Load2DSound("SFX_PrismFire", "../bin/resource/sounds/sfx/prism_fire.wav", false);
+		engine->Load2DSound("SFX_FoundryFire", "../bin/resource/sounds/sfx/foundry_fire.wav", false);
+		engine->Load2DSound("SFX_FoundryReload0", "../bin/resource/sounds/sfx/foundry_reload0.wav", false);
+		engine->Load2DSound("SFX_FoundryReload1", "../bin/resource/sounds/sfx/foundry_reload1.wav", false);
+		engine->Load2DSound("SFX_FoundryReload2", "../bin/resource/sounds/sfx/foundry_reload2.wav", false);
+		engine->Load2DSound("SFX_ConcealedAmmoFire", "../bin/resource/sounds/sfx/concealed_ammo_fire.wav", false);
+		engine->Load2DSound("SFX_ConcealedAmmoSkill", "../bin/resource/sounds/sfx/concealed_ammo_skill.wav", false);
+		engine->Load2DSound("SFX_ConcealedAmmoReload0", "../bin/resource/sounds/sfx/concealed_ammo_reload0.wav", false);
+		engine->Load2DSound("SFX_ConcealedAmmoReload1", "../bin/resource/sounds/sfx/concealed_ammo_reload1.wav", false);
+		engine->Load2DSound("SFX_CameleonReload", "../bin/resource/sounds/sfx/cameleon_reload.wav", false);
+		engine->Load2DSound("SFX_CameleonFire", "../bin/resource/sounds/sfx/cameleon_fire.wav", false);
+
 	}
 
 	/*Load Navigation*/

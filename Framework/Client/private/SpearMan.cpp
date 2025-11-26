@@ -195,6 +195,9 @@ void SpearMan::HitHead(_uint attackPower)
 	param.ownerID = m_iEnemyID;
 	param.ratio = status->GetHpRatio();
 	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
+	/*sound*/
+	engine->Play2DSound("SFX_HitWeakness");
 }
 
 void SpearMan::OnCollisionEnter(ColliderComponent* otherCollider)

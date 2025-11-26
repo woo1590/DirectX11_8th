@@ -113,6 +113,8 @@ void Enemy::SetDead()
 
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
+    engine->Play2DSound("SFX_EnemyDead", 0.8f);
+    engine->Play2DSound("SFX_EnemySpread", 0.8f);
     
     /*----dead effect----*/
     _float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();

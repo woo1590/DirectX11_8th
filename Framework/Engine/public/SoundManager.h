@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 
+class Object;
 class SoundManager
     : public Base
 {
@@ -18,29 +19,22 @@ public:
     void Load3DSound(const _string& key, const _string& filePath, _bool loop = false);
     void Load2DSound(const _string& key, const _string& filePath, _bool loop = false);
 
-    FMOD::Channel* PlaySFX(const std::string& key);   //3d sound
-    void PlayBGM(const std::string& key);   //2d sound
-    void Stop(const std::string& key);
-
-    void SetSFXVolume(float volume);  // 0.0f ~ 1.0f
-    void SetBGMVolume(float volume);
-
-    void MuteSFX(bool mute);
-    void MuteBGM(bool mute);
-
-    // 추후 확장용
-    void FadeOut(const std::string& key, float duration);
+    _int Play2DSound(const std::string& key, _float volume = 1.f);
+    _int Play3DSound(const std::string& key, _float3 position, _float volume = 1.f);
+    void Stop(_uint id);
 
 private:
+    void RemoveDeadChannels();
     void Free()override;
 
     FMOD::System* m_System = nullptr;
-    FMOD::ChannelGroup* m_Master = nullptr;
-    FMOD::ChannelGroup* m_SFXGroup = nullptr;
-    FMOD::ChannelGroup* m_BGMGroup = nullptr;
+    Object* m_pListener = nullptr;
+    _float m_fMasterVolume = 0.5f;
+    _uint m_iNextChannelID{};
 
     std::unordered_map<std::string, FMOD::Sound*> m_SoundMap;
-    std::unordered_map<std::string, FMOD::Channel*> m_ChannelMap;
+    std::unordered_map<_uint, FMOD::Channel*> m_Channels;
+    std::vector<_uint> m_DeadChannelKeys;
 };
 
 NS_END

@@ -46,6 +46,8 @@ private:
         void Enter(Engine::Object* object) override;
         void Update(Engine::Object* object, Engine::_float dt) override;
         void TestForExit(Engine::Object* object) override;
+
+        _bool m_IsSoundPlay = false;
     };
 
     class CameleonFire : public State

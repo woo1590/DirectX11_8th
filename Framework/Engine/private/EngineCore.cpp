@@ -258,14 +258,20 @@ void EngineCore::Load2DSound(const _string& key, const _string& filePath, _bool 
 {
 	m_pSoundManager->Load2DSound(key, filePath, loop);
 }
-FMOD::Channel* EngineCore::PlaySFX(const _string& soundTag)
+_int EngineCore::Play3DSound(const _string& key, _float3 position, _float volume)
 {
-	return m_pSoundManager->PlaySFX(soundTag);
+	return m_pSoundManager->Play3DSound(key, position, volume);
 }
-void EngineCore::PlayBGM(const _string& soundTag)
+_int EngineCore::Play2DSound(const _string& key, _float volume)
 {
-	m_pSoundManager->PlayBGM(soundTag);
+	return m_pSoundManager->Play2DSound(key, volume);
 }
+
+void EngineCore::StopSound(_uint id)
+{
+	m_pSoundManager->Stop(id);
+}
+
 #pragma endregion
 
 #pragma region GraphicDevice

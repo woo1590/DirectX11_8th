@@ -22,22 +22,21 @@ SoundManager* SoundManager::Create()
 HRESULT SoundManager::Initialize()
 {
     FMOD::System_Create(&m_System);
-    m_System->init(32, FMOD_INIT_NORMAL, nullptr);
-
-    m_System->createChannelGroup("Master", &m_Master);
-    m_System->createChannelGroup("SFX", &m_SFXGroup);
-    m_System->createChannelGroup("BGM", &m_BGMGroup);
-
-    m_Master->addGroup(m_SFXGroup);
-    m_Master->addGroup(m_BGMGroup);
+    FMOD_RESULT result{};
+    result = m_System->init(512, FMOD_INIT_NORMAL, nullptr);
+    if (result != FMOD_OK)
+        return E_FAIL;
 
     return S_OK;
 }
 
 
-void SoundManager::Update() {
+void SoundManager::Update() 
+{
     if (m_System)
         m_System->update();
+
+    RemoveDeadChannels();
 }
 
 void SoundManager::Load3DSound(const _string& key, const _string& filePath, _bool loop)
@@ -65,60 +64,73 @@ void SoundManager::Load2DSound(const _string& key, const _string& filePath, _boo
     m_SoundMap[key] = sound;
 }
 
-FMOD::Channel* SoundManager::PlaySFX(const std::string& key)
+_int SoundManager::Play2DSound(const std::string& key, _float volume)
 {
-    if (m_SoundMap.count(key) == 0) 
-        return nullptr;
+    auto iter = m_SoundMap.find(key);
+    if (iter == m_SoundMap.end())
+        return -1;
 
-    FMOD::Channel* ch = nullptr;
-    m_System->playSound(m_SoundMap[key], m_SFXGroup, true, &ch);    //sfx는 이후 위치 지정을 위해 pause
+    FMOD::Sound* sound = iter->second;
+    FMOD::Channel* channel = nullptr;
+    m_System->playSound(sound, nullptr, true, &channel);
 
-    return ch;
+    _float finalVolume = std::clamp(m_fMasterVolume * volume, 0.f, 1.f);
+    channel->setVolume(finalVolume);
+
+    _uint channelID = m_iNextChannelID++;
+    m_Channels.emplace(channelID, channel);
+    channel->setPaused(false);
+
+    return channelID;
 }
 
-void SoundManager::PlayBGM(const std::string& key)
+_int SoundManager::Play3DSound(const std::string& key, _float3 position, _float volume)
 {
-    if (m_SoundMap.count(key) == 0) return;
+    auto iter = m_SoundMap.find(key);
+    if (iter == m_SoundMap.end())
+        return -1;
 
-    FMOD::Channel* ch = nullptr;
-    m_System->playSound(m_SoundMap[key], m_BGMGroup, false, &ch);
+    FMOD::Sound* sound = iter->second;
+    FMOD::Channel* channel = nullptr;
+    m_System->playSound(sound, nullptr, true, &channel);
 
-    m_ChannelMap["BGM"] = ch;
+    FMOD_VECTOR pos{ position.x,position.y,position.z };
+    FMOD_VECTOR vel{ 0.f,0.f,0.f };
+    channel->set3DAttributes(&pos, &vel);
+
+    _float finalVolume = std::clamp(m_fMasterVolume * volume, 0.f, 1.f);
+    channel->setVolume(finalVolume);
+
+    _uint channelID = m_iNextChannelID++;
+    m_Channels.emplace(channelID, channel);
+    channel->setPaused(false);
+
+    return channelID;
 }
 
-void SoundManager::Stop(const std::string& key)
+void SoundManager::Stop(_uint id)
 {
-    if (m_ChannelMap.count(key))
-        m_ChannelMap[key]->stop();
+    auto iter = m_Channels.find(id);
+    if (iter == m_Channels.end())
+        return;
+    
+    iter->second->stop();
+    m_Channels.erase(iter);
 }
 
-void SoundManager::SetSFXVolume(float volume)
+void SoundManager::RemoveDeadChannels()
 {
-    if (m_SFXGroup)
-        m_SFXGroup->setVolume(volume);
-}
+    m_DeadChannelKeys.clear();
+    for (const auto& pair : m_Channels)
+    {
+        _bool isPlaying = false;
+        pair.second->isPlaying(&isPlaying);
+        if (!isPlaying)
+            m_DeadChannelKeys.push_back(pair.first);
+    }
 
-void SoundManager::SetBGMVolume(float volume)
-{
-    if (m_BGMGroup)
-        m_BGMGroup->setVolume(volume);
-}
-
-void SoundManager::MuteSFX(bool mute)
-{
-    if (m_SFXGroup)
-        m_SFXGroup->setMute(mute);
-}
-
-void SoundManager::MuteBGM(bool mute)
-{
-    if (m_BGMGroup)
-        m_BGMGroup->setMute(mute);
-}
-
-void SoundManager::FadeOut(const std::string& key, float duration)
-{
-    // 구현 생략: 매 프레임마다 볼륨 줄이기 or 타이머 기반 처리
+    for (const auto& key : m_DeadChannelKeys)
+        m_Channels.erase(key);
 }
 
 void SoundManager::Free()
@@ -127,5 +139,8 @@ void SoundManager::Free()
         pair.second->release();
 
     if (m_System)
+    {
+        m_System->close();
         m_System->release();
+    }
 }

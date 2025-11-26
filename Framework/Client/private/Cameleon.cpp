@@ -179,10 +179,21 @@ void Cameleon::CameleonReload::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(1, false, false);
+
+	m_IsSoundPlay = false;
 }
 
 void Cameleon::CameleonReload::Update(Engine::Object* object, Engine::_float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsSoundPlay && progress >= 0.25f)
+	{
+		/*sound*/
+		EngineCore::GetInstance()->Play2DSound("SFX_CameleonReload");
+		m_IsSoundPlay = true;
+	}
 }
 
 void Cameleon::CameleonReload::TestForExit(Engine::Object* object)
@@ -253,6 +264,9 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 		--cameleon->m_iNumCurrAmmo;
 
 		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), cameleon->m_iNumCurrAmmo);
+
+		/*sound*/
+		engine->Play2DSound("SFX_CameleonFire");
 
 		if (!m_IsAddEffect)
 		{

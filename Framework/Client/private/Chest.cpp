@@ -133,6 +133,7 @@ void Chest::OnCollisionStay(ColliderComponent* otherCollider)
 		{
 			ChangeState(&m_ChestOpen);
 			engine->PublishEvent(ENUM_CLASS(EventID::InteractionDeactive));
+			engine->Play2DSound("SFX_ChestOpen");
 		}
 	}
 }

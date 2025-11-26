@@ -20,6 +20,9 @@ public:
     HRESULT Render()override;
 
 private:
+    _uint m_iBGMChannelId{};
+    _float m_fSFXElapsedTime{};
+
     HRESULT LoadMapFromFile(const _string& filePath);
     HRESULT LoadLightFromFile(const _string& filePath);
 

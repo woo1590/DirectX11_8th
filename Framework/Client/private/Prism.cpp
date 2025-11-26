@@ -138,11 +138,14 @@ void Prism::PrismFire::Enter(Object* object)
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2), false, true);
 	else
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire3), false, true);
-	animator->SetPlaySpeedScale(2.f);
+	animator->SetPlaySpeedScale(2.2f);
 
 	auto engine = EngineCore::GetInstance();
 	auto prism = static_cast<Prism*>(object);
 	auto player = static_cast<Player*>(prism->m_pParent);
+
+	/*sound*/
+	engine->Play2DSound("SFX_PrismFire");
 
 	/*for test*/
 	_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[prism->m_iFireLightBoneIndex];

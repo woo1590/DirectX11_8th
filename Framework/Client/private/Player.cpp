@@ -132,7 +132,7 @@ HRESULT Player::Initialize(InitDESC* arg)
 		Weapon::WEAPON_DESC cameleonDesc{};
 		cameleonDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::RightHandSocket)]->GetComponent<TransformComponent>();
 		cameleonDesc.parent = this;
-		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Hell", &cameleonDesc);
+		firstWeapon = engine->ClonePrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Foundry", &cameleonDesc);
 
 		if (firstWeapon)
 			m_Weapons[ENUM_CLASS(WeaponSlot::Slot1)] = static_cast<Weapon*>(firstWeapon);
@@ -468,6 +468,7 @@ void Player::EquipCurrSlot()
 
 	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), equipWeapon->GetCurrAmmo());
 	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::ChangeWeapon), param);
+	EngineCore::GetInstance()->Play2DSound("SFX_WeaponChange");
 }
 
 void Player::DropCurrSlotWeapon()
@@ -569,7 +570,6 @@ void Player::KeyInput(_float dt)
 			_float speed = 80.f;
 			m_IsWalk = false;
 
-
 			_vector dir = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 			_float3 originVelocity = rigid->GetVelocity();
 			_float3 velocity{};
@@ -625,6 +625,7 @@ void Player::KeyInput(_float dt)
 					hand->StartJump();
 
 					engine->PublishEvent(ENUM_CLASS(EventID::PlayerJump));
+					engine->Play2DSound("SFX_PlayerJump");
 				}
 			}
 			else
@@ -635,6 +636,7 @@ void Player::KeyInput(_float dt)
 
 					hand->EndJump();
 					engine->PublishEvent(ENUM_CLASS(EventID::PlayerLand));
+					engine->Play2DSound("SFX_PlayerLanding");
 				}
 				else
 				{
@@ -651,6 +653,25 @@ void Player::KeyInput(_float dt)
 			m_pCrosshairController->Spread(false);
 
 		nav->MoveByVelocity(dt);
+
+		if (m_IsWalk && !m_IsJump)
+		{
+			m_fWalkSoundElapsedTime += dt;
+			if (m_fWalkSoundElapsedTime >= 0.4f)
+			{
+				if (m_iWalkSoundIndex == 0)
+				{
+					engine->Play2DSound("SFX_PlayerWalk0");
+					m_iWalkSoundIndex = 1;
+				}
+				else
+				{
+					engine->Play2DSound("SFX_PlayerWalk1");
+					m_iWalkSoundIndex = 0;
+				}
+				m_fWalkSoundElapsedTime = 0.f;
+			}
+		}
 	}
 }
 

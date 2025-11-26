@@ -160,10 +160,29 @@ void Foundry::FoundryReload::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Reload), false, true);
+
+	EngineCore::GetInstance()->Play2DSound("SFX_FoundryReload0");
+
+	m_IsSound1Play = false;
+	m_IsSound2Play = false;
 }
 
 void Foundry::FoundryReload::Update(Object* object, _float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsSound1Play && progress >= 0.5f)
+	{
+		EngineCore::GetInstance()->Play2DSound("SFX_FoundryReload1");
+		m_IsSound1Play = true;
+	}
+
+	if (!m_IsSound2Play && progress >= 0.8f)
+	{
+		EngineCore::GetInstance()->Play2DSound("SFX_FoundryReload2");
+		m_IsSound2Play = true;
+	}
 }
 
 void Foundry::FoundryReload::TestForExit(Object* object)
@@ -190,12 +209,15 @@ void Foundry::FoundryFire::Enter(Object* object)
 
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire), false, true);
-	animator->SetPlaySpeedScale(1.2f);
+	animator->SetPlaySpeedScale(1.4f);
 	
 	auto foundry = static_cast<Foundry*>(object);
 	auto player = static_cast<Player*>(foundry->m_pParent);
 	player->SetShotState(true);
 	player->AddRecoil(4.f);
+
+	/*sound*/
+	engine->Play2DSound("SFX_FoundryFire", 0.5f);
 
 	/*for test*/
 	_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[foundry->m_iFireLightBoneIndex];

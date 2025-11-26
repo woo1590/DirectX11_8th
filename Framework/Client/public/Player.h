@@ -76,6 +76,9 @@ private:
     _uint m_iLastHp{};
     _uint m_iMaxAmmo{};
 
+    _float m_fWalkSoundElapsedTime{};
+    _uint m_iWalkSoundIndex{};
+
 private:
     class PlayerIdle : public State
     {

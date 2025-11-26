@@ -57,6 +57,8 @@ HRESULT Stage1::Initialize()
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
 		return E_FAIL;
 
+	m_iBGMChannelId = engine->Play2DSound("BGM_Stage1", 0.1f);
+
 	return S_OK;
 }
 
@@ -72,17 +74,24 @@ void Stage1::Update(_float dt)
 	if (engine->IsKeyPressed('N'))
 	{
 		//engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 	}
 
 	if (engine->IsKeyPressed('O'))
 	{
 		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::StageBoss));
 	}
+
+	m_fSFXElapsedTime += dt;
+	if (m_fSFXElapsedTime >= 30.f)
+	{
+		engine->Play2DSound("SFX_Stage");
+		m_fSFXElapsedTime = 0.f;
+	}
+
 }
 
 HRESULT Stage1::Render()

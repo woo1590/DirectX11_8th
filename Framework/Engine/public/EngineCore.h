@@ -39,8 +39,9 @@ public:
 #pragma region Sound
     void Load3DSound(const _string& key, const _string& filePath, _bool loop = false);
     void Load2DSound(const _string& key, const _string& filePath, _bool loop = false);
-    FMOD::Channel* PlaySFX(const _string& soundTag);
-    void PlayBGM(const _string& soundTag);
+    _int Play3DSound(const _string& key, _float3 position, _float volume = 1.f);
+    _int Play2DSound(const _string& key,_float volume = 1.f);
+    void StopSound(_uint id);
 #pragma endregion
 
 #pragma region GraphicDevice

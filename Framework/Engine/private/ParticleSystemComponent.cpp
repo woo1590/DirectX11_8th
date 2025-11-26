@@ -289,8 +289,6 @@ void ParticleSystemComponent::BuildInstanceData()
 void ParticleSystemComponent::UploadInstanceData()
 {
 	m_pBuffer->UploadInstanceData(m_InstanceDatas, m_iNumAliveParticle);
-	D3D11_DEPTH_STENCIL_DESC;
-
 }
 
 void ParticleSystemComponent::SetUpParticle(PARTICLE& particle) const

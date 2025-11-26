@@ -175,11 +175,23 @@ void ConcealedAmmo::ConcealedAmmoReload::Enter(Engine::Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(2, false, true);
-	animator->SetPlaySpeedScale(1.3f);
+	animator->SetPlaySpeedScale(1.0f);
+
+	EngineCore::GetInstance()->Play2DSound("SFX_ConcealedAmmoReload0", 0.5f);
+
+	m_IsSoundPlay = false;
 }
 
 void ConcealedAmmo::ConcealedAmmoReload::Update(Engine::Object* object, Engine::_float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsSoundPlay && progress >= 0.55f)
+	{
+		EngineCore::GetInstance()->Play2DSound("SFX_ConcealedAmmoReload1", 0.7f);
+		m_IsSoundPlay = true;
+	}
 }
 
 void ConcealedAmmo::ConcealedAmmoReload::TestForExit(Engine::Object* object)
@@ -211,6 +223,9 @@ void ConcealedAmmo::ConcealedAmmoFire::Enter(Engine::Object* object)
 	auto player = static_cast<Player*>(ammo->m_pParent);
 	player->SetShotState(true);
 	player->AddRecoil(3.f);
+
+	/*sound*/
+	engine->Play2DSound("SFX_ConcealedAmmoFire", 0.6f);
 
 	/*for test*/
 	auto model = object->GetComponent<ModelComponent>();
@@ -265,6 +280,8 @@ void ConcealedAmmo::ConcealedAmmoSkill::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(4, false, true);	
+
+	EngineCore::GetInstance()->Play2DSound("SFX_ConcealedAmmoSkill", 0.8f);
 
 	m_IsShot = false;
 }

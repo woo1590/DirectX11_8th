@@ -42,7 +42,6 @@ HRESULT VIBuffer_Trail::Initialize(_uint numMaxPoints)
 
 	if (FAILED(m_pDevice->CreateBuffer(&vbDesc, nullptr, &m_pVB)))
 		return E_FAIL;
-
 	
 	return S_OK;
 }
