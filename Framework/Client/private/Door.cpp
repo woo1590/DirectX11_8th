@@ -75,7 +75,10 @@ void Door::Open()
 	if (m_CurrState == &m_DoorClosed)
 	{
 		if (!m_IsConnectStage)
+		{
 			ChangeState(&m_DoorOpening);
+			EngineCore::GetInstance()->Play3DSound("SFX_DoorOpen", m_pTransform->GetPosition(), 0.8f);
+		}
 		else
 			ChangeState(&m_DoorConnectNextStage);
 	}

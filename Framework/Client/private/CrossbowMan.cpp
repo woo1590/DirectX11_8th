@@ -187,6 +187,8 @@ void CrossbowMan::HitHead()
 
 void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+    __super::OnCollisionEnter(otherCollider);
+
     auto engine = EngineCore::GetInstance();
     auto random = engine->GetRandom();
 

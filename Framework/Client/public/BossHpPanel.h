@@ -19,6 +19,7 @@ public:
 
     /*Event*/
     void HealthDecrease(std::any param);
+    void BossDead(std::any param);
 
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;

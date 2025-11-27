@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "EnemySpawner.h"
 #include "NavigationComponent.h"
+#include "GameManager.h"
 
 //object
 #include "SkillPanel.h"
@@ -50,6 +51,9 @@ HRESULT StageBoss::Initialize()
 
 void StageBoss::Free()
 {
+	EngineCore::GetInstance()->StopSound(m_iBossBGM);
+
+	__super::Free();
 }
 
 void StageBoss::Update(_float dt)
@@ -58,11 +62,21 @@ void StageBoss::Update(_float dt)
 	{
 		auto engine = EngineCore::GetInstance();
 
+		m_fDropWater += dt;
+		if (m_fDropWater >= 5.f)
+		{
+			engine->Play2DSound("SFX_DropWater", 0.6f);
+			m_fDropWater = 0.f;
+		}
+
 		_float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
 
 		if (playerPos.z > 297.f)
 		{
 			engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_Boss", ENUM_CLASS(LevelID::StageBoss), "Layer_Boss");
+
+			engine->StopSound(m_iBossEnterBGM);
+			GameManager::GetInstance()->StartBossBattle();
 			m_IsBossSpawned = true;
 		}
 	}

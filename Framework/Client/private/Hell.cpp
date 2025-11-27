@@ -196,17 +196,25 @@ void Hell::HellReloadLoop::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::ReloadLoop),false, true);
+	m_IsSoundPlay = false;
 
 	m_iReloadCount = 0;
 }
 
 void Hell::HellReloadLoop::Update(Object* object, _float dt)
 {
+	auto engine = EngineCore::GetInstance();
 	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsSoundPlay && progress >= 0.3f)
+	{
+		engine->Play2DSound("SFX_HellReload", 0.3f);
+		m_IsSoundPlay = true;
+	}
 
 	if (m_iReloadCount < 4 && animator->IsFinished())
 	{
-		auto engine = EngineCore::GetInstance();
 
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::ReloadLoop), false, true);
 		++m_iReloadCount;
@@ -216,6 +224,7 @@ void Hell::HellReloadLoop::Update(Object* object, _float dt)
 		++hell->m_iNumCurrAmmo;
 		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), hell->m_iNumCurrAmmo);
 		engine->PublishEvent(ENUM_CLASS(EventID::WeaponReload), static_cast<_uint>(1));
+		m_IsSoundPlay = false;
 	}
 }
 
@@ -261,10 +270,11 @@ void Hell::HellReloadEnd::TestForExit(Object* object)
 void Hell::HellFire1::Enter(Object* object)
 {
 	auto engine = EngineCore::GetInstance();
-
+	// ธÞที
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire1), false, true);
-
+	animator->SetPlaySpeedScale(1.2f);
+	// ธÞที
 	auto hell = static_cast<Hell*>(object);
 	auto player = static_cast<Player*>(hell->m_pParent);
 	player->SetShotState(true);
@@ -308,6 +318,8 @@ void Hell::HellFire1::Enter(Object* object)
 	effectDesc.socketObject = hell->m_pMuzzleSocket;
 	effectDesc.scale = _float3{ 100.f,100.f,1.f };
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MuzzleRed", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
+
+	engine->Play2DSound("SFX_HellFire", 0.7f);
 }
 
 void Hell::HellFire1::Update(Object* object, _float dt)
@@ -329,6 +341,8 @@ void Hell::HellFire2::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire2), false, true);
+
+	EngineCore::GetInstance()->Play2DSound("SFX_HellPump", 0.5f);
 }
 
 void Hell::HellFire2::Update(Object* object, _float dt)

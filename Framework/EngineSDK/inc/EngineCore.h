@@ -42,6 +42,9 @@ public:
     _int Play3DSound(const _string& key, _float3 position, _float volume = 1.f);
     _int Play2DSound(const _string& key,_float volume = 1.f);
     void StopSound(_uint id);
+    void RegisterListener(class Object* listener);
+    void UnRegisterListener();
+    void SetChannelVolume(_uint channelID, _float volume);
 #pragma endregion
 
 #pragma region GraphicDevice

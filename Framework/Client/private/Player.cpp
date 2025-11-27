@@ -7,6 +7,7 @@
 #include "Bounding_OBB.h"
 #include "Bounding_Sphere.h"
 #include "CrosshairController.h"
+#include "Random.h"
 
 //object
 #include "Hand.h"
@@ -162,6 +163,7 @@ void Player::PriorityUpdate(_float dt)
 
 void Player::Update(_float dt)
 {
+	m_fHitsoundElapsedTime += dt;
 	m_fLastHitElapsedTime += dt;
 	if (m_fLastHitElapsedTime >= 4.f)
 	{
@@ -348,6 +350,18 @@ void Player::OnCollisionEnter(ColliderComponent* otherCollider)
 		m_iLastHp = status->GetDesc().hp;
 		m_fLastHitElapsedTime = 0.f;
 
+		if (m_fHitsoundElapsedTime >= 1.f)
+		{
+			_uint rand = engine->GetRandom()->get<_uint>(0, 1);
+			if (rand == 0)
+				engine->Play2DSound("SFX_PlayerHitVoice0", 0.5f);
+			else								  
+				engine->Play2DSound("SFX_PlayerHitVoice1", 0.5f);
+
+			m_fHitsoundElapsedTime = 0.f;
+		}
+		engine->Play2DSound("SFX_PlayerHit", 0.5f);
+
 	}break;
 	case Client::ColliderFilter::BossArm:
 		break;
@@ -468,7 +482,7 @@ void Player::EquipCurrSlot()
 
 	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), equipWeapon->GetCurrAmmo());
 	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::ChangeWeapon), param);
-	EngineCore::GetInstance()->Play2DSound("SFX_WeaponChange");
+	EngineCore::GetInstance()->Play2DSound("SFX_WeaponChange", 0.6f);
 }
 
 void Player::DropCurrSlotWeapon()
@@ -607,6 +621,7 @@ void Player::KeyInput(_float dt)
 					m_fDashElapsedTime = 0.f;
 
 					engine->PublishEvent(ENUM_CLASS(EventID::PlayerDash), m_fDashCoolDown);
+					engine->Play2DSound("SFX_PlayerDash", 0.7f);
 				}
 			}
 
@@ -625,7 +640,12 @@ void Player::KeyInput(_float dt)
 					hand->StartJump();
 
 					engine->PublishEvent(ENUM_CLASS(EventID::PlayerJump));
-					engine->Play2DSound("SFX_PlayerJump");
+					engine->Play2DSound("SFX_PlayerJump", 0.5f);
+
+					_uint randNum = engine->GetRandom()->get<_uint>(0, 1);
+					if (randNum)
+						engine->Play2DSound("SFX_PlayerJumpVoice", 0.6f);
+
 				}
 			}
 			else
@@ -636,7 +656,7 @@ void Player::KeyInput(_float dt)
 
 					hand->EndJump();
 					engine->PublishEvent(ENUM_CLASS(EventID::PlayerLand));
-					engine->Play2DSound("SFX_PlayerLanding");
+					engine->Play2DSound("SFX_PlayerLanding", 0.6f);
 				}
 				else
 				{
@@ -661,12 +681,12 @@ void Player::KeyInput(_float dt)
 			{
 				if (m_iWalkSoundIndex == 0)
 				{
-					engine->Play2DSound("SFX_PlayerWalk0");
+					engine->Play2DSound("SFX_PlayerWalk0",0.4f);
 					m_iWalkSoundIndex = 1;
 				}
 				else
 				{
-					engine->Play2DSound("SFX_PlayerWalk1");
+					engine->Play2DSound("SFX_PlayerWalk1",0.4f);
 					m_iWalkSoundIndex = 0;
 				}
 				m_fWalkSoundElapsedTime = 0.f;

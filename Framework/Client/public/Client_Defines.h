@@ -61,6 +61,7 @@ namespace Client
 		CurrAmmoChange,
 		WeaponReload,
 		BossHealthDecrease,
+		BossDead,
 		EnemyHpPanelPositionUpdate,
 		EnemyHealthDecrease,
 		EnemyDead,

@@ -16,6 +16,9 @@ public:
     HRESULT Initialize();
     void Update();
 
+    void RegisterListener(Object* listener);
+    void UnRegisterListener();
+
     void Load3DSound(const _string& key, const _string& filePath, _bool loop = false);
     void Load2DSound(const _string& key, const _string& filePath, _bool loop = false);
 
@@ -23,6 +26,7 @@ public:
     _int Play3DSound(const std::string& key, _float3 position, _float volume = 1.f);
     void Stop(_uint id);
 
+    void SetChannelVolume(_uint channelID, _float volume);
 private:
     void RemoveDeadChannels();
     void Free()override;

@@ -104,7 +104,7 @@ HRESULT HorseHead::Initialize(InitDESC* arg)
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 500;
+	statusDesc.hp = 250;
 	status->Initialize(&statusDesc);
 
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
@@ -196,14 +196,15 @@ void HorseHead::HitHead()
 	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
 
 	/*sound*/
-	engine->Play2DSound("SFX_HitWeakness");
+	engine->Play2DSound("SFX_HitWeakness", 0.5f);
 }
 
 void HorseHead::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	__super::OnCollisionEnter(otherCollider);
+
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
-
 
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
 	{

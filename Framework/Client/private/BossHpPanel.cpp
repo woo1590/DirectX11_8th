@@ -54,6 +54,7 @@ HRESULT BossHpPanel::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	engine->Subscribe(ENUM_CLASS(EventID::BossHealthDecrease), MakeListener(&BossHpPanel::HealthDecrease));
+	engine->Subscribe(ENUM_CLASS(EventID::BossDead), MakeListener(&BossHpPanel::BossDead));
 	
 	/*sprite*/
 	SpriteComponent::SPRITE_DESC spriteDesc{};
@@ -102,6 +103,11 @@ void BossHpPanel::HealthDecrease(std::any param)
 		Bar* health = static_cast<Bar*>(m_Childrens[ENUM_CLASS(Parts::Bar_Hp)]);
 		health->MakeChange(barParam);
 	}
+}
+
+void BossHpPanel::BossDead(std::any param)
+{
+	SetDead();
 }
 
 void BossHpPanel::PriorityUpdate(_float dt)

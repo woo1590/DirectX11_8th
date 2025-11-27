@@ -2,6 +2,7 @@
 #include "Boss.h"
 #include "Bounding_AABB.h"
 #include "Random.h"
+#include "GameManager.h"
 
 //object
 #include "DamageFont.h"
@@ -469,6 +470,7 @@ void Boss::BossAttack1Start::Update(Object* object, _float dt)
 	if (!m_IsSpawnEffect && progress >= 0.72f)
 	{
 		auto engine = EngineCore::GetInstance();
+		engine->Play2DSound("SFX_BossHitGround", 0.6f);
 
 		/*effect*/
 		EffectContainer::EFFECT_CONTAINER_DESC effectDesc{};
@@ -492,6 +494,7 @@ void Boss::BossAttack1Start::TestForExit(Object* object)
 	{
 		auto boss = static_cast<Boss*>(object);
 		boss->ChangeState(&boss->m_BossAttack1InProgress);
+
 	}
 }
 
@@ -592,6 +595,7 @@ void Boss::BossAttack1End::Update(Object* object, _float dt)
 			engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossPillar", ENUM_CLASS(LevelID::StageBoss), "Layer_BossPillar",&pillarDesc);
 		}
 
+		engine->Play2DSound("SFX_BossPillarUp", 0.3f);
 		m_IsPillarSpawned = true;
 	}
 }
@@ -654,7 +658,8 @@ void Boss::BossFire1Start::Update(Object* object, _float dt)
 			auto engine = EngineCore::GetInstance();
 			engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossStoneProjectile", ENUM_CLASS(LevelID::StageBoss), "Layer_BossStoneProjectile", &stoneDesc);
 		}
-	
+
+		EngineCore::GetInstance()->Play2DSound("SFX_BossStoneProjectileCharge", 0.5f);
 		m_IsProjectileSpawned = true;
 	}
 }
@@ -809,6 +814,8 @@ void Boss::BossFire2LeftArm::Enter(Object* object)
 	leftArmDesc.quaternion = rotation;
 	engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossArmProjectile", ENUM_CLASS(LevelID::StageBoss), "Layer_BossArmProjectile", &leftArmDesc, &leftArm);
 
+	engine->Play2DSound("SFX_BossArmShot", 0.5f);
+
 }
 
 
@@ -851,6 +858,8 @@ void Boss::BossFire2RightArm::Enter(Object* object)
 	rightArmDesc.position.z -= 10.f;
 	rightArmDesc.quaternion = rotation;
 	engine->AddObject(ENUM_CLASS(LevelID::StageBoss), "Prototype_Object_BossArmProjectile", ENUM_CLASS(LevelID::StageBoss), "Layer_BossArmProjectile", &rightArmDesc, &rightArm);
+
+	engine->Play2DSound("SFX_BossArmShot", 0.5f);
 }
 
 void Boss::BossFire2RightArm::Update(Object* object, _float dt)
@@ -906,6 +915,8 @@ void Boss::BossFire3Start::Enter(Object* object)
 {
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire3Start));
+
+	EngineCore::GetInstance()->Play2DSound("SFX_BossLaser", 0.3f);
 
 	m_IsCameraShaked = false;
 }
@@ -1034,6 +1045,8 @@ void Boss::BossFire4::TestForExit(Object* object)
 	{
 		auto engine = EngineCore::GetInstance();
 
+		engine->Play2DSound("SFX_BossLaserShot", 0.5f);
+
 		auto boss = static_cast<Boss*>(object);
 		boss->ChangeState(&boss->m_BossFire3End);
 
@@ -1084,6 +1097,11 @@ void Boss::BossDie::Enter(Object* object)
 	static_cast<BossEye*>(boss->m_PartObjects[ENUM_CLASS(Parts::Right_Eye)])->DeleteEffect();
 
 	EngineCore::GetInstance()->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_VictoryText", ENUM_CLASS(LevelID::StageBoss), "Layer_UI");
+	EngineCore::GetInstance()->PublishEvent(ENUM_CLASS(EventID::BossDead));
+	EngineCore::GetInstance()->Play2DSound("SFX_Victory", 0.5f);
+	EngineCore::GetInstance()->Play2DSound("SFX_BossDead", 0.5f);
+
+	GameManager::GetInstance()->EndBattle();
 }
 
 void Boss::BossDie::Update(Object* object, _float dt)

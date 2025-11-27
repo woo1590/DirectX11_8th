@@ -24,8 +24,13 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
+
     Object* Clone(InitDESC* arg)override;
     void Free()override;
+
+private:
+    _float m_fSoundElapsedTime{};
 };
 
 NS_END

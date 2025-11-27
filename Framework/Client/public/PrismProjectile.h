@@ -32,6 +32,8 @@ private:
     PrismTrail* m_pTrail = nullptr;
     _float m_fElapsedTime{};
     _float m_fDuration = 0.02f;
+
+    _float m_fSoundElpasedTime{};
 };
 
 NS_END

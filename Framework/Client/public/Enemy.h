@@ -24,6 +24,8 @@ public:
     virtual void Update(_float dt)override;
     virtual void LateUpdate(_float dt)override;
     virtual HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
+
+    virtual void OnCollisionEnter(ColliderComponent* otherCollider)override;
     virtual void LockOn() { m_IsLockOn = true; }
 
     virtual Object* Clone(InitDESC* arg) = 0;

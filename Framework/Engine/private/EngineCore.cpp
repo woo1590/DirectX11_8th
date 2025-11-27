@@ -146,8 +146,8 @@ void EngineCore::Free()
 	Safe_Release(m_pPrototypeManager);
 	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pObjectManager);
-	Safe_Release(m_pEventSystem);
 	Safe_Release(m_pSoundManager);
+	Safe_Release(m_pEventSystem);
 	Safe_Release(m_pCameraManager);
 	Safe_Release(m_pInputSystem);
 	Safe_Release(m_pLightManager);
@@ -160,7 +160,6 @@ void EngineCore::Free()
 void EngineCore::Tick(_float dt)
 {
 	m_pInputSystem->Update();
-	m_pSoundManager->Update();
 
 	m_pObjectManager->PriorityUpdate(dt);
 	m_pObjectManager->Update(dt);
@@ -170,6 +169,7 @@ void EngineCore::Tick(_float dt)
 	m_pEventSystem->Update(dt);
 
 	m_pObjectManager->LateUpdate(dt);
+	m_pSoundManager->Update();
 
 	
 	m_pLevelManager->Update(dt);
@@ -272,6 +272,18 @@ void EngineCore::StopSound(_uint id)
 	m_pSoundManager->Stop(id);
 }
 
+void EngineCore::RegisterListener(Object* listener)
+{
+	m_pSoundManager->RegisterListener(listener);
+}
+void EngineCore::UnRegisterListener()
+{
+	m_pSoundManager->UnRegisterListener();
+}
+void EngineCore::SetChannelVolume(_uint channelID, _float volume)
+{
+	m_pSoundManager->SetChannelVolume(channelID, volume);
+}
 #pragma endregion
 
 #pragma region GraphicDevice

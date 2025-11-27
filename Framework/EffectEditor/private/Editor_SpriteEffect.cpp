@@ -278,7 +278,7 @@ void Editor_SpriteEffect::Start()
 	m_fElapsedTime = 0.f;
 	m_IsActive = true;
 }
-
+// ธÞที
 void Editor_SpriteEffect::Import(nlohmann::ordered_json& j)
 {
 	using namespace nlohmann;

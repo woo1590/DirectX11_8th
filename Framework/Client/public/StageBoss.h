@@ -19,6 +19,9 @@ public:
     HRESULT Render()override;
 
 private:
+    _float m_fDropWater{};
+    _uint m_iBossEnterBGM{};
+    _uint m_iBossBGM{};
     _bool m_IsBossSpawned = false;
 
     HRESULT LoadMapFromFile(const _string& filePath);

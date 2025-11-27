@@ -394,6 +394,15 @@
     <Filter Include="02. Object\UIObject\VIctoryText">
       <UniqueIdentifier>{66e83e05-6ccf-4e35-b2a9-c0b9a7f2bf6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="메롱">
+      <UniqueIdentifier>{83bb5052-e1c6-4468-86ca-9978532c5e21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Game Manager">
+      <UniqueIdentifier>{37ad3d66-44db-4f76-a02d-c2efbab40449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Beetle">
+      <UniqueIdentifier>{0b2ed3db-4e4a-4f22-9f6b-ee83edc87a10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -753,6 +762,12 @@
     <ClInclude Include="..\public\VictoryText.h">
       <Filter>02. Object\UIObject\VIctoryText</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\GameManager.h">
+      <Filter>04. Game Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Beetle.h">
+      <Filter>02. Object\Enemy\Beetle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1099,6 +1114,12 @@
     </ClCompile>
     <ClCompile Include="..\private\VictoryText.cpp">
       <Filter>02. Object\UIObject\VIctoryText</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GameManager.cpp">
+      <Filter>04. Game Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Beetle.cpp">
+      <Filter>02. Object\Enemy\Beetle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

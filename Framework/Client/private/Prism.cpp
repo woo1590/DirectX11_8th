@@ -145,7 +145,7 @@ void Prism::PrismFire::Enter(Object* object)
 	auto player = static_cast<Player*>(prism->m_pParent);
 
 	/*sound*/
-	engine->Play2DSound("SFX_PrismFire");
+	engine->Play2DSound("SFX_PrismFire", 0.6f);
 
 	/*for test*/
 	_float4x4 boneMat = object->GetComponent<AnimatorComponent>()->GetCombinedMatrices()[prism->m_iFireLightBoneIndex];

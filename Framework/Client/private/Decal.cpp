@@ -54,7 +54,7 @@ HRESULT Decal::Initialize(InitDESC* arg)
     sprite->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_Decal");
 
     auto mtrlInstance = sprite->GetMaterialInstance();
-    mtrlInstance->SetPass("NonBillBoard_Pass");
+    mtrlInstance->SetPass("Decal_Pass");
 
     DECAL_DESC* desc = static_cast<DECAL_DESC*>(arg);
 
@@ -80,7 +80,7 @@ void Decal::Update(_float dt)
     if (m_fElapsedTime >= m_fDuration)
         SetDead();
 
-    GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat2("g_UVOffset", _float2{ 0.f, 0.f });
+    GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat("g_DecalProgress", m_fElapsedTime / m_fDuration);
 }
 
 void Decal::LateUpdate(_float dt)

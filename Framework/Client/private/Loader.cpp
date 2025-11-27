@@ -125,7 +125,7 @@
 
 Loader::Loader()
 {
-	
+	// 메롱
 }
 
 Loader* Loader::Create(LevelID nextLevelID)
@@ -200,24 +200,39 @@ HRESULT Loader::LoadingForLogo()
 	m_strDebugText = L"사운드 로딩중..";
 	{
 		engine->Load2DSound("BGM_Logo", "../bin/resource/sounds/bgm/logo_bgm.mp3", true);
-		engine->Load2DSound("BGM_Stage1", "../bin/resource/sounds/bgm/stage1_bgm.mp3", true);
+		engine->Load2DSound("BGM_Normal", "../bin/resource/sounds/bgm/stage1_bgm.mp3", true);
+		engine->Load2DSound("BGM_Boss", "../bin/resource/sounds/bgm/boss_bgm.mp3", true);
+		engine->Load2DSound("BGM_Battle", "../bin/resource/sounds/bgm/bgm_battle.wav", true);
+		engine->Load2DSound("BGM_BossStageEnter", "../bin/resource/sounds/bgm/boss_stage_enter.wav", true);
+		engine->Load2DSound("SFX_DropWater", "../bin/resource/sounds/sfx/boss_stage_drop_water.wav", false);
 		engine->Load2DSound("SFX_Stage", "../bin/resource/sounds/sfx/stage_sfx.wav", false);
 
 		engine->Load2DSound("SFX_HitWeakness", "../bin/resource/sounds/sfx/hit_weakness.wav", false);
+		engine->Load2DSound("SFX_Hit", "../bin/resource/sounds/sfx/enemy_hit.wav", false);
+		engine->Load3DSound("SFX_HitEnemyShield", "../bin/resource/sounds/sfx/hit_enemy_shield.wav", false);
 		engine->Load2DSound("SFX_EnemyDead", "../bin/resource/sounds/sfx/enemy_dead.wav", false);
 		engine->Load2DSound("SFX_EnemySpread", "../bin/resource/sounds/sfx/enemy_spread.wav", false);
 		engine->Load2DSound("SFX_PickUpCoin", "../bin/resource/sounds/sfx/pickup_coin.wav", false);
 		engine->Load2DSound("SFX_ChestOpen", "../bin/resource/sounds/sfx/chest_open.wav", false);
+		engine->Load2DSound("SFX_EnemySpawn", "../bin/resource/sounds/sfx/enemy_spawn.wav", false);
+		engine->Load2DSound("SFX_PickUpAmmo", "../bin/resource/sounds/sfx/pickup_ammo.wav", false);
+		engine->Load3DSound("SFX_DoorOpen", "../bin/resource/sounds/sfx/door_open.wav", false);
 
 		/*player*/
 		engine->Load2DSound("SFX_WeaponChange", "../bin/resource/sounds/sfx/weapon_change.wav", false);
 		engine->Load2DSound("SFX_PlayerJump", "../bin/resource/sounds/sfx/player_jump.wav", false);
+		engine->Load2DSound("SFX_PlayerJumpVoice", "../bin/resource/sounds/sfx/player_jump_voice.wav", false);
 		engine->Load2DSound("SFX_PlayerLanding", "../bin/resource/sounds/sfx/player_landing.wav", false);
 		engine->Load2DSound("SFX_PlayerWalk0", "../bin/resource/sounds/sfx/player_walk0.wav", false);
 		engine->Load2DSound("SFX_PlayerWalk1", "../bin/resource/sounds/sfx/player_walk1.wav", false);
+		engine->Load2DSound("SFX_PlayerDash", "../bin/resource/sounds/sfx/player_dash.wav", false);
+		engine->Load2DSound("SFX_PlayerHitVoice0", "../bin/resource/sounds/sfx/player_hit_voice0.wav", false);
+		engine->Load2DSound("SFX_PlayerHitVoice1", "../bin/resource/sounds/sfx/player_hit_voice1.wav", false);
+		engine->Load2DSound("SFX_PlayerHit", "../bin/resource/sounds/sfx/player_hit.wav", false);
 
 		/*weapon*/
 		engine->Load2DSound("SFX_PrismFire", "../bin/resource/sounds/sfx/prism_fire.wav", false);
+		engine->Load3DSound("SFX_PrismReflect", "../bin/resource/sounds/sfx/prism_reflect.wav", false);
 		engine->Load2DSound("SFX_FoundryFire", "../bin/resource/sounds/sfx/foundry_fire.wav", false);
 		engine->Load2DSound("SFX_FoundryReload0", "../bin/resource/sounds/sfx/foundry_reload0.wav", false);
 		engine->Load2DSound("SFX_FoundryReload1", "../bin/resource/sounds/sfx/foundry_reload1.wav", false);
@@ -228,6 +243,22 @@ HRESULT Loader::LoadingForLogo()
 		engine->Load2DSound("SFX_ConcealedAmmoReload1", "../bin/resource/sounds/sfx/concealed_ammo_reload1.wav", false);
 		engine->Load2DSound("SFX_CameleonReload", "../bin/resource/sounds/sfx/cameleon_reload.wav", false);
 		engine->Load2DSound("SFX_CameleonFire", "../bin/resource/sounds/sfx/cameleon_fire.wav", false);
+		engine->Load2DSound("SFX_HellPump", "../bin/resource/sounds/sfx/hell_pump.wav", false);
+		engine->Load2DSound("SFX_HellFire", "../bin/resource/sounds/sfx/hell_fire.wav", false);
+		engine->Load2DSound("SFX_HellReload", "../bin/resource/sounds/sfx/hell_reload.wav", false);
+		engine->Load3DSound("SFX_DynamiteExplode", "../bin/resource/sounds/sfx/dynamite_explode.wav", false);
+
+		/*boss*/
+		engine->Load2DSound("SFX_BossLaser", "../bin/resource/sounds/sfx/boss_laser.wav", false);
+		engine->Load2DSound("SFX_BossLaserShot", "../bin/resource/sounds/sfx/boss_laser_shot.wav", false);
+		engine->Load2DSound("SFX_BossHitGround", "../bin/resource/sounds/sfx/boss_hit_ground.wav", false);
+		engine->Load3DSound("SFX_BossPillarExplode", "../bin/resource/sounds/sfx/boss_pillar_explode.wav", false);
+		engine->Load2DSound("SFX_BossPillarUp", "../bin/resource/sounds/sfx/boss_pillar_up.wav", false);
+		engine->Load2DSound("SFX_BossStoneProjectileCharge", "../bin/resource/sounds/sfx/boss_stone_projectile_charge.wav", false);
+		engine->Load3DSound("SFX_BossStoneExplode", "../bin/resource/sounds/sfx/boss_stone_explode.wav", false);
+		engine->Load2DSound("SFX_BossArmShot", "../bin/resource/sounds/sfx/boss_arm_shot.wav", false);
+		engine->Load2DSound("SFX_Victory", "../bin/resource/sounds/sfx/victory_sfx.wav", false);
+		engine->Load2DSound("SFX_BossDead", "../bin/resource/sounds/sfx/boss_dead.wav", false);
 
 	}
 

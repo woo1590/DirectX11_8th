@@ -5,6 +5,7 @@
 #include "VIBufferCube.h"
 #include "VIBufferQuad.h"
 #include "VIBuffer_Point.h"
+#include "GameManager.h"
 
 //object
 #include "Socket.h"
@@ -113,6 +114,7 @@ void MainApp::Run()
             _float dt = m_pEngineCore->GetDeltaTime("Timer_144fps");
 
             dt = std::clamp(dt, 0.f, 0.03f);
+            GameManager::GetInstance()->Update(dt);
             m_pEngineCore->Tick(dt);
 
             timeAcc = 0.f;
@@ -123,6 +125,7 @@ void MainApp::Run()
 void MainApp::Free()
 {
     m_pEngineCore->DestroyInstance();
+    GameManager::GetInstance()->DestroyInstance();
 }
 
 HRESULT MainApp::LoadStaticLevel()

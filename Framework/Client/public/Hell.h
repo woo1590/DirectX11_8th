@@ -66,6 +66,7 @@ private:
         void TestForExit(Object* object)override;
 
         _uint m_iReloadCount{};
+        _bool m_IsSoundPlay = false;
     };
     class HellReloadEnd : public State
     {

@@ -190,6 +190,7 @@ void Dynamite::DynamiteDead::Enter(Object* object)
 	XMStoreFloat3(&desc.forward, XMVector3Normalize(XMLoadFloat3(&playerPos) - XMLoadFloat3(&desc.position)));
 
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Explode", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+	engine->Play3DSound("SFX_DynamiteExplode", object->GetComponent<TransformComponent>()->GetPosition(), 0.6f);
 }
 
 void Dynamite::DynamiteDead::Update(Object* object, _float dt)

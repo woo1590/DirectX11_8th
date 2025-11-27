@@ -101,7 +101,7 @@ void Coin::LateUpdate(_float dt)
 
 void Coin::Interaction(PlayerInteractionComponent* interaction)
 {
-	EngineCore::GetInstance()->Play2DSound("SFX_PickUpCoin");
+	EngineCore::GetInstance()->Play2DSound("SFX_PickUpCoin", 0.4f);
 
 	SetDead();
 }

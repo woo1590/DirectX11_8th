@@ -86,6 +86,8 @@ void PrismProjectile::Update(_float dt)
 {
 	__super::Update(dt);
 
+	m_fSoundElpasedTime += dt;
+
 	auto engine = EngineCore::GetInstance();
 
 	_float3 forward = m_pTransform->GetForward();
@@ -119,6 +121,13 @@ void PrismProjectile::Update(_float dt)
 		Object* effect = nullptr;
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitWall", engine->GetCurrLevelID(), "Layer_Effect", &testdesc, &effect);
 		effect->GetComponent<TransformComponent>()->Rotate(_float3(0.f, 0.f, rotZ));
+
+		if (m_fSoundElpasedTime >= 0.2f)
+		{
+			engine->Play3DSound("SFX_PrismReflect", currPosition, 0.3f);
+			m_fSoundElpasedTime = 0.f;
+		}
+
 	}
 
 	m_pTransform->SetPosition(nextPosition);

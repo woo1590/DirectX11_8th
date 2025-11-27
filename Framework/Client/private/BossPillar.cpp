@@ -97,6 +97,12 @@ HRESULT BossPillar::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& 
 	return S_OK;
 }
 
+void BossPillar::SetDead()
+{
+	__super::SetDead();
+	EngineCore::GetInstance()->Play3DSound("SFX_BossPillarExplode", m_pTransform->GetPosition(), 0.2f);
+}
+
 void BossPillar::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))

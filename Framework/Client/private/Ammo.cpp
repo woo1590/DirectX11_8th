@@ -101,10 +101,10 @@ void Ammo::LateUpdate(_float dt)
 void Ammo::Interaction(PlayerInteractionComponent* interaction)
 {
 	auto random = EngineCore::GetInstance()->GetRandom();
-
 	_uint ammo = random->get<_uint>(50, 70);
-
 	interaction->AddAmmo(ammo);
+
+	EngineCore::GetInstance()->Play2DSound("SFX_PickUpAmmo", 0.8f);
 
 	SetDead();
 }

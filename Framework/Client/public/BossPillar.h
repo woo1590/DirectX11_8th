@@ -19,7 +19,7 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
     HRESULT ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxies)override;
-
+    void SetDead()override;
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
     void Explode();

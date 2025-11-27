@@ -57,6 +57,7 @@ HRESULT PlayerCam::Initialize(InitDESC* arg)
 
 	engine->AddCamera("PlayerCamera", cam);
 	engine->SetMainCamera("PlayerCamera");
+	engine->RegisterListener(this);
 
 	return S_OK;
 }
@@ -128,5 +129,7 @@ Object* PlayerCam::Clone(InitDESC* arg)
 
 void PlayerCam::Free()
 {
+	EngineCore::GetInstance()->UnRegisterListener();
+
 	__super::Free();
 }

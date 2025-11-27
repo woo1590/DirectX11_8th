@@ -199,6 +199,7 @@
     <ClInclude Include="..\public\AttackRange.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Bar.h" />
+    <ClInclude Include="..\public\Beetle.h" />
     <ClInclude Include="..\public\BobbingController.h" />
     <ClInclude Include="..\public\Bomber.h" />
     <ClInclude Include="..\public\Boss.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="..\public\EnemyHpPanel.h" />
     <ClInclude Include="..\public\Foundry.h" />
     <ClInclude Include="..\public\Fracture.h" />
+    <ClInclude Include="..\public\GameManager.h" />
     <ClInclude Include="..\public\Hell.h" />
     <ClInclude Include="..\public\HitCrossHair.h" />
     <ClInclude Include="..\public\HorseHead_Head.h" />
@@ -320,6 +322,7 @@
     <ClCompile Include="..\private\AttackRange.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Bar.cpp" />
+    <ClCompile Include="..\private\Beetle.cpp" />
     <ClCompile Include="..\private\BobbingController.cpp" />
     <ClCompile Include="..\private\Bomber.cpp" />
     <ClCompile Include="..\private\Boss.cpp" />
@@ -367,6 +370,7 @@
     <ClCompile Include="..\private\EnemyHpPanel.cpp" />
     <ClCompile Include="..\private\Foundry.cpp" />
     <ClCompile Include="..\private\Fracture.cpp" />
+    <ClCompile Include="..\private\GameManager.cpp" />
     <ClCompile Include="..\private\Hell.cpp" />
     <ClCompile Include="..\private\HitCrossHair.cpp" />
     <ClCompile Include="..\private\HorseHead_Head.cpp" />

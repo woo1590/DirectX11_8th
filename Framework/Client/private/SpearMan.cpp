@@ -197,11 +197,13 @@ void SpearMan::HitHead(_uint attackPower)
 	engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
 
 	/*sound*/
-	engine->Play2DSound("SFX_HitWeakness");
+	engine->Play2DSound("SFX_HitWeakness", 0.5f);
 }
 
 void SpearMan::OnCollisionEnter(ColliderComponent* otherCollider)
 {
+	__super::OnCollisionEnter(otherCollider);
+
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
 

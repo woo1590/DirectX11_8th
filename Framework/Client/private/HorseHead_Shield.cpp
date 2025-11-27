@@ -62,11 +62,27 @@ void HorseHead_Shield::PriorityUpdate(_float dt)
 void HorseHead_Shield::Update(_float dt)
 {
 	__super::Update(dt);
+
+	m_fSoundElapsedTime += dt;
 }
 
 void HorseHead_Shield::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+}
+
+void HorseHead_Shield::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::PlayerProjectile))
+	{
+		if (m_fSoundElapsedTime >= 0.2f)
+		{
+			_float3 position = m_pTransform->GetWorldPosition();
+			EngineCore::GetInstance()->Play3DSound("SFX_HitEnemyShield", position, 0.6f);
+
+			m_fSoundElapsedTime = 0.f;
+		}
+	}
 }
 
 Object* HorseHead_Shield::Clone(InitDESC* arg)

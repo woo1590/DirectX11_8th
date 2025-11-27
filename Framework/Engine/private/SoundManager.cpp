@@ -1,5 +1,7 @@
 #include "EnginePCH.h"
 #include "SoundManager.h"
+#include "Object.h"
+#include "TransformComponent.h"
 
 SoundManager::SoundManager()
 {
@@ -27,16 +29,46 @@ HRESULT SoundManager::Initialize()
     if (result != FMOD_OK)
         return E_FAIL;
 
+    m_System->set3DSettings(1.f, 100.f, 1.f);
+
     return S_OK;
 }
 
 
 void SoundManager::Update() 
 {
+    if (m_pListener)
+    {
+        auto transform = m_pListener->GetComponent<TransformComponent>();
+        _float4x4 worldMatrix = transform->GetWorldMatrix();
+        _float3 forward{ worldMatrix._31,worldMatrix._32,worldMatrix._33 };
+        XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&forward)));
+        _float3 position{ worldMatrix._41,worldMatrix._42,worldMatrix._43 };
+
+        FMOD_VECTOR pos{ position.x,position.y,position.z };//{ 0.f,0.f,0.f };
+        FMOD_VECTOR vel{ 0.f,0.f,0.f };
+        FMOD_VECTOR forw{ forward.x,forward.y,forward.z };
+        FMOD_VECTOR up{ 0.f,1.f,0.f };
+
+        m_System->set3DListenerAttributes(0, &pos, &vel, &forw, &up);
+    }
+
     if (m_System)
         m_System->update();
 
     RemoveDeadChannels();
+}
+
+void SoundManager::RegisterListener(Object* listener)
+{
+    m_pListener = listener;
+ 
+    m_System->set3DNumListeners(1);
+}
+
+void SoundManager::UnRegisterListener()
+{
+    m_pListener = nullptr;
 }
 
 void SoundManager::Load3DSound(const _string& key, const _string& filePath, _bool loop)
@@ -118,6 +150,18 @@ void SoundManager::Stop(_uint id)
     m_Channels.erase(iter);
 }
 
+void SoundManager::SetChannelVolume(_uint channelID, _float volume)
+{
+    auto iter = m_Channels.find(channelID);
+    if (iter == m_Channels.end())
+        return;
+
+    _float finalVolume = m_fMasterVolume * volume;
+    finalVolume = std::clamp(finalVolume, 0.f, 1.f);
+    iter->second->setVolume(finalVolume);
+
+}
+
 void SoundManager::RemoveDeadChannels()
 {
     m_DeadChannelKeys.clear();
@@ -135,6 +179,8 @@ void SoundManager::RemoveDeadChannels()
 
 void SoundManager::Free()
 {
+    //Safe_Release(m_pListener);
+
     for (auto& pair : m_SoundMap)
         pair.second->release();
 

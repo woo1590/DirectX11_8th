@@ -2,6 +2,7 @@
 #include "EnemySpawner.h"
 #include "Random.h"
 #include "Bounding_Sphere.h"
+#include "GameManager.h"
 
 //object
 #include "Door.h"
@@ -146,12 +147,17 @@ void EnemySpawner::SpawnerSpawn::Enter(Object* object)
 		{
 			_uint rand = engine->GetRandom()->get<_uint>(0, spawner->m_AvailableNavCellIndices.size() - 1);
 			Object* enemy = nullptr;
-			//engine->AddObject(ENUM_CLASS(LevelID::Static), entry.prototypeTag, engine->GetCurrLevelID(), "Layer_Enemy", nullptr, &enemy);
-			//
-			//enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[rand]);
-			//spawner->m_CurrWaveEnemies.push_back(enemy);
+			engine->AddObject(ENUM_CLASS(LevelID::Static), entry.prototypeTag, engine->GetCurrLevelID(), "Layer_Enemy", nullptr, &enemy);
+			
+			enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[rand]);
+			spawner->m_CurrWaveEnemies.push_back(enemy);
 		}
 	}
+
+	if (spawner->m_iCurrWave == 0)
+		GameManager::GetInstance()->StartBattle();
+
+	engine->Play2DSound("SFX_EnemySpawn", 0.8f);
 }
 
 void EnemySpawner::SpawnerSpawn::TestForExit(Object* object)
@@ -190,6 +196,7 @@ void EnemySpawner::SpawnerWaveRunning::TestForExit(Object* object)
 void EnemySpawner::SpawnerEnd::Enter(Object* object)
 {
 	auto spawner = static_cast<EnemySpawner*>(object);
+	GameManager::GetInstance()->EndBattle();
 
 	if (spawner->m_pConnectedDoor)
 		spawner->m_pConnectedDoor->Open();

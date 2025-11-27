@@ -7,6 +7,7 @@
 //component
 #include "ModelComponent.h"
 #include "RigidBodyComponent.h"
+#include "ColliderComponent.h"
 
 _uint Enemy::m_iNextEnemyID = 0;
 
@@ -101,6 +102,12 @@ HRESULT Enemy::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>& proxi
     return S_OK;
 }
 
+void Enemy::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+    if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::PlayerProjectile))
+        EngineCore::GetInstance()->Play2DSound("SFX_Hit", 0.6f);
+}
+
 void Enemy::Free()
 {
 	__super::Free();
@@ -113,8 +120,8 @@ void Enemy::SetDead()
 
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
-    engine->Play2DSound("SFX_EnemyDead", 0.8f);
-    engine->Play2DSound("SFX_EnemySpread", 0.8f);
+    engine->Play2DSound("SFX_EnemyDead", 0.6f);
+    engine->Play2DSound("SFX_EnemySpread", 0.6f);
     
     /*----dead effect----*/
     _float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();

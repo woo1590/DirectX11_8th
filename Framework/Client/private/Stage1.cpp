@@ -4,6 +4,7 @@
 #include "LoadingLevel.h"
 #include "Command_ChangeLevel.h"
 #include "EffectContainer.h"
+#include "GameManager.h"
 
 //object
 #include "Door.h"
@@ -57,7 +58,7 @@ HRESULT Stage1::Initialize()
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
 		return E_FAIL;
 
-	m_iBGMChannelId = engine->Play2DSound("BGM_Stage1", 0.1f);
+	GameManager::GetInstance()->EndBattle();
 
 	return S_OK;
 }
@@ -78,11 +79,17 @@ void Stage1::Update(_float dt)
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+
 	}
 
 	if (engine->IsKeyPressed('O'))
 	{
 		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::StageBoss));
+	}
+	if (engine->IsKeyPressed('L'))
+	{
+		engine->Play3DSound("SFX_HitEnemyShield", _float3{ 0.f,0.f,-5.f });
+		//engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::StageBoss));
 	}
 
 	m_fSFXElapsedTime += dt;
@@ -311,6 +318,12 @@ HRESULT Stage1::Initialize_LayerChest(const _string& layerTag)
 	chest3Desc.weaponID = WeaponID::ConcealedAmmo;
 	chest3Desc.position = _float3{ 40.f,0.f,150.f };
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest3Desc)))
+		return E_FAIL;
+	
+	Chest::CHEST_DESC chest4Desc{};
+	chest4Desc.weaponID = WeaponID::Hell;
+	chest4Desc.position = _float3{ 90.f,0.f,150.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest4Desc)))
 		return E_FAIL;
 
 	return S_OK;

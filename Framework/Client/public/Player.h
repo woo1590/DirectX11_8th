@@ -79,6 +79,8 @@ private:
     _float m_fWalkSoundElapsedTime{};
     _uint m_iWalkSoundIndex{};
 
+    _float m_fHitsoundElapsedTime{};
+
 private:
     class PlayerIdle : public State
     {
