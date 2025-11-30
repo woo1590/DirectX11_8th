@@ -256,8 +256,8 @@ void MapEditorPanel::Placement(GUIState& state, PICK_RESULT pickRes)
 	if (engine->IsKeyPressed('Z'))
 		Undo();
 
-	if (engine->IsKeyAway('Q'))
-		ShowPreviewObject(pickRes);
+	//if (engine->IsKeyAway('Q'))
+	//	ShowPreviewObject(pickRes);
 }
 
 void MapEditorPanel::AddObjectToLayer(PICK_RESULT pickRes)

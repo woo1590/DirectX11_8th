@@ -20,6 +20,7 @@
 
 #include "WeaponPanel.h"
 #include "PlayerPanel.h"
+#include "HitSight.h"
 
 //component
 #include "ModelComponent.h"
@@ -354,13 +355,17 @@ void Player::OnCollisionEnter(ColliderComponent* otherCollider)
 		{
 			_uint rand = engine->GetRandom()->get<_uint>(0, 1);
 			if (rand == 0)
-				engine->Play2DSound("SFX_PlayerHitVoice0", 0.5f);
-			else								  
-				engine->Play2DSound("SFX_PlayerHitVoice1", 0.5f);
+				engine->Play2DSound("SFX_PlayerHitVoice0", 0.8f);
+			else								  			 
+				engine->Play2DSound("SFX_PlayerHitVoice1", 0.8f);
 
 			m_fHitsoundElapsedTime = 0.f;
 		}
 		engine->Play2DSound("SFX_PlayerHit", 0.5f);
+
+		HitSight::HIT_SIGHT_DESC desc{};
+		desc.hitWorldPosition = otherCollider->GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitSight", ENUM_CLASS(LevelID::Stage1), "Layer_UI", &desc);
 
 	}break;
 	case Client::ColliderFilter::BossArm:

@@ -482,19 +482,33 @@ void Soldier::SoldierAttack::Enter(Object* object)
 	_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 1);
 	auto animator = object->GetComponent<AnimatorComponent>();
 	if (0 == rand)
+	{
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack1), false);
+		m_iAttackNum = 0;
+	}
 	else
+	{
 		animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack2), false);
+		m_iAttackNum = 1;
+	}
 
 	auto rigidBody = object->GetComponent<RigidBodyComponent>();
 	rigidBody->SetVelocity(_float3{ 0.f,0.f,0.f });
 
 	auto soldier = static_cast<Soldier*>(object);
 	soldier->m_PartObjects[ENUM_CLASS(Parts::Sword)]->GetComponent<ColliderComponent>()->SetActive(true);
+	m_IsSoundPlay = false;
 }
 
 void Soldier::SoldierAttack::Update(Object* object, _float dt)
 {
+	_float progress = object->GetComponent<AnimatorComponent>()->GetProgress();
+	if (!m_IsSoundPlay && progress >= 0.2f)
+	{
+		EngineCore::GetInstance()->Play3DSound("SFX_SoldierAttack0", object->GetComponent<TransformComponent>()->GetPosition(), 0.5f);
+				
+		m_IsSoundPlay = true;
+	}
 }
 
 void Soldier::SoldierAttack::TestForExit(Object* object)

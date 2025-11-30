@@ -163,11 +163,12 @@ void HorseHead::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
-void HorseHead::HitHead()
+void HorseHead::HitHead(_uint attackPower)
 {
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
 	auto status = GetComponent<StatusComponent>();
+	status->BeAttacked(attackPower);
 
 	if (0 == status->GetDesc().hp && m_CurrState != &m_HorseHeadDead)
 		ChangeState(&m_HorseHeadDead);
@@ -492,10 +493,19 @@ void HorseHead::HorseHeadAttack1::Enter(Object* object)
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Attack1), false);
 
 	object->GetComponent<RigidBodyComponent>()->SetVelocity(_float3{ 0.f,0.f,0.f });
+	m_IsSoundPlay = false;
 }
 
 void HorseHead::HorseHeadAttack1::Update(Object* object, _float dt)
 {
+	auto animator = object->GetComponent<AnimatorComponent>();
+	_float progress = animator->GetProgress();
+
+	if (!m_IsSoundPlay && progress >= 0.2f)
+	{
+		EngineCore::GetInstance()->Play3DSound("SFX_HorseHeadAttack", object->GetComponent<TransformComponent>()->GetPosition(), 0.5f);
+		m_IsSoundPlay = true;
+	}
 }
 
 void HorseHead::HorseHeadAttack1::TestForExit(Object* object)

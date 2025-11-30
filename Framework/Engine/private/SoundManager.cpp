@@ -184,6 +184,9 @@ void SoundManager::Free()
     for (auto& pair : m_SoundMap)
         pair.second->release();
 
+    for (auto& pair : m_Channels)
+        pair.second->stop();
+
     if (m_System)
     {
         m_System->close();

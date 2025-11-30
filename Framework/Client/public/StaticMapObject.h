@@ -7,12 +7,12 @@ class StaticMapObject :
     public Object
 {
 private:
-    StaticMapObject();
+    StaticMapObject(_bool useEmissive);
     StaticMapObject(const StaticMapObject& prototype);
     virtual ~StaticMapObject() = default;
 
 public:
-    static StaticMapObject* Create();
+    static StaticMapObject* Create(_bool useEmissive = false);
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
@@ -20,7 +20,7 @@ public:
     void Free()override;
 
 private:
-
+    _bool m_UseEmissive = false;
 };
 
 NS_END

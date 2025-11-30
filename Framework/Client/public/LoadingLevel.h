@@ -24,6 +24,9 @@ private:
     Loader* m_pLoader = nullptr;
     LevelID m_eNextLevelID{};
 
+    _float m_fElapsedTime{};
+    _float m_fDuration{};
+
     HRESULT Initialize_LoadingUI();
 
 };

@@ -22,10 +22,8 @@ MainApp* MainApp::Create(HINSTANCE hInstance, int nCmdShow)
 {
     MainApp* Instance = new MainApp();
 
-    if (FAILED(Instance->Initialize(hInstance,nCmdShow)))
-    {
-        Instance = nullptr;
-    }
+    if (FAILED(Instance->Initialize(hInstance, nCmdShow)))
+        Safe_Release(Instance);
 
     return Instance;
 }
@@ -87,37 +85,36 @@ void MainApp::Run()
             }
         }
 
-        /*임시용*/
-        static _bool fixCursor = false;
-        if (m_pEngineCore->IsKeyPressed('P'))
-        {
-            fixCursor = fixCursor ? false : true;
-        }
 
-        if (fixCursor)
-        {
-            SetCursorPos(WinSizeX / 2, WinSizeY / 2);
-            while (ShowCursor(false) >= 0);
-        }
-        else
-        {
-            while (ShowCursor(true) < 0);
-        }
-        /*임시용*/
+        if (!isRunning)
+            break;
+
 
         m_pEngineCore->UpdateTimer("Timer_Default");
         timeAcc += m_pEngineCore->GetDeltaTime("Timer_Default");
+        timeAcc = std::clamp(timeAcc, 0.f, 0.2f);
         
-        if (timeAcc >= 1.f / 144.f)
+        while (timeAcc > m_fFrameLimit)
         {   
-            m_pEngineCore->UpdateTimer("Timer_144fps");
-            _float dt = m_pEngineCore->GetDeltaTime("Timer_144fps");
+            /*임시용*/
+            if (m_pEngineCore->IsKeyPressed('P'))
+            {
+                m_IsCursorFixed = m_IsCursorFixed ? false : true;
+        
+                if (m_IsCursorFixed)
+                    while (ShowCursor(false) >= 0);
+                else
+                    while (ShowCursor(true) < 0);
+            }
+        
+            if (m_IsCursorFixed)
+                SetCursorPos(WinSizeX / 2, WinSizeY / 2);
+            /*임시용*/
 
-            dt = std::clamp(dt, 0.f, 0.03f);
-            GameManager::GetInstance()->Update(dt);
-            m_pEngineCore->Tick(dt);
+            GameManager::GetInstance()->Update(m_fFrameLimit);
+            m_pEngineCore->Tick(m_fFrameLimit);
 
-            timeAcc = 0.f;
+            timeAcc -= m_fFrameLimit;
         }
     }
 }
@@ -132,7 +129,8 @@ HRESULT MainApp::LoadStaticLevel()
 {
     /*Load Font*/
     {
-        m_pEngineCore->AddFont("Default_Font", "../bin/resource/font/Pretendard.spritefont");
+        m_pEngineCore->AddFont("Default_Font", "../bin/resource/font/Pretendard_bold.spritefont");
+        m_pEngineCore->AddFont("GMarket_Font", "../bin/resource/font/Pretendard_bold.spritefont");
     }
     /*Load Shader*/
     {
@@ -214,6 +212,12 @@ HRESULT MainApp::LoadStaticLevel()
             return E_FAIL;
 
     }
+    /*Initialize RenderTarget*/
+    {
+        auto engine = EngineCore::GetInstance();
+        engine->AddRenderTarget("Target_Minimap", WinSizeX, WinSizeY, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+        engine->AddMRT("MRT_Minimap", "Target_Minimap");
+    }
     return S_OK;
 }
 
@@ -270,7 +274,7 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
         return false;
     }
 
-    int x = 180;// static_cast<_int>(300);
+    int x = 0;// static_cast<_int>(300);
     int y = 0;// static_cast<_int>(100);
 
     windowSize = { 0, 0, WinSizeX, WinSizeY };
@@ -300,8 +304,8 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     UpdateWindow(hWnd);
 
     //ShowCursor(false);
-    RECT clipRect{ x,y, x + WinSizeX, y + WinSizeY };
-    ClipCursor(&clipRect);
+    //RECT clipRect{ x,y, x + WinSizeX, y + WinSizeY };
+    //ClipCursor(&clipRect);
 
     return true;
 }

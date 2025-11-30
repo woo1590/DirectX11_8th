@@ -46,7 +46,7 @@ public:
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
 
-    void HitHead();
+    void HitHead(_uint attackPower);
     void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
     Object* Clone(InitDESC* arg)override;
@@ -87,6 +87,8 @@ private:
         void Enter(Object* object) override;
         void Update(Object* object, _float dt) override;
         void TestForExit(Object* object) override;
+
+        _bool m_IsSoundPlay = false;
     };
     class HorseHeadHitBody : public State
     {

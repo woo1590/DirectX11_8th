@@ -4,9 +4,11 @@
 #include "Random.h"
 #include "DamageFont.h"
 #include "MaterialInstance.h"
-
+#include "DefaultBullet.h"
+#include "Socket.h"
 #include "Fracture.h"
 #include "EnemyHpPanel.h"
+#include "CrossbowMan_Head.h"
 
 //component
 #include "StatusComponent.h"
@@ -111,6 +113,9 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
     m_iMuzzleBoneIndex = model->GetBoneIndex("muzzle");
     m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
 
+    if (FAILED(CreatePartObjects()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -152,9 +157,12 @@ void CrossbowMan::LateUpdate(_float dt)
     __super::LateUpdate(dt);
 }
 
-void CrossbowMan::HitHead()
+void CrossbowMan::HitHead(_uint attackPower)
 {
+    auto engine = EngineCore::GetInstance();
+    auto random = engine->GetRandom();
     auto status = GetComponent<StatusComponent>();
+    status->BeAttacked(attackPower);
 
     if (0 == status->GetDesc().hp && m_CurrState != &m_CrossbowManDead)
         ChangeState(&m_CrossbowManDead);
@@ -167,8 +175,6 @@ void CrossbowMan::HitHead()
             m_fElapsedTime = 0.f;
         }
     }
-    auto engine = EngineCore::GetInstance();
-    auto random = engine->GetRandom();
 
     DamageFont::DAMAGE_FONT_DESC desc{};
     desc.position = m_pTransform->GetPosition();
@@ -183,6 +189,9 @@ void CrossbowMan::HitHead()
     param.ownerID = m_iEnemyID;
     param.ratio = status->GetHpRatio();
     engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
+    /*sound*/
+    engine->Play2DSound("SFX_HitWeakness", 0.5f);
 }
 
 void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
@@ -284,6 +293,25 @@ void CrossbowMan::Free()
 
 HRESULT CrossbowMan::CreatePartObjects()
 {
+    /*add head socket*/
+    {
+        Socket::SOCKET_DESC headSocket{};
+        headSocket.parent = this;
+        headSocket.parentModel = GetComponent<ModelComponent>();
+        headSocket.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 Head");
+        headSocket.useScale = true;
+        if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Head_Socket), &headSocket)))
+            return E_FAIL;
+    }
+
+    /*add head*/
+    {
+        CrossbowMan_Head::CROSSBOW_MAN_HEAD_DESC headDesc{};
+        headDesc.parent = this;
+        headDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Head_Socket)]->GetComponent<TransformComponent>();
+        if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan_Head", ENUM_CLASS(Parts::Head), &headDesc)))
+            return E_FAIL;
+    }
     return S_OK;
 }
 
@@ -367,12 +395,12 @@ void CrossbowMan::CrossbowManIdle::TestForExit(Object* object)
         }
         else
         {
-            _uint randNum = engine->GetRandom()->get<_uint>(0, 5);
+            _uint randNum = engine->GetRandom()->get<_uint>(0, 10);
             auto crossbow = static_cast<CrossbowMan*>(object);
 
-            if (randNum < 3)
+            if (randNum < 8)
                 crossbow->ChangeState(&crossbow->m_CrossbowManFire);
-            else if (randNum < 4)
+            else if (randNum < 9)
                 crossbow->ChangeState(&crossbow->m_CrossbowManHide_L);
             else
                 crossbow->ChangeState(&crossbow->m_CrossbowManHide_R);
@@ -577,33 +605,46 @@ void CrossbowMan::CrossbowManHide_L::TestForExit(Object* object)
 void CrossbowMan::CrossbowManFire::Enter(Object* object)
 {
     auto engine = EngineCore::GetInstance();
-
-    auto crossbow = static_cast<CrossbowMan*>(object);
+  
     auto animator = object->GetComponent<AnimatorComponent>();
     animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire1));
 
-    auto transform = object->GetComponent<TransformComponent>();
-    _float4x4 boneMat = animator->GetCombinedMatrices()[crossbow->m_iMuzzleBoneIndex];
-    _float4x4 worldMat = transform->GetWorldMatrix();
-    XMStoreFloat4x4(&worldMat, XMLoadFloat4x4(&boneMat) * XMLoadFloat4x4(&worldMat));
-
-    _vector scaleV, positionV, rotationV;
-    _float3 position{};
-    _float3 dir = transform->GetForward();
-    XMMatrixDecompose(&scaleV, &rotationV, &positionV, XMLoadFloat4x4(&worldMat));
-    XMStoreFloat3(&position, positionV);
-
-    Object* defaultBullet = nullptr;
-    Object::OBJECT_DESC desc{};
-    desc.scale = _float3{ 3.f,3.f,3.f };
-    desc.position = position;
-    engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
-    
-    defaultBullet->GetComponent<TransformComponent>()->SetForward(dir);
+    engine->Play3DSound("SFX_CrossbowManReady", object->GetComponent<TransformComponent>()->GetPosition());
+    m_IsShot = false;
 }
 
 void CrossbowMan::CrossbowManFire::Update(Object* object, _float dt)
 {
+    auto animator = object->GetComponent<AnimatorComponent>();
+    _float progress = animator->GetProgress();
+
+    if (!m_IsShot && progress >= 0.35f)
+    {
+        auto engine = EngineCore::GetInstance();
+        auto crossbow = static_cast<CrossbowMan*>(object);
+        auto transform = object->GetComponent<TransformComponent>();
+
+        _float4x4 boneMat = animator->GetCombinedMatrices()[crossbow->m_iMuzzleBoneIndex];
+        _float4x4 worldMat = transform->GetWorldMatrix();
+        XMStoreFloat4x4(&worldMat, XMLoadFloat4x4(&boneMat) * XMLoadFloat4x4(&worldMat));
+
+        _vector scaleV, positionV, rotationV;
+        _float3 position{};
+        _float3 dir = transform->GetForward();
+        XMMatrixDecompose(&scaleV, &rotationV, &positionV, XMLoadFloat4x4(&worldMat));
+        XMStoreFloat3(&position, positionV);
+
+        Object* defaultBullet = nullptr;
+        DefaultBullet::DEFAULT_BULLET_DESC desc{};
+        desc.isEnemy = true;
+        desc.scale = _float3{ 3.f,3.f,3.f };
+        desc.position = position;
+        engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Default_Bullet", engine->GetCurrLevelID(), "Layer_Projectile", &desc, &defaultBullet);
+        defaultBullet->GetComponent<TransformComponent>()->SetForward(dir);
+
+        engine->Play3DSound("SFX_CrossbowManShot", transform->GetPosition());
+        m_IsShot = true;
+    }
 }
 
 void CrossbowMan::CrossbowManFire::TestForExit(Object* object)

@@ -34,7 +34,7 @@ HRESULT Chunk::Initialize_Prototype(PickingSystem* picking)
 		return E_FAIL;
 
 	m_strInstanceTag = "Chunk";
-	m_eRenderGroup = RenderGroup::NonBlend;
+	m_eRenderGroup = RenderGroup::NonLight;
 	m_pPickingSystem = picking;
 	m_pPickingSystem->AddRef();
 

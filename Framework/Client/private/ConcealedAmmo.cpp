@@ -312,7 +312,7 @@ void ConcealedAmmo::ConcealedAmmoSkill::Update(Object* object, _float dt)
 		_float3 forward{};
 		_float3 velocity{};
 		XMStoreFloat3(&forward, XMVector3Normalize(XMLoadFloat3(&aimPosition) - XMLoadFloat3(&position)));
-		XMStoreFloat3(&velocity, XMLoadFloat3(&forward) * 900.f);
+		XMStoreFloat3(&velocity, XMLoadFloat3(&forward) * 700.f);
 
 		Object* dynamite = nullptr;
 		Dynamite::DYNAMITE_DESC desc{};

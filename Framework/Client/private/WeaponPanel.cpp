@@ -235,7 +235,7 @@ HRESULT WeaponPanel::CreateChildren()
 		CountNumber::COUNT_NUMBER_DESC numDesc{};
 		numDesc.parent = this;
 		numDesc.color = _float4{ 1.f,1.f,1.f,1.f };
-		numDesc.position = _float3{ m_fSizeX * 0.04f,m_fSizeY * 0.42f,0.f };
+		numDesc.position = _float3{ m_fSizeX * 0.02f,m_fSizeY * 0.42f,0.f };
 		numDesc.scale = _float3{ 60.f * 0.6f,60.f * 0.6f,1.f };
 		numDesc.priority = 1;
 
@@ -260,7 +260,7 @@ HRESULT WeaponPanel::CreateChildren()
 		CountNumber::COUNT_NUMBER_DESC numDesc{};
 		numDesc.parent = this;
 		numDesc.color = _float4{ 1.f,1.f,1.f,1.f };
-		numDesc.position = _float3{ m_fSizeX * 0.27f,m_fSizeY * 0.4f,0.f };
+		numDesc.position = _float3{ m_fSizeX * 0.28f,m_fSizeY * 0.4f,0.f };
 		numDesc.scale = _float3{ 60.f * 0.4f,60.f * 0.4f,1.f };
 		numDesc.priority = 1;
 		
@@ -276,7 +276,7 @@ void WeaponPanel::WeaponPanelOnJump::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.y -= 10.f;
+	m_TargetPosition.y += 10.f;
 }
 
 void WeaponPanel::WeaponPanelOnJump::Update(Object* object, _float dt)
@@ -310,7 +310,7 @@ void WeaponPanel::WeaponPanelOnLand::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.y += 25.f;
+	m_TargetPosition.y -= 25.f;
 }
 
 void WeaponPanel::WeaponPanelOnLand::Update(Object* object, _float dt)
@@ -345,8 +345,8 @@ void WeaponPanel::WeaponPanelOnDash::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.x -= 45.f;
-	m_TargetPosition.y += 35.f;
+	m_TargetPosition.x += 45.f;
+	m_TargetPosition.y -= 35.f;
 }
 
 void WeaponPanel::WeaponPanelOnDash::Update(Object* object, _float dt)

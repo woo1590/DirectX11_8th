@@ -302,6 +302,14 @@ HRESULT Renderer::RenderUI(const std::vector<RenderProxy>& proxies)
 	return S_OK;
 }
 
+HRESULT Renderer::RenderCustomDraw(const std::vector<RenderProxy>& proxies)
+{
+	for (const auto& proxy : proxies)
+		proxy.renderFunc();
+
+	return S_OK;
+}
+
 HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 {
 	auto engine = EngineCore::GetInstance();

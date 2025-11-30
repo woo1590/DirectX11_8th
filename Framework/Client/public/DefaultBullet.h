@@ -11,6 +11,7 @@ public:
     typedef struct tagDefaultBulletDesc : public Object::OBJECT_DESC
     {
         _bool useRandomColor = false;
+        _bool isEnemy = false;
     }DEFAULT_BULLET_DESC;
 private:
     DefaultBullet();

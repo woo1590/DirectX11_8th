@@ -32,7 +32,9 @@ private:
     MSG msg{};
     HACCEL hAccel{};
 
-    bool isRunning = false;
+    _bool isRunning = false;
+    _bool m_IsCursorFixed = false;
+    _float m_fFrameLimit = 1.f / 144.f;
 
     EngineCore* m_pEngineCore = nullptr;
 };

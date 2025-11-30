@@ -547,7 +547,7 @@ void PlayerPanel::PlayerPanelOnJump::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.y -= 10.f;
+	m_TargetPosition.y += 10.f;
 }
 
 void PlayerPanel::PlayerPanelOnJump::Update(Object* object, _float dt)
@@ -581,7 +581,7 @@ void PlayerPanel::PlayerPanelOnLand::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.y += 25.f;
+	m_TargetPosition.y -= 25.f;
 }
 
 void PlayerPanel::PlayerPanelOnLand::Update(Object* object, _float dt)
@@ -616,8 +616,8 @@ void PlayerPanel::PlayerPanelOnDash::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.x += 45.f;
-	m_TargetPosition.y += 35.f;
+	m_TargetPosition.x -= 45.f;
+	m_TargetPosition.y -= 35.f;
 }
 
 void PlayerPanel::PlayerPanelOnDash::Update(Object* object, _float dt)

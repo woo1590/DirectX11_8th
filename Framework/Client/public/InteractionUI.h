@@ -38,6 +38,12 @@ private:
     SpriteComponent* m_pInteractionKey = nullptr;
     TransformComponent* m_pKeyTransform = nullptr;
     std::vector<_float2> m_Offsets;
+
+    _bool m_OnActive = false;
+    _bool m_OnDeactive = false;
+    _float m_fElpasedTime{};
+    _float m_fDuration = 0.2f;
+    _float m_fFontAlpha = 0.f;
 };
 
 NS_END

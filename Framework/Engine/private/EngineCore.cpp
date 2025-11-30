@@ -663,8 +663,12 @@ LRESULT EngineCore::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 	}break;
 	case WM_DESTROY:
+	{
 		PostQuitMessage(0);
-		break;
+		ClipCursor(nullptr);
+		ShowCursor(true);
+
+	}break;
 	default:
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}

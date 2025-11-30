@@ -95,6 +95,9 @@ private:
         _float m_fAttackSpeed = 100.f;
         _bool m_IsStartAttacked = false;
         _bool m_IsEndAttacked = false;
+
+        _bool m_IsChargeSoundPlay = false;
+        _bool m_IsAttackSoundPlay = false;
     };
     class SpearManHitBody : public State
     {

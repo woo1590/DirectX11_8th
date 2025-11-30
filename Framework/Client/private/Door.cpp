@@ -76,8 +76,16 @@ void Door::Open()
 	{
 		if (!m_IsConnectStage)
 		{
+			auto engine = EngineCore::GetInstance();
+
 			ChangeState(&m_DoorOpening);
-			EngineCore::GetInstance()->Play3DSound("SFX_DoorOpen", m_pTransform->GetPosition(), 0.8f);
+			engine->Play3DSound("SFX_DoorOpen", m_pTransform->GetPosition(), 0.8f);
+
+			Object::OBJECT_DESC desc{};
+			desc.position = m_pTransform->GetPosition();
+			desc.position.y -= 5.f;
+			engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_OpenDoorMark", engine->GetCurrLevelID(), "Layer_UI", &desc);
+			engine->PublishEvent(ENUM_CLASS(EventID::DoorActive), desc.position);
 		}
 		else
 			ChangeState(&m_DoorConnectNextStage);
@@ -88,16 +96,22 @@ void Door::OnCollisionStay(ColliderComponent* otherCollider)
 {
  	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::Player))
 	{
+		auto engine = EngineCore::GetInstance();
+
 		if (&m_DoorConnectNextStage == m_CurrState)
 		{
-			auto engine = EngineCore::GetInstance();
 			engine->PublishEvent(ENUM_CLASS(EventID::InteractionDoor));
 
 			if (engine->IsKeyPressed('F'))
 			{
-				auto command = Command_ChangeLevel::Create(m_eConnectStageID);
+				auto command = Command_ChangeLevel::Create(LevelID::Loading, LoadingLevel::Create(m_eConnectStageID));
 				engine->RegisterCommand(command);  
 			}
+		}
+		else if (&m_DoorOpen == m_CurrState)
+		{
+			engine->PublishEvent(ENUM_CLASS(EventID::PassDoor));
+			engine->PublishEvent(ENUM_CLASS(EventID::DoorDeactive));
 		}
 	}
 }

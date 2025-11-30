@@ -403,6 +403,30 @@
     <Filter Include="02. Object\Enemy\Beetle">
       <UniqueIdentifier>{0b2ed3db-4e4a-4f22-9f6b-ee83edc87a10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\UIObject\HitSight">
+      <UniqueIdentifier>{db572903-3a1a-4821-9f3a-0757dda289a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\MiniMapPanel">
+      <UniqueIdentifier>{afe88356-1f08-4e42-9f3c-881007c84def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\OpenDoorMark">
+      <UniqueIdentifier>{ea87f246-1ad2-4d04-a5f3-58f43eb331e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\MiniMapPanel\MinimapTime">
+      <UniqueIdentifier>{37bf92af-a445-48c8-a7b0-f5e9f970f86f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\MiniMapPanel\MinimapLevel">
+      <UniqueIdentifier>{b5f03c49-69ec-43e1-a425-022f7d20b616}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\MiniMapPanel\MinimapArea">
+      <UniqueIdentifier>{90159d0f-84e7-4ba2-b4a6-9092085526ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Beetle\Head">
+      <UniqueIdentifier>{45a0dbd4-9476-4205-811c-5a17196da386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Bomber\Head">
+      <UniqueIdentifier>{d30b8946-2011-44a4-82c2-9d5454e3b005}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -768,6 +792,30 @@
     <ClInclude Include="..\public\Beetle.h">
       <Filter>02. Object\Enemy\Beetle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Stage2.h">
+      <Filter>01. Level\Stage2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Stage3.h">
+      <Filter>01. Level\Stage3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HitSight.h">
+      <Filter>02. Object\UIObject\HitSight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MiniMapPanel.h">
+      <Filter>02. Object\UIObject\MiniMapPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OpenDoorMark.h">
+      <Filter>02. Object\OpenDoorMark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MinimapLevel.h">
+      <Filter>02. Object\UIObject\MiniMapPanel\MinimapLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MinimapTime.h">
+      <Filter>02. Object\UIObject\MiniMapPanel\MinimapTime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MinimapArea.h">
+      <Filter>02. Object\UIObject\MiniMapPanel\MinimapArea</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1121,6 +1169,30 @@
     <ClCompile Include="..\private\Beetle.cpp">
       <Filter>02. Object\Enemy\Beetle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Stage2.cpp">
+      <Filter>01. Level\Stage2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stage3.cpp">
+      <Filter>01. Level\Stage3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HitSight.cpp">
+      <Filter>02. Object\UIObject\HitSight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MiniMapPanel.cpp">
+      <Filter>02. Object\UIObject\MiniMapPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OpenDoorMark.cpp">
+      <Filter>02. Object\OpenDoorMark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MinimapLevel.cpp">
+      <Filter>02. Object\UIObject\MiniMapPanel\MinimapLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MinimapTime.cpp">
+      <Filter>02. Object\UIObject\MiniMapPanel\MinimapTime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MinimapArea.cpp">
+      <Filter>02. Object\UIObject\MiniMapPanel\MinimapArea</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1155,6 +1227,9 @@
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\shaderfiles\Shader_VtxTrail.hlsl">
+      <Filter>98. Etc\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\shaderfiles\Shader_Minimap.hlsl">
       <Filter>98. Etc\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

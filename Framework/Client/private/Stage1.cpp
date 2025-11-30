@@ -18,6 +18,7 @@
 #include "WeaponPanel.h"
 #include "PlayerPanel.h"
 #include "SkillPanel.h"
+#include "HitSight.h"
 
 //component
 #include "NavigationComponent.h"
@@ -75,21 +76,18 @@ void Stage1::Update(_float dt)
 	if (engine->IsKeyPressed('N'))
 	{
 		//engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Bomber", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-
 	}
 
 	if (engine->IsKeyPressed('O'))
 	{
-		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::StageBoss));
-	}
-	if (engine->IsKeyPressed('L'))
-	{
-		engine->Play3DSound("SFX_HitEnemyShield", _float3{ 0.f,0.f,-5.f });
-		//engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::StageBoss));
+		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::Loading, LoadingLevel::Create(LevelID::StageBoss)));
 	}
 
 	m_fSFXElapsedTime += dt;
@@ -186,7 +184,7 @@ HRESULT Stage1::LoadMapFromFile(const _string& filePath)
 
 	/*connect door to next stage*/	
 	auto lastDoor = engine->GetLastObject(ENUM_CLASS(LevelID::Stage1), "Layer_Door");
-	static_cast<Door*>(lastDoor)->ConnectNextStage(LevelID::StageBoss);
+	static_cast<Door*>(lastDoor)->ConnectNextStage(LevelID::Stage2);
 
 	return S_OK;
 }
@@ -247,7 +245,7 @@ HRESULT Stage1::LoadLightFromFile(const _string& filePath)
 
 		desc.range = light.at("range").get<_float>();
 
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Torch", ENUM_CLASS(LevelID::StageBoss), "Layer_Torch", &desc);
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Torch", ENUM_CLASS(LevelID::Stage1), "Layer_Torch", &desc);
 	}
 
 	return S_OK;
@@ -293,6 +291,9 @@ HRESULT Stage1::Initialize_LayerUI(const _string& layerTag)
 		return E_FAIL;
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_InteractionUI", ENUM_CLASS(LevelID::Stage1), layerTag)))
+		return E_FAIL;
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapPanel", ENUM_CLASS(LevelID::Stage1), layerTag)))
 		return E_FAIL;
 
 	return S_OK;

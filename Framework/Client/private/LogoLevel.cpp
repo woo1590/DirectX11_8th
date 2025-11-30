@@ -38,7 +38,7 @@ void LogoLevel::Update(_float dt)
 {
 	if (GetAsyncKeyState(VK_RETURN))
 	{
-		EngineCore::GetInstance()->RegisterCommand(Command_ChangeLevel::Create(LevelID::Stage1));
+		EngineCore::GetInstance()->RegisterCommand(Command_ChangeLevel::Create(LevelID::Loading, LoadingLevel::Create(LevelID::Stage1)));
 	}
 }
 

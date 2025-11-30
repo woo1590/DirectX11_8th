@@ -75,6 +75,9 @@ HRESULT RenderSystem::RenderLoop()
 			return E_FAIL;
 	}
 
+	if (FAILED(m_pRenderer->RenderCustomDraw(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::CustomPass)])))
+		return E_FAIL;
+
 	if (FAILED(m_pRenderer->RenderUI(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::UI)])))
 		return E_FAIL;
 

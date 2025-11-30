@@ -29,6 +29,9 @@ struct RenderProxy
 	/*For Debug*/
 	ColliderComponent* collider = nullptr;
 
+	/*Custom Render Func*/
+	std::function<HRESULT()> renderFunc;
+
 	RenderGroup group{};
 };
 

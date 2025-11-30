@@ -49,6 +49,12 @@
 #include "HitCrossHair.h"
 #include "InteractionUI.h"
 #include "VictoryText.h"
+#include "HitSight.h"
+#include "OpenDoorMark.h"
+#include "MiniMapPanel.h"
+#include "MinimapLevel.h"
+#include "MinimapTime.h"
+#include "MinimapArea.h"
 
 //weapon
 #include "Cameleon.h"
@@ -100,6 +106,8 @@
 
 #include "CrossbowMan.h"
 #include "CrossbowMan_Head.h"
+
+#include "Beetle.h"
 
 //effect
 #include "EffectContainer.h"
@@ -218,6 +226,14 @@ HRESULT Loader::LoadingForLogo()
 		engine->Load2DSound("SFX_PickUpAmmo", "../bin/resource/sounds/sfx/pickup_ammo.wav", false);
 		engine->Load3DSound("SFX_DoorOpen", "../bin/resource/sounds/sfx/door_open.wav", false);
 
+		/*enemy*/
+		engine->Load3DSound("SFX_HorseHeadAttack", "../bin/resource/sounds/sfx/horse_head_attack.wav", false);
+		engine->Load3DSound("SFX_SoldierAttack0", "../bin/resource/sounds/sfx/soldier_attack0.wav", false);
+		engine->Load3DSound("SFX_SpearManAttackReady", "../bin/resource/sounds/sfx/spearman_attack_ready.wav", false);
+		engine->Load3DSound("SFX_SpearManAttack", "../bin/resource/sounds/sfx/spearman_attack.wav", false);
+		engine->Load3DSound("SFX_CrossbowManReady", "../bin/resource/sounds/sfx/crossbowman_ready.wav", false);
+		engine->Load3DSound("SFX_CrossbowManShot", "../bin/resource/sounds/sfx/crossbowman_shot.wav", false);
+
 		/*player*/
 		engine->Load2DSound("SFX_WeaponChange", "../bin/resource/sounds/sfx/weapon_change.wav", false);
 		engine->Load2DSound("SFX_PlayerJump", "../bin/resource/sounds/sfx/player_jump.wav", false);
@@ -266,7 +282,10 @@ HRESULT Loader::LoadingForLogo()
 	{
 		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::Static), "../bin/data/navigation/stage1_navigation.dat", "NavMesh_Stage1")))
 			return E_FAIL;
-
+		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::Static), "../bin/data/navigation/stage2_navigation.dat", "NavMesh_Stage2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::Static), "../bin/data/navigation/stage3_navigation.dat", "NavMesh_Stage3")))
+			return E_FAIL;
 		if (FAILED(engine->LoadNavMeshFromFile(ENUM_CLASS(LevelID::Static), "../bin/data/navigation/boss_navigation.dat", "NavMesh_StageBoss")))
 			return E_FAIL;
 	}
@@ -300,6 +319,10 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/crossbow_man/crossbow_man.model",
 			"Model_Enemy_CrossbowMan")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/beetle/beetle.model",
+			"Model_Enemy_Beetle")))
 			return E_FAIL;
 
 		/*Weapon*/
@@ -386,6 +409,26 @@ HRESULT Loader::LoadingForLogo()
 			"Model_Stage1_Area2")))
 			return E_FAIL;
 
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage2_area0/stage2_area0.model",
+			"Model_Stage2_Area0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage2_area1/stage2_area1.model",
+			"Model_Stage2_Area1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage2_area2/stage2_area2.model",
+			"Model_Stage2_Area2")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage3_area0/stage3_area0.model",
+			"Model_Stage3_Area0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage3_area1/stage3_area1.model",
+			"Model_Stage3_Area1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/stage3_area2/stage3_area2.model",
+			"Model_Stage3_Area2")))
+			return E_FAIL;
+
 		/*Map*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/boss2/boss_stage.model",
 			"Model_Boss_Stage")))
@@ -458,6 +501,15 @@ HRESULT Loader::LoadingForLogo()
 				"Model_Fracture_" + modelTag)))
 				return E_FAIL;
 		}
+
+		for (_uint i = 0; i < 2; ++i)
+		{
+			_string filePath = "beetle" + std::to_string(i) + ".model";
+			_string modelTag = "Beetle" + std::to_string(i);
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/fracture/beetle/" + filePath,
+				"Model_Fracture_" + modelTag)))
+				return E_FAIL;
+		}
 	}
 
 	/*Load Animation Set*/
@@ -489,6 +541,10 @@ HRESULT Loader::LoadingForLogo()
 		
 		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/crossbow_man.animationset",
 			"AnimationSet_Enemy_CrossbowMan")))
+			return E_FAIL;
+
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/beetle.animationset",
+			"AnimationSet_Enemy_Beetle")))
 			return E_FAIL;
 
 		/*Weapon*/
@@ -637,6 +693,33 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/victory_rock.json", "Mtrl_VictoryRock")))
 			return E_FAIL;
+
+		/*hit sight*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/hit_sight.json", "Mtrl_HitSight")))
+			return E_FAIL;
+
+		/*door mark*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/door_ring.json", "Mtrl_DoorRing")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/door_mark.json", "Mtrl_DoorMark")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/door_arrow.json", "Mtrl_DoorArrow")))
+			return E_FAIL;
+
+		/*minimap*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_panel.json", "Mtrl_MinimapPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_time.json", "Mtrl_MinimapTime")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_level.json", "Mtrl_MinimapLevel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_area.json", "Mtrl_MinimapArea")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_player_icon.json", "Mtrl_MinimapPlayerIcon")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_enemy_icon.json", "Mtrl_MinimapEnemyIcon")))
+			return E_FAIL;
+
 
 		/*effect*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_decal.json", "Mtrl_Decal")))
@@ -819,6 +902,20 @@ HRESULT Loader::LoadingForLogo()
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_VictoryText", VictoryText::Create())))
 			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitSight", HitSight::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_OpenDoorMark", OpenDoorMark::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapPanel", MiniMapPanel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapLevel", MinimapLevel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapTime", MinimapTime::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapArea", MinimapArea::Create())))
+			return E_FAIL;
 		
 		/*Enemy*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", HorseHead::Create())))
@@ -848,6 +945,11 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", CrossbowMan::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan_Head", CrossbowMan_Head::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle", Beetle::Create())))
 			return E_FAIL;
 
 		/*Weapon*/
@@ -884,11 +986,25 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Door", Door::Create())))
 			return E_FAIL;
 
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage1_Area0", StaticMapObject::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage1_Area0", StaticMapObject::Create(true))))
 			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage1_Area1", StaticMapObject::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage1_Area1", StaticMapObject::Create(true))))
 			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage1_Area2", StaticMapObject::Create())))
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage1_Area2", StaticMapObject::Create(true))))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage2_Area0", StaticMapObject::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage2_Area1", StaticMapObject::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage2_Area2", StaticMapObject::Create())))
+			return E_FAIL;
+		
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage3_Area0", StaticMapObject::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage3_Area1", StaticMapObject::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Stage3_Area2", StaticMapObject::Create(true))))
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_EnemySpawner", EnemySpawner::Create())))

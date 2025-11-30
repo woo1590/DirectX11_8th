@@ -27,14 +27,25 @@ public:
     static Bomber* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
+    HRESULT LateInitialize()override;
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
+    void Explode();
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 
 private:
+    class BomberShow : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+
+        _float m_fElapsedTime{};
+        _float m_fDuration = 0.6f;
+    };
     class BomberIdle : public State
     {
         void Enter(Object* object)override;
@@ -61,12 +72,19 @@ private:
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
     };
+    class BomberDead : public State
+    {
+        void Enter(Object* object)override;
+        void Update(Object* object, _float dt)override;
+        void TestForExit(Object* object)override;
+    };
 
+    BomberShow m_BomberShow;
     BomberIdle m_BomberIdle;
     BomberPatrol m_BomberPatrol;
     BomberRun m_BomberRun;
     BomberAttack m_BomberAttack;
-
+    BomberDead m_BomberDead;
 };
 
 NS_END

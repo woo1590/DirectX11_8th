@@ -28,7 +28,7 @@ HRESULT EditorGrid::Initialize_Prototype()
 		return E_FAIL;
 
 	m_strInstanceTag = "EditorGrid";
-	m_eRenderGroup = RenderGroup::NonBlend;
+	m_eRenderGroup = RenderGroup::NonLight;
 	AddComponent<SpriteComponent>();
 
 	return S_OK;

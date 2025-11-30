@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "InteractionUI.h"
+#include "MaterialInstance.h"
 
 //component
 #include "SpriteComponent.h"
@@ -55,11 +56,13 @@ HRESULT InteractionUI::Initialize(InitDESC* arg)
 	sprite->Initialize(&spriteDesc);
 	sprite->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
 	sprite->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_InteractionFrame");
+	sprite->GetMaterialInstance()->SetPass("CustomAlpha_Pass");
 
 	m_pInteractionKey = SpriteComponent::Create(this);
 	m_pInteractionKey->Initialize(&spriteDesc);
 	m_pInteractionKey->SetBuffer(ENUM_CLASS(LevelID::Static), "Buffer_Quad");
 	m_pInteractionKey->SetMaterial(ENUM_CLASS(LevelID::Static), "Mtrl_InteractionKey");
+	m_pInteractionKey->GetMaterialInstance()->SetPass("CustomAlpha_Pass");
 
 	m_pKeyTransform = TransformComponent::Create(this);
 	m_pKeyTransform->SetPosition(m_pTransform->GetPosition());
@@ -98,6 +101,44 @@ void InteractionUI::PriorityUpdate(_float dt)
 void InteractionUI::Update(_float dt)
 {
 	__super::Update(dt);
+
+	if (m_OnActive)
+	{
+		auto mtrlInstance = GetComponent<SpriteComponent>()->GetMaterialInstance();
+
+		m_fElpasedTime += dt;
+		if (m_fElpasedTime >= m_fDuration)
+		{
+			m_IsActive = true;
+			m_OnActive = false;
+			m_fElpasedTime = 0.f;
+			mtrlInstance->SetFloat("g_CustomAlpha", 1.f);
+			return;
+		}
+
+		_float t = m_fElpasedTime / m_fDuration;
+		mtrlInstance->SetFloat("g_CustomAlpha", t);
+		m_fFontAlpha = t;
+	}
+
+	if (m_OnDeactive)
+	{
+		auto mtrlInstance = GetComponent<SpriteComponent>()->GetMaterialInstance();
+
+		m_fElpasedTime += dt;
+		if (m_fElpasedTime >= m_fDuration)
+		{
+			m_IsActive = false;
+			m_OnDeactive = false;
+			m_fElpasedTime = 0.f;
+			mtrlInstance->SetFloat("g_CustomAlpha", 0.f);
+			return;
+		}
+
+		_float t = m_fElpasedTime / m_fDuration;
+		mtrlInstance->SetFloat("g_CustomAlpha", 1.f - t);
+		m_fFontAlpha = 1.f - t;
+	}
 }
 
 void InteractionUI::LateUpdate(_float dt)
@@ -124,7 +165,7 @@ HRESULT InteractionUI::ExtractRenderProxies(std::vector<std::vector<RenderProxy>
 
 			FONT_PROXY font{};
 			font.fontTag = "Default_Font";
-			font.color = _float4(0.f, 0.f, 0.f, 1.f);
+			font.color = _float4(0.f, 0.f, 0.f, m_fFontAlpha);
 			font.scale = 0.4f;
 			font.screenPosition = _float3{ m_fX + offset.x * 1.3f + 20.f ,m_fY + offset.y * 1.3f - 12.f,0.f };
 			font.text = m_strInteractionText;
@@ -135,7 +176,7 @@ HRESULT InteractionUI::ExtractRenderProxies(std::vector<std::vector<RenderProxy>
 	{
 		FONT_PROXY font{};
 		font.fontTag = "Default_Font";
-		font.color = _float4(1.f, 1.f, 1.f, 1.f);
+		font.color = _float4(1.f, 1.f, 1.f, m_fFontAlpha);
 		font.scale = 0.4f;
 		font.screenPosition = _float3{ m_fX + 20.f,m_fY - 12.f,0.f };
 		font.text = m_strInteractionText;
@@ -151,7 +192,9 @@ void InteractionUI::InteractionWeapon(std::any param)
 	if (m_IsActive)
 		return;
 
+	m_fElpasedTime = 0.f;
 	m_IsActive = true;
+	m_OnActive = true;
 	m_strInteractionText = L"줍기";
 }
 
@@ -160,7 +203,9 @@ void InteractionUI::InteractionDoor(std::any param)
 	if (m_IsActive)
 		return;
 
+	m_fElpasedTime = 0.f;
 	m_IsActive = true;
+	m_OnActive = true;
 	m_strInteractionText = L"다음 스테이지로 진행하기";
 }
 
@@ -169,14 +214,17 @@ void InteractionUI::InteractionChest(std::any param)
 	if (m_IsActive)
 		return;
 
+	m_fElpasedTime = 0.f;
 	m_IsActive = true;
+	m_OnActive = true;
 	m_strInteractionText = L"상자 열기";
 }
 
 void InteractionUI::InteractionDeactive(std::any param)
 {
-	m_IsActive = false;
-	m_strInteractionText = L"";
+	m_fElpasedTime = 0.f;
+	m_OnDeactive = true;
+	//m_strInteractionText = L"";
 }
 
 Object* InteractionUI::Clone(InitDESC* arg)

@@ -516,6 +516,11 @@ void SpearMan::SpearManChargeAttack::Enter(Object* object)
 
 	auto spearMan = static_cast<SpearMan*>(object);
 	spearMan->m_PartObjects[ENUM_CLASS(Parts::Spear)]->GetComponent<ColliderComponent>()->SetActive(true);
+
+	EngineCore::GetInstance()->Play3DSound("SFX_SpearManAttackReady", object->GetComponent<TransformComponent>()->GetPosition(), 0.5f);
+
+	m_IsChargeSoundPlay = false;
+	m_IsAttackSoundPlay = false;
 }
 
 void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
@@ -523,6 +528,13 @@ void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
 	auto animator = object->GetComponent<AnimatorComponent>();
 	auto transform = object->GetComponent<TransformComponent>();
 	_float progress = animator->GetProgress();
+
+	if (!m_IsChargeSoundPlay && progress >= 0.1f)
+	{
+		
+
+		m_IsChargeSoundPlay = true;
+	}
 
 	if (progress < 0.5f)
 	{
@@ -541,7 +553,6 @@ void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
 		transform->SetForward(currForward);
 	}
 
-
 	if (!m_IsStartAttacked && progress >= 0.5f)
 	{
 		auto rigidBody = object->GetComponent<RigidBodyComponent>();
@@ -553,8 +564,12 @@ void SpearMan::SpearManChargeAttack::Update(Object* object, _float dt)
 		rigidBody->SetVelocity(velocity);
 
 		m_IsStartAttacked = true;
+	}
 
-		
+	if (!m_IsAttackSoundPlay && progress >= 0.6f)
+	{
+		EngineCore::GetInstance()->Play3DSound("SFX_SpearManAttack", object->GetComponent<TransformComponent>()->GetPosition(), 0.5f);
+		m_IsAttackSoundPlay = true;
 	}
 
 	if (!m_IsEndAttacked && progress >= 0.7f)

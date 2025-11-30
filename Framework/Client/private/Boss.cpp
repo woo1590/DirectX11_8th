@@ -185,6 +185,8 @@ void Boss::HitBody(_uint attackPower)
 
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
 	engine->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
+
+
 }
 
 void Boss::HitWeakness(_uint attackPower)
@@ -212,6 +214,9 @@ void Boss::HitWeakness(_uint attackPower)
 
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
 	engine->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
+
+	/*sound*/
+	engine->Play2DSound("SFX_HitWeakness", 0.5f);
 }
 
 void Boss::Dead()
@@ -228,6 +233,8 @@ void Boss::OnCollisionEnter(ColliderComponent* otherCollider)
 	{
 		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
 		HitBody(otherStatus->GetDesc().attackPower);
+
+		EngineCore::GetInstance()->Play2DSound("SFX_Hit", 0.6f);
 	}break;
 	default:
 		break;
@@ -916,7 +923,7 @@ void Boss::BossFire3Start::Enter(Object* object)
 	auto animator = object->GetComponent<AnimatorComponent>();
 	animator->ChangeAnimation(ENUM_CLASS(AnimationState::Fire3Start));
 
-	EngineCore::GetInstance()->Play2DSound("SFX_BossLaser", 0.3f);
+	EngineCore::GetInstance()->Play2DSound("SFX_BossLaser", 0.5f);
 
 	m_IsCameraShaked = false;
 }

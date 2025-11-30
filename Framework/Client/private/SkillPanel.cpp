@@ -215,7 +215,7 @@ void SkillPanel::SkillPanelOnJump::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.y -= 10.f;
+	m_TargetPosition.y += 10.f;
 }
 
 void SkillPanel::SkillPanelOnJump::Update(Object* object, _float dt)
@@ -249,7 +249,7 @@ void SkillPanel::SkillPanelOnLand::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.y += 25.f;
+	m_TargetPosition.y -= 25.f;
 }
 
 void SkillPanel::SkillPanelOnLand::Update(Object* object, _float dt)
@@ -284,8 +284,8 @@ void SkillPanel::SkillPanelOnDash::Enter(Object* object)
 	m_fElapsedTime = 0.f;
 	m_StartPosition = object->GetComponent<TransformComponent>()->GetPosition();
 	m_TargetPosition = m_StartPosition;
-	m_TargetPosition.x -= 45.f;
-	m_TargetPosition.y += 35.f;
+	m_TargetPosition.x += 45.f;
+	m_TargetPosition.y -= 35.f;
 }
 
 void SkillPanel::SkillPanelOnDash::Update(Object* object, _float dt)

@@ -1,23 +1,26 @@
 #include "pch.h"
 #include "StaticMapObject.h"
+#include "MaterialInstance.h"
 
 //component
 #include "ModelComponent.h"
 #include "MeshColliderComponent.h"
 
-StaticMapObject::StaticMapObject()
-	:Object()
+StaticMapObject::StaticMapObject(_bool useEmissive)
+	:Object(),
+	m_UseEmissive(useEmissive)
 {
 }
 
 StaticMapObject::StaticMapObject(const StaticMapObject& prototype)
-	:Object(prototype)
+	:Object(prototype),
+	m_UseEmissive(prototype.m_UseEmissive)
 {
 }
 
-StaticMapObject* StaticMapObject::Create()
+StaticMapObject* StaticMapObject::Create(_bool useEmissive)
 {
-	StaticMapObject* Instance = new StaticMapObject();
+	StaticMapObject* Instance = new StaticMapObject(useEmissive);
 
 	if (FAILED(Instance->Initialize_Prototype()))
 		Safe_Release(Instance);
@@ -43,7 +46,10 @@ HRESULT StaticMapObject::Initialize(InitDESC* arg)
 	Object::OBJECT_DESC* desc = static_cast<OBJECT_DESC*>(arg);
 
 	auto model = GetComponent<ModelComponent>();
+	model->Initialize(nullptr);
 	model->SetModel(ENUM_CLASS(LevelID::Static), desc->modelTag);
+	if (m_UseEmissive)
+		model->GetMaterialInstance()->SetPass("EmissiveMap_Pass");
 
 	MeshColliderComponent::MESH_COLLIDER_DESC colliderDesc{};
 	colliderDesc.colliderFilter = ENUM_CLASS(ColliderFilter::StaticMapObject);

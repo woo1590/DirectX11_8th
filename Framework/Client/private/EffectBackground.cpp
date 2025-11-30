@@ -64,6 +64,7 @@ HRESULT EffectBackground::Initialize(InitDESC* arg)
 	mtrlInstance->SetFloat("g_CustomAlpha", 0.f);
 
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerHealthDecrease), MakeListener(&EffectBackground::OnHurt));
+	engine->Subscribe(ENUM_CLASS(EventID::PlayerShieldDecrease), MakeListener(&EffectBackground::OnHurt));
 	engine->Subscribe(ENUM_CLASS(EventID::PlayerHealthIncrease), MakeListener(&EffectBackground::OnHeal));
 
 	return S_OK;

@@ -202,6 +202,24 @@ HRESULT EditorLevel::Initialize_DefaultResource()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage1_area2/stage1_area2.model",
 			"Model_Stage1_Area2")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage2_area0/stage2_area0.model",
+			"Model_Stage2_Area0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage2_area1/stage2_area1.model",
+			"Model_Stage2_Area1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage2_area2/stage2_area2.model",
+			"Model_Stage2_Area2")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage3_area0/stage3_area0.model",
+			"Model_Stage3_Area0")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage3_area1/stage3_area1.model",
+			"Model_Stage3_Area1")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Editor), "../bin/resource/models/map/area/stage3_area2/stage3_area2.model",
+			"Model_Stage3_Area2")))
+			return E_FAIL;
 	}
 	
 	/*Load Material*/

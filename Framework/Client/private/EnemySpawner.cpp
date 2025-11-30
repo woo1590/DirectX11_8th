@@ -79,6 +79,15 @@ void EnemySpawner::Update(_float dt)
 void EnemySpawner::LateUpdate(_float dt)
 {
 	__super::LateUpdate(dt);
+
+	//auto spawner = static_cast<EnemySpawner*>(object);
+	for (auto iter = m_CurrWaveEnemies.begin(); iter != m_CurrWaveEnemies.end();)
+	{
+		if ((*iter)->IsDead())
+			iter = m_CurrWaveEnemies.erase(iter);
+		else
+			++iter;
+	}
 }
 
 HRESULT EnemySpawner::ConnectDoor(_uint levelID)
@@ -168,14 +177,7 @@ void EnemySpawner::SpawnerSpawn::TestForExit(Object* object)
 
 void EnemySpawner::SpawnerWaveRunning::Update(Object* object, _float dt)
 {
-	auto spawner = static_cast<EnemySpawner*>(object);
-	for (auto iter = spawner->m_CurrWaveEnemies.begin(); iter != spawner->m_CurrWaveEnemies.end();)
-	{
-		if ((*iter)->IsDead())
-			iter = spawner->m_CurrWaveEnemies.erase(iter);
-		else
-			++iter;
-	}
+	
 
 }
 

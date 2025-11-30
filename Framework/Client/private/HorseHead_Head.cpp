@@ -5,6 +5,7 @@
 
 //component
 #include "ColliderComponent.h"
+#include "StatusComponent.h"
 
 HorseHead_Head::HorseHead_Head()
 	:PartObject()
@@ -75,7 +76,8 @@ void HorseHead_Head::LateUpdate(_float dt)
 
 void HorseHead_Head::OnCollisionEnter(ColliderComponent* otherCollider)
 {
-	static_cast<HorseHead*>(m_pParent)->HitHead();
+	auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+	static_cast<HorseHead*>(m_pParent)->HitHead(otherStatus->GetDesc().attackPower);
 }
 
 Object* HorseHead_Head::Clone(InitDESC* arg)

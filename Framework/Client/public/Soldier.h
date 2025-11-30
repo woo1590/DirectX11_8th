@@ -85,6 +85,9 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _uint m_iAttackNum{};
+        _bool m_IsSoundPlay = false;
     };
     class SoldierHitBody : public State
     {

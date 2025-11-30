@@ -55,10 +55,14 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	auto engine = EngineCore::GetInstance();
+	DEFAULT_BULLET_DESC* desc = static_cast<DEFAULT_BULLET_DESC*>(arg);
 
 	/*collider*/
 	Bounding_Sphere::SPHERE_DESC sphereDesc{};
-	sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerProjectile);
+	if(desc->isEnemy)
+		sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::EnemyAttack);
+	else
+		sphereDesc.colliderFilter = ENUM_CLASS(ColliderFilter::PlayerProjectile);
 	sphereDesc.type = ColliderType::Sphere;
 	sphereDesc.radius = 0.3f;
 	auto collider = GetComponent<ColliderComponent>();
@@ -78,7 +82,6 @@ HRESULT DefaultBullet::Initialize(InitDESC* arg)
 	/*trail*/
 	auto random = engine->GetRandom();
 
-	DEFAULT_BULLET_DESC* desc = static_cast<DEFAULT_BULLET_DESC*>(arg);
 	DefaultBulletTrail::DEFAULT_BULLET_TRAIL_DESC bulletDesc{};
 	bulletDesc.startPosition = desc->position;
 	if (desc->useRandomColor)

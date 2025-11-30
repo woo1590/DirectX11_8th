@@ -46,7 +46,7 @@ HRESULT MapEditorCamera::Initialize(InitDESC* arg)
 	camDesc.aspect = static_cast<_float>(WinSizeX) / WinSizeY;
 	camDesc.fov = XMConvertToRadians(60.f);
 	camDesc.nearZ = 1.f;
-	camDesc.farZ = 1000.f;
+	camDesc.farZ = 2000.f;
 
 	if (FAILED(GetComponent<CameraComponent>()->Initialize(&camDesc)))
 		return E_FAIL;

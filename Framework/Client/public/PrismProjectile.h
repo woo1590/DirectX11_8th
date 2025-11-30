@@ -34,6 +34,7 @@ private:
     _float m_fDuration = 0.02f;
 
     _float m_fSoundElpasedTime{};
+    _uint m_iSoundCount{};
 };
 
 NS_END

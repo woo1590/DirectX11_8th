@@ -4,8 +4,11 @@
 #include "EngineCore.h"
 #include "LogoLevel.h"
 #include "Stage1.h"
+#include "Stage2.h"
+#include "Stage3.h"
 #include "StageBoss.h"
 #include "GamePlayLevel.h"
+#include "Command_ChangeLevel.h"
 
 //object
 #include "BackGround.h"
@@ -48,7 +51,9 @@ void LoadingLevel::Free()
 
 void LoadingLevel::Update(_float dt)
 {
-	if (m_pLoader->IsFinish())
+	m_fElapsedTime += dt;
+
+	if (m_pLoader->IsFinish() && m_fElapsedTime>=m_fDuration)
 	{
 		Level* nextLevel = nullptr;
 		auto engine = EngineCore::GetInstance();
@@ -61,6 +66,18 @@ void LoadingLevel::Update(_float dt)
 		case Client::LevelID::Stage1:
 			nextLevel = Stage1::Create();
 			break;
+		case Client::LevelID::Stage2:
+		{
+			nextLevel = Stage2::Create();
+			engine->PublishEvent(ENUM_CLASS(EventID::ChangeLevel));
+		}
+			break;
+		case Client::LevelID::Stage3:
+		{
+			nextLevel = Stage3::Create();
+			engine->PublishEvent(ENUM_CLASS(EventID::ChangeLevel));
+		}
+			break;
 		case Client::LevelID::StageBoss:
 		{
 			nextLevel = StageBoss::Create();
@@ -71,7 +88,8 @@ void LoadingLevel::Update(_float dt)
 			break;
 		}
 
-		EngineCore::GetInstance()->ChangeLevel(ENUM_CLASS(m_eNextLevelID), nextLevel);
+		auto command = Command_ChangeLevel::Create(m_eNextLevelID, nextLevel);
+		engine->RegisterCommand(command);
 	}
 }
 
@@ -108,6 +126,31 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
 			return E_FAIL;
+
+		m_fElapsedTime = 0.f;
+		m_fDuration = 1.f;
+	}break;
+	case Client::LevelID::Stage2:
+	{
+		BackGround::BACKGROUND_DESC backGroundDesc{};
+		backGroundDesc.mtrlTag = "Mtrl_Background_Stage";
+
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+
+		m_fElapsedTime = 0.f;
+		m_fDuration = 1.f;
+	}break;
+	case Client::LevelID::Stage3:
+	{
+		BackGround::BACKGROUND_DESC backGroundDesc{};
+		backGroundDesc.mtrlTag = "Mtrl_Background_Stage";
+
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+
+		m_fElapsedTime = 0.f;
+		m_fDuration = 1.f;
 	}break;
 	case Client::LevelID::StageBoss:
 	{
@@ -116,6 +159,9 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
 			return E_FAIL;
+
+		m_fElapsedTime = 0.f;
+		m_fDuration = 1.f;
 	}break;
 	default:
 		break;
