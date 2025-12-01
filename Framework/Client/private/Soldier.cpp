@@ -103,7 +103,7 @@ HRESULT Soldier::Initialize(InitDESC* arg)
 	/*status*/
 	auto status = GetComponent<StatusComponent>();
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 100;
+	statusDesc.hp = 80;
 	statusDesc.attackPower = 1;
 	statusDesc.speed = 40.f;
 	status->Initialize(&statusDesc);

@@ -29,6 +29,7 @@ private:
 
     HRESULT Initialize_LayerSkybox(const _string& layerTag);
     HRESULT Initialize_LayerPlayer(const _string& layerTag);
+    HRESULT Initialize_LayerCamera(const _string& layerTag);
     HRESULT Initialize_LayerUI(const _string& layerTag);
 };
 

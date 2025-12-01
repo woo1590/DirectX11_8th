@@ -9,6 +9,7 @@
 #include "StageBoss.h"
 #include "GamePlayLevel.h"
 #include "Command_ChangeLevel.h"
+#include "LoadingPanel.h"
 
 //object
 #include "BackGround.h"
@@ -52,11 +53,11 @@ void LoadingLevel::Free()
 void LoadingLevel::Update(_float dt)
 {
 	m_fElapsedTime += dt;
+	auto engine = EngineCore::GetInstance();
 
 	if (m_pLoader->IsFinish() && m_fElapsedTime>=m_fDuration)
 	{
 		Level* nextLevel = nullptr;
-		auto engine = EngineCore::GetInstance();
 
 		switch (m_eNextLevelID)
 		{
@@ -127,6 +128,11 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
 			return E_FAIL;
 
+		LoadingPanel::LOADING_PANEL_DESC loadingPanelDesc{};
+		loadingPanelDesc.nextLevelID = LevelID::Stage1;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadingPanel", ENUM_CLASS(LevelID::Loading), "Layer_UI",&loadingPanelDesc)))
+			return E_FAIL;
+
 		m_fElapsedTime = 0.f;
 		m_fDuration = 1.f;
 	}break;
@@ -136,6 +142,11 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 		backGroundDesc.mtrlTag = "Mtrl_Background_Stage";
 
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+
+		LoadingPanel::LOADING_PANEL_DESC loadingPanelDesc{};
+		loadingPanelDesc.nextLevelID = LevelID::Stage2;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadingPanel", ENUM_CLASS(LevelID::Loading), "Layer_UI", &loadingPanelDesc)))
 			return E_FAIL;
 
 		m_fElapsedTime = 0.f;
@@ -149,6 +160,11 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
 			return E_FAIL;
 
+		LoadingPanel::LOADING_PANEL_DESC loadingPanelDesc{};
+		loadingPanelDesc.nextLevelID = LevelID::Stage3;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadingPanel", ENUM_CLASS(LevelID::Loading), "Layer_UI", &loadingPanelDesc)))
+			return E_FAIL;
+
 		m_fElapsedTime = 0.f;
 		m_fDuration = 1.f;
 	}break;
@@ -158,6 +174,11 @@ HRESULT LoadingLevel::Initialize_LoadingUI()
 		backGroundDesc.mtrlTag = "Mtrl_Background_Boss";
 
 		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BackGround", ENUM_CLASS(LevelID::Loading), "Layer_BackGround", &backGroundDesc)))
+			return E_FAIL;
+
+		LoadingPanel::LOADING_PANEL_DESC loadingPanelDesc{};
+		loadingPanelDesc.nextLevelID = LevelID::StageBoss;
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadingPanel", ENUM_CLASS(LevelID::Loading), "Layer_UI", &loadingPanelDesc)))
 			return E_FAIL;
 
 		m_fElapsedTime = 0.f;

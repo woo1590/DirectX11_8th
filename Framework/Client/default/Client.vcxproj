@@ -200,6 +200,7 @@
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Bar.h" />
     <ClInclude Include="..\public\Beetle.h" />
+    <ClInclude Include="..\public\Beetle_Head.h" />
     <ClInclude Include="..\public\BobbingController.h" />
     <ClInclude Include="..\public\Bomber.h" />
     <ClInclude Include="..\public\Boss.h" />
@@ -260,6 +261,7 @@
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemGlow.h" />
     <ClInclude Include="..\public\LightEffect.h" />
+    <ClInclude Include="..\public\LoadingPanel.h" />
     <ClInclude Include="..\public\LogoFire.h" />
     <ClInclude Include="..\public\LogoText.h" />
     <ClInclude Include="..\public\CountNumber.h" />
@@ -274,6 +276,8 @@
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PointLight.h" />
     <ClInclude Include="..\public\PrismTrail.h" />
+    <ClInclude Include="..\public\SelectHome.h" />
+    <ClInclude Include="..\public\SelectHomeLevel.h" />
     <ClInclude Include="..\public\SkillPanel.h" />
     <ClInclude Include="..\public\SlotNum.h" />
     <ClInclude Include="..\public\SpriteEffect.h" />
@@ -331,6 +335,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Bar.cpp" />
     <ClCompile Include="..\private\Beetle.cpp" />
+    <ClCompile Include="..\private\Beetle_Head.cpp" />
     <ClCompile Include="..\private\BobbingController.cpp" />
     <ClCompile Include="..\private\Bomber.cpp" />
     <ClCompile Include="..\private\Boss.cpp" />
@@ -390,6 +395,7 @@
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\ItemGlow.cpp" />
     <ClCompile Include="..\private\LightEffect.cpp" />
+    <ClCompile Include="..\private\LoadingPanel.cpp" />
     <ClCompile Include="..\private\LogoFire.cpp" />
     <ClCompile Include="..\private\LogoText.cpp" />
     <ClCompile Include="..\private\CountNumber.cpp" />
@@ -404,6 +410,8 @@
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PointLight.cpp" />
     <ClCompile Include="..\private\PrismTrail.cpp" />
+    <ClCompile Include="..\private\SelectHome.cpp" />
+    <ClCompile Include="..\private\SelectHomeLevel.cpp" />
     <ClCompile Include="..\private\SkillPanel.cpp" />
     <ClCompile Include="..\private\SlotNum.cpp" />
     <ClCompile Include="..\private\SpriteEffect.cpp" />

@@ -19,6 +19,7 @@ public:
     void SetMainCamera(const _string& cameraTag);
     void SetShadowCamera(const _string& cameraTag);
     void AddCamera(const _string& cameraTag, CameraComponent* component);
+    void RemoveCamera(const _string& cameraTag);
 
     void MakeShake(_float duration, _float power);
     CAMERA_CONTEXT GetCameraContext()const { return m_MainCameraContext; }

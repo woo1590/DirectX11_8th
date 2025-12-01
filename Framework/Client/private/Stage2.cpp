@@ -41,6 +41,9 @@ HRESULT Stage2::Initialize()
 	if (FAILED(Initialize_LayerPlayer("Layer_Player")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerCamera("Layer_Camera")))
+		return E_FAIL;
+
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
 		return E_FAIL;
 
@@ -219,6 +222,16 @@ HRESULT Stage2::Initialize_LayerPlayer(const _string& layerTag)
 	return S_OK;
 }
 
+HRESULT Stage2::Initialize_LayerCamera(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShadowCam", ENUM_CLASS(LevelID::Stage2), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT Stage2::Initialize_LayerUI(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
@@ -245,6 +258,9 @@ HRESULT Stage2::Initialize_LayerUI(const _string& layerTag)
 		return E_FAIL;
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_InteractionUI", ENUM_CLASS(LevelID::Stage2), layerTag)))
+		return E_FAIL;
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapPanel", ENUM_CLASS(LevelID::Stage2), layerTag)))
 		return E_FAIL;
 
 	return S_OK;

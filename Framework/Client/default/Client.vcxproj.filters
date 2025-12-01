@@ -427,6 +427,15 @@
     <Filter Include="02. Object\Enemy\Bomber\Head">
       <UniqueIdentifier>{d30b8946-2011-44a4-82c2-9d5454e3b005}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object\UIObject\LoadingPanel">
+      <UniqueIdentifier>{584eae93-e791-4a82-b67f-25b3dd596284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\SelectHome">
+      <UniqueIdentifier>{908942f6-2dd7-4f96-a57b-b6df5c135079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\SelectHomeLevel">
+      <UniqueIdentifier>{ab922927-5b8f-4ffa-b515-7b0bb8d1f228}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -816,6 +825,18 @@
     <ClInclude Include="..\public\MinimapArea.h">
       <Filter>02. Object\UIObject\MiniMapPanel\MinimapArea</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Beetle_Head.h">
+      <Filter>02. Object\Enemy\Beetle\Head</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LoadingPanel.h">
+      <Filter>02. Object\UIObject\LoadingPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SelectHome.h">
+      <Filter>02. Object\SelectHome</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SelectHomeLevel.h">
+      <Filter>01. Level\SelectHomeLevel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1192,6 +1213,18 @@
     </ClCompile>
     <ClCompile Include="..\private\MinimapArea.cpp">
       <Filter>02. Object\UIObject\MiniMapPanel\MinimapArea</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Beetle_Head.cpp">
+      <Filter>02. Object\Enemy\Beetle\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LoadingPanel.cpp">
+      <Filter>02. Object\UIObject\LoadingPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SelectHome.cpp">
+      <Filter>02. Object\SelectHome</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SelectHomeLevel.cpp">
+      <Filter>01. Level\SelectHomeLevel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

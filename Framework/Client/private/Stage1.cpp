@@ -42,7 +42,7 @@ HRESULT Stage1::Initialize()
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(LoadMapFromFile("../bin/data/map/stage1_map.json")))
+	if (FAILED(LoadMapFromFile("../bin/data/map/stage1_map_spawn.json")))
 		return E_FAIL;
 
 	if (FAILED(LoadLightFromFile("../bin/data/map/stage1_map_light.json")))
@@ -54,6 +54,9 @@ HRESULT Stage1::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Initialize_LayerPlayer("Layer_Player")))
+		return E_FAIL;
+
+	if (FAILED(Initialize_LayerCamera("Layer_Camera")))
 		return E_FAIL;
 
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
@@ -261,6 +264,16 @@ HRESULT Stage1::Initialize_LayerPlayer(const _string& layerTag)
 
 	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
 	static_cast<Player*>(player)->GetComponent<NavigationComponent>()->SpawnInCell(0);
+
+	return S_OK;
+}
+
+HRESULT Stage1::Initialize_LayerCamera(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShadowCam", ENUM_CLASS(LevelID::Stage1), layerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -49,6 +49,7 @@ HRESULT Bomber::Initialize_Prototype()
 	AddComponent<RigidBodyComponent>();
 	AddComponent<ColliderComponent>();
 	AddComponent<LightComponent>();
+	AddComponent<StatusComponent>();
 
 	m_strInstanceTag = "Bomber";
 	m_eRenderGroup = RenderGroup::NonBlend;
@@ -69,8 +70,8 @@ HRESULT Bomber::Initialize(InitDESC* arg)
 	aabbDesc.useResolve = true;
 	aabbDesc.colliderFilter = ENUM_CLASS(ColliderFilter::Enemy);
 	aabbDesc.type = ColliderType::AABB;
-	aabbDesc.center = _float3{ 0.f,5.f,0.f };
-	aabbDesc.halfSize = _float3{ 6.f,10.f,6.f };
+	aabbDesc.center = _float3{ 0.f,6.f,0.f };
+	aabbDesc.halfSize = _float3{ 4.f,6.f,4.f };
 	auto collider = GetComponent<ColliderComponent>();
 	collider->Initialize(&aabbDesc);
 	engine->RegisterCollider(collider);
@@ -105,7 +106,7 @@ HRESULT Bomber::Initialize(InitDESC* arg)
 	outlineMtrlInstance->SetFloat("g_OutLineWidth", 0.1f);
 
 	m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
-	m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
+	//m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
 
 	/*light*/
 	LightComponent::LIGHT_DESC lightDesc{};
@@ -115,6 +116,14 @@ HRESULT Bomber::Initialize(InitDESC* arg)
 	auto light = GetComponent<LightComponent>();
 	light->Initialize(&lightDesc);
 	engine->RegisterLight(light);
+
+	/*status*/
+	auto status = GetComponent<StatusComponent>();
+	StatusComponent::STATUS_DESC statusDesc{};
+	statusDesc.hp = 80;
+	statusDesc.attackPower = 0;
+	statusDesc.speed = 30.f;
+	status->Initialize(&statusDesc);
 
 	return S_OK;
 }
@@ -158,6 +167,70 @@ void Bomber::LateUpdate(_float dt)
 	__super::LateUpdate(dt);
 }
 
+void Bomber::OnCollisionEnter(ColliderComponent* otherCollider)
+{
+	__super::OnCollisionEnter(otherCollider);
+
+	auto engine = EngineCore::GetInstance();
+	auto random = engine->GetRandom();
+
+	switch (static_cast<ColliderFilter>(otherCollider->GetFilter()))
+	{
+	case ColliderFilter::PlayerAttack:
+	{
+		auto status = GetComponent<StatusComponent>();
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+		if (0 == status->GetDesc().hp && m_CurrState != &m_BomberDead)
+			ChangeState(&m_BomberDead);
+
+		DamageFont::DAMAGE_FONT_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.position.y += 5.f;
+		desc.fontSize = 0.04f;
+		desc.number = random->get<_uint>(600, 900);
+		desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+
+		EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+		param.ownerID = m_iEnemyID;
+		param.ratio = status->GetHpRatio();
+		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
+	}break;
+	case ColliderFilter::PlayerProjectile:
+	{
+		auto status = GetComponent<StatusComponent>();
+		auto otherStatus = otherCollider->GetOwner()->GetComponent<StatusComponent>();
+
+		status->BeAttacked(otherStatus->GetDesc().attackPower);
+		if (0 == status->GetDesc().hp && m_CurrState != &m_BomberDead)
+			ChangeState(&m_BomberDead);
+
+		DamageFont::DAMAGE_FONT_DESC desc{};
+		desc.position = m_pTransform->GetPosition();
+		desc.position.y += 5.f;
+		desc.fontSize = 0.04f;
+		desc.number = random->get<_uint>(600, 900);
+		desc.color = _float4{ 1.f,1.f,1.f,1.f };
+
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_DamageFont", engine->GetCurrLevelID(), "Layer_UI", &desc);
+
+		EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+		param.ownerID = m_iEnemyID;
+		param.ratio = status->GetHpRatio();
+		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
+
+	}break;
+	default:
+		break;
+	}
+}
+
 void Bomber::Explode()
 {
 	m_isDead = true;
@@ -172,6 +245,10 @@ void Bomber::Explode()
 
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Explode", engine->GetCurrLevelID(), "Layer_Effect", &desc);
 	engine->Play3DSound("SFX_DynamiteExplode", GetComponent<TransformComponent>()->GetPosition(), 0.6f);
+
+	EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
+	param.ownerID = m_iEnemyID;
+	engine->PublishEvent(ENUM_CLASS(EventID::EnemyDead), param);
 }
 
 Object* Bomber::Clone(InitDESC* arg)
@@ -333,6 +410,48 @@ void Bomber::BomberAttack::TestForExit(Object* object)
 
 void Bomber::BomberDead::Enter(Object* object)
 {
+	object->SetDead();
+
+	auto engine = EngineCore::GetInstance();
+	auto transform = object->GetComponent<TransformComponent>();
+
+	_float3 camPosition = engine->GetCameraContext().camPosition;
+	_float3 position = transform->GetPosition();
+	_float3 hitDir{};
+	XMStoreFloat3(&hitDir, XMVector3Normalize(XMLoadFloat3(&position) - XMLoadFloat3(&camPosition)));
+
+	Fracture::FRACTURE_DESC desc{};
+	desc.quaternion = transform->GetQuaternion();
+
+	auto random = engine->GetRandom();
+	for (_uint i = 1; i < 11; i += 2)
+	{
+		desc.position.x = position.x + random->get<_float>(-4.f, 4.f);
+		desc.position.y = position.y + random->get<_float>(4.f, 7.f);
+		desc.position.z = position.z + random->get<_float>(-4.f, 4.f);
+
+		_float3 dir{};
+		_float dirFactor = random->get<_float>(0.4f, 0.6f);
+		XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&desc.position) - XMLoadFloat3(&position)));
+		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&hitDir) * dirFactor + XMLoadFloat3(&dir) * (1.f - dirFactor))));
+		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
+
+		_float power = random->get<_float>(90.f, 150.f);
+		_float3 force{};
+		_float3 angularForce{};
+		XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);
+		XMStoreFloat3(&angularForce, XMLoadFloat3(&dir) * power * 0.1f);
+
+		_string modelTag = "Bomber" + std::to_string(i);
+		desc.modelTag = "Model_Fracture_" + modelTag;
+
+		Object* fracture = nullptr;
+		desc.spawnNavCell = object->GetComponent<NavigationComponent>()->GetCurrCellIndex();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", engine->GetCurrLevelID(), "Layer_Fracture", &desc, &fracture);
+
+		fracture->GetComponent<RigidBodyComponent>()->AddImpulse(force);
+		fracture->GetComponent<RigidBodyComponent>()->AddAngularImpulse(angularForce);
+	}
 }
 
 void Bomber::BomberDead::Update(Object* object, _float dt)

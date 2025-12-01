@@ -6,7 +6,7 @@ NS_BEGIN(Client)
 class Beetle :
     public Enemy
 {
-    enum class Parts { Head, Count };
+    enum class Parts { Head_Socket, Head, Count };
     enum class AnimationState
     {
         Stand,
@@ -38,6 +38,8 @@ public:
     void Free()override;
     
 private:
+    HRESULT CreatePartObjects();
+
     class BeetleShow : public State
     {
         void Enter(Object* object)override;
@@ -58,6 +60,9 @@ private:
         void Enter(Object* object)override;
         void Update(Object* object, _float dt)override;
         void TestForExit(Object* object)override;
+
+        _float m_fSoundDuration = 1.5f;
+        _float m_fSoundElpasedTime{};
     };
     class BeetleAttack : public State
     {

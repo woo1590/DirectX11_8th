@@ -16,7 +16,8 @@ namespace Client
 	{
 		Static, 
 		Loading, 
-		Logo, 
+		Logo,
+		SelectHome,
 		Stage1, 
 		Stage2,
 		Stage3,

@@ -49,7 +49,7 @@ HRESULT ShadowCam::Initialize(InitDESC* arg)
 	camDesc.aspect = static_cast<_float>(WinSizeX) / WinSizeY;
 	camDesc.fov = XMConvertToRadians(60.f);
 	camDesc.nearZ = 1.f;
-	camDesc.farZ = 1000.f;
+	camDesc.farZ = 2000.f;
 
 	auto cam = GetComponent<CameraComponent>();
 	if (FAILED(cam->Initialize(&camDesc)))
@@ -61,16 +61,15 @@ HRESULT ShadowCam::Initialize(InitDESC* arg)
 		return E_FAIL;
 
 	engine->AddCamera("ShadowCam", cam);
+	engine->SetShadowCamera("ShadowCam");
 	m_pTransform->Rotate(_float3{ math::ToRadian(80.f),0.f,0.f });
 	
-
 	return S_OK;
 }
 
 void ShadowCam::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
-
 }
 
 void ShadowCam::Update(_float dt)
@@ -78,8 +77,11 @@ void ShadowCam::Update(_float dt)
 	__super::Update(dt);
 
 	auto engine = EngineCore::GetInstance();
+	_float3 position{};
 	_float3 targetPosition = m_pTarget->GetComponent<TransformComponent>()->GetPosition();
-	_float3 dir = m_pTransform->GetForward();
+	XMStoreFloat3(&position, XMLoadFloat3(&targetPosition) + XMLoadFloat3(&m_Offset));
+
+	m_pTransform->SetPosition(position);
 }
 
 void ShadowCam::LateUpdate(_float dt)
@@ -99,5 +101,6 @@ Object* ShadowCam::Clone(InitDESC* arg)
 
 void ShadowCam::Free()
 {
+	EngineCore::GetInstance()->RemoveCamera("ShadowCam");
 	__super::Free();
 }

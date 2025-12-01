@@ -3,16 +3,16 @@
 
 NS_BEGIN(Client)
 
-class ShadowCam :
+class SelectHome :
     public Object
 {
 private:
-    ShadowCam();
-    ShadowCam(const ShadowCam& prototype);
-    virtual ~ShadowCam() = default;
+    SelectHome();
+    SelectHome(const SelectHome& prototype);
+    virtual ~SelectHome() = default;
 
 public:
-    static ShadowCam* Create();
+    static SelectHome* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
 
@@ -24,8 +24,7 @@ public:
     void Free()override;
 
 private:
-    Object* m_pTarget = nullptr;
-    _float3 m_Offset{ 0.f,200.f,0.f };
+
 };
 
 NS_END

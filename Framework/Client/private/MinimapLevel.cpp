@@ -53,6 +53,33 @@ HRESULT MinimapLevel::Initialize(InitDESC* arg)
 	return S_OK;
 }
 
+HRESULT MinimapLevel::LateInitialize()
+{
+	__super::LateInitialize();
+
+	_uint levelID = EngineCore::GetInstance()->GetCurrLevelID();
+
+	switch (static_cast<LevelID>(levelID))
+	{
+	case LevelID::Stage1:
+		m_strStageTag = L"¿ë¸ª ¹«´ı - ½ºÅ×ÀÌÁö1";
+		break;
+	case LevelID::Stage2:
+		m_strStageTag = L"¿ë¸ª ¹«´ı - ½ºÅ×ÀÌÁö2";
+		break;
+	case LevelID::Stage3:
+		m_strStageTag = L"¿ë¸ª ¹«´ı - ½ºÅ×ÀÌÁö3";
+		break;
+	case LevelID::StageBoss:
+		m_strStageTag = L"¿ë¸ª ¹«´ı - Àå»ıÀü";
+		break;
+	default:
+		break;
+	}
+
+	return S_OK;
+}
+
 void MinimapLevel::PriorityUpdate(_float dt)
 {
 	__super::PriorityUpdate(dt);
@@ -78,10 +105,10 @@ HRESULT MinimapLevel::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>
 	FONT_PROXY font{};
 	font.fontTag = "GMarket_Font";
 	font.color = _float4{ 189.f / 255.f,172.f / 255.f,128.f / 255.f,1.f };
-	font.scale = 0.38f;
-	font.screenPosition.x = position.x + WinSizeX * 0.5f - scale.x * 0.26f;
+	font.scale = 0.33f;
+	font.screenPosition.x = position.x + WinSizeX * 0.48f - scale.x * 0.26f;
 	font.screenPosition.y = WinSizeY * 0.5f - position.y - scale.y * 0.42f;
-	font.text = L"¿ë¸ª¹«´ı - 1Ãş";
+	font.text = m_strStageTag;
 
 	EngineCore::GetInstance()->AddFontProxy(font);
 

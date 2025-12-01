@@ -24,6 +24,7 @@ public:
     HRESULT RenderShadow(const std::vector<RenderProxy>& proxies);
     HRESULT RenderNonBlend(const std::vector<RenderProxy>& proxies);
     HRESULT RenderLight(const std::vector<LightProxy>& proxies);
+    HRESULT RenderEmissiveBlur();
     HRESULT RenderCombined();
     HRESULT RenderNonLight(const std::vector<RenderProxy>& proxies);
     HRESULT RenderBlend(const std::vector<RenderProxy>& proxies);
@@ -58,6 +59,9 @@ private:
 
     /*for shadow*/
     ID3D11DepthStencilView* m_pShadowDSV = nullptr;
+
+    /*for blur*/
+    _float2 m_BlurScreenSize{};
 };
 
 NS_END

@@ -15,6 +15,7 @@ public:
     static MinimapLevel* Create();
     HRESULT Initialize_Prototype()override;
     HRESULT Initialize(InitDESC* arg)override;
+    HRESULT LateInitialize()override;
 
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
@@ -23,6 +24,9 @@ public:
 
     Object* Clone(InitDESC* arg)override;
     void Free()override;
+
+private:
+    _wstring m_strStageTag{};
 };
 
 NS_END

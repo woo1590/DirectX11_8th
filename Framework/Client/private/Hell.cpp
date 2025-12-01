@@ -128,14 +128,6 @@ void Hell::Skill()
 {
 }
 
-void Hell::RenderInspector()
-{
-	__super::RenderInspector();
-
-	if (m_pMuzzleSocket)
-		m_pMuzzleSocket->RenderInspector();
-}
-
 Object* Hell::Clone(InitDESC* arg)
 {
 	Hell* Instance = new Hell(*this);

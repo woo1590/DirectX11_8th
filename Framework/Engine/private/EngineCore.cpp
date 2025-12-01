@@ -304,9 +304,17 @@ void EngineCore::AddCamera(const _string& cameraTag, CameraComponent* component)
 {
 	m_pCameraManager->AddCamera(cameraTag, component);
 }
+void EngineCore::RemoveCamera(const _string& cameraTag)
+{
+	m_pCameraManager->RemoveCamera(cameraTag);
+}
 void EngineCore::SetMainCamera(const _string& cameraTag)
 {
 	m_pCameraManager->SetMainCamera(cameraTag);
+}
+void EngineCore::SetShadowCamera(const _string& cameraTag)
+{
+	m_pCameraManager->SetShadowCamera(cameraTag);
 }
 CAMERA_CONTEXT EngineCore::GetCameraContext()
 {

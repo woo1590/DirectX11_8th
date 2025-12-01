@@ -55,6 +55,7 @@
 #include "MinimapLevel.h"
 #include "MinimapTime.h"
 #include "MinimapArea.h"
+#include "LoadingPanel.h"
 
 //weapon
 #include "Cameleon.h"
@@ -108,6 +109,7 @@
 #include "CrossbowMan_Head.h"
 
 #include "Beetle.h"
+#include "Beetle_Head.h"
 
 //effect
 #include "EffectContainer.h"
@@ -233,6 +235,7 @@ HRESULT Loader::LoadingForLogo()
 		engine->Load3DSound("SFX_SpearManAttack", "../bin/resource/sounds/sfx/spearman_attack.wav", false);
 		engine->Load3DSound("SFX_CrossbowManReady", "../bin/resource/sounds/sfx/crossbowman_ready.wav", false);
 		engine->Load3DSound("SFX_CrossbowManShot", "../bin/resource/sounds/sfx/crossbowman_shot.wav", false);
+		engine->Load3DSound("SFX_BeetleRun", "../bin/resource/sounds/sfx/beetle_run.wav", false);
 
 		/*player*/
 		engine->Load2DSound("SFX_WeaponChange", "../bin/resource/sounds/sfx/weapon_change.wav", false);
@@ -510,6 +513,15 @@ HRESULT Loader::LoadingForLogo()
 				"Model_Fracture_" + modelTag)))
 				return E_FAIL;
 		}
+
+		for (_uint i = 0; i < 11; ++i)
+		{
+			_string filePath = "bomber" + std::to_string(i) + ".model";
+			_string modelTag = "Bomber" + std::to_string(i);
+			if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/enemy/fracture/bomber/" + filePath,
+				"Model_Fracture_" + modelTag)))
+				return E_FAIL;
+		}
 	}
 
 	/*Load Animation Set*/
@@ -720,6 +732,17 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/minimap_enemy_icon.json", "Mtrl_MinimapEnemyIcon")))
 			return E_FAIL;
 
+		/*loading panel*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/loading_panel.json", "Mtrl_LoadingPanel")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/loading_bar.json", "Mtrl_LoadingBar")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/loading_boss_icon.json", "Mtrl_LoadingBossIcon")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/loading_start_icon.json", "Mtrl_LoadingStartIcon")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/loading_stage_icon.json", "Mtrl_LoadingStageIcon")))
+			return E_FAIL;
 
 		/*effect*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_decal.json", "Mtrl_Decal")))
@@ -916,7 +939,10 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapArea", MinimapArea::Create())))
 			return E_FAIL;
-		
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadingPanel", LoadingPanel::Create())))
+			return E_FAIL;
+
 		/*Enemy*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", HorseHead::Create())))
 			return E_FAIL;
@@ -950,6 +976,8 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle", Beetle::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle_Head", Beetle_Head::Create())))
 			return E_FAIL;
 
 		/*Weapon*/

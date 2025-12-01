@@ -8,6 +8,8 @@
 
 #include "Fracture.h"
 #include "EnemyHpPanel.h"
+#include "Socket.h"
+#include "Beetle_Head.h"
 
 //component
 #include "StatusComponent.h"
@@ -75,7 +77,7 @@ HRESULT Beetle::Initialize(InitDESC* arg)
 
     /*status*/
     StatusComponent::STATUS_DESC statusDesc{};
-    statusDesc.hp = 100;
+    statusDesc.hp = 60;
     auto status = GetComponent<StatusComponent>();
     status->Initialize(&statusDesc);
 
@@ -96,7 +98,7 @@ HRESULT Beetle::Initialize(InitDESC* arg)
     nav->AttachTransform();
     nav->AttachRigidBody();
     nav->SpawnInCell(3);
-    nav->SetMoveSpeed(35.f);
+    nav->SetMoveSpeed(25.f);
     nav->SetArriveRange(60.f);
 
     /*outline model*/
@@ -110,6 +112,9 @@ HRESULT Beetle::Initialize(InitDESC* arg)
 
     m_iHpPanelBoneIndex = model->GetBoneIndex("MonsterHp");
     //m_pTransform->SetScale(_float3{ 1.3f,1.3f,1.3f });
+
+    if (FAILED(CreatePartObjects()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -233,6 +238,31 @@ void Beetle::Free()
     __super::Free();
 }
 
+HRESULT Beetle::CreatePartObjects()
+{
+    auto engine = EngineCore::GetInstance();
+
+    /*add head socket*/
+    {
+        Socket::SOCKET_DESC headSocketDesc{};
+        headSocketDesc.parent = this;
+        headSocketDesc.parentModel = GetComponent<ModelComponent>();
+        headSocketDesc.boneIndex = GetComponent<ModelComponent>()->GetBoneIndex("Bip001 Head");
+        if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Socket", ENUM_CLASS(Parts::Head_Socket), &headSocketDesc)))
+            return E_FAIL;
+    }
+    /*add head*/
+    {
+        Beetle_Head::BEETLE_HEAD_DESC headDesc{};
+        headDesc.parent = this;
+        headDesc.parentSocketTransform = m_PartObjects[ENUM_CLASS(Parts::Head_Socket)]->GetComponent<TransformComponent>();
+        if (FAILED(AddPartObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle_Head", ENUM_CLASS(Parts::Head), &headDesc)))
+            return E_FAIL;
+    }
+
+    return S_OK;
+}
+
 void Beetle::BeetleShow::Enter(Object* object)
 {
     auto engine = EngineCore::GetInstance();
@@ -304,6 +334,8 @@ void Beetle::BeetleRun::Enter(Object* object)
     auto animator = object->GetComponent<AnimatorComponent>();
     animator->ChangeAnimation(ENUM_CLASS(AnimationState::Run), true);
     animator->SetPlaySpeedScale(1.2f);
+    
+    m_fSoundElpasedTime = 0.f;
 }
 
 void Beetle::BeetleRun::Update(Object* object, _float dt)
@@ -321,6 +353,14 @@ void Beetle::BeetleRun::Update(Object* object, _float dt)
 
     nav->FindPath(position, currCellIndex, targetPosition, targetCellIndex);
     nav->MoveByPath(dt);
+
+    m_fSoundElpasedTime += dt;
+    if (m_fSoundElpasedTime >= m_fSoundDuration)
+    {
+        engine->Play3DSound("SFX_BeetleRun", transform->GetPosition(), 0.6f);
+
+        m_fSoundElpasedTime = 0.f;
+    }
 }
 
 void Beetle::BeetleRun::TestForExit(Object* object)
@@ -352,6 +392,14 @@ void Beetle::BeetleAttack::Enter(Object* object)
 
 void Beetle::BeetleAttack::Update(Object* object, _float dt)
 {
+    auto animator = object->GetComponent<AnimatorComponent>();
+    _float progress = animator->GetProgress();
+
+    if (progress >= 0.4f)
+    {
+        auto beetle = static_cast<Beetle*>(object);
+        beetle->m_PartObjects[ENUM_CLASS(Parts::Head)]->GetComponent<ColliderComponent>()->SetActive(true);
+    }
 }
 
 void Beetle::BeetleAttack::TestForExit(Object* object)
@@ -362,6 +410,7 @@ void Beetle::BeetleAttack::TestForExit(Object* object)
     {
         auto beetle = static_cast<Beetle*>(object);
         beetle->ChangeState(&beetle->m_BeetleIdle);
+        beetle->m_PartObjects[ENUM_CLASS(Parts::Head)]->GetComponent<ColliderComponent>()->SetActive(false);
     }
 }
 

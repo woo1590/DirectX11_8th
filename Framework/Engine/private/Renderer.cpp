@@ -260,6 +260,35 @@ HRESULT Renderer::RenderLight(const std::vector<LightProxy>& proxies)
 	return S_OK;
 }
 
+HRESULT Renderer::RenderEmissiveBlur()
+{
+	auto engine = EngineCore::GetInstance();
+
+	ChangeViewPort(m_BlurScreenSize.x, m_BlurScreenSize.y);
+	m_pShader->BindRawValue("g_BlurScreenSize", &m_BlurScreenSize, sizeof(_float2));
+
+	engine->BeginMRT("MRT_EmissiveBlurX");
+	engine->BindShaderResource(m_pShader, "Target_EmissiveGlow", "g_EmissiveGlowTexture");
+	m_pBuffer->BindBuffers();
+	m_pShader->Apply("EmissiveBlurX_Pass");
+	m_pBuffer->Draw();
+	engine->EndMRT();
+
+	m_pShader->BindRawValue("g_BlurScreenSize", &m_BlurScreenSize, sizeof(_float2));
+
+	engine->BeginMRT("MRT_EmissiveBlurY");
+	engine->BindShaderResource(m_pShader, "Target_EmissiveBlurX", "g_EmissiveBlurXTexture");
+	m_pBuffer->BindBuffers();
+	m_pShader->Apply("EmissiveBlurY_Pass");
+	m_pBuffer->Draw();
+	engine->EndMRT();
+
+	D3D11_VIEWPORT originalViewport = engine->GetViewport();
+	ChangeViewPort(originalViewport.Width, originalViewport.Height);
+
+	return S_OK;
+}
+
 HRESULT Renderer::RenderCombined()
 {
 	auto engine = EngineCore::GetInstance();
@@ -270,6 +299,7 @@ HRESULT Renderer::RenderCombined()
 	engine->BindShaderResource(m_pShader, "Target_Shadow", "g_ShadowTexture");
 	engine->BindShaderResource(m_pShader, "Target_Depth", "g_DepthTexture");
 	engine->BindShaderResource(m_pShader, "Target_Emissive", "g_EmissiveTexture");
+	engine->BindShaderResource(m_pShader, "Target_EmissiveBlurY", "g_EmissiveBlurYTexture");
 
 	m_pBuffer->BindBuffers();
 	m_pShader->Apply("Combined_Pass");
@@ -314,6 +344,9 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 {
 	auto engine = EngineCore::GetInstance();
 
+	m_BlurScreenSize.x = static_cast<_uint>(viewPort.Width * 0.2f);
+	m_BlurScreenSize.y = static_cast<_uint>(viewPort.Height * 0.2f);
+
 	/*add render targets*/
 	{
 		if (FAILED(engine->AddRenderTarget("Target_Diffuse", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -324,7 +357,13 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Emissive", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_EmissiveGlow", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_Depth", viewPort.Width, viewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 1.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_EmissiveBlurX", m_BlurScreenSize.x, m_BlurScreenSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+			return E_FAIL;
+		if (FAILED(engine->AddRenderTarget("Target_EmissiveBlurY", m_BlurScreenSize.x, m_BlurScreenSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 			return E_FAIL;
 		if (FAILED(engine->AddRenderTarget("Target_ObjectMask", viewPort.Width, viewPort.Height, DXGI_FORMAT_R8_UINT, _float4(0.f, 0.f, 0.f, 1.f))))
 			return E_FAIL;
@@ -350,6 +389,8 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 			return E_FAIL;
 		if (FAILED(engine->AddMRT("MRT_Objects", "Target_Emissive")))
 			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_Objects", "Target_EmissiveGlow")))
+			return E_FAIL;
 	}
 	/*add mrt light acc*/
 	{
@@ -368,6 +409,15 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 		if (FAILED(engine->AddMRT("MRT_Final", "Target_Final")))
 			return E_FAIL;
 	}
+	/*add emissive blur*/
+	{
+		if (FAILED(engine->AddMRT("MRT_EmissiveBlurX", "Target_EmissiveBlurX")))
+			return E_FAIL;
+		if (FAILED(engine->AddMRT("MRT_EmissiveBlurY", "Target_EmissiveBlurY")))
+			return E_FAIL;
+	}
+
+
 
 	return S_OK;
 }

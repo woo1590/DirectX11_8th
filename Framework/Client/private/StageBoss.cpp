@@ -46,6 +46,9 @@ HRESULT StageBoss::Initialize()
 	if (FAILED(Initialize_LayerPlayer("Layer_Player")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerCamera("Layer_Camera")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -259,6 +262,16 @@ HRESULT StageBoss::Initialize_LayerPlayer(const _string& layerTag)
 	return S_OK;
 }
 
+HRESULT StageBoss::Initialize_LayerCamera(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShadowCam", ENUM_CLASS(LevelID::StageBoss), layerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT StageBoss::Initialize_LayerUI(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
@@ -281,7 +294,10 @@ HRESULT StageBoss::Initialize_LayerUI(const _string& layerTag)
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_EffectBackground", ENUM_CLASS(LevelID::StageBoss), layerTag)))
 		return E_FAIL;
 
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitCrossHair", ENUM_CLASS(LevelID::Stage1), layerTag)))
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitCrossHair", ENUM_CLASS(LevelID::StageBoss), layerTag)))
+		return E_FAIL;
+	
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapPanel", ENUM_CLASS(LevelID::StageBoss), layerTag)))
 		return E_FAIL;
 
 	return S_OK;

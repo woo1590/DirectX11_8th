@@ -266,7 +266,7 @@ void Cameleon::CameleonFire::Update(Engine::Object* object, Engine::_float dt)
 		engine->PublishEvent(ENUM_CLASS(EventID::CurrAmmoChange), cameleon->m_iNumCurrAmmo);
 
 		/*sound*/
-		engine->Play2DSound("SFX_CameleonFire");
+		engine->Play2DSound("SFX_CameleonFire", 0.5f);
 
 		if (!m_IsAddEffect)
 		{

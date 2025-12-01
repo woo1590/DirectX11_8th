@@ -44,7 +44,7 @@ private:
     _float3 m_DoorPosition{};
     MaterialInstance* m_pMaterialInstance = nullptr;
 
-    _float m_fMinimapDistance = 150.f;
+    _float m_fMinimapDistance = 250.f;
 };
 
 NS_END

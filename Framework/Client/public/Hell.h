@@ -36,10 +36,6 @@ public:
     void Fire()override;
     void Skill()override;
 
-#ifdef USE_IMGUI
-    void RenderInspector()override;
-#endif
-
     Object* Clone(InitDESC* arg);
     void Free()override;
 

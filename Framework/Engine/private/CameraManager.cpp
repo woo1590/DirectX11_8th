@@ -24,8 +24,8 @@ HRESULT CameraManager::Initialize()
 	_float3 worldShadowPosition{ 140.f,200.f,170.f };
 	_float3 worldShadowLookAt{ 130.f,0.f,160.f };
 
-	XMStoreFloat4x4(&m_ShadowCameraContext.viewMatrix, XMMatrixLookAtLH(XMLoadFloat3(&worldShadowPosition), XMLoadFloat3(&worldShadowLookAt), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	XMStoreFloat4x4(&m_ShadowCameraContext.projMatrix, XMMatrixPerspectiveFovLH(math::ToRadian(90.f), 1600.f / 900.f, 0.1f, 1000.f));
+	//XMStoreFloat4x4(&m_ShadowCameraContext.viewMatrix, XMMatrixLookAtLH(XMLoadFloat3(&worldShadowPosition), XMLoadFloat3(&worldShadowLookAt), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	//XMStoreFloat4x4(&m_ShadowCameraContext.projMatrix, XMMatrixPerspectiveFovLH(math::ToRadian(90.f), 1600.f / 900.f, 0.1f, 1000.f));
 
 	return S_OK;
 }
@@ -33,21 +33,38 @@ HRESULT CameraManager::Initialize()
 void CameraManager::Update()
 {
 	/*Update inverse matrix & cam position*/
-	if (!m_pMainCamera)
-		return;
+	if (m_pMainCamera)
+	{
+		m_MainCameraContext.viewMatrix = m_pMainCamera->GetViewMatrix();
+		m_MainCameraContext.projMatrix = m_pMainCamera->GetProjMatrix();
 
-	m_MainCameraContext.viewMatrix = m_pMainCamera->GetViewMatrix();
-	m_MainCameraContext.projMatrix = m_pMainCamera->GetProjMatrix();
+		XMStoreFloat4x4(&m_MainCameraContext.viewMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_MainCameraContext.viewMatrix)));
 
-	XMStoreFloat4x4(&m_MainCameraContext.viewMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_MainCameraContext.viewMatrix)));
+		XMStoreFloat4x4(&m_MainCameraContext.projMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_MainCameraContext.projMatrix)));
 
-	XMStoreFloat4x4(&m_MainCameraContext.projMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_MainCameraContext.projMatrix)));
+		_float4x4 viewMatrixInverse = m_MainCameraContext.viewMatrixInverse;
+		m_MainCameraContext.camPosition = _float3{ viewMatrixInverse._41,viewMatrixInverse._42,viewMatrixInverse._43 };
 
-	_float4x4 viewMatrixInverse = m_MainCameraContext.viewMatrixInverse;
-	m_MainCameraContext.camPosition = _float3{ viewMatrixInverse._41,viewMatrixInverse._42,viewMatrixInverse._43 };
+		m_MainCameraContext.farZ = m_pMainCamera->GetFarZ();
+		m_MainCameraContext.nearZ = m_pMainCamera->GetNearZ();
+	}
 
-	m_MainCameraContext.farZ = m_pMainCamera->GetFarZ();
-	m_MainCameraContext.nearZ = m_pMainCamera->GetNearZ();
+	/*shadow cam*/
+	if (m_pShadowCamera)
+	{
+		m_ShadowCameraContext.viewMatrix = m_pShadowCamera->GetViewMatrix();
+		m_ShadowCameraContext.projMatrix = m_pShadowCamera->GetProjMatrix();
+
+		XMStoreFloat4x4(&m_ShadowCameraContext.viewMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ShadowCameraContext.viewMatrix)));
+
+		XMStoreFloat4x4(&m_ShadowCameraContext.projMatrixInverse, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ShadowCameraContext.projMatrix)));
+
+		_float4x4 shadowViewMatrixInverse = m_ShadowCameraContext.viewMatrixInverse;
+		m_ShadowCameraContext.camPosition = _float3{ shadowViewMatrixInverse._41,shadowViewMatrixInverse._42,shadowViewMatrixInverse._43 };
+
+		m_ShadowCameraContext.farZ = m_pShadowCamera->GetFarZ();
+		m_ShadowCameraContext.nearZ = m_pShadowCamera->GetNearZ();
+	}
 }
 
 void CameraManager::SetMainCamera(const _string& cameraTag)
@@ -70,7 +87,7 @@ void CameraManager::SetShadowCamera(const _string& cameraTag)
 	if (iter == m_Cameras.end())
 		MSG_BOX("Invalid camera tag");
 
-	Safe_Release(m_pMainCamera);
+	Safe_Release(m_pShadowCamera);
 
 	m_pShadowCamera = iter->second;
 	m_pShadowCamera->AddRef();
@@ -80,6 +97,30 @@ void CameraManager::AddCamera(const _string& cameraTag, CameraComponent* compone
 {
 	m_Cameras.emplace(cameraTag, component);
 	component->AddRef();
+}
+
+void CameraManager::RemoveCamera(const _string& cameraTag)
+{
+	auto iter = m_Cameras.find(cameraTag);
+
+	if (iter != m_Cameras.end())
+	{
+		if (iter->second == m_pMainCamera)
+		{
+			Safe_Release(m_pMainCamera);
+			m_pMainCamera = nullptr;
+		}
+
+		if (iter->second == m_pShadowCamera)
+		{
+			Safe_Release(m_pShadowCamera);
+			m_pShadowCamera = nullptr;
+		}
+
+		Safe_Release(iter->second);
+
+		m_Cameras.erase(iter);
+	}
 }
 
 void CameraManager::MakeShake(_float duration, _float power)
@@ -118,4 +159,5 @@ void CameraManager::Free()
 		Safe_Release(pair.second);
 
 	Safe_Release(m_pMainCamera);
+	Safe_Release(m_pShadowCamera);
 }

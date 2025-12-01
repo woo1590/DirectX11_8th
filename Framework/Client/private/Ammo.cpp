@@ -104,7 +104,7 @@ void Ammo::Interaction(PlayerInteractionComponent* interaction)
 	_uint ammo = random->get<_uint>(50, 70);
 	interaction->AddAmmo(ammo);
 
-	EngineCore::GetInstance()->Play2DSound("SFX_PickUpAmmo", 0.8f);
+	EngineCore::GetInstance()->Play2DSound("SFX_PickUpAmmo", 0.5f);
 
 	SetDead();
 }

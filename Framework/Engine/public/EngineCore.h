@@ -54,7 +54,9 @@ public:
 
 #pragma region CameraManager
     void AddCamera(const _string& cameraTag, class CameraComponent* component);
+    void RemoveCamera(const _string& cameraTag);
     void SetMainCamera(const _string& cameraTag);
+    void SetShadowCamera(const _string& cameraTag);
     CAMERA_CONTEXT GetCameraContext();
     CAMERA_CONTEXT GetShadowCameraContext();
     _float3 WorldToScreen(_float3 worldPosition);   /*only use late update*/

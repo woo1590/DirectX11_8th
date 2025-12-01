@@ -72,6 +72,13 @@ HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag, _bool isClearDSV, I
 		return E_FAIL;
 	}
 
+	ID3D11ShaderResourceView* pSRV[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {
+		nullptr
+	};
+
+	m_pDeviceContext->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, pSRV);
+
+
 	m_pDeviceContext->OMGetRenderTargets(1, &m_pBackBuffer, &m_pDSV);
 
 	_uint numTargets{};

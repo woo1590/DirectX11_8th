@@ -52,6 +52,9 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderLight(m_CurrFrameLights)))
 		return E_FAIL;
 
+	if (FAILED(m_pRenderer->RenderEmissiveBlur()))
+		return E_FAIL;
+
 	if (FAILED(m_pRenderer->RenderCombined()))
 		return E_FAIL;
 

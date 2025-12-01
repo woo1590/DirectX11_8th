@@ -31,8 +31,9 @@ public:
     void PriorityUpdate(_float dt)override;
     void Update(_float dt)override;
     void LateUpdate(_float dt)override;
-    void Explode();
+    void OnCollisionEnter(ColliderComponent* otherCollider)override;
 
+    void Explode();
     Object* Clone(InitDESC* arg)override;
     void Free()override;
 

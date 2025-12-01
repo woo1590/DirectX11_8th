@@ -76,7 +76,7 @@ HRESULT CrossbowMan::Initialize(InitDESC* arg)
 
     /*status*/
     StatusComponent::STATUS_DESC statusDesc{};
-    statusDesc.hp = 100;
+    statusDesc.hp = 80;
     auto status = GetComponent<StatusComponent>();
     status->Initialize(&statusDesc);
 
