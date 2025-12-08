@@ -58,6 +58,9 @@ HRESULT RenderSystem::RenderLoop()
 	if (FAILED(m_pRenderer->RenderCombined()))
 		return E_FAIL;
 
+	if (FAILED(m_pRenderer->RenderRadialBlur()))
+		return E_FAIL;
+
 	if (FAILED(m_pRenderer->RenderNonLight(m_CurrFrameProxies[ENUM_CLASS(RenderGroup::NonLight)])))
 		return E_FAIL;
 

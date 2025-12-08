@@ -8,6 +8,7 @@
 #include "Bounding_Sphere.h"
 #include "CrosshairController.h"
 #include "Random.h"
+#include "Renderer.h"
 
 //object
 #include "Hand.h"
@@ -375,11 +376,193 @@ void Player::OnCollisionEnter(ColliderComponent* otherCollider)
 	case Client::ColliderFilter::BossPillar:
 		break;
 	case Client::ColliderFilter::BossArmProjectile:
-		break;
+	{
+		auto status = GetComponent<StatusComponent>();
+		status->BeAttacked(40);
+
+		_float shieldRatio = status->GetShieldRatio();
+		_float hpRatio = status->GetHpRatio();
+
+		if (m_iLastHp != status->GetDesc().hp)
+		{
+			PlayerPanel::PLAYER_HEALTH_PARAM param{};
+			param.ratio = hpRatio;
+			param.currHealth = status->GetDesc().hp;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), param);
+		}
+
+		if (m_iLastShield != status->GetDesc().shield)
+		{
+			PlayerPanel::PLAYER_SHIELD_PARAM param{};
+			param.ratio = shieldRatio;
+			param.currShield = status->GetDesc().shield;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), param);
+		}
+
+		m_iLastShield = status->GetDesc().shield;
+		m_iLastHp = status->GetDesc().hp;
+		m_fLastHitElapsedTime = 0.f;
+
+		if (m_fHitsoundElapsedTime >= 1.f)
+		{
+			_uint rand = engine->GetRandom()->get<_uint>(0, 1);
+			if (rand == 0)
+				engine->Play2DSound("SFX_PlayerHitVoice0", 0.8f);
+			else
+				engine->Play2DSound("SFX_PlayerHitVoice1", 0.8f);
+
+			m_fHitsoundElapsedTime = 0.f;
+		}
+		engine->Play2DSound("SFX_PlayerHit", 0.5f);
+
+		HitSight::HIT_SIGHT_DESC desc{};
+		desc.hitWorldPosition = otherCollider->GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitSight", ENUM_CLASS(LevelID::Stage1), "Layer_UI", &desc);
+	}break;
+	case Client::ColliderFilter::BossLaserProjectile:
+	{
+		auto status = GetComponent<StatusComponent>();
+		status->BeAttacked(50);
+
+		_float shieldRatio = status->GetShieldRatio();
+		_float hpRatio = status->GetHpRatio();
+
+		if (m_iLastHp != status->GetDesc().hp)
+		{
+			PlayerPanel::PLAYER_HEALTH_PARAM param{};
+			param.ratio = hpRatio;
+			param.currHealth = status->GetDesc().hp;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), param);
+		}
+
+		if (m_iLastShield != status->GetDesc().shield)
+		{
+			PlayerPanel::PLAYER_SHIELD_PARAM param{};
+			param.ratio = shieldRatio;
+			param.currShield = status->GetDesc().shield;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), param);
+		}
+
+		m_iLastShield = status->GetDesc().shield;
+		m_iLastHp = status->GetDesc().hp;
+		m_fLastHitElapsedTime = 0.f;
+
+		if (m_fHitsoundElapsedTime >= 1.f)
+		{
+			_uint rand = engine->GetRandom()->get<_uint>(0, 1);
+			if (rand == 0)
+				engine->Play2DSound("SFX_PlayerHitVoice0", 0.8f);
+			else
+				engine->Play2DSound("SFX_PlayerHitVoice1", 0.8f);
+
+			m_fHitsoundElapsedTime = 0.f;
+		}
+		engine->Play2DSound("SFX_PlayerHit", 0.5f);
+
+		HitSight::HIT_SIGHT_DESC desc{};
+		desc.hitWorldPosition = otherCollider->GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitSight", ENUM_CLASS(LevelID::Stage1), "Layer_UI", &desc);
+	}break;
 	case Client::ColliderFilter::Spawner:
 		break;
 	case Client::ColliderFilter::Item:
 		break;
+	case Client::ColliderFilter::Boom:
+	{
+		auto status = GetComponent<StatusComponent>();
+		status->BeAttacked(30);
+
+		_float shieldRatio = status->GetShieldRatio();
+		_float hpRatio = status->GetHpRatio();
+
+		if (m_iLastHp != status->GetDesc().hp)
+		{
+			PlayerPanel::PLAYER_HEALTH_PARAM param{};
+			param.ratio = hpRatio;
+			param.currHealth = status->GetDesc().hp;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), param);
+		}
+
+		if (m_iLastShield != status->GetDesc().shield)
+		{
+			PlayerPanel::PLAYER_SHIELD_PARAM param{};
+			param.ratio = shieldRatio;
+			param.currShield = status->GetDesc().shield;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), param);
+		}
+
+		m_iLastShield = status->GetDesc().shield;
+		m_iLastHp = status->GetDesc().hp;
+		m_fLastHitElapsedTime = 0.f;
+
+		if (m_fHitsoundElapsedTime >= 1.f)
+		{
+			_uint rand = engine->GetRandom()->get<_uint>(0, 1);
+			if (rand == 0)
+				engine->Play2DSound("SFX_PlayerHitVoice0", 0.8f);
+			else
+				engine->Play2DSound("SFX_PlayerHitVoice1", 0.8f);
+
+			m_fHitsoundElapsedTime = 0.f;
+		}
+		engine->Play2DSound("SFX_PlayerHit", 0.5f);
+
+		HitSight::HIT_SIGHT_DESC desc{};
+		desc.hitWorldPosition = otherCollider->GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitSight", ENUM_CLASS(LevelID::Stage1), "Layer_UI", &desc);
+	}break;
+	case Client::ColliderFilter::BarrelBoom:
+	{
+		auto status = GetComponent<StatusComponent>();
+		status->BeAttacked(30);
+
+		_float shieldRatio = status->GetShieldRatio();
+		_float hpRatio = status->GetHpRatio();
+
+		if (m_iLastHp != status->GetDesc().hp)
+		{
+			PlayerPanel::PLAYER_HEALTH_PARAM param{};
+			param.ratio = hpRatio;
+			param.currHealth = status->GetDesc().hp;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerHealthDecrease), param);
+		}
+
+		if (m_iLastShield != status->GetDesc().shield)
+		{
+			PlayerPanel::PLAYER_SHIELD_PARAM param{};
+			param.ratio = shieldRatio;
+			param.currShield = status->GetDesc().shield;
+
+			engine->PublishEvent(ENUM_CLASS(EventID::PlayerShieldDecrease), param);
+		}
+
+		m_iLastShield = status->GetDesc().shield;
+		m_iLastHp = status->GetDesc().hp;
+		m_fLastHitElapsedTime = 0.f;
+
+		if (m_fHitsoundElapsedTime >= 1.f)
+		{
+			_uint rand = engine->GetRandom()->get<_uint>(0, 1);
+			if (rand == 0)
+				engine->Play2DSound("SFX_PlayerHitVoice0", 0.8f);
+			else
+				engine->Play2DSound("SFX_PlayerHitVoice1", 0.8f);
+
+			m_fHitsoundElapsedTime = 0.f;
+		}
+		engine->Play2DSound("SFX_PlayerHit", 0.5f);
+
+		HitSight::HIT_SIGHT_DESC desc{};
+		desc.hitWorldPosition = otherCollider->GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HitSight", ENUM_CLASS(LevelID::Stage1), "Layer_UI", &desc);
+	}break;
 	default:
 		break;
 	}
@@ -746,6 +929,7 @@ void Player::PlayerDash::Update(Object* object, _float dt)
 	{
 		_float t = m_fElapsedTime / m_fDuration;
 		t = std::clamp(t, 0.f, 1.f);
+		EngineCore::GetInstance()->GetRenderer()->SetRadialBlurProgress(1.f - t);
 
 		auto rigidBody = object->GetComponent<RigidBodyComponent>();
 		_float3 velocity{};
@@ -764,6 +948,7 @@ void Player::PlayerDash::Update(Object* object, _float dt)
 		}
 
 		rigidBody->SetVelocity(velocity);
+
 	}
 }
 
@@ -775,6 +960,8 @@ void Player::PlayerDash::TestForExit(Object* object)
 		player->ChangeState(&player->m_PlayerIdle);
 
 		player->m_IsDash = false;
+
+		EngineCore::GetInstance()->GetRenderer()->SetRadialBlurProgress(0.f);
 	}
 }
 

@@ -33,7 +33,7 @@ private:
 
     FMOD::System* m_System = nullptr;
     Object* m_pListener = nullptr;
-    _float m_fMasterVolume = 0.5f;
+    _float m_fMasterVolume = 0.2f;
     _uint m_iNextChannelID{};
 
     std::unordered_map<std::string, FMOD::Sound*> m_SoundMap;

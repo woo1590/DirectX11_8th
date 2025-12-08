@@ -166,6 +166,11 @@ void BossStoneProjectile::SetDead()
 	desc.position = m_pTransform->GetPosition();
 
 	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossStoneExplode", engine->GetCurrLevelID(), "Layer_Effect", &desc);
+
+	Object::OBJECT_DESC boomDesc{};
+	boomDesc.position = desc.position;
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Boom", engine->GetCurrLevelID(), "Layer_Boom", &boomDesc);
+
 	engine->Play3DSound("SFX_BossStoneExplode", desc.position, 0.4f);
 }
 

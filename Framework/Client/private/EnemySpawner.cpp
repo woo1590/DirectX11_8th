@@ -149,6 +149,7 @@ void EnemySpawner::SpawnerSpawn::Enter(Object* object)
 {
 	auto spawner = static_cast<EnemySpawner*>(object);
 
+	_uint index{};
 	auto engine = EngineCore::GetInstance();
 	for (const auto& entry : spawner->m_Waves[spawner->m_iCurrWave])
 	{
@@ -158,8 +159,11 @@ void EnemySpawner::SpawnerSpawn::Enter(Object* object)
 			Object* enemy = nullptr;
 			engine->AddObject(ENUM_CLASS(LevelID::Static), entry.prototypeTag, engine->GetCurrLevelID(), "Layer_Enemy", nullptr, &enemy);
 			
-			enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[rand]);
+			enemy->GetComponent<NavigationComponent>()->SpawnInCell(spawner->m_AvailableNavCellIndices[index++]);
 			spawner->m_CurrWaveEnemies.push_back(enemy);
+
+			if (index >= spawner->m_AvailableNavCellIndices.size())
+				index = 0;
 		}
 	}
 

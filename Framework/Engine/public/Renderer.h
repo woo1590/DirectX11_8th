@@ -26,14 +26,18 @@ public:
     HRESULT RenderLight(const std::vector<LightProxy>& proxies);
     HRESULT RenderEmissiveBlur();
     HRESULT RenderCombined();
+    HRESULT RenderRadialBlur();
     HRESULT RenderNonLight(const std::vector<RenderProxy>& proxies);
     HRESULT RenderBlend(const std::vector<RenderProxy>& proxies);
+
     HRESULT RenderCustomDraw(const std::vector<RenderProxy>& proxies);
     HRESULT RenderUI(const std::vector<RenderProxy>& proxies);
 
     HRESULT ConnectConstantBuffer(Shader* shader);
     void Free()override;
 
+public:
+    void SetRadialBlurProgress(_float progress) { m_fRadialBlurProgress = progress; }
 private:
     HRESULT Initialize_DeferredTargets(D3D11_VIEWPORT viewPort);
     HRESULT DrawProxy(const RenderProxy& proxy);
@@ -60,8 +64,12 @@ private:
     /*for shadow*/
     ID3D11DepthStencilView* m_pShadowDSV = nullptr;
 
-    /*for blur*/
+    /*for emissive blur*/
     _float2 m_BlurScreenSize{};
+    ID3D11DepthStencilView* m_pBlurDSV = nullptr;
+
+    /*for radial blur*/
+    _float m_fRadialBlurProgress{};
 };
 
 NS_END

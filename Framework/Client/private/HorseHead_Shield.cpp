@@ -75,12 +75,11 @@ void HorseHead_Shield::OnCollisionEnter(ColliderComponent* otherCollider)
 {
 	if (otherCollider->GetFilter() == ENUM_CLASS(ColliderFilter::PlayerProjectile))
 	{
-		if (m_fSoundElapsedTime >= 0.2f)
+		if (m_fSoundElapsedTime >= 0.15f)
 		{
 			_float3 position = m_pTransform->GetWorldPosition();
 			EngineCore::GetInstance()->Play3DSound("SFX_HitEnemyShield", position, 0.6f);
-
-			m_fSoundElapsedTime = 0.f;
+				m_fSoundElapsedTime = 0.f;
 		}
 	}
 }

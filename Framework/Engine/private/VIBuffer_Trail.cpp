@@ -22,7 +22,7 @@ HRESULT VIBuffer_Trail::Initialize(_uint numMaxPoints)
 
 	m_iNumVertexBuffers = 1;
 
-	m_iVertexStride = sizeof(VTX_RIBBON);
+	m_iVertexStride = sizeof(VTX_TRAIL);
 	m_iNumVertices = maxLines * 2;
 
 	m_iIndexStride = 0;
@@ -48,6 +48,12 @@ HRESULT VIBuffer_Trail::Initialize(_uint numMaxPoints)
 
 void VIBuffer_Trail::UpdateBuffer(const VTX_TRAIL* vertices, _uint numPoints)
 {
+	if (numPoints < 2)
+	{
+		m_iNumVertices = 0;
+		return;
+	}
+
 	_uint numLines = numPoints - 1;
 
 	m_iNumVertices = numLines * 2;
@@ -62,6 +68,9 @@ void VIBuffer_Trail::UpdateBuffer(const VTX_TRAIL* vertices, _uint numPoints)
 
 HRESULT VIBuffer_Trail::BindBuffers()
 {
+	if (m_iNumVertices < 2)
+		return S_OK;
+
 	ID3D11Buffer* vertexBuffers[] =
 	{
 		m_pVB
@@ -85,6 +94,9 @@ HRESULT VIBuffer_Trail::BindBuffers()
 
 HRESULT VIBuffer_Trail::Draw()
 {
+	if (m_iNumVertices < 2)
+		return S_OK;
+
 	m_pDeviceContext->Draw(m_iNumVertices, 0);
 
 	return S_OK;

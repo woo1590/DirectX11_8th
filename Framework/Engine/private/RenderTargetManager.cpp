@@ -63,7 +63,7 @@ HRESULT RenderTargetManager::BindShaderResource(Shader* shader, const _string& t
 	return target->BindShaderResource(shader, constantName);
 }
 
-HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag, _bool isClearDSV, ID3D11DepthStencilView* dsv)
+HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag,_bool isTargetClear, _bool isClearDSV, ID3D11DepthStencilView* dsv)
 {
 	std::list<RenderTarget*>* mrt = FindMRT(mrtTag);
 	if (!mrt)
@@ -85,7 +85,8 @@ HRESULT RenderTargetManager::BeginMRT(const _string& mrtTag, _bool isClearDSV, I
 	ID3D11RenderTargetView* renderTargets[8] = {};
 	for (const auto& target : *mrt)
 	{
-		target->Clear();
+		if(isTargetClear)
+			target->Clear();
 		renderTargets[numTargets++] = target->GetRTV();
 	}
 

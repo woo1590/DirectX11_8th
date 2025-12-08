@@ -171,7 +171,6 @@ void EngineCore::Tick(_float dt)
 	m_pObjectManager->LateUpdate(dt);
 	m_pSoundManager->Update();
 
-	
 	m_pLevelManager->Update(dt);
 	m_pLevelManager->Render(); /*Debug Only*/
 
@@ -488,6 +487,10 @@ _float2 EngineCore::GetMouseDelta() const
 {
 	return m_pInputSystem->GetMouseDelta();
 }
+_float2 EngineCore::GetMousePosition() const
+{
+	return m_pInputSystem->GetMousePosition();
+}
 _bool EngineCore::IsKeyDown(WPARAM key) const
 {
 	return m_pInputSystem->IsKeyDown(key);
@@ -580,9 +583,9 @@ HRESULT EngineCore::BindShaderResource(Shader* shader, const _string& targetTag,
 {
 	return m_pRenderTargetManager->BindShaderResource(shader, targetTag, constantName);
 }
-HRESULT EngineCore::BeginMRT(const _string& mrtTag, _bool isClearDSV, ID3D11DepthStencilView* dsv)
+HRESULT EngineCore::BeginMRT(const _string& mrtTag, _bool isTargetClear, _bool isClearDSV, ID3D11DepthStencilView* dsv)
 {
-	return m_pRenderTargetManager->BeginMRT(mrtTag, isClearDSV, dsv);
+	return m_pRenderTargetManager->BeginMRT(mrtTag,isTargetClear, isClearDSV, dsv);
 }
 HRESULT EngineCore::EndMRT()
 {
@@ -618,6 +621,11 @@ void EngineCore::AddFont(const _string& fontTag, const _string& filePath)
 void EngineCore::AddFontProxy(FONT_PROXY proxy)
 {
 	m_pFontManager->AddProxy(proxy);
+}
+
+HRESULT EngineCore::DrawFont(FONT_PROXY proxy)
+{
+	return m_pFontManager->DrawFont(proxy);
 }
 
 HRESULT EngineCore::RenderFont()

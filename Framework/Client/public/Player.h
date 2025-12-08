@@ -81,6 +81,9 @@ private:
 
     _float m_fHitsoundElapsedTime{};
 
+    _float timer{};
+    _float blur = 2.f;
+
 private:
     class PlayerIdle : public State
     {

@@ -1,6 +1,6 @@
 #pragma once
 
-#define USE_IMGUI
+//#define USE_IMGUI
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
 
@@ -18,6 +18,7 @@
 
 #include "directxtk/SpriteBatch.h"
 #include "directxtk/SpriteFont.h"
+#include "directxtk/CommonStates.h"
 #include "directxtk/VertexTypes.h"
 #include "directxtk/PrimitiveBatch.h"
 #include "directxtk/Effects.h"

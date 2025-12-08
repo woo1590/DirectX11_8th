@@ -103,7 +103,7 @@ HRESULT MinimapLevel::ExtractRenderProxies(std::vector<std::vector<RenderProxy>>
 	_float3 scale = m_pTransform->GetScale();
 
 	FONT_PROXY font{};
-	font.fontTag = "GMarket_Font";
+	font.fontTag = "Default_Font";
 	font.color = _float4{ 189.f / 255.f,172.f / 255.f,128.f / 255.f,1.f };
 	font.scale = 0.33f;
 	font.screenPosition.x = position.x + WinSizeX * 0.48f - scale.x * 0.26f;

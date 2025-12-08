@@ -19,7 +19,7 @@ SelectHomeLevel* SelectHomeLevel::Create()
 
 HRESULT SelectHomeLevel::Initialize()
 {
-
+	return S_OK;
 }
 
 void SelectHomeLevel::Free()
@@ -41,6 +41,8 @@ HRESULT SelectHomeLevel::Initialize_LayerHome(const _string& layerTag)
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SelectHome", ENUM_CLASS(LevelID::SelectHome), layerTag)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT SelectHomeLevel::Initialize_LayerCharacter(const _string& layerTag)

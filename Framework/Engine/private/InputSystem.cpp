@@ -1,6 +1,6 @@
 #include "EnginePCH.h"
 #include "InputSystem.h"
-
+#include "EngineCore.h"
 
 InputSystem::InputSystem()
 {
@@ -125,6 +125,15 @@ void InputSystem::OnMouseEvent(const RAWMOUSE& mouse)
 void InputSystem::SetMouseDelta(_float dx, _float dy)
 {
 	m_MouseDelta = { dx,dy };
+}
+
+_float2 InputSystem::GetMousePosition() const
+{
+	POINT cursorPos{};
+	GetCursorPos(&cursorPos);
+	ClientToScreen(EngineCore::GetInstance()->GetWindowHandle(), &cursorPos);
+
+	return _float2{ static_cast<_float>(cursorPos.x),static_cast<_float>(cursorPos.y) };
 }
 
 _bool InputSystem::IsKeyDown(WPARAM key) const

@@ -556,7 +556,7 @@ void HorseHead::HorseHeadDead::Enter(Object* object)
 	desc.quaternion = transform->GetQuaternion();
 
 	auto random = engine->GetRandom();
-	for (_uint i = 0; i < 16; i += 3)
+	for (_uint i = 0; i < 16; i += 2)
 	{
 		desc.position.x = position.x + random->get<_float>(-4.f, 4.f);
 		desc.position.y = position.y + random->get<_float>(4.f, 7.f);

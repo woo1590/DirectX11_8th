@@ -59,11 +59,11 @@ HRESULT AnimatorComponent::SetAnimation(_uint levelID, const _string& key)
 {
 	m_AnimationSet = EngineCore::GetInstance()->GetAnimation(levelID, key);
 
-	if (!m_AnimationSet.numAnimations)
-	{
-		MSG_BOX("Empty animation");
-		return E_FAIL;
-	}
+	//if (!m_AnimationSet.numAnimations)
+	//{
+	//	MSG_BOX("Empty animation");
+	//	//return E_FAIL;
+	//}
 
 	for (auto& animation : m_AnimationSet.aniamtionClips)
 		animation->AddRef();

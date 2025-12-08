@@ -19,6 +19,7 @@
 #include "PlayerPanel.h"
 #include "SkillPanel.h"
 #include "HitSight.h"
+#include "StageFont.h"
 
 //component
 #include "NavigationComponent.h"
@@ -62,6 +63,9 @@ HRESULT Stage1::Initialize()
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerBarrel("Layer_Barrel")))
+		return E_FAIL;
+
 	GameManager::GetInstance()->EndBattle();
 
 	return S_OK;
@@ -79,18 +83,19 @@ void Stage1::Update(_float dt)
 	if (engine->IsKeyPressed('N'))
 	{
 		//engine->IsNavDebugEnable() ? engine->NavDebugDisable() : engine->NavDebugEnable();
-		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_SpearMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Soldier", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
 		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Bomber", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
-		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Beetle", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Bomber", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_CrossbowMan", ENUM_CLASS(LevelID::Stage1), "Layer_Enemy");
+		//engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage1), "Layer_Barrel");
 	}
 
 	if (engine->IsKeyPressed('O'))
 	{
-		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::Loading, LoadingLevel::Create(LevelID::StageBoss)));
+		engine->RegisterCommand(Command_ChangeLevel::Create(LevelID::Loading, LoadingLevel::Create(LevelID::Stage3)));
 	}
 
 	m_fSFXElapsedTime += dt;
@@ -308,6 +313,12 @@ HRESULT Stage1::Initialize_LayerUI(const _string& layerTag)
 
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapPanel", ENUM_CLASS(LevelID::Stage1), layerTag)))
 		return E_FAIL;
+	
+	StageFont::STAGE_FONT_DESC desc{};
+	desc.stageID = LevelID::Stage1;
+	desc.position = _float3{ -2.f,22.f, 143.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_StageFont", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -316,28 +327,46 @@ HRESULT Stage1::Initialize_LayerChest(const _string& layerTag)
 {
 	auto engine = EngineCore::GetInstance();
 
-	Chest::CHEST_DESC chest1Desc{};
-	chest1Desc.weaponID = WeaponID::Prism;
-	chest1Desc.position = _float3{ 40.f,0.f,200.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest1Desc)))
+	{
+		Object* chest = nullptr;
+		Chest::CHEST_DESC chest1Desc{};
+		chest1Desc.weaponID = WeaponID::Hell;
+		chest1Desc.position = _float3{ 193.f,0.f,193.f };
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest1Desc,&chest)))
+			return E_FAIL;
+
+		chest->GetComponent<TransformComponent>()->Rotate(_float3{ 0.f,math::ToRadian(90.f),0.f });
+	}
+
+	{
+		//Object* chest = nullptr;
+		//Chest::CHEST_DESC chest1Desc{};
+		//chest1Desc.weaponID = WeaponID::Cameleon;
+		//chest1Desc.position = _float3{ 500.f,12.f,95.f };
+		//if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, //&chest1Desc,&chest)))
+		//	return E_FAIL;
+		//
+		//chest->GetComponent<TransformComponent>()->Rotate(_float3{ 0.f,math::ToRadian(90.f),0.f });
+	}
+
+	return S_OK;
+}
+
+HRESULT Stage1::Initialize_LayerBarrel(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	Object::OBJECT_DESC desc{};
+	desc.position = _float3{ 134.f,0.f,202.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
 		return E_FAIL;
 
-	Chest::CHEST_DESC chest2Desc{};
-	chest2Desc.weaponID = WeaponID::Cameleon;
-	chest2Desc.position = _float3{ 40.f,0.f,250.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest2Desc)))
+	desc.position = _float3{ 254.f,0.5f,80.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
 		return E_FAIL;
 
-	Chest::CHEST_DESC chest3Desc{};
-	chest3Desc.weaponID = WeaponID::ConcealedAmmo;
-	chest3Desc.position = _float3{ 40.f,0.f,150.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest3Desc)))
-		return E_FAIL;
-	
-	Chest::CHEST_DESC chest4Desc{};
-	chest4Desc.weaponID = WeaponID::Hell;
-	chest4Desc.position = _float3{ 90.f,0.f,150.f };
-	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage1), layerTag, &chest4Desc)))
+	desc.position = _float3{ 609.f,-5.f,170.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage1), layerTag, &desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -25,7 +25,7 @@ private:
     SpriteFont* m_pFont = nullptr;
 
     /*staet*/   
-    ID3D11BlendState* m_pBlendState = nullptr;
+    CommonStates* m_pState = nullptr;
 };
 
 NS_END

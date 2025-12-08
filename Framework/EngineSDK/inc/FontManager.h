@@ -17,6 +17,7 @@ public:
 
     void AddFont(const _string& fontTag, const _string& filePath);
     void AddProxy(FONT_PROXY proxy);
+    HRESULT DrawFont(FONT_PROXY proxy);
     HRESULT RenderFont();
 
     void Free()override;

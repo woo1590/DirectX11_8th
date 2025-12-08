@@ -80,7 +80,7 @@ void Decal::Update(_float dt)
     if (m_fElapsedTime >= m_fDuration)
         SetDead();
 
-    GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat("g_DecalProgress", m_fElapsedTime / m_fDuration);
+    //GetComponent<SpriteComponent>()->GetMaterialInstance()->SetFloat("g_DecalProgress", m_fElapsedTime / m_fDuration);
 }
 
 void Decal::LateUpdate(_float dt)

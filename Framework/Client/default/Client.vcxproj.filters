@@ -424,9 +424,6 @@
     <Filter Include="02. Object\Enemy\Beetle\Head">
       <UniqueIdentifier>{45a0dbd4-9476-4205-811c-5a17196da386}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Object\Enemy\Bomber\Head">
-      <UniqueIdentifier>{d30b8946-2011-44a4-82c2-9d5454e3b005}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Object\UIObject\LoadingPanel">
       <UniqueIdentifier>{584eae93-e791-4a82-b67f-25b3dd596284}</UniqueIdentifier>
     </Filter>
@@ -435,6 +432,45 @@
     </Filter>
     <Filter Include="01. Level\SelectHomeLevel">
       <UniqueIdentifier>{ab922927-5b8f-4ffa-b515-7b0bb8d1f228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Camera\FreeCam">
+      <UniqueIdentifier>{5e784ba1-6dce-4d39-8120-92baf23a0675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\LogoPlayer">
+      <UniqueIdentifier>{d5abda1b-67e4-4372-9cab-5741e94d045d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\LogoPanda">
+      <UniqueIdentifier>{d205ca4b-2614-4140-8cf5-8c00d55d6aac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Camera\LogoCam">
+      <UniqueIdentifier>{57c76d2c-ef84-40b1-8393-bd1f84f4ef1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\Button">
+      <UniqueIdentifier>{fd55375b-18d0-4016-924e-41b03a48a2df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\MouseCursor">
+      <UniqueIdentifier>{199dab0d-2216-4e65-850a-3f58f9de781b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\StageFont">
+      <UniqueIdentifier>{2bc67454-c8b0-4cae-950b-0756b07209f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\UIObject\ExitButton">
+      <UniqueIdentifier>{234bf5cf-3805-488b-9c80-06d0c5aa475b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Enemy\Bomber\Boom">
+      <UniqueIdentifier>{d30b8946-2011-44a4-82c2-9d5454e3b005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Camera\LogoShadowCam">
+      <UniqueIdentifier>{bf48a623-deab-472c-9d9b-6f2e686d4d74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Barrel">
+      <UniqueIdentifier>{71d6c04a-a61f-4e7f-a879-a2f8c5a34c61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Effect\ShieldHit">
+      <UniqueIdentifier>{e366ddd0-2a64-411d-b079-24f716aa0a24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\Barrel\BarrelBoom">
+      <UniqueIdentifier>{d225b1e7-adb4-437a-ad3a-0a77db671a9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -837,6 +873,45 @@
     <ClInclude Include="..\public\SelectHomeLevel.h">
       <Filter>01. Level\SelectHomeLevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FreeCam.h">
+      <Filter>02. Object\Camera\FreeCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoPanda.h">
+      <Filter>02. Object\LogoPanda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoPlayer.h">
+      <Filter>02. Object\LogoPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoCam.h">
+      <Filter>02. Object\Camera\LogoCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Button.h">
+      <Filter>02. Object\UIObject\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MouseCursor.h">
+      <Filter>02. Object\UIObject\MouseCursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StageFont.h">
+      <Filter>02. Object\StageFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ExitButton.h">
+      <Filter>02. Object\UIObject\ExitButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boom.h">
+      <Filter>02. Object\Enemy\Bomber\Boom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoShadowCam.h">
+      <Filter>02. Object\Camera\LogoShadowCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Barrel.h">
+      <Filter>02. Object\Barrel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ShieldHit.h">
+      <Filter>02. Object\Effect\ShieldHit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BarrelBoom.h">
+      <Filter>02. Object\Barrel\BarrelBoom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1225,6 +1300,45 @@
     </ClCompile>
     <ClCompile Include="..\private\SelectHomeLevel.cpp">
       <Filter>01. Level\SelectHomeLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FreeCam.cpp">
+      <Filter>02. Object\Camera\FreeCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoPanda.cpp">
+      <Filter>02. Object\LogoPanda</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoPlayer.cpp">
+      <Filter>02. Object\LogoPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoCam.cpp">
+      <Filter>02. Object\Camera\LogoCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Button.cpp">
+      <Filter>02. Object\UIObject\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MouseCursor.cpp">
+      <Filter>02. Object\UIObject\MouseCursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StageFont.cpp">
+      <Filter>02. Object\StageFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ExitButton.cpp">
+      <Filter>02. Object\UIObject\ExitButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boom.cpp">
+      <Filter>02. Object\Enemy\Bomber\Boom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoShadowCam.cpp">
+      <Filter>02. Object\Camera\LogoShadowCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Barrel.cpp">
+      <Filter>02. Object\Barrel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ShieldHit.cpp">
+      <Filter>02. Object\Effect\ShieldHit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BarrelBoom.cpp">
+      <Filter>02. Object\Barrel\BarrelBoom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

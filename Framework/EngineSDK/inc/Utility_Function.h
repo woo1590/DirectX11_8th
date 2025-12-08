@@ -65,6 +65,14 @@ namespace math
 		return t * t * t * t;
 	}
 
+	//inline _float EaseOutBounce(_float t)
+	//{
+	//	return 
+	//		t < 0.5f
+	//		? (1.f - EaseOutBounce(1.f - 2.f * t)) / 2.f
+	//		: (1.f + EaseOutBounce(2.f * t - 1.f)) / 2.f;
+	//}
+
 	inline _float EaseOutSline(_float t)
 	{
 		t = std::clamp(t, 0.f, 1.f);

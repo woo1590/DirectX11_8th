@@ -269,6 +269,10 @@ void BossPillar::BossPillarExlplode::TestForExit(Object* object)
 		effectDesc.position.y = -10.f;
 		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarExplode", engine->GetCurrLevelID(), "Layer_Effect", &effectDesc);
 
+		Object::OBJECT_DESC boomDesc{};
+		boomDesc.position = effectDesc.position;
+		engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Boom", engine->GetCurrLevelID(), "Layer_Boom", &boomDesc);
+
 		object->SetDead();
 	}
 }

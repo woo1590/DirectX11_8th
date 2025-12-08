@@ -41,6 +41,7 @@ protected:
 
     ModelComponent* m_pOutLineModel = nullptr;
     _bool m_IsLockOn = false;
+    _bool m_IsExplodeDead = false;
 };
 
 NS_END

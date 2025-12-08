@@ -112,6 +112,7 @@ public:
     void OnMouseEvent(const RAWMOUSE& mouse);
     void SetMouseDelta(_float dx, _float dy);
     _float2 GetMouseDelta()const;
+    _float2 GetMousePosition()const;
 
     _bool IsKeyDown(WPARAM key)const;
     _bool IsKeyPressed(WPARAM key)const;
@@ -146,7 +147,7 @@ public:
     HRESULT AddRenderTarget(const _string& targetTag, _uint width, _uint height, DXGI_FORMAT format, _float4 clearColor);
     HRESULT AddMRT(const _string& mrtTag, const _string& targetTag);
     HRESULT BindShaderResource(class Shader* shader, const _string& targetTag, const _string& constantName);
-    HRESULT BeginMRT(const _string& mrtTag, _bool isClearDSV = false, ID3D11DepthStencilView* dsv = nullptr);
+    HRESULT BeginMRT(const _string& mrtTag,_bool isTargetClear = true, _bool isClearDSV = false, ID3D11DepthStencilView* dsv = nullptr);
     HRESULT EndMRT();
     ID3D11ShaderResourceView* GetSRV(const _string& targetTag);
 #pragma endregion
@@ -160,6 +161,7 @@ public:
 #pragma region Font
     void AddFont(const _string& fontTag, const _string& filePath);
     void AddFontProxy(FONT_PROXY proxy);
+    HRESULT DrawFont(FONT_PROXY proxy);
     HRESULT RenderFont();
 #pragma endregion
 

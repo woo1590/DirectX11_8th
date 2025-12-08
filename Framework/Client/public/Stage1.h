@@ -30,6 +30,7 @@ private:
     HRESULT Initialize_LayerCamera(const _string& layerTag);
     HRESULT Initialize_LayerUI(const _string& layerTag);
     HRESULT Initialize_LayerChest(const _string& layerTag);
+    HRESULT Initialize_LayerBarrel(const _string& layerTag);
 };
 
 NS_END

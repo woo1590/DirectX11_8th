@@ -226,6 +226,11 @@ void Bomber::OnCollisionEnter(ColliderComponent* otherCollider)
 		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
 
 	}break;
+	case ColliderFilter::BarrelBoom:
+	{
+		m_IsExplodeDead = true;
+		ChangeState(&m_BomberDead);
+	}break;
 	default:
 		break;
 	}
@@ -249,6 +254,10 @@ void Bomber::Explode()
 	EnemyHpPanel::ENEMY_HP_PANEL_PARAM param{};
 	param.ownerID = m_iEnemyID;
 	engine->PublishEvent(ENUM_CLASS(EventID::EnemyDead), param);
+
+	Object::OBJECT_DESC boomDesc{};
+	boomDesc.position = m_pTransform->GetPosition();
+	engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Boom", engine->GetCurrLevelID(), "Layer_Boom", &boomDesc);
 }
 
 Object* Bomber::Clone(InitDESC* arg)
@@ -437,6 +446,9 @@ void Bomber::BomberDead::Enter(Object* object)
 		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
 
 		_float power = random->get<_float>(90.f, 150.f);
+		if (static_cast<Bomber*>(object)->m_IsExplodeDead)
+			power *= 4.f;
+
 		_float3 force{};
 		_float3 angularForce{};
 		XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);

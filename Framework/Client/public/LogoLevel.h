@@ -19,8 +19,13 @@ public:
     HRESULT Render()override;
 
 private:
-    HRESULT InitializeLayerBackground(const _string& layerTag);
+    _uint m_iBGMChannelID{};
 
+    HRESULT Initialize_LayerHome(const _string& layerTag);
+    HRESULT Initialize_LayerCharacter(const _string& layerTag);
+    HRESULT Initialize_LayerCamera(const _string& layerTag);
+    HRESULT Initialize_LayerLight(const _string& layerTag);
+    HRESULT Initialize_LayerUI(const _string& layerTag);
 };
 
 NS_END

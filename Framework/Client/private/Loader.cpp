@@ -18,9 +18,14 @@
 #include "BossLaserProjectile.h"
 #include "BossLaserProjectileTrail.h"
 #include "BossPillarSmoke.h"
+#include "Boom.h"
 #include "Cloud.h"
 #include "Torch.h"
 #include "PointLight.h"
+#include "SelectHome.h"
+#include "FreeCam.h"
+#include "StageFont.h"
+#include "LogoShadowCam.h"
 
 //player
 #include "Player.h"
@@ -56,6 +61,8 @@
 #include "MinimapTime.h"
 #include "MinimapArea.h"
 #include "LoadingPanel.h"
+#include "Button.h"
+#include "MouseCursor.h"
 
 //weapon
 #include "Cameleon.h"
@@ -114,6 +121,7 @@
 //effect
 #include "EffectContainer.h"
 #include "SpriteEffect.h"
+#include "ShieldHit.h"
 
 //map
 #include "SkyBox.h"
@@ -123,6 +131,11 @@
 #include "Door_R.h"
 #include "Door.h"
 #include "EnemySpawner.h"
+#include "SelectHome.h"
+#include "LogoPlayer.h"
+#include "LogoPanda.h"
+#include "Barrel.h"
+#include "BarrelBoom.h"
 
 //component
 #include "TransformComponent.h"
@@ -227,6 +240,8 @@ HRESULT Loader::LoadingForLogo()
 		engine->Load2DSound("SFX_EnemySpawn", "../bin/resource/sounds/sfx/enemy_spawn.wav", false);
 		engine->Load2DSound("SFX_PickUpAmmo", "../bin/resource/sounds/sfx/pickup_ammo.wav", false);
 		engine->Load3DSound("SFX_DoorOpen", "../bin/resource/sounds/sfx/door_open.wav", false);
+		engine->Load3DSound("SFX_MouseClick", "../bin/resource/sounds/sfx/mouse_click.wav", false);
+		engine->Load3DSound("SFX_MouseHover", "../bin/resource/sounds/sfx/mouse_hover.wav", false);
 
 		/*enemy*/
 		engine->Load3DSound("SFX_HorseHeadAttack", "../bin/resource/sounds/sfx/horse_head_attack.wav", false);
@@ -442,6 +457,18 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/cloud/cloud.model",
 			"Model_Cloud")))
 			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/area/logo/logo.model",
+			"Model_SelectHome")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/logo_panda/logo_panda.model",
+			"Model_LogoPanda")))
+			return E_FAIL;
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/logo_player/logo_player.model",
+			"Model_LogoPlayer")))
+			return E_FAIL;  
+		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/map/barrel/barrel.model",
+			"Model_Barrel")))
+			return E_FAIL;  
 
 		/*Effect*/
 		if (FAILED(engine->LoadModelFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/models/effect/spearman_hit/spearman_hit.model",
@@ -526,6 +553,16 @@ HRESULT Loader::LoadingForLogo()
 
 	/*Load Animation Set*/
 	{
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/logo.animationset",
+			"AnimationSet_SelectHome")))
+			return E_FAIL;
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/logo_player.animationset",
+			"AnimationSet_LogoPlayer")))
+			return E_FAIL;
+		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/logo_panda.animationset",
+			"AnimationSet_LogoPanda")))
+			return E_FAIL;
+
 		if (FAILED(engine->LoadAnimationSetFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/animationsets/test.animationset",
 			"AnimationSet_Test")))
 			return E_FAIL;
@@ -744,6 +781,14 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/loading_stage_icon.json", "Mtrl_LoadingStageIcon")))
 			return E_FAIL;
 
+		/*button*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/button.json", "Mtrl_Button")))
+			return E_FAIL;
+
+		/*mouse cursor*/
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/mouse.json", "Mtrl_MouseCursor")))
+			return E_FAIL;
+
 		/*effect*/
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/effect_decal.json", "Mtrl_Decal")))
 			return E_FAIL;
@@ -762,6 +807,8 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_laser_trail.json", "Mtrl_BossLaserTrail")))
 			return E_FAIL;
 		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/boss_laser_projectile_trail.json", "Mtrl_BossLaserProjectileTrail")))
+			return E_FAIL;
+		if (FAILED(engine->LoadMaterialFromJson(ENUM_CLASS(LevelID::Static), "../bin/resource/materials/shield_hit.json", "Mtrl_ShieldHit")))
 			return E_FAIL;
 		if (FAILED(engine->LoadTextureFromFile(ENUM_CLASS(LevelID::Static), "../bin/resource/textures/dissolve_mask.png")))
 			return E_FAIL;
@@ -811,9 +858,9 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_CameleonHeadFire",
 			EffectContainer::Create("../bin/resource/textures/effect/cameleon_head_fire/cameleon_head_fire.json"))))
 			return E_FAIL;
-		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShieldHit",
-			EffectContainer::Create("../bin/resource/textures/effect/shield_hit/shield_hit.json"))))
-			return E_FAIL;
+		//if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShieldHit",
+		//	EffectContainer::Create("../bin/resource/textures/effect/shield_hit/shield_hit.json"))))
+		//	return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_PrismHitEnemy",
 			EffectContainer::Create("../bin/resource/textures/effect/prism_hit_enemy/prism_hit_enemy.json"))))
 			return E_FAIL;
@@ -943,6 +990,12 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LoadingPanel", LoadingPanel::Create())))
 			return E_FAIL;
 
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Button", Button::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_StageFont", StageFont::Create())))
+			return E_FAIL;
+
 		/*Enemy*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_HorseHead", HorseHead::Create())))
 			return E_FAIL;
@@ -1039,6 +1092,10 @@ HRESULT Loader::LoadingForLogo()
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", Chest::Create())))
 			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", Barrel::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BarrelBoom", BarrelBoom::Create())))
+			return E_FAIL;
 
 		/*Fracture*/
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Fracture", Fracture::Create())))
@@ -1076,6 +1133,24 @@ HRESULT Loader::LoadingForLogo()
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossLaserProjectileTrail", BossLaserProjectileTrail::Create())))
 			return E_FAIL;
 		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_BossPillarSmoke", BossPillarSmoke::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_ShieldHit", ShieldHit::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_SelectHome", SelectHome::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoPanda", LogoPanda::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoPlayer", LogoPlayer::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_FreeCam", FreeCam::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_MouseCursor", MouseCursor::Create())))
+			return E_FAIL;
+
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_Boom", Boom::Create())))
+			return E_FAIL;
+		if (FAILED(engine->AddPrototype(ENUM_CLASS(LevelID::Static), "Prototype_Object_LogoShadowCam", LogoShadowCam::Create())))
 			return E_FAIL;
 		
 	}

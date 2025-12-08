@@ -92,9 +92,8 @@ void MainApp::Run()
 
         m_pEngineCore->UpdateTimer("Timer_Default");
         timeAcc += m_pEngineCore->GetDeltaTime("Timer_Default");
-        timeAcc = std::clamp(timeAcc, 0.f, 0.2f);
         
-        while (timeAcc > m_fFrameLimit)
+        if(timeAcc >= m_fFrameLimit)
         {   
             /*임시용*/
             if (m_pEngineCore->IsKeyPressed('P'))
@@ -111,10 +110,14 @@ void MainApp::Run()
                 SetCursorPos(WinSizeX / 2, WinSizeY / 2);
             /*임시용*/
 
-            GameManager::GetInstance()->Update(m_fFrameLimit);
-            m_pEngineCore->Tick(m_fFrameLimit);
+            m_pEngineCore->UpdateTimer("Timer_144fps");
+            _float dt = m_pEngineCore->GetDeltaTime("Timer_144fps");
+            dt = std::clamp(dt, 0.f, 0.03f);
 
-            timeAcc -= m_fFrameLimit;
+            GameManager::GetInstance()->Update(dt);
+            m_pEngineCore->Tick(dt);
+
+            timeAcc = 0.f;
         }
     }
 }
@@ -130,7 +133,7 @@ HRESULT MainApp::LoadStaticLevel()
     /*Load Font*/
     {
         m_pEngineCore->AddFont("Default_Font", "../bin/resource/font/Pretendard_bold.spritefont");
-        m_pEngineCore->AddFont("GMarket_Font", "../bin/resource/font/Pretendard_bold.spritefont");
+        m_pEngineCore->AddFont("Nexon_Font", "../bin/resource/font/Nexon_40.spritefont");
     }
     /*Load Shader*/
     {
@@ -217,6 +220,9 @@ HRESULT MainApp::LoadStaticLevel()
         auto engine = EngineCore::GetInstance();
         engine->AddRenderTarget("Target_Minimap", WinSizeX, WinSizeY, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
         engine->AddMRT("MRT_Minimap", "Target_Minimap");
+
+        engine->AddRenderTarget("Target_UIButton", WinSizeX, WinSizeY, DXGI_FORMAT_R8G8B8A8_UNORM, _float4{ 0.f,0.f,0.f,0.f });
+        engine->AddMRT("MRT_UIButton", "Target_UIButton");
     }
     return S_OK;
 }
@@ -232,6 +238,10 @@ void MainApp::AddColliderFilterGroup()
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Door));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Chest));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossLaserProjectile));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Boom));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::Barrel));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BarrelBoom));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Player), ENUM_CLASS(ColliderFilter::BossArmProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossLaserProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::BossPillar), ENUM_CLASS(ColliderFilter::BossArmProjectile));
@@ -242,10 +252,13 @@ void MainApp::AddColliderFilterGroup()
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossArm));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossStoneProjectile));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::BossPillar));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerProjectile), ENUM_CLASS(ColliderFilter::Barrel));
 
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::PlayerAttack), ENUM_CLASS(ColliderFilter::Enemy));
 
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::Enemy));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::BarrelBoom));
+    m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Enemy), ENUM_CLASS(ColliderFilter::Barrel));
     m_pEngineCore->AddColliderFilterGroup(ENUM_CLASS(ColliderFilter::Fracture), ENUM_CLASS(ColliderFilter::Fracture));
 }
 
@@ -303,7 +316,7 @@ bool MainApp::InitWindow(HINSTANCE hInst, int nCmdShow)
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
-    //ShowCursor(false);
+    ShowCursor(false);
     //RECT clipRect{ x,y, x + WinSizeX, y + WinSizeY };
     //ClipCursor(&clipRect);
 

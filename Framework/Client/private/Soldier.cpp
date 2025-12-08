@@ -277,6 +277,11 @@ void Soldier::OnCollisionEnter(ColliderComponent* otherCollider)
 		engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
 
 	}break;
+	case ColliderFilter::BarrelBoom:
+	{
+		m_IsExplodeDead = true;
+		ChangeState(&m_SoldierDead);
+	}break;
 	default:
 		break;
 	}
@@ -573,6 +578,9 @@ void Soldier::SoldierDead::Enter(Object* object)
 		XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
 
 		_float power = random->get<_float>(90.f, 150.f);
+		if (static_cast<Soldier*>(object)->m_IsExplodeDead)
+			power *= 4.f;
+
 		_float3 force{};
 		_float3 angularForce{};
 		XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);

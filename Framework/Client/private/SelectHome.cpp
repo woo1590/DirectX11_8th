@@ -3,6 +3,7 @@
 
 //component
 #include "ModelComponent.h"
+#include "AnimatorComponent.h"
 
 SelectHome::SelectHome()
 	:Object()
@@ -30,6 +31,7 @@ HRESULT SelectHome::Initialize_Prototype()
 		return E_FAIL;
 
 	AddComponent<ModelComponent>();
+	AddComponent<AnimatorComponent>();
 
 	return S_OK;
 }
@@ -42,6 +44,16 @@ HRESULT SelectHome::Initialize(InitDESC* arg)
 	auto engine = EngineCore::GetInstance();
 
 	auto model = GetComponent<ModelComponent>();
+	model->Initialize(nullptr);
+	model->SetModel(ENUM_CLASS(LevelID::Static), "Model_SelectHome");
+
+	auto animator = GetComponent<AnimatorComponent>();
+	animator->SetAnimation(ENUM_CLASS(LevelID::Static), "AnimationSet_SelectHome");
+
+	model->ConnectAnimator();
+
+	m_pTransform->SetScale(_float3{ 6.2f,6.2f,6.2f });
+	m_UseShadow = true;
 
 	return S_OK;
 }

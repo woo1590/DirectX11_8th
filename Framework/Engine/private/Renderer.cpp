@@ -179,10 +179,12 @@ HRESULT Renderer::BeginFrame()
 HRESULT Renderer::RenderPriority(const std::vector<RenderProxy>& proxies)
 {
 	auto engine = EngineCore::GetInstance();
+	engine->BeginMRT("MRT_Final");
 
 	for (const auto& proxy : proxies)
 		DrawProxy(proxy);
 
+	engine->EndMRT();
 	return S_OK;
 }
 
@@ -191,7 +193,7 @@ HRESULT Renderer::RenderShadow(const std::vector<RenderProxy>& proxies)
 	auto engine = EngineCore::GetInstance();
 
 	ChangeViewPort(g_iMaxWidth, g_iMaxHeight);
-	engine->BeginMRT("MRT_Shadow", true, m_pShadowDSV);
+	engine->BeginMRT("MRT_Shadow",true, true, m_pShadowDSV);
 
 	for (const auto& proxy : proxies)
 		DrawShadow(proxy);
@@ -267,7 +269,7 @@ HRESULT Renderer::RenderEmissiveBlur()
 	ChangeViewPort(m_BlurScreenSize.x, m_BlurScreenSize.y);
 	m_pShader->BindRawValue("g_BlurScreenSize", &m_BlurScreenSize, sizeof(_float2));
 
-	engine->BeginMRT("MRT_EmissiveBlurX");
+	engine->BeginMRT("MRT_EmissiveBlurX",true, true, m_pBlurDSV);
 	engine->BindShaderResource(m_pShader, "Target_EmissiveGlow", "g_EmissiveGlowTexture");
 	m_pBuffer->BindBuffers();
 	m_pShader->Apply("EmissiveBlurX_Pass");
@@ -276,7 +278,7 @@ HRESULT Renderer::RenderEmissiveBlur()
 
 	m_pShader->BindRawValue("g_BlurScreenSize", &m_BlurScreenSize, sizeof(_float2));
 
-	engine->BeginMRT("MRT_EmissiveBlurY");
+	engine->BeginMRT("MRT_EmissiveBlurY",true, true, m_pBlurDSV);
 	engine->BindShaderResource(m_pShader, "Target_EmissiveBlurX", "g_EmissiveBlurXTexture");
 	m_pBuffer->BindBuffers();
 	m_pShader->Apply("EmissiveBlurY_Pass");
@@ -292,6 +294,7 @@ HRESULT Renderer::RenderEmissiveBlur()
 HRESULT Renderer::RenderCombined()
 {
 	auto engine = EngineCore::GetInstance();
+	engine->BeginMRT("MRT_Final", false);
 
 	engine->BindShaderResource(m_pShader, "Target_Diffuse", "g_DiffuseTargetTexture");
 	engine->BindShaderResource(m_pShader, "Target_Shade", "g_ShadeTexture");
@@ -303,6 +306,22 @@ HRESULT Renderer::RenderCombined()
 
 	m_pBuffer->BindBuffers();
 	m_pShader->Apply("Combined_Pass");
+	m_pBuffer->Draw();
+
+	engine->EndMRT();
+	return S_OK;
+}
+
+HRESULT Renderer::RenderRadialBlur()
+{
+	auto engine = EngineCore::GetInstance();
+
+	engine->BindShaderResource(m_pShader, "Target_Final", "g_FinalTexture");
+
+	m_pBuffer->BindBuffers();
+
+	m_pShader->BindRawValue("g_RadialBlurProgress", &m_fRadialBlurProgress, sizeof(_float));
+	m_pShader->Apply("RadialBlur_Pass");
 	m_pBuffer->Draw();
 
 	return S_OK;
@@ -344,8 +363,8 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 {
 	auto engine = EngineCore::GetInstance();
 
-	m_BlurScreenSize.x = static_cast<_uint>(viewPort.Width * 0.2f);
-	m_BlurScreenSize.y = static_cast<_uint>(viewPort.Height * 0.2f);
+	m_BlurScreenSize.x = viewPort.Width;//static_cast<_uint>(viewPort.Width);
+	m_BlurScreenSize.y = viewPort.Height;//static_cast<_uint>(viewPort.Width);
 
 	/*add render targets*/
 	{
@@ -415,9 +434,28 @@ HRESULT Renderer::Initialize_DeferredTargets(D3D11_VIEWPORT viewPort)
 			return E_FAIL;
 		if (FAILED(engine->AddMRT("MRT_EmissiveBlurY", "Target_EmissiveBlurY")))
 			return E_FAIL;
+
+		ID3D11Texture2D* dsvTexture = nullptr;
+		D3D11_TEXTURE2D_DESC blurDSVDesc{};
+		blurDSVDesc.Width = m_BlurScreenSize.x;
+		blurDSVDesc.Height = m_BlurScreenSize.y;
+		blurDSVDesc.MipLevels = 1;
+		blurDSVDesc.ArraySize = 1;
+		blurDSVDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		blurDSVDesc.Usage = D3D11_USAGE_DEFAULT;
+		blurDSVDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		blurDSVDesc.CPUAccessFlags = 0;
+		blurDSVDesc.MiscFlags = 0;
+		blurDSVDesc.SampleDesc.Quality = 0;
+		blurDSVDesc.SampleDesc.Count = 1;
+
+		if (FAILED(m_pDevice->CreateTexture2D(&blurDSVDesc, nullptr, &dsvTexture)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateDepthStencilView(dsvTexture, nullptr, &m_pBlurDSV)))
+			return E_FAIL;
+		Safe_Release(dsvTexture);
 	}
-
-
 
 	return S_OK;
 }
@@ -530,4 +568,5 @@ void Renderer::Free()
 	Safe_Release(m_pDeviceContext);
 
 	Safe_Release(m_pShadowDSV);
+	Safe_Release(m_pBlurDSV);
 }

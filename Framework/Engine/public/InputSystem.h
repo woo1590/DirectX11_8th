@@ -41,6 +41,7 @@ public:
 
     void SetMouseDelta(_float dx, _float dy);
     _float2 GetMouseDelta()const { return m_MouseDelta; }
+    _float2 GetMousePosition()const;
 
     void Free()override;
 

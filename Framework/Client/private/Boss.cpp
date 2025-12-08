@@ -97,7 +97,7 @@ HRESULT Boss::Initialize(InitDESC* arg)
 
 	/*status*/
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.hp = 1000;
+	statusDesc.hp = 8000;
 	auto status = GetComponent<StatusComponent>();
 	status->Initialize(&statusDesc);
 
@@ -216,7 +216,7 @@ void Boss::HitWeakness(_uint attackPower)
 	engine->PublishEvent(ENUM_CLASS(EventID::BossHealthDecrease), status->GetHpRatio());
 
 	/*sound*/
-	engine->Play2DSound("SFX_HitWeakness", 0.5f);
+	engine->Play2DSound("SFX_HitWeakness", 0.3f);
 }
 
 void Boss::Dead()
@@ -437,20 +437,45 @@ void Boss::BossIdle::TestForExit(Object* object)
 {
 	if (m_fElapsedTime >= m_fDuration)
 	{
-		_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 20);
 		auto boss = static_cast<Boss*>(object);
 
-		if (rand < 3)
-			boss->ChangeState(&boss->m_BossAttack1Start);
-		else if (rand < 7)
-			boss->ChangeState(&boss->m_BossFire1Start);
-		else if (rand < 10)
-			boss->ChangeState(&boss->m_BossFire2Start);
-		else
-			boss->ChangeState(&boss->m_BossFire3Start);
-		
-		//boss->ChangeState(&boss->m_BossAttack1Start);
+		if (!m_IsFirst)
+		{
+			_uint rand = EngineCore::GetInstance()->GetRandom()->get<_uint>(0, 20);
 
+			if (rand < 5)
+				boss->ChangeState(&boss->m_BossAttack1Start);
+			else if (rand < 10)
+				boss->ChangeState(&boss->m_BossFire1Start);
+			else if (rand < 15)
+				boss->ChangeState(&boss->m_BossFire2Start);
+			else
+				boss->ChangeState(&boss->m_BossFire3Start);
+		}
+		else
+		{
+			switch (m_iPatternIndex)
+			{
+			case 0:
+				boss->ChangeState(&boss->m_BossAttack1Start);
+				break;
+			case 1:
+				boss->ChangeState(&boss->m_BossFire1Start);
+				break;
+			case 2:
+				boss->ChangeState(&boss->m_BossFire2Start);
+				break;
+			case 3:
+				boss->ChangeState(&boss->m_BossFire3Start);
+				break;
+			default:
+				break;
+			}
+
+			++m_iPatternIndex;
+			if (m_iPatternIndex >= 4)
+				m_IsFirst = false;
+		}
 	}
 }
 

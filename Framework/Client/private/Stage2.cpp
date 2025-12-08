@@ -7,6 +7,10 @@
 #include "NavigationComponent.h"
 #include "SkillPanel.h"
 #include "GameManager.h"
+#include <StageFont.h>
+#include <Chest.h>
+#include <Command_ChangeLevel.h>
+#include <LoadingLevel.h>
 
 Stage2::Stage2()
 	:Level()
@@ -27,7 +31,7 @@ HRESULT Stage2::Initialize()
 {
 	auto engine = EngineCore::GetInstance();
 
-	if (FAILED(LoadMapFromFile("../bin/data/map/stage2_map.json")))
+	if (FAILED(LoadMapFromFile("../bin/data/map/stage2_map_spawn.json")))
 		return E_FAIL;
 
 	if (FAILED(LoadLightFromFile("../bin/data/map/stage2_map_light.json")))
@@ -47,6 +51,9 @@ HRESULT Stage2::Initialize()
 	if (FAILED(Initialize_LayerChest("Layer_Chest")))
 		return E_FAIL;
 
+	if (FAILED(Initialize_LayerBarrel("Layer_Barrel")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -57,7 +64,10 @@ void Stage2::Free()
 
 void Stage2::Update(_float dt)
 {
-
+	if (EngineCore::GetInstance()->IsKeyPressed('O'))
+	{
+		EngineCore::GetInstance()->RegisterCommand(Command_ChangeLevel::Create(LevelID::Loading, LoadingLevel::Create(LevelID::Stage2)));
+	}
 }
 
 HRESULT Stage2::Render()
@@ -217,7 +227,7 @@ HRESULT Stage2::Initialize_LayerPlayer(const _string& layerTag)
 	auto engine = EngineCore::GetInstance();
 
 	auto player = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player");
-	player->GetComponent<NavigationComponent>()->SpawnInCell(0);
+	player->GetComponent<NavigationComponent>()->SpawnInCell(2);
 
 	return S_OK;
 }
@@ -263,10 +273,74 @@ HRESULT Stage2::Initialize_LayerUI(const _string& layerTag)
 	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_MinimapPanel", ENUM_CLASS(LevelID::Stage2), layerTag)))
 		return E_FAIL;
 
+	StageFont::STAGE_FONT_DESC desc{};
+	desc.stageID = LevelID::Stage2;
+	desc.position = _float3{ -879.f,22.f, 72.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_StageFont", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT Stage2::Initialize_LayerChest(const _string& layerTag)
 {
+	auto engine = EngineCore::GetInstance();
+
+	{
+		Object* chest = nullptr;
+		Chest::CHEST_DESC chest1Desc{};
+		chest1Desc.weaponID = WeaponID::Cameleon;
+		chest1Desc.position = _float3{ -670.f,-5.f,164.f };
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage2), layerTag, &chest1Desc, &chest)))
+			return E_FAIL;
+	}
+	
+	{
+		Object* chest = nullptr;
+		Chest::CHEST_DESC chest1Desc{};
+		chest1Desc.weaponID = WeaponID::Prism;
+		chest1Desc.position = _float3{ -320.f,-4.f,146.f };
+		if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Chest", ENUM_CLASS(LevelID::Stage2), layerTag, &chest1Desc, &chest)))
+			return E_FAIL;
+
+		chest->GetComponent<TransformComponent>()->Rotate(_float3{ 0.f,math::ToRadian(90.f),0.f });
+	}
+
+	return S_OK;
+}
+
+HRESULT Stage2::Initialize_LayerBarrel(const _string& layerTag)
+{
+	auto engine = EngineCore::GetInstance();
+
+	Object::OBJECT_DESC desc{};
+	desc.position = _float3{ -750.f,-13.f,120.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -726.f,-13.f,120.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -392.f,-4.f,88.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ 750.f,-14.5f,120.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -454.f,-4.5f,170.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
+	desc.position = _float3{ -40.f,-6.5f,140.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+	
+	desc.position = _float3{ -152.f,5.f,90.f };
+	if (FAILED(engine->AddObject(ENUM_CLASS(LevelID::Static), "Prototype_Object_Barrel", ENUM_CLASS(LevelID::Stage2), layerTag, &desc)))
+		return E_FAIL;
+
 	return S_OK;
 }

@@ -40,6 +40,11 @@ void FontManager::AddProxy(FONT_PROXY proxy)
 	m_Proxies.push(proxy);
 }
 
+HRESULT FontManager::DrawFont(FONT_PROXY proxy)
+{
+	return Draw(proxy.fontTag, proxy.text, proxy.screenPosition, proxy.scale, proxy.color);;
+}
+
 HRESULT FontManager::RenderFont()
 {
 	while (!m_Proxies.empty())

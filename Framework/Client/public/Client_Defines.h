@@ -44,6 +44,9 @@ namespace Client
 		Item,
 		Door,
 		Chest,
+		Boom,
+		Barrel,
+		BarrelBoom,
 		Count
 	};
 	enum class WeaponID

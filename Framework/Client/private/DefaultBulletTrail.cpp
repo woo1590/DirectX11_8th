@@ -76,17 +76,20 @@ void DefaultBulletTrail::LateUpdate(_float dt)
 
 void DefaultBulletTrail::AddNextPosition(_float3 position)
 {
-	m_PrevPoint = m_CurrPoint;
-	m_CurrPoint = position;
 
-	_float3 p0{}, p1{};
-	_vector dir = XMVector3Normalize(XMLoadFloat3(&m_CurrPoint) - XMLoadFloat3(&m_PrevPoint));
+	if (m_IsActive)
+	{
+		m_PrevPoint = m_CurrPoint;
+		m_CurrPoint = position;
+
+		_float3 p0{}, p1{};
+		_vector dir = XMVector3Normalize(XMLoadFloat3(&m_CurrPoint) - XMLoadFloat3(&m_PrevPoint));
 	
-	p1 = m_CurrPoint;
-	XMStoreFloat3(&p0, XMLoadFloat3(&m_CurrPoint) - dir * 40.f);
+		p1 = m_CurrPoint;
+		XMStoreFloat3(&p0, XMLoadFloat3(&m_CurrPoint) - dir * 40.f);
 
-	if(m_IsActive)
 		GetComponent<TrailComponent>()->AddPoints(p0, p1);
+	}
 }
 
 Object* DefaultBulletTrail::Clone(InitDESC* arg)

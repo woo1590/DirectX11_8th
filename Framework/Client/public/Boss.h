@@ -90,6 +90,9 @@ private:
 
         _float m_fElapsedTime = 0.f;
         _float m_fDuration = 0.8f;
+
+        _uint m_iPatternIndex{};
+        _bool m_IsFirst = true;
     };
     class BossAttack1Start : public State
     {

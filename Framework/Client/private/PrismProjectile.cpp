@@ -63,7 +63,7 @@ HRESULT PrismProjectile::Initialize(InitDESC* arg)
 
 	/*status*/
 	StatusComponent::STATUS_DESC statusDesc{};
-	statusDesc.attackPower = 40;
+	statusDesc.attackPower = 20;
 	auto status = GetComponent<StatusComponent>();
 	status->Initialize(&statusDesc);
 

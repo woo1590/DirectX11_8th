@@ -269,6 +269,11 @@ void CrossbowMan::OnCollisionEnter(ColliderComponent* otherCollider)
         engine->PublishEvent(ENUM_CLASS(EventID::EnemyHealthDecrease), param);
 
     }break;
+    case ColliderFilter::BarrelBoom:
+    {
+        m_IsExplodeDead = true;
+        ChangeState(&m_CrossbowManDead);
+    }break;
     default:
         break;
     }
@@ -754,6 +759,9 @@ void CrossbowMan::CrossbowManDead::Enter(Object* object)
             XMStoreFloat3(&dir, XMVector3Normalize((XMLoadFloat3(&dir) + XMVectorSet(0.f, 0.2f, 0.f, 0.f))));
 
             _float power = random->get<_float>(90.f, 150.f);
+            if (static_cast<CrossbowMan*>(object)->m_IsExplodeDead)
+                power *= 4.f;
+
             _float3 force{};
             _float3 angularForce{};
             XMStoreFloat3(&force, XMLoadFloat3(&dir) * power);

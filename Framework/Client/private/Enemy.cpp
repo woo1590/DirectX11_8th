@@ -120,8 +120,13 @@ void Enemy::SetDead()
 
 	auto engine = EngineCore::GetInstance();
 	auto random = engine->GetRandom();
-    engine->Play2DSound("SFX_EnemyDead", 0.6f);
-    engine->Play2DSound("SFX_EnemySpread", 0.6f);
+    if (!m_IsExplodeDead)
+    {
+        engine->Play2DSound("SFX_EnemyDead", 0.6f);
+        engine->Play2DSound("SFX_EnemySpread", 0.6f);
+    }
+    else
+        engine->Play2DSound("SFX_EnemyDead", 0.3f);
     
     /*----dead effect----*/
     _float3 playerPos = engine->GetFrontObject(ENUM_CLASS(LevelID::Static), "Layer_Player")->GetComponent<TransformComponent>()->GetPosition();
@@ -135,15 +140,15 @@ void Enemy::SetDead()
     param.ownerID = m_iEnemyID;
     engine->PublishEvent(ENUM_CLASS(EventID::EnemyDead), param);
 
-	_uint numCoins = random->get<_uint>(4, 6);
-    for (_uint i = 0; i < 5; ++i)
+	_uint numCoins = random->get<_uint>(1, 3);
+    for (_uint i = 0; i < numCoins; ++i)
     {
         _float3 position = m_pTransform->GetPosition();
         _float3 spawnPosition{};
         spawnPosition.x = position.x + random->get<_float>(-4.f, 4.f);
         spawnPosition.y = position.y + random->get<_float>(5.f, 8.f);
         spawnPosition.z = position.z + random->get<_float>(-4.f, 4.f);
-
+        
         _float3 velocity{};
         _float power = random->get<_float>(50.f, 70.f);
         _vector dir = XMVector3Normalize(XMLoadFloat3(&spawnPosition) - XMLoadFloat3(&position));

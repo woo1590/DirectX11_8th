@@ -118,6 +118,9 @@ void TrailComponent::AddPoint(_float3 point)
 
 void TrailComponent::BuildVertexData()
 {
+	if (m_RibbonPoints.size() < 2)
+		return;
+
 	std::vector<VTX_TRAIL> vertices;
 
 	for (_uint i = 0; i < m_RibbonPoints.size() - 1; ++i)
@@ -143,11 +146,14 @@ void TrailComponent::BuildVertexData()
 	}
 
 	if (vertices.size() >= 2)
-		m_pBuffer->UpdateBuffer(vertices.data(), vertices.size());
+		m_pBuffer->UpdateBuffer(vertices.data(),m_RibbonPoints.size());
 }
 
 HRESULT TrailComponent::ExtractRenderProxy(std::vector<RenderProxy>& proxies)
 {
+	if (m_DefaultPoints.size() < 2 && m_RibbonPoints.size() < 2)
+		return S_OK;
+
 	RenderProxy proxy{};
 	XMStoreFloat4x4(&proxy.worldMatrix, XMMatrixIdentity());
 	proxy.buffer = m_pBuffer;
