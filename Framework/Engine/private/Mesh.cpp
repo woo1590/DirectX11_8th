@@ -385,7 +385,7 @@ _uint Mesh::BuildBVHNode(std::vector<_uint>& triIndices, _uint startIndex, _uint
 	m_BVHNodes.push_back(node);
 
 	/*make leaf*/
-	if (count < m_iLeafCount)
+	if (count <= m_iLeafCount)
 	{
 		m_BVHNodes[nodeIndex].firstIndex = startIndex;
 		m_BVHNodes[nodeIndex].count = count;
@@ -401,7 +401,9 @@ _uint Mesh::BuildBVHNode(std::vector<_uint>& triIndices, _uint startIndex, _uint
 	else
 		axis = 2;	
 
-	if (node.nodeAABB.Extents.x < math::ELIPSON && node.nodeAABB.Extents.y < math::ELIPSON && node.nodeAABB.Center.z < math::ELIPSON)
+	if (node.nodeAABB.Extents.x < math::ELIPSON && 
+		node.nodeAABB.Extents.y < math::ELIPSON && 
+		node.nodeAABB.Extents.z < math::ELIPSON)
 	{
 		m_BVHNodes[nodeIndex].firstIndex = startIndex;
 		m_BVHNodes[nodeIndex].count = count;
@@ -424,6 +426,7 @@ _uint Mesh::BuildBVHNode(std::vector<_uint>& triIndices, _uint startIndex, _uint
 	auto iterMid = triIndices.begin() + mid;
 	auto iterEnd = triIndices.begin() + endIndex;
 
+	//단순 중앙값 기준으로 좌우 분할만 하면 됨
 	std::nth_element(iterStart, iterMid, iterEnd, [&](_uint a, _uint b)
 		{
 			if (0 == axis)
@@ -436,6 +439,7 @@ _uint Mesh::BuildBVHNode(std::vector<_uint>& triIndices, _uint startIndex, _uint
 
 	_uint left = BuildBVHNode(triIndices, startIndex, mid);
 	_uint right = BuildBVHNode(triIndices, mid, endIndex);
+
 	m_BVHNodes[nodeIndex].count = 0;
 	m_BVHNodes[nodeIndex].left = left;
 	m_BVHNodes[nodeIndex].right = right;
@@ -447,13 +451,11 @@ void Mesh::RayCastBVHNode(_uint nodeIndex, RAY localRay, RAY_HIT_DATA& out)
 {
 	auto& node = m_BVHNodes[nodeIndex];
 
-	RAY_HIT_DATA result{};
-
 	_float distance{};
 	_float3 normal{};
 	if (node.nodeAABB.Intersects(XMLoadFloat3(&localRay.origin), XMLoadFloat3(&localRay.direction), distance))
 	{
-		/*is leaf*/
+		/*is leaf 실제 리프노드*/
 		if (node.count)
 		{
 			_float tHit = FLT_MAX;
@@ -495,6 +497,7 @@ void Mesh::RayCastBVHNode(_uint nodeIndex, RAY localRay, RAY_HIT_DATA& out)
 
 			if (leftResult && rightResult)
 			{
+				//충돌지점과 더 거리가 가까운 노드 먼저 검사
 				if (leftDistance < rightDistance)
 				{
 					RayCastBVHNode(node.left, localRay, out);
@@ -510,7 +513,7 @@ void Mesh::RayCastBVHNode(_uint nodeIndex, RAY localRay, RAY_HIT_DATA& out)
 			}
 			else if (leftResult)
 				RayCastBVHNode(node.left, localRay, out);
-			else
+			else if (rightResult)
 				RayCastBVHNode(node.right, localRay, out);
 		}
 	}

@@ -100,13 +100,16 @@ void PrismProjectile::Update(_float dt)
 	worldRay.origin = currPosition;
 	XMStoreFloat3(&worldRay.direction, XMVector3Normalize(XMLoadFloat3(&nextPosition) - XMLoadFloat3(&currPosition)));
 
+	//레이캐스트 거리가 max distance보다 가까운 상황
 	RAYCAST_DATA result = engine->RayCast(worldRay, maxDistance, ENUM_CLASS(ColliderFilter::StaticMapObject));
 	if (result.isHit)
 	{
+		//충돌 지점의 normal 벡터를 가져와서 반사벡터 구함
 		_float t = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&forward) * -1.f, XMLoadFloat3(&result.hitNormal)));
 		XMStoreFloat3(&forward, XMLoadFloat3(&forward) + 2.f * t * XMLoadFloat3(&result.hitNormal));
-		XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&forward) * m_fSpeed * dt);
 
+		//반사벡터를 통해 이동했을 때의 위치, 오브젝트의 forward 바꿈
+		XMStoreFloat3(&nextPosition, XMLoadFloat3(&currPosition) + XMLoadFloat3(&forward) * m_fSpeed * dt);
 		m_pTransform->SetForward(forward);
 
 		_float3 viewNormal{};
@@ -127,8 +130,7 @@ void PrismProjectile::Update(_float dt)
 			engine->Play3DSound("SFX_PrismReflect", currPosition, 0.3f);
 			m_fSoundElpasedTime = 0.f;
 			++m_iSoundCount;
-		}
-
+		}               
 	}
 
 	m_pTransform->SetPosition(nextPosition);

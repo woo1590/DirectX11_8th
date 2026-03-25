@@ -283,15 +283,18 @@ HRESULT FBXMesh::CreateSkinnedMesh(aiMesh* pMesh, FBXSkeleton* pSkeleton)
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
+		if (pMesh->mNumUVComponents[0] > 0) {
+			memcpy_s(&vertices[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
+			memcpy_s(&m_VertexFormats[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
+		}
+
 		memcpy_s(&vertices[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
 		memcpy_s(&vertices[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
-		memcpy_s(&vertices[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy_s(&vertices[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
 
 		/*----Vertex Format----*/
 		memcpy_s(&m_VertexFormats[i].position, sizeof(_float3), &pMesh->mVertices[i], sizeof(_float3));
 		memcpy_s(&m_VertexFormats[i].normal, sizeof(_float3), &pMesh->mNormals[i], sizeof(_float3));
-		memcpy_s(&m_VertexFormats[i].texCoord, sizeof(_float2), &pMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy_s(&m_VertexFormats[i].tangent, sizeof(_float3), &pMesh->mTangents[i], sizeof(_float3));
 
 	}
